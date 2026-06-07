@@ -1,7 +1,7 @@
 /*
  * XPilotNG/SDL, an SDL/OpenGL XPilot client.
  *
- * Copyright (C) 2003-2004 Juha Lindström <juhal@users.sourceforge.net>
+ * Copyright (C) 2003-2004 Juha LindstrÃ¶m
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #ifndef SDLPAINT_H
@@ -30,8 +30,8 @@ typedef unsigned int color_t;
 extern int draw_depth;
 
 #define STATIONARY_MODE 1
-#define MOVING_MODE 	2
-#define HUD_MODE    	4
+#define MOVING_MODE 2
+#define HUD_MODE 4
 
 extern int paintSetupMode;
 
@@ -64,6 +64,6 @@ extern void Circle(Uint32 color, int x, int y, int radius, int filled);
 extern irec_t *select_bounds;
 extern void Paint_select(void);
 
-extern SDL_Surface  *MainSDLSurface;
+extern SDL_Surface *MainSDLSurface;
 
 #endif

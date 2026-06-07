@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,41 +19,41 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #include "xpcommon.h"
 
 void *xp_safe_malloc(size_t size)
 {
-    void	*p;
+    void *p;
 
-    p = (void *) malloc(size);
+    p = (void *)malloc(size);
     if (p == NULL)
-	fatal("Not enough memory.");
+        fatal("Not enough memory.");
 
     return p;
 }
 
 void *xp_safe_realloc(void *oldptr, size_t size)
 {
-    void	*p;
+    void *p;
 
-    p = (void *) realloc(oldptr, size);
+    p = (void *)realloc(oldptr, size);
     if (p == NULL)
-	fatal("Not enough memory.");
+        fatal("Not enough memory.");
 
     return p;
 }
 
 void *xp_safe_calloc(size_t nmemb, size_t size)
 {
-    void	*p;
+    void *p;
 
-    p = (void *) calloc(nmemb, size);
+    p = (void *)calloc(nmemb, size);
     if (p == NULL)
-	fatal("Not enough memory.");
+        fatal("Not enough memory.");
 
     return p;
 }
@@ -61,6 +61,5 @@ void *xp_safe_calloc(size_t nmemb, size_t size)
 void xp_safe_free(void *p)
 {
     if (p)
-	free(p);
+        free(p);
 }
-

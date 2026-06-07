@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,15 +19,15 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #ifndef PAINTDATA_H
 #define PAINTDATA_H
 
 /* need u_byte */
-#ifndef	TYPES_H
+#ifndef TYPES_H
 #include "types.h"
 #endif
 
@@ -37,14 +37,14 @@ extern int Rectangle_add(int color, int x, int y, int width, int height);
 extern void Arc_start(void);
 extern void Arc_end(void);
 extern int Arc_add(int color,
-		   int x, int y,
-		   int width, int height,
-		   int angle1, int angle2);
+				   int x, int y,
+				   int width, int height,
+				   int angle1, int angle2);
 extern int Arc_add_rgb(unsigned long color, /* Used if fullColor is on. */
-		       int fallback_color,  /* Used if fullColor is off. */
-		       int x, int y,
-		       int width, int height,
-		       int angle1, int angle2);
+					   int fallback_color,	/* Used if fullColor is off. */
+					   int x, int y,
+					   int width, int height,
+					   int angle1, int angle2);
 extern void Segment_start(void);
 extern void Segment_end(void);
 extern int Segment_add(int color, int x_1, int y_1, int x_2, int y_2);

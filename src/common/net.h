@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,63 +19,64 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef	NET_H
-#define	NET_H
+#ifndef NET_H
+#define NET_H
 
 #ifndef SOCKLIB_H
 /* need sock_t */
 #include "socklib.h"
 #endif
 
-#define MIN_SOCKBUF_SIZE	1024
-#define MAX_SOCKBUF_SIZE	(50*1024)
+#define MIN_SOCKBUF_SIZE 1024
+#define MAX_SOCKBUF_SIZE (50 * 1024)
 
-#define SERVER_RECV_SIZE	MIN_SOCKBUF_SIZE
-#define SERVER_SEND_SIZE	(4*1024)
+#define SERVER_RECV_SIZE MIN_SOCKBUF_SIZE
+#define SERVER_SEND_SIZE (4 * 1024)
 
-#define CLIENT_SEND_SIZE	SERVER_RECV_SIZE
+#define CLIENT_SEND_SIZE SERVER_RECV_SIZE
 /* I added 1024 to this because the client can get 4 1035 byte packets
    at once when starting a game (from Handle_setup). Seems there is some
    overhead in storing multiple packets - I had to increase this by at
    least 657 to avoid losing packets on Linux. That's why the change here
    instead of changing the size to 1024 in netserver.c */
-#define CLIENT_RECV_SIZE	(SERVER_SEND_SIZE + 1024)
+#define CLIENT_RECV_SIZE (SERVER_SEND_SIZE + 1024)
 
 /*
  * Definitions for the states a socket buffer can be in.
  */
-#define SOCKBUF_READ		0x01	/* if readable */
-#define SOCKBUF_WRITE		0x02	/* if writeable */
-#define SOCKBUF_LOCK		0x04	/* if locked against kernel i/o */
-#define SOCKBUF_ERROR		0x08	/* if i/o error occurred */
-#define SOCKBUF_DGRAM		0x10	/* if datagram socket */
+#define SOCKBUF_READ 0x01  /* if readable */
+#define SOCKBUF_WRITE 0x02 /* if writeable */
+#define SOCKBUF_LOCK 0x04  /* if locked against kernel i/o */
+#define SOCKBUF_ERROR 0x08 /* if i/o error occurred */
+#define SOCKBUF_DGRAM 0x10 /* if datagram socket */
 
 /*
  * Hack: leave some spare room for the last terminating packet
  * of a frame update.
  */
-#define SOCKBUF_WRITE_SPARE	8
+#define SOCKBUF_WRITE_SPARE 8
 
 /*
  * Maximum number of socket i/o retries if datagram socket.
  */
-#define MAX_SOCKBUF_RETRIES	2
+#define MAX_SOCKBUF_RETRIES 2
 
 /*
  * A buffer to reduce the number of system calls made and to reduce
  * the number of network packets.
  */
-typedef struct {
-    sock_t	sock;		/* socket filedescriptor */
-    char	*buf;		/* i/o data buffer */
-    int		size;		/* size of buffer */
-    int		len;		/* amount of data in buffer (writing/reading) */
-    char	*ptr;		/* current position in buffer (reading) */
-    int		state;		/* read/write/locked/error status flags */
+typedef struct
+{
+    sock_t sock; /* socket filedescriptor */
+    char *buf;   /* i/o data buffer */
+    int size;    /* size of buffer */
+    int len;     /* amount of data in buffer (writing/reading) */
+    char *ptr;   /* current position in buffer (reading) */
+    int state;   /* read/write/locked/error status flags */
 } sockbuf_t;
 
 extern int last_packet_of_frame;
@@ -93,4 +94,3 @@ int Packet_printf(sockbuf_t *, const char *fmt, ...);
 int Packet_scanf(sockbuf_t *, const char *fmt, ...);
 
 #endif
-

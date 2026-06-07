@@ -1,10 +1,10 @@
-/* 
+/*
  * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,12 +17,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 // BSString.cpp - BuckoSoft String Implementation
-// Copyright © 1995-1997 BuckoSoft, Inc.
+// Copyright ï¿½ 1995-1997 BuckoSoft, Inc.
 // This class wraps CString to give us some token parsing abilities
 
 #include "stdafx.h"
@@ -41,29 +41,29 @@ CBSString::CBSString(const char *psz)
     this->CString::CString(psz);
 }
 
-CBSString::CBSString(const CBSString & stringSrc)
+CBSString::CBSString(const CBSString &stringSrc)
 {
-    this->CString::CString((const CString &) stringSrc);
+    this->CString::CString((const CString &)stringSrc);
 }
 
-CBSString::CBSString(const CString & stringSrc)
+CBSString::CBSString(const CString &stringSrc)
 {
     this->CString::CString(stringSrc);
 }
 
-CBSString::CBSString(const CBSString * cbs)
+CBSString::CBSString(const CBSString *cbs)
 {
-    this->CString::CString((const char *) cbs);
+    this->CString::CString((const char *)cbs);
 }
 
 CBSString CBSString::GetToken()
 {
     CBSString ct;
-    ct = SpanIncluding(separators);	// skip white space
+    ct = SpanIncluding(separators); // skip white space
     if (ct.GetLength())
-	ct = Mid(ct.GetLength());
+        ct = Mid(ct.GetLength());
     else
-	ct = (const char *) this[0];
+        ct = (const char *)this[0];
     ct = ct.SpanExcluding(separators);
     return (ct);
 }
@@ -71,9 +71,8 @@ CBSString CBSString::GetToken()
 CBSString CBSString::SkipSpace()
 {
     CBSString ct;
-    ct = SpanIncluding(separators);	// skip white space
+    ct = SpanIncluding(separators); // skip white space
     return (Right(GetLength() - ct.GetLength()));
-
 }
 
 CBSString CBSString::SkipToken()
@@ -88,13 +87,14 @@ CBSString CBSString::SkipToken()
 int CBSString::MatchToken(const char *list[])
 {
     int i = 0;
-    while (*list != NULL) {
-//              TRACE("MatchToken: <%s> <%s>\n", *list, (const char*)*this);
-	if (!strcmp((const char *) *list, (const char *) *this))
-//              if (this == *list)
-	    return (i);
-	list++;
-	i++;
+    while (*list != NULL)
+    {
+        //              TRACE("MatchToken: <%s> <%s>\n", *list, (const char*)*this);
+        if (!strcmp((const char *)*list, (const char *)*this))
+            //              if (this == *list)
+            return (i);
+        list++;
+        i++;
     }
     return (-1);
 }
@@ -112,7 +112,7 @@ COLORREF CBSString::ParseColor()
     cs = cs.SkipToken();
     ct = cs.GetToken();
     b = atoi(ct);
-//    TRACE("ParseColor: r/g/b = %d/%d/%d\n", r, g, b);
+    //    TRACE("ParseColor: r/g/b = %d/%d/%d\n", r, g, b);
     return (RGB(r, g, b));
 }
 

@@ -1,10 +1,10 @@
-/* 
+/*
  * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 /***************************************************************************\
@@ -27,32 +27,33 @@
 *  					*
 \***************************************************************************/
 
-#ifndef	_WINNET_H_
-#define	_WINNET_H_
+#ifndef _WINNET_H_
+#define _WINNET_H_
 
-#ifdef	_WINDOWS
+#ifdef _WINDOWS
 
 #include <winsock.h>
 
-#ifdef	__cplusplus
-extern "C" {
+#ifdef __cplusplus
+extern "C"
+{
 #endif
 
-#define	MAXHOSTNAMELEN	64
+#define MAXHOSTNAMELEN 64
 
-#define	EWOULDBLOCK		WSAEWOULDBLOCK
+#define EWOULDBLOCK WSAEWOULDBLOCK
 
-    extern long alarm(long seconds, void (__cdecl * func) (int));
+    extern long alarm(long seconds, void(__cdecl *func)(int));
 
     extern const char *_GetWSockErrText(int error);
     extern HWND notifyWnd;
     extern BOOL *hostnameFound;
 
-#define	WM_GETHOSTNAME	(WM_APP+100)
+#define WM_GETHOSTNAME (WM_APP + 100)
 
-#ifdef	__cplusplus
+#ifdef __cplusplus
 };
 #endif
-//extern        long    alarm(long seconds, int);
-#endif				/* _WINDOWS */
-#endif				/* _WINNET_H_ */
+// extern        long    alarm(long seconds, int);
+#endif /* _WINDOWS */
+#endif /* _WINNET_H_ */

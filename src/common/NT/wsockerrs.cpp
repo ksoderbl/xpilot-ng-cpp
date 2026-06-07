@@ -1,10 +1,10 @@
-/* 
+/*
  * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,13 +17,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 /***************************************************************************\
 *  wsockerrs.cpp - Translate winsock error numbers into text				*
-*  Copyright© 1996-1997 - BuckoSoft, Inc.									*
+*  Copyrightï¿½ 1996-1997 - BuckoSoft, Inc.									*
 *  Freely distributable.  No charge may be made for this or any derived		*
 *  works without the express written consent of BuckoSoft, Inc.				*
 *																			*
@@ -32,7 +32,8 @@
 \***************************************************************************/
 #include <winsock.h>
 
-struct Wsockerrs {
+struct Wsockerrs
+{
     int error;
     char *text;
 } Wsockerrs;
@@ -44,9 +45,9 @@ struct Wsockerrs wsockerrs[] = {
     WSAEINVAL, "WSAEINVAL",
     WSAEMFILE, "WSAEMFILE",
 
-/*
- * Windows Sockets definitions of regular Berkeley error constants
- */
+    /*
+     * Windows Sockets definitions of regular Berkeley error constants
+     */
     WSAEWOULDBLOCK, "WSAEWOULDBLOCK",
     WSAEINPROGRESS, "WSAEINPROGRESS",
     WSAEALREADY, "WSAEALREADY",
@@ -87,21 +88,20 @@ struct Wsockerrs wsockerrs[] = {
 
     WSAEDISCON, "WSAEDISCON",
 
-/*
- * Extended Windows Sockets error constant definitions
- */
+    /*
+     * Extended Windows Sockets error constant definitions
+     */
     WSASYSNOTREADY, "WSASYSNOTREADY",
     WSAVERNOTSUPPORTED, "WSAVERNOTSUPPORTED",
     WSANOTINITIALISED, "WSANOTINITIALISED",
 
-    -1, "UNKNOWN"
-};
+    -1, "UNKNOWN"};
 
 const char *GetWSockErrText(int error)
 {
     int i;
     for (i = 0; wsockerrs[i].error != -1; i++)
-	if (wsockerrs[i].error == error)
-	    break;
+        if (wsockerrs[i].error == error)
+            break;
     return (wsockerrs[i].text);
 }

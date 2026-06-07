@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #ifndef GUIMAP_H
@@ -30,7 +30,7 @@ void Gui_paint_cannon(int x, int y, int type);
 void Gui_paint_fuel(int x, int y, double fuel);
 void Gui_paint_base(int x, int y, int id, int team, int type);
 void Gui_paint_decor(int x, int y, int xi, int yi, int type,
-		     bool last, bool more_y);
+					 bool last, bool more_y);
 
 void Gui_paint_border(int x, int y, int xi, int yi);
 void Gui_paint_visible_border(int x, int y, int xi, int yi);

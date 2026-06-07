@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,14 +19,15 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #ifndef AUDIO_H
 #define AUDIO_H
 
-enum {
+enum
+{
     START_SOUND,
     FIRE_SHOT_SOUND,
     FIRE_TORPEDO_SOUND,
@@ -115,93 +116,93 @@ enum {
 
 #ifdef _CAUDIO_C_
 
-static const char    *soundNames[] =
-{
-    "start",
-    "fire_shot",
-    "fire_torpedo",
-    "fire_heat_shot",
-    "fire_smart_shot",
-    "player_explosion",
-    "player_hit_player",
-    "player_hit_cannon",
-    "player_hit_mine",
-    "player_eat_torpedo_shot",
-    "player_eat_heat_shot",
-    "player_eat_smart_shot",
-    "drop_mine",
-    "player_hit_wall",
-    "worm_hole",
-    "wideangle_shot_pickup",
-    "sensor_pack_pickup",
-    "back_shot_pickup",
-    "rocket_pack_pickup",
-    "cloaking_device_pickup",
-    "energy_pack_pickup",
-    "mine_pack_pickup",
-    "refuel",
-    "thrust",
-    "cloak",
-    "change_home",
-    "ecm_pickup",
-    "afterburner_pickup",
-    "tank_pickup",
-    "drop_moving_mine",
-    "mine_explosion",
-    "ecm",
-    "tank_detach",
-    "cannon_fire",
-    "player_shot_themself",
-    "declare_war",
-    "player_hit_cannonfire",
-    "object_explosion",
-    "player_eat_shot",
-    "transporter_pickup",
-    "transporter_success",
-    "transporter_fail",
-    "deflector_pickup",
-    "deflector",
-    "hyperjump_pickup",
-    "hyperjump",
-    "phasing_device_pickup",
-    "phasing_on",
-    "phasing_off",
-    "mirror_pickup",
-    "armor_pickup",
-    "nuke_launch",
-    "nuke_explosion",
-    "player_ran_over_player",
-    "laser_pickup",
-    "emergency_thrust_pickup",
-    "autopilot_pickup",
-    "tractor_beam_pickup",
-    "player_bounced",
-    "fire_laser",
-    "autopilot_on",
-    "autopilot_off",
-    "emergency_thrust_on",
-    "emergency_thrust_off",
-    "tractor_beam",
-    "pressor_beam",
-    "connect_ball",
-    "drop_ball",
-    "explode_ball",
-    "destroy_ball",
-    "destroy_target",
-    "team_win",
-    "team_draw",
-    "player_win",
-    "player_draw",
-    "player_roasted",
-    "player_eat_laser",
-    "emergency_shield_pickup",
-    "emergency_shield_on",
-    "emergency_shield_off",
-    "cannon_explosion",
-    "asteroid_hit",
-    "asteroid_break",
+static const char *soundNames[] =
+    {
+        "start",
+        "fire_shot",
+        "fire_torpedo",
+        "fire_heat_shot",
+        "fire_smart_shot",
+        "player_explosion",
+        "player_hit_player",
+        "player_hit_cannon",
+        "player_hit_mine",
+        "player_eat_torpedo_shot",
+        "player_eat_heat_shot",
+        "player_eat_smart_shot",
+        "drop_mine",
+        "player_hit_wall",
+        "worm_hole",
+        "wideangle_shot_pickup",
+        "sensor_pack_pickup",
+        "back_shot_pickup",
+        "rocket_pack_pickup",
+        "cloaking_device_pickup",
+        "energy_pack_pickup",
+        "mine_pack_pickup",
+        "refuel",
+        "thrust",
+        "cloak",
+        "change_home",
+        "ecm_pickup",
+        "afterburner_pickup",
+        "tank_pickup",
+        "drop_moving_mine",
+        "mine_explosion",
+        "ecm",
+        "tank_detach",
+        "cannon_fire",
+        "player_shot_themself",
+        "declare_war",
+        "player_hit_cannonfire",
+        "object_explosion",
+        "player_eat_shot",
+        "transporter_pickup",
+        "transporter_success",
+        "transporter_fail",
+        "deflector_pickup",
+        "deflector",
+        "hyperjump_pickup",
+        "hyperjump",
+        "phasing_device_pickup",
+        "phasing_on",
+        "phasing_off",
+        "mirror_pickup",
+        "armor_pickup",
+        "nuke_launch",
+        "nuke_explosion",
+        "player_ran_over_player",
+        "laser_pickup",
+        "emergency_thrust_pickup",
+        "autopilot_pickup",
+        "tractor_beam_pickup",
+        "player_bounced",
+        "fire_laser",
+        "autopilot_on",
+        "autopilot_off",
+        "emergency_thrust_on",
+        "emergency_thrust_off",
+        "tractor_beam",
+        "pressor_beam",
+        "connect_ball",
+        "drop_ball",
+        "explode_ball",
+        "destroy_ball",
+        "destroy_target",
+        "team_win",
+        "team_draw",
+        "player_win",
+        "player_draw",
+        "player_roasted",
+        "player_eat_laser",
+        "emergency_shield_pickup",
+        "emergency_shield_on",
+        "emergency_shield_off",
+        "cannon_explosion",
+        "asteroid_hit",
+        "asteroid_break",
 };
 
-#endif						/* _CAUDIO_C_ */
+#endif /* _CAUDIO_C_ */
 
-#endif						/* AUDIO_H */
+#endif /* AUDIO_H */

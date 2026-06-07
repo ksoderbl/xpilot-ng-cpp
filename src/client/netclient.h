@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,36 +19,38 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef	NETCLIENT_H
-#define	NETCLIENT_H
+#ifndef NETCLIENT_H
+#define NETCLIENT_H
 
 #ifndef TYPES_H
 /* need u_byte */
 #include "types.h"
 #endif
 
-#define MIN_RECEIVE_WINDOW_SIZE		1
-#define MAX_RECEIVE_WINDOW_SIZE		4
+#define MIN_RECEIVE_WINDOW_SIZE 1
+#define MAX_RECEIVE_WINDOW_SIZE 4
 
-#define MAX_SUPPORTED_FPS		255
+#define MAX_SUPPORTED_FPS 255
 
-typedef struct {
+typedef struct
+{
     int view_width;
     int view_height;
     int spark_rand;
     int num_spark_colors;
 } display_t;
 
-extern int	 receive_window_size;
-extern long	 last_loops;
-extern bool      packetMeasurement;
+extern int receive_window_size;
+extern long last_loops;
+extern bool packetMeasurement;
 extern display_t server_display; /* the servers idea about our display */
 
-typedef struct {
+typedef struct
+{
     int movement;
     double turnspeed;
     int id;

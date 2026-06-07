@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 /*
@@ -50,14 +50,14 @@ void Get_login_name(char *buf, size_t size)
 
     setpwent();
     if ((p = getpwuid(geteuid())) != NULL)
-	strlcpy(buf, p->pw_name, size);
+        strlcpy(buf, p->pw_name, size);
     else
-	strlcpy(buf, "nameless", size);
+        strlcpy(buf, "nameless", size);
     endpwent();
 #endif
 }
 
-int xpprintf(const char* fmt, ...)
+int xpprintf(const char *fmt, ...)
 {
     int result;
     va_list argp;
@@ -79,7 +79,6 @@ bool is_this_windows(void)
 #endif
 }
 
-
 /*
  * Round to nearest integer.
  */
@@ -93,20 +92,20 @@ double rint(double x)
 #ifdef NEED_GETTIMEOFDAY
 int gettimeofday(struct timeval *tv, struct timezone *tz)
 {
-    FILETIME        ft;
-    LARGE_INTEGER   li;
-    __int64         t;
-    static int      tzflag;
+    FILETIME ft;
+    LARGE_INTEGER li;
+    __int64 t;
+    static int tzflag;
 
     if (tv)
     {
         GetSystemTimeAsFileTime(&ft);
-        li.LowPart  = ft.dwLowDateTime;
+        li.LowPart = ft.dwLowDateTime;
         li.HighPart = ft.dwHighDateTime;
-        t  = li.QuadPart;       /* In 100-nanosecond intervals */
-        t -= EPOCHFILETIME;     /* Offset to the Epoch time */
-        t /= 10;                /* In microseconds */
-        tv->tv_sec  = (long)(t / 1000000);
+        t = li.QuadPart;    /* In 100-nanosecond intervals */
+        t -= EPOCHFILETIME; /* Offset to the Epoch time */
+        t /= 10;            /* In microseconds */
+        tv->tv_sec = (long)(t / 1000000);
         tv->tv_usec = (long)(t % 1000000);
     }
 
@@ -122,6 +121,5 @@ int gettimeofday(struct timeval *tv, struct timezone *tz)
     }
 
     return 0;
-
 }
 #endif

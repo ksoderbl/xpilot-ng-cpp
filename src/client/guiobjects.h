@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #ifndef GUIOBJECTS_H
@@ -42,7 +42,6 @@ void Gui_paint_asteroid(int x, int y, int type, int rot, int size);
 
 void Gui_paint_fastshot(int color, int x, int y);
 void Gui_paint_teamshot(int x, int y);
-
 
 void Gui_paint_missiles_begin(void);
 void Gui_paint_missiles_end(void);
@@ -69,9 +68,8 @@ void Gui_paint_ships_begin(void);
 void Gui_paint_ships_end(void);
 
 void Gui_paint_ship(int x, int y, int dir, int id, int cloak, int phased,
-		    int shield, int deflector, int eshield);
+					int shield, int deflector, int eshield);
 
 void Store_guiobject_options(void);
 
 #endif
-

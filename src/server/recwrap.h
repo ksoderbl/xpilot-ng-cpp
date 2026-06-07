@@ -1,7 +1,7 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
- * Copyright (C) 2000-2002 Uoti Urpala <uau@users.sourceforge.net>
+ * Copyright (C) 2000-2002 Uoti Urpala
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #ifndef RECWRAP_H
@@ -34,4 +34,4 @@ int Sockbuf_flushRec(sockbuf_t *sbuf);
 int Sockbuf_writeRec(sockbuf_t *sbuf, char *buf, int len);
 int Sockbuf_readRec(sockbuf_t *sbuf);
 
-#endif  /* RECWRAP_H */
+#endif /* RECWRAP_H */

@@ -1,14 +1,14 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
- * Copyright (C) 2003-2004 Kristian Söderblom <kps@users.sourceforge.net>
+ * Copyright (C) 2003-2004 Kristian SÃ¶derblom
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #ifndef XPSERVER_H
@@ -32,17 +32,17 @@
 #include "xpcommon.h"
 
 #ifdef HAVE_LIBEXPAT
-#  include <expat.h>
+#include <expat.h>
 #else
-#  error "Header expat.h missing. Please install expat."
+#error "Header expat.h missing. Please install expat."
 #endif
 
 #ifdef PLOCKSERVER
-#  ifdef HAVE_SYS_MMAN_H
-#    include <sys/mman.h>
-#  elif defined HAVE_SYS_LOCK_H
-#    include <sys/lock.h>
-#  endif
+#ifdef HAVE_SYS_MMAN_H
+#include <sys/mman.h>
+#elif defined HAVE_SYS_LOCK_H
+#include <sys/lock.h>
+#endif
 #endif
 
 #include "serverconst.h"

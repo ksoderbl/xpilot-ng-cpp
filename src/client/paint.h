@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,66 +19,65 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #ifndef PAINT_H
 #define PAINT_H
 
 #ifndef TYPES_H
-# include "types.h"
+#include "types.h"
 #endif
 #ifndef CLIENT_H
-# include "client.h"
+#include "client.h"
 #endif
 
 /* constants begin */
-#define MAX_COLORS		16	/* Max. switched colors ever */
-#define MAX_COLOR_LEN		32	/* Max. length of a color name */
+#define MAX_COLORS 16    /* Max. switched colors ever */
+#define MAX_COLOR_LEN 32 /* Max. length of a color name */
 
-#define MIN_HUD_SIZE		90	/* Size/2 of HUD lines */
-#define HUD_OFFSET		20	/* Hud line offset */
-#define FUEL_GAUGE_OFFSET	6
-#define HUD_FUEL_GAUGE_SIZE	(2*(MIN_HUD_SIZE-HUD_OFFSET-FUEL_GAUGE_OFFSET))
+#define MIN_HUD_SIZE 90 /* Size/2 of HUD lines */
+#define HUD_OFFSET 20   /* Hud line offset */
+#define FUEL_GAUGE_OFFSET 6
+#define HUD_FUEL_GAUGE_SIZE (2 * (MIN_HUD_SIZE - HUD_OFFSET - FUEL_GAUGE_OFFSET))
 
-#define WARNING_DISTANCE	(VISIBILITY_DISTANCE*0.8)
+#define WARNING_DISTANCE (VISIBILITY_DISTANCE * 0.8)
 
-#define TITLE_DELAY		500	/* Should probably change to seconds */
+#define TITLE_DELAY 500 /* Should probably change to seconds */
 
-#define DSIZE			4	/* Size of diamond (on radar) */
+#define DSIZE 4 /* Size of diamond (on radar) */
 /* constants end */
-
 
 /*
  * Global objects.
  */
 
-extern ipos_t	world;
-extern ipos_t	realWorld;
+extern ipos_t world;
+extern ipos_t realWorld;
 
-extern int	hudSize;		/* Size for HUD drawing */
-extern int	hudRadarDotSize;	/* Size for hudradar dot drawing */
-extern double	hudRadarScale;		/* Scale for hudradar drawing */
-extern double 	hudRadarLimit;		/* Limit for hudradar drawing */
+extern int hudSize;          /* Size for HUD drawing */
+extern int hudRadarDotSize;  /* Size for hudradar dot drawing */
+extern double hudRadarScale; /* Scale for hudradar drawing */
+extern double hudRadarLimit; /* Limit for hudradar drawing */
 
-extern unsigned	draw_width, draw_height;
+extern unsigned draw_width, draw_height;
 
-extern short	ext_view_width;		/* Width of extended visible area */
-extern short	ext_view_height;	/* Height of extended visible area */
-extern int	active_view_width;	/* Width of active map area displayed. */
-extern int	active_view_height;	/* Height of active map area displayed. */
-extern int	ext_view_x_offset;	/* Offset of ext_view_width */
-extern int	ext_view_y_offset;	/* Offset of ext_view_height */
-extern bool	markingLights;		/* Marking lights on ships */
+extern short ext_view_width;   /* Width of extended visible area */
+extern short ext_view_height;  /* Height of extended visible area */
+extern int active_view_width;  /* Width of active map area displayed. */
+extern int active_view_height; /* Height of active map area displayed. */
+extern int ext_view_x_offset;  /* Offset of ext_view_width */
+extern int ext_view_y_offset;  /* Offset of ext_view_height */
+extern bool markingLights;     /* Marking lights on ships */
 
-extern int	num_spark_colors;
+extern int num_spark_colors;
 
-extern long	loops;
-extern long	loopsSlow;
-extern double	timePerFrame;
+extern long loops;
+extern long loopsSlow;
+extern double timePerFrame;
 
-extern bool	players_exposed;
+extern bool players_exposed;
 
 static inline float WINSCALE_f(float x)
 {
@@ -97,32 +96,32 @@ static inline int WINSCALE(int x)
     float f = (float)0.0;
 
     if (x == 0)
-	return 0;
+        return 0;
 
-    if (t < 0) {
-	negative = true;
-	t = -t;
+    if (t < 0)
+    {
+        negative = true;
+        t = -t;
     }
 
     f = WINSCALE_f(t);
-    y = (int) (f + (float)0.5);
+    y = (int)(f + (float)0.5);
 
     if (y < 1)
-	y = 1;
+        y = 1;
 
     if (negative)
-	y = -y;
+        y = -y;
 
     return y;
 }
 
-#define	UWINSCALE(x)	((unsigned)WINSCALE(x))
+#define UWINSCALE(x) ((unsigned)WINSCALE(x))
 
-#define SCALEX(co) ((int) (WINSCALE(co) - WINSCALE(world.x)))
-#define SCALEY(co) ((int) (WINSCALE(world.y + ext_view_height) - WINSCALE(co)))
-#define X(co)	((int) ((co) - world.x))
-#define Y(co)	((int) (world.y + ext_view_height - (co)))
-
+#define SCALEX(co) ((int)(WINSCALE(co) - WINSCALE(world.x)))
+#define SCALEY(co) ((int)(WINSCALE(world.y + ext_view_height) - WINSCALE(co)))
+#define X(co) ((int)((co) - world.x))
+#define Y(co) ((int)(world.y + ext_view_height - (co)))
 
 /*
  * Prototypes from the paint*.c files.
@@ -149,7 +148,7 @@ void Paint_score_start(void);
 void Paint_score_objects(void);
 void Paint_meters(void);
 void Paint_HUD(void);
-int  Get_message(int *pos, char *message, int req_length, int key);
+int Get_message(int *pos, char *message, int req_length, int key);
 void Paint_messages(void);
 void Paint_recording(void);
 void Paint_HUD_values(void);

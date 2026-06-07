@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 /* This piece of code was provided by Greg Renda (greg@ncd.com). */
@@ -28,16 +28,16 @@
 #ifndef SAUDIO_H
 #define SAUDIO_H
 
-#define SDBG(x)	/*#x*/
+#define SDBG(x) /*#x*/
 
 #include "audio.h"
 
-int		sound_player_init(player_t *);
-void		sound_player_on(player_t *pl, int on);
-void		sound_play_player(player_t *, int);
-void		sound_play_all(int);
-void		sound_play_sensors(clpos_t, int);
-void		sound_play_queued(player_t * pl);
-void		sound_close(player_t * pl);
+int sound_player_init(player_t *);
+void sound_player_on(player_t *pl, int on);
+void sound_play_player(player_t *, int);
+void sound_play_all(int);
+void sound_play_sensors(clpos_t, int);
+void sound_play_queued(player_t *pl);
+void sound_close(player_t *pl);
 
-#endif						/* SAUDIO_H */
+#endif /* SAUDIO_H */

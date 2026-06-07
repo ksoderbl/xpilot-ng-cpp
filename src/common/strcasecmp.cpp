@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #include "xpcommon.h"
@@ -34,16 +34,17 @@
  */
 int strcasecmp(const char *str1, const char *str2)
 {
-    int	c1, c2;
+	int c1, c2;
 
-    do {
-	c1 = *str1++;
-	c2 = *str2++;
-	c1 = tolower(c1);
-	c2 = tolower(c2);
-    } while (c1 == c2 && c1 != 0);
+	do
+	{
+		c1 = *str1++;
+		c2 = *str2++;
+		c1 = tolower(c1);
+		c2 = tolower(c2);
+	} while (c1 == c2 && c1 != 0);
 
-    return (c1 - c2);
+	return (c1 - c2);
 }
 #endif
 
@@ -53,18 +54,18 @@ int strcasecmp(const char *str1, const char *str2)
  */
 int strncasecmp(const char *str1, const char *str2, size_t n)
 {
-    int	c1, c2;
+	int c1, c2;
 
-    do {
-	if (n-- <= 0)
-	    return 0;
-	c1 = *str1++;
-	c2 = *str2++;
-	c1 = tolower(c1);
-	c2 = tolower(c2);
-    } while (c1 == c2 && c1 != 0);
+	do
+	{
+		if (n-- <= 0)
+			return 0;
+		c1 = *str1++;
+		c2 = *str2++;
+		c1 = tolower(c1);
+		c2 = tolower(c2);
+	} while (c1 == c2 && c1 != 0);
 
-    return (c1 - c2);
+	return (c1 - c2);
 }
 #endif
-

@@ -1,14 +1,14 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
- * Copyright (C) 2000-2004 Uoti Urpala <uau@users.sourceforge.net>
+ * Copyright (C) 2000-2004 Uoti Urpala
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,16 +21,16 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef	PACK_H
-#define	PACK_H
+#ifndef PACK_H
+#define PACK_H
 
-#define CAP_LETTER(c)	((c) = ((c)>='a' && (c)<='z') ? (c)-'a'+'A' : (c))
+#define CAP_LETTER(c) ((c) = ((c) >= 'a' && (c) <= 'z') ? (c) - 'a' + 'A' : (c))
 
-#define SERVER_PORT	15345		/* Port which server listens to. */
+#define SERVER_PORT 15345 /* Port which server listens to. */
 
 /*
  * Magic contact word.
@@ -111,85 +111,85 @@
  * 4.F.1.4: balls use polygon styles
  * 4.F.1.5: Possibility to change polygon styles.
  */
-#define MAGIC_WORD		0xF4ED
-#define POLYGON_VERSION		0x4F15
-#define OLD_VERSION		0x4501
+#define MAGIC_WORD 0xF4ED
+#define POLYGON_VERSION 0x4F15
+#define OLD_VERSION 0x4501
 #ifdef SERVER
-#define	MAGIC (is_polygon_map \
-               ? VERSION2MAGIC(POLYGON_VERSION) \
-               : VERSION2MAGIC(OLD_VERSION))
+#define MAGIC (is_polygon_map                       \
+                   ? VERSION2MAGIC(POLYGON_VERSION) \
+                   : VERSION2MAGIC(OLD_VERSION))
 #else
-#define	MAGIC (VERSION2MAGIC(protocolVersion))
+#define MAGIC (VERSION2MAGIC(protocolVersion))
 #endif
 
-#define MAGIC2VERSION(M)	(((M) >> 16) & 0xFFFF)
-#define VERSION2MAGIC(V)	((((V) & 0xFFFF) << 16) | MAGIC_WORD)
-#define MY_VERSION		MAGIC2VERSION(MAGIC)
+#define MAGIC2VERSION(M) (((M) >> 16) & 0xFFFF)
+#define VERSION2MAGIC(V) ((((V) & 0xFFFF) << 16) | MAGIC_WORD)
+#define MY_VERSION MAGIC2VERSION(MAGIC)
 
 /*
  * Which client versions can join this server.
  */
 #ifdef SERVER
-#define MIN_CLIENT_VERSION	0x4203
-#define MAX_CLIENT_VERSION	MY_VERSION
+#define MIN_CLIENT_VERSION 0x4203
+#define MAX_CLIENT_VERSION MY_VERSION
 #endif
 
 /*
  * Which server versions can this client join.
  */
-#define MIN_SERVER_VERSION	0x4F09
-#define MAX_SERVER_VERSION	MY_VERSION
+#define MIN_SERVER_VERSION 0x4F09
+#define MAX_SERVER_VERSION MY_VERSION
 
 /*
  * We want to keep support for servers using the old map format in the client,
  * but make incompatible changes while developing the new format. Therefore
  * there is a separate "old" range of allowed servers.
  */
-#define MIN_OLD_SERVER_VERSION  0x4203
-#define MAX_OLD_SERVER_VERSION  0x4501
+#define MIN_OLD_SERVER_VERSION 0x4203
+#define MAX_OLD_SERVER_VERSION 0x4501
 /* Which old-style (non-polygon) protocol version we support. */
 #define COMPATIBILITY_MAGIC 0x4501F4ED
 
-#define	MAX_STR_LEN		4096
-#define	MAX_DISP_LEN		80
-#define	MAX_NAME_LEN		16
-#define	MAX_HOST_LEN		64
+#define MAX_STR_LEN 4096
+#define MAX_DISP_LEN 80
+#define MAX_NAME_LEN 16
+#define MAX_HOST_LEN 64
 
 /*
  * Different contact pack types.
  */
-#define	ENTER_GAME_pack		0x00
-#define	ENTER_QUEUE_pack	0x01
-#define	REPLY_pack		0x10
-#define	REPORT_STATUS_pack	0x21
-#define	OPTION_LIST_pack	0x28
+#define ENTER_GAME_pack 0x00
+#define ENTER_QUEUE_pack 0x01
+#define REPLY_pack 0x10
+#define REPORT_STATUS_pack 0x21
+#define OPTION_LIST_pack 0x28
 /*#define	CORE_pack		0x30*/
-#define	CONTACT_pack		0x31
+#define CONTACT_pack 0x31
 /* The owner-only commands have a common bit high. */
-#define PRIVILEGE_PACK_MASK	0x40
-#define	LOCK_GAME_pack		0x62
-#define	MESSAGE_pack		0x63
-#define	SHUTDOWN_pack		0x64
-#define	KICK_PLAYER_pack	0x65
+#define PRIVILEGE_PACK_MASK 0x40
+#define LOCK_GAME_pack 0x62
+#define MESSAGE_pack 0x63
+#define SHUTDOWN_pack 0x64
+#define KICK_PLAYER_pack 0x65
 /*#define	MAX_ROBOT_pack		0x66*/
-#define	OPTION_TUNE_pack	0x67
-#define	CREDENTIALS_pack	0x69
+#define OPTION_TUNE_pack 0x67
+#define CREDENTIALS_pack 0x69
 
 /*
  * Possible error codes returned.
  */
-#define	SUCCESS		0x00		/* Operation successful */
-#define	E_NOT_OWNER	0x01		/* Permission denied, not owner */
-#define	E_GAME_FULL	0x02		/* Game is full, play denied */
-#define	E_TEAM_FULL	0x03		/* Team is full, play denied */
-#define	E_TEAM_NOT_SET	0x04		/* Need to specify a team */
-#define	E_GAME_LOCKED	0x05		/* Game is locked, entry denied */
-#define	E_NOT_FOUND	0x07		/* Player was not found */
-#define	E_IN_USE	0x08		/* Name is already in use */
-#define	E_SOCKET	0x09		/* Can't setup socket */
-#define	E_INVAL		0x0A		/* Invalid input parameters */
-#define	E_VERSION	0x0C		/* Incompatible version */
-#define	E_NOENT		0x0D		/* No such variable */
-#define	E_UNDEFINED	0x0E		/* Operation undefined */
+#define SUCCESS 0x00        /* Operation successful */
+#define E_NOT_OWNER 0x01    /* Permission denied, not owner */
+#define E_GAME_FULL 0x02    /* Game is full, play denied */
+#define E_TEAM_FULL 0x03    /* Team is full, play denied */
+#define E_TEAM_NOT_SET 0x04 /* Need to specify a team */
+#define E_GAME_LOCKED 0x05  /* Game is locked, entry denied */
+#define E_NOT_FOUND 0x07    /* Player was not found */
+#define E_IN_USE 0x08       /* Name is already in use */
+#define E_SOCKET 0x09       /* Can't setup socket */
+#define E_INVAL 0x0A        /* Invalid input parameters */
+#define E_VERSION 0x0C      /* Incompatible version */
+#define E_NOENT 0x0D        /* No such variable */
+#define E_UNDEFINED 0x0E    /* Operation undefined */
 
 #endif

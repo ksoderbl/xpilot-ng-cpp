@@ -1,12 +1,12 @@
 /*
- * XPilot NG, a multiplayer space war game. 
+ * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,14 +19,17 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #include "xpclient_x11.h"
 
 /* this gets rid of missing initializer warnings */
-#define XP_PIXMAP_INITIALIZER(f, c) { f,c,0,0,0,false,NULL,{0,0,0,NULL,NULL} }
+#define XP_PIXMAP_INITIALIZER(f, c)                         \
+    {                                                       \
+        f, c, 0, 0, 0, false, NULL, { 0, 0, 0, NULL, NULL } \
+    }
 
 xp_pixmap_t object_pixmaps[] = {
     XP_PIXMAP_INITIALIZER("holder1.ppm", 1),
@@ -73,17 +76,15 @@ xp_pixmap_t object_pixmaps[] = {
     XP_PIXMAP_INITIALIZER("checkpoint.ppm", -2),
     XP_PIXMAP_INITIALIZER("meter.ppm", -2),
     XP_PIXMAP_INITIALIZER("asteroidconcentrator.ppm", 32),
-    XP_PIXMAP_INITIALIZER("ball_gray16.ppm", -16)
-};
+    XP_PIXMAP_INITIALIZER("ball_gray16.ppm", -16)};
 
 xp_pixmap_t *pixmaps = 0;
 int num_pixmaps = 0, max_pixmaps = 0;
 
-
 static int Bitmap_init(int img);
-static void Bitmap_picture_copy(xp_pixmap_t * xp_pixmap, int image);
-static void Bitmap_picture_scale(xp_pixmap_t * xp_pixmap, int image);
-static int Bitmap_create_begin(Drawable d, xp_pixmap_t * pm, int bmp);
+static void Bitmap_picture_copy(xp_pixmap_t *xp_pixmap, int image);
+static void Bitmap_picture_scale(xp_pixmap_t *xp_pixmap, int image);
+static int Bitmap_create_begin(Drawable d, xp_pixmap_t *pm, int bmp);
 static int Bitmap_create_end(Drawable d);
 static void Bitmap_set_pixel(xp_pixmap_t *, int, int, int, RGB_COLOR);
 
@@ -95,12 +96,12 @@ int Bitmaps_init(void)
     int i;
     xp_pixmap_t pixmap;
 
-    for (i = 0; i < NUM_OBJECT_BITMAPS; i++) {
-	pixmap = object_pixmaps[i];
-	pixmap.scalable = (i == BM_LOGO
-			   || i == BM_SCORE_BG) ? false : true;
-	pixmap.state = BMS_UNINITIALIZED;
-	STORE(xp_pixmap_t, pixmaps, num_pixmaps, max_pixmaps, pixmap);
+    for (i = 0; i < NUM_OBJECT_BITMAPS; i++)
+    {
+        pixmap = object_pixmaps[i];
+        pixmap.scalable = (i == BM_LOGO || i == BM_SCORE_BG) ? false : true;
+        pixmap.state = BMS_UNINITIALIZED;
+        STORE(xp_pixmap_t, pixmaps, num_pixmaps, max_pixmaps, pixmap);
     }
 
     return 0;
@@ -109,10 +110,9 @@ int Bitmaps_init(void)
 void Bitmaps_cleanup(void)
 {
     if (pixmaps)
-	free(pixmaps);
+        free(pixmaps);
     pixmaps = 0;
 }
-
 
 /**
  * Adds a new bitmap needed by the current map into global pixmaps.
@@ -130,7 +130,6 @@ int Bitmap_add(const char *filename, int count, bool scalable)
     return num_pixmaps - 1;
 }
 
-
 /**
  * Creates the Pixmaps needed for the given image.
  */
@@ -140,39 +139,43 @@ int Bitmap_create(Drawable d, int img)
     xp_pixmap_t *pix = &pixmaps[img];
 
     if (pix->state == BMS_UNINITIALIZED)
-	Bitmap_init(img);
+        Bitmap_init(img);
     if (pix->state != BMS_INITIALIZED)
-	return -1;
+        return -1;
 
+    for (j = 0; j < ABS(pix->count); j++)
+    {
+        if (pix->scalable)
+        {
+            pix->width = UWINSCALE(pix->picture.width);
+            pix->height = UWINSCALE(pix->picture.height);
+        }
 
-    for (j = 0; j < ABS(pix->count); j++) {
-	if (pix->scalable) {
-	    pix->width = UWINSCALE(pix->picture.width);
-	    pix->height = UWINSCALE(pix->picture.height);
-	}
+        if (Bitmap_create_begin(d, pix, j) == -1)
+        {
+            pix->state = BMS_ERROR;
+            return -1;
+        }
 
-	if (Bitmap_create_begin(d, pix, j) == -1) {
-	    pix->state = BMS_ERROR;
-	    return -1;
-	}
+        if (pix->height == pix->picture.height &&
+            pix->width == pix->picture.width)
+        {
+            Bitmap_picture_copy(pix, j);
+        }
+        else
+            Bitmap_picture_scale(pix, j);
 
-	if (pix->height == pix->picture.height &&
-	    pix->width == pix->picture.width) {
-	    Bitmap_picture_copy(pix, j);
-	} else
-	    Bitmap_picture_scale(pix, j);
-
-	if (Bitmap_create_end(d) == -1) {
-	    pix->state = BMS_ERROR;
-	    return -1;
-	}
+        if (Bitmap_create_end(d) == -1)
+        {
+            pix->state = BMS_ERROR;
+            return -1;
+        }
     }
 
     pix->state = BMS_READY;
 
     return 0;
 }
-
 
 /**
  * Causes all scalable bitmaps to be rescaled (recreated actually)
@@ -188,10 +191,9 @@ void Bitmap_update_scale(void)
 
     int i;
     for (i = 0; i < num_pixmaps; i++)
-	if (pixmaps[i].state == BMS_READY && pixmaps[i].scalable)
-	    pixmaps[i].state = BMS_INITIALIZED;
+        if (pixmaps[i].state == BMS_READY && pixmaps[i].scalable)
+            pixmaps[i].state = BMS_INITIALIZED;
 }
-
 
 /**
  * Gets a pointer to the bitmap specified with img and bmp.
@@ -202,11 +204,12 @@ void Bitmap_update_scale(void)
 xp_bitmap_t *Bitmap_get(Drawable d, int img, int bmp)
 {
     if (!fullColor || img < 0 || img >= num_pixmaps)
-	return NULL;
+        return NULL;
 
-    if (pixmaps[img].state != BMS_READY) {
-	if (Bitmap_create(d, img) == -1)
-	    return NULL;
+    if (pixmaps[img].state != BMS_READY)
+    {
+        if (Bitmap_create(d, img) == -1)
+            return NULL;
     }
 
     return &pixmaps[img].bitmaps[bmp];
@@ -217,44 +220,45 @@ static void Bitmap_blend_with_color(int img, int bmp, int rgb)
     int x, y, r, g, b, r2, g2, b2;
     bool scaled;
     RGB_COLOR color;
-    double x_scaled = 0.0, y_scaled  = 0.0, dx_scaled  = 0.0, dy_scaled = 0.0;
+    double x_scaled = 0.0, y_scaled = 0.0, dx_scaled = 0.0, dy_scaled = 0.0;
     xp_pixmap_t *pix = &pixmaps[img];
 
     pix->bitmaps[bmp].rgb = rgb;
     scaled = pix->height != pix->picture.height ||
-	pix->width != pix->picture.width;
+             pix->width != pix->picture.width;
 
-    if (scaled) {
-	dx_scaled = ((double)pix->picture.width) / pix->width;
-	dy_scaled = ((double)pix->picture.height) / pix->height;
-	y_scaled = 0;
+    if (scaled)
+    {
+        dx_scaled = ((double)pix->picture.width) / pix->width;
+        dy_scaled = ((double)pix->picture.height) / pix->height;
+        y_scaled = 0;
     }
 
     r2 = (rgb >> 16) & 0xff;
     g2 = (rgb >> 8) & 0xff;
     b2 = rgb & 0xff;
-    
-    for (y = 0; y < (int)pix->height; y++) {
-	if (scaled)
-	    x_scaled = 0;
-	for (x = 0; x < (int)pix->width; x++) {
-	    color = scaled ?
-		Picture_get_pixel_area(&(pix->picture), bmp,
-				       x_scaled, y_scaled,
-				       dx_scaled, dy_scaled) :
-		Picture_get_pixel(&(pix->picture), bmp, x, y);
-	    r = RED_VALUE(color) * r2 / 0xff;
-	    g = GREEN_VALUE(color) * g2 / 0xff;
-	    b = BLUE_VALUE(color) * b2 / 0xff;
-	    Bitmap_set_pixel(pix, bmp, x, y, RGB24(r, g, b));
-	    if (scaled)
-		x_scaled += dx_scaled;
-	}
-	if (scaled)
-	    y_scaled += dy_scaled;
-    }    
-}
 
+    for (y = 0; y < (int)pix->height; y++)
+    {
+        if (scaled)
+            x_scaled = 0;
+        for (x = 0; x < (int)pix->width; x++)
+        {
+            color = scaled ? Picture_get_pixel_area(&(pix->picture), bmp,
+                                                    x_scaled, y_scaled,
+                                                    dx_scaled, dy_scaled)
+                           : Picture_get_pixel(&(pix->picture), bmp, x, y);
+            r = RED_VALUE(color) * r2 / 0xff;
+            g = GREEN_VALUE(color) * g2 / 0xff;
+            b = BLUE_VALUE(color) * b2 / 0xff;
+            Bitmap_set_pixel(pix, bmp, x, y, RGB24(r, g, b));
+            if (scaled)
+                x_scaled += dx_scaled;
+        }
+        if (scaled)
+            y_scaled += dy_scaled;
+    }
+}
 
 /**
  * Gets a pointer to the bitmap of img blended with color rgb.
@@ -267,26 +271,28 @@ xp_bitmap_t *Bitmap_get_blended(Drawable d, int img, int rgb)
     int i;
 
     if (!fullColor || img < 0 || img >= num_pixmaps)
-	return NULL;
+        return NULL;
 
-    if (pixmaps[img].state != BMS_READY) {
-	if (Bitmap_create(d, img) == -1)
-	    return NULL;
+    if (pixmaps[img].state != BMS_READY)
+    {
+        if (Bitmap_create(d, img) == -1)
+            return NULL;
     }
 
-    for (i = 0; i < ABS(pixmaps[img].count); i++) {
-	if (pixmaps[img].bitmaps[i].rgb == rgb)
-	    return &pixmaps[img].bitmaps[i];
-	if (pixmaps[img].bitmaps[i].rgb == -1) {
-	    Bitmap_blend_with_color(img, i, rgb);
-	    return &pixmaps[img].bitmaps[i];
-	}
+    for (i = 0; i < ABS(pixmaps[img].count); i++)
+    {
+        if (pixmaps[img].bitmaps[i].rgb == rgb)
+            return &pixmaps[img].bitmaps[i];
+        if (pixmaps[img].bitmaps[i].rgb == -1)
+        {
+            Bitmap_blend_with_color(img, i, rgb);
+            return &pixmaps[img].bitmaps[i];
+        }
     }
 
     /* fall back on the first bitmap */
     return &pixmaps[img].bitmaps[0];
 }
-
 
 /**
  * Loads and initializes the given image.
@@ -297,21 +303,24 @@ static int Bitmap_init(int img)
 
     count = ABS(pixmaps[img].count);
 
-    if (!(pixmaps[img].bitmaps = XMALLOC(xp_bitmap_t, count))) {
-	error("not enough memory for bitmaps");
-	pixmaps[img].state = BMS_ERROR;
-	return -1;
+    if (!(pixmaps[img].bitmaps = XMALLOC(xp_bitmap_t, count)))
+    {
+        error("not enough memory for bitmaps");
+        pixmaps[img].state = BMS_ERROR;
+        return -1;
     }
 
-    for (j = 0; j < count; j++) {
-	pixmaps[img].bitmaps[j].bitmap =
-	    pixmaps[img].bitmaps[j].mask = None;
-	pixmaps[img].bitmaps[j].rgb = -1;
+    for (j = 0; j < count; j++)
+    {
+        pixmaps[img].bitmaps[j].bitmap =
+            pixmaps[img].bitmaps[j].mask = None;
+        pixmaps[img].bitmaps[j].rgb = -1;
     }
 
-    if (Picture_init (&pixmaps[img].picture, pixmaps[img].filename, pixmaps[img].count) == -1) {
-	pixmaps[img].state = BMS_ERROR;
-	return -1;
+    if (Picture_init(&pixmaps[img].picture, pixmaps[img].filename, pixmaps[img].count) == -1)
+    {
+        pixmaps[img].state = BMS_ERROR;
+        return -1;
     }
 
     pixmaps[img].width = pixmaps[img].picture.width;
@@ -321,7 +330,6 @@ static int Bitmap_init(int img)
     return 0;
 }
 
-
 /*
  * Purpose: Take a device independent picture and create a
  * device/os dependent image.
@@ -330,22 +338,23 @@ static int Bitmap_init(int img)
  * Actually this function could be killed, but it's very fast
  * and it uses the intended original image.
  */
-static void Bitmap_picture_copy(xp_pixmap_t * xp_pixmap, int image)
+static void Bitmap_picture_copy(xp_pixmap_t *xp_pixmap, int image)
 {
     int x, y;
     RGB_COLOR color;
 
-    for (y = 0; y < (int)xp_pixmap->height; y++) {
-	for (x = 0; x < (int)xp_pixmap->width; x++) {
-	    color = Picture_get_pixel(&(xp_pixmap->picture), image, x, y);
-	    Bitmap_set_pixel(xp_pixmap, image, x, y, color);
-	}
+    for (y = 0; y < (int)xp_pixmap->height; y++)
+    {
+        for (x = 0; x < (int)xp_pixmap->width; x++)
+        {
+            color = Picture_get_pixel(&(xp_pixmap->picture), image, x, y);
+            Bitmap_set_pixel(xp_pixmap, image, x, y, color);
+        }
     }
 
     /* copy bounding box from original picture. */
     xp_pixmap->bitmaps[image].bbox = xp_pixmap->picture.bbox[image];
 }
-
 
 /*
  * Purpose: Take a device independent picture and create a
@@ -355,7 +364,7 @@ static void Bitmap_picture_copy(xp_pixmap_t * xp_pixmap, int image)
  * to find the area it responds to in the original image, and then
  * find an average of the colors in this area.
  */
-static void Bitmap_picture_scale(xp_pixmap_t * xp_pixmap, int image)
+static void Bitmap_picture_scale(xp_pixmap_t *xp_pixmap, int image)
 {
     int x, y;
     RGB_COLOR color;
@@ -373,34 +382,34 @@ static void Bitmap_picture_scale(xp_pixmap_t * xp_pixmap, int image)
     dy_scaled = orig_height / height;
     y_scaled = 0;
 
-    for (y = 0; y < height; y++) {
-	x_scaled = 0;
-	for (x = 0; x < width; x++) {
-	    color =
-		Picture_get_pixel_area
-		(&(xp_pixmap->picture), image,
-		 x_scaled, y_scaled, dx_scaled, dy_scaled);
+    for (y = 0; y < height; y++)
+    {
+        x_scaled = 0;
+        for (x = 0; x < width; x++)
+        {
+            color =
+                Picture_get_pixel_area(&(xp_pixmap->picture), image,
+                                       x_scaled, y_scaled, dx_scaled, dy_scaled);
 
-	    Bitmap_set_pixel(xp_pixmap, image, x, y, color);
-	    x_scaled += dx_scaled;
-	}
-	y_scaled += dy_scaled;
+            Bitmap_set_pixel(xp_pixmap, image, x, y, color);
+            x_scaled += dx_scaled;
+        }
+        y_scaled += dy_scaled;
     }
 
     /* scale bounding box as well. */
     {
-	bbox_t *src = &xp_pixmap->picture.bbox[image];
-	bbox_t *dst = &xp_pixmap->bitmaps[image].bbox;
+        bbox_t *src = &xp_pixmap->picture.bbox[image];
+        bbox_t *dst = &xp_pixmap->bitmaps[image].bbox;
 
-	dst->xmin = (int) ((width * src->xmin) / orig_width);
-	dst->ymin = (int) ((height * src->ymin) / orig_height);
-	dst->xmax = (int) (((width * src->xmax) + (orig_width - 1)) /
-			   orig_width);
-	dst->ymax = (int) (((height * src->ymax) + (orig_height - 1)) /
-			   orig_height);
+        dst->xmin = (int)((width * src->xmin) / orig_width);
+        dst->ymin = (int)((height * src->ymin) / orig_height);
+        dst->xmax = (int)(((width * src->xmax) + (orig_width - 1)) /
+                          orig_width);
+        dst->ymax = (int)(((height * src->ymax) + (orig_height - 1)) /
+                          orig_height);
     }
 }
-
 
 /*
  * Purpose: Paint a the bitmap specified with img and bmp
@@ -414,7 +423,7 @@ void Bitmap_paint(Drawable d, int img, int x, int y, int bmp)
     irec_t area;
 
     if ((bit = Bitmap_get(d, img, bmp)) == NULL)
-	return;
+        return;
     box = &bit->bbox;
 
     area.x = box->xmin;
@@ -436,7 +445,7 @@ void Bitmap_paint_blended(Drawable d, int img, int x, int y, int rgb)
     irec_t area;
 
     if ((bit = Bitmap_get_blended(d, img, rgb)) == NULL)
-	return;
+        return;
     box = &bit->bbox;
 
     area.x = box->xmin;
@@ -447,57 +456,60 @@ void Bitmap_paint_blended(Drawable d, int img, int x, int y, int rgb)
     Bitmap_paint_area(d, bit, x + area.x, y + area.y, &area);
 }
 
-
 /*
  * Maybe move this part to a sperate file.
  */
 
-extern unsigned long (*RGB) (int r, int g, int b);
+extern unsigned long (*RGB)(int r, int g, int b);
 static GC maskGC;
-
 
 /**
  * Allocates and prepares a pixmap for drawing in a platform
  * dependent (UNIX) way.
  */
-static int Bitmap_create_begin(Drawable d, xp_pixmap_t * pm, int bmp)
+static int Bitmap_create_begin(Drawable d, xp_pixmap_t *pm, int bmp)
 {
     Drawable pixmap;
 
-    if (pm->bitmaps[bmp].bitmap) {
-	XFreePixmap(dpy, pm->bitmaps[bmp].bitmap);
-	pm->bitmaps[bmp].bitmap = None;
+    if (pm->bitmaps[bmp].bitmap)
+    {
+        XFreePixmap(dpy, pm->bitmaps[bmp].bitmap);
+        pm->bitmaps[bmp].bitmap = None;
     }
-    if (pm->bitmaps[bmp].mask) {
-	XFreePixmap(dpy, pm->bitmaps[bmp].mask);
-	pm->bitmaps[bmp].mask = None;
+    if (pm->bitmaps[bmp].mask)
+    {
+        XFreePixmap(dpy, pm->bitmaps[bmp].mask);
+        pm->bitmaps[bmp].mask = None;
     }
 
-    if (!(pixmap = XCreatePixmap(dpy, d, pm->width, pm->height, dispDepth))) {
-	error("Could not create pixmap");
-	return -1;
+    if (!(pixmap = XCreatePixmap(dpy, d, pm->width, pm->height, dispDepth)))
+    {
+        error("Could not create pixmap");
+        return -1;
     }
     pm->bitmaps[bmp].bitmap = pixmap;
 
-    if (!(pixmap = XCreatePixmap(dpy, d, pm->width, pm->height, 1))) {
-	error("Could not create mask pixmap");
-	return -1;
+    if (!(pixmap = XCreatePixmap(dpy, d, pm->width, pm->height, 1)))
+    {
+        error("Could not create mask pixmap");
+        return -1;
     }
     pm->bitmaps[bmp].mask = pixmap;
 
-    if (!maskGC) {
-	XGCValues xgc;
-	unsigned long values;
+    if (!maskGC)
+    {
+        XGCValues xgc;
+        unsigned long values;
 
-	xgc.line_width = 0;
-	xgc.line_style = LineSolid;
-	xgc.cap_style = CapButt;
-	xgc.join_style = JoinMiter;
-	xgc.graphics_exposures = False;
-	values =
-	    GCLineWidth | GCLineStyle | GCCapStyle | GCJoinStyle |
-	    GCGraphicsExposures;
-	maskGC = XCreateGC(dpy, pixmap, values, &xgc);
+        xgc.line_width = 0;
+        xgc.line_style = LineSolid;
+        xgc.cap_style = CapButt;
+        xgc.join_style = JoinMiter;
+        xgc.graphics_exposures = False;
+        values =
+            GCLineWidth | GCLineStyle | GCCapStyle | GCJoinStyle |
+            GCGraphicsExposures;
+        maskGC = XCreateGC(dpy, pixmap, values, &xgc);
     }
 
     return 0;
@@ -512,12 +524,11 @@ static int Bitmap_create_end(Drawable d)
     return 0;
 }
 
-
 /*
  * Purpose: set 1 pixel in the device/OS dependent bitmap.
  */
-static void Bitmap_set_pixel(xp_pixmap_t * xp_pixmap,
-			     int bmp, int x, int y, RGB_COLOR color)
+static void Bitmap_set_pixel(xp_pixmap_t *xp_pixmap,
+                             int bmp, int x, int y, RGB_COLOR color)
 {
     unsigned long pixel;
     int r, g, b;
@@ -525,7 +536,7 @@ static void Bitmap_set_pixel(xp_pixmap_t * xp_pixmap,
     r = RED_VALUE(color);
     g = GREEN_VALUE(color);
     b = BLUE_VALUE(color);
-    pixel = (RGB) (r, g, b);
+    pixel = (RGB)(r, g, b);
     SET_FG(pixel);
     XDrawPoint(dpy, xp_pixmap->bitmaps[bmp].bitmap, gameGC, x, y);
 
@@ -534,16 +545,15 @@ static void Bitmap_set_pixel(xp_pixmap_t * xp_pixmap,
     XDrawPoint(dpy, xp_pixmap->bitmaps[bmp].mask, maskGC, x, y);
 }
 
-
 /**
  * Purpose: Paint an area r of xp_bitmap bit in a device dependent manner.
  */
-void Bitmap_paint_area(Drawable d, xp_bitmap_t * bit, int x, int y,
-		       irec_t * r)
+void Bitmap_paint_area(Drawable d, xp_bitmap_t *bit, int x, int y,
+                       irec_t *r)
 {
     XSetClipOrigin(dpy, gameGC, x - r->x, y - r->y);
     XSetClipMask(dpy, gameGC, bit->mask);
     XCopyArea(dpy, bit->bitmap, d, gameGC, r->x, r->y,
-	      (unsigned)r->w, (unsigned)r->h, x, y);
+              (unsigned)r->w, (unsigned)r->h, x, y);
     XSetClipMask(dpy, gameGC, None);
 }

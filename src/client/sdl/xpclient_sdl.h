@@ -1,7 +1,7 @@
 /*
  * XPilotNG/SDL, an SDL/OpenGL XPilot client.
  *
- * Copyright (C) 2003-2004 Juha Lindström <juhal@users.sourceforge.net>
+ * Copyright (C) 2003-2004 Juha LindstrÃ¶m
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #ifndef XPCLIENT_SDL_H
@@ -23,40 +23,40 @@
 
 #include "xpclient.h"
 #ifdef _WINDOWS
-# include <windows.h>
+#include <windows.h>
 #endif
 
 /* determine if we use usual style including */
 #ifndef MACOSX_FRAMEWORKS
-# define USUAL_SDL_INCLUDE_CONVENTION 1
+#define USUAL_SDL_INCLUDE_CONVENTION 1
 #endif
 
 #ifdef USUAL_SDL_INCLUDE_CONVENTION
-# include <GL/gl.h>
-# include <GL/glu.h>
-# include "SDL.h"
-# include "SDL_events.h"
-# include "SDL_video.h"
-# include "SDL_version.h"
-# include "SDL_syswm.h"
-# ifdef HAVE_SDL_IMAGE
-#  include "SDL_image.h"
-# endif
-# include "SDL_ttf.h"
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include "SDL.h"
+#include "SDL_events.h"
+#include "SDL_video.h"
+#include "SDL_version.h"
+#include "SDL_syswm.h"
+#ifdef HAVE_SDL_IMAGE
+#include "SDL_image.h"
+#endif
+#include "SDL_ttf.h"
 #endif
 
 #ifdef MACOSX_FRAMEWORKS
-# include <OpenGL/gl.h>
-# include <OpenGL/glu.h>
-# include <SDL/SDL.h>
-# include <SDL/SDL_events.h>
-# include <SDL/SDL_video.h>
-# include <SDL/SDL_version.h>
-# include <SDL/SDL_syswm.h>
-# ifdef HAVE_SDL_IMAGE
-#  include <SDL_image/SDL_image.h>
-# endif
-# include <SDL_ttf/SDL_ttf.h>
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#include <SDL/SDL.h>
+#include <SDL/SDL_events.h>
+#include <SDL/SDL_video.h>
+#include <SDL/SDL_version.h>
+#include <SDL/SDL_syswm.h>
+#ifdef HAVE_SDL_IMAGE
+#include <SDL_image/SDL_image.h>
+#endif
+#include <SDL_ttf/SDL_ttf.h>
 #endif
 
 #if SDL_BYTEORDER == SDL_BIG_ENDIAN

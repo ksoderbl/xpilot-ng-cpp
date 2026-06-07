@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,12 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef	SHIPSHAPE_H
-#define	SHIPSHAPE_H
+#ifndef SHIPSHAPE_H
+#define SHIPSHAPE_H
 
 #ifndef TYPES_H
 /* need position */
@@ -33,60 +33,61 @@
 #endif
 
 #ifndef CLICK_H
-# include "click.h"
+#include "click.h"
 #endif
 
 /*
  * Please don't change any of these maxima.
  * It will create incompatibilities and frustration.
  */
-#define MIN_SHIP_PTS	    3
-#define MAX_SHIP_PTS	    24
+#define MIN_SHIP_PTS 3
+#define MAX_SHIP_PTS 24
 /* SSHACK needs to double the vertices */
-#define MAX_SHIP_PTS2	    (MAX_SHIP_PTS * 2)
-#define MAX_GUN_PTS	    3
-#define MAX_LIGHT_PTS	    3
-#define MAX_RACK_PTS	    4
+#define MAX_SHIP_PTS2 (MAX_SHIP_PTS * 2)
+#define MAX_GUN_PTS 3
+#define MAX_LIGHT_PTS 3
+#define MAX_RACK_PTS 4
 
-typedef struct {
-    clpos_t	*pts[MAX_SHIP_PTS2];	/* the shape rotated many ways */
-    int		num_points;		/* total points in object */
-    int		num_orig_points;	/* points before SSHACK */
-    clpos_t	cashed_pts[MAX_SHIP_PTS2];
-    int		cashed_dir;
+typedef struct
+{
+    clpos_t *pts[MAX_SHIP_PTS2]; /* the shape rotated many ways */
+    int num_points;              /* total points in object */
+    int num_orig_points;         /* points before SSHACK */
+    clpos_t cashed_pts[MAX_SHIP_PTS2];
+    int cashed_dir;
 } shape_t;
 
-typedef struct {			/* Defines wire-obj, i.e. ship */
-    clpos_t	*pts[MAX_SHIP_PTS2];	/* the shape rotated many ways */
-    int		num_points;		/* total points in object */
-    int		num_orig_points;	/* points before SSHACK */
-    clpos_t	cashed_pts[MAX_SHIP_PTS2];
-    int		cashed_dir;
+typedef struct
+{                                /* Defines wire-obj, i.e. ship */
+    clpos_t *pts[MAX_SHIP_PTS2]; /* the shape rotated many ways */
+    int num_points;              /* total points in object */
+    int num_orig_points;         /* points before SSHACK */
+    clpos_t cashed_pts[MAX_SHIP_PTS2];
+    int cashed_dir;
 
-    clpos_t	engine[RES];		/* Engine position */
-    clpos_t	m_gun[RES];		/* Main gun position */
-    int		num_l_gun,
-		num_r_gun,
-		num_l_rgun,
-		num_r_rgun;		/* number of additional cannons */
-    clpos_t	*l_gun[MAX_GUN_PTS],	/* Additional cannon positions, left*/
-		*r_gun[MAX_GUN_PTS],	/* Additional cannon positions, right*/
-		*l_rgun[MAX_GUN_PTS],	/* Additional rear cannon positions, left*/
-		*r_rgun[MAX_GUN_PTS];	/* Additional rear cannon positions, right*/
-    int		num_l_light,		/* Number of lights */
-		num_r_light;
-    clpos_t	*l_light[MAX_LIGHT_PTS], /* Left and right light positions */
-		*r_light[MAX_LIGHT_PTS];
-    int		num_m_rack;		/* Number of missile racks */
-    clpos_t	*m_rack[MAX_RACK_PTS];
-    int		shield_radius;		/* Radius of shield used by client. */
+    clpos_t engine[RES]; /* Engine position */
+    clpos_t m_gun[RES];  /* Main gun position */
+    int num_l_gun,
+        num_r_gun,
+        num_l_rgun,
+        num_r_rgun;              /* number of additional cannons */
+    clpos_t *l_gun[MAX_GUN_PTS], /* Additional cannon positions, left*/
+        *r_gun[MAX_GUN_PTS],     /* Additional cannon positions, right*/
+        *l_rgun[MAX_GUN_PTS],    /* Additional rear cannon positions, left*/
+        *r_rgun[MAX_GUN_PTS];    /* Additional rear cannon positions, right*/
+    int num_l_light,             /* Number of lights */
+        num_r_light;
+    clpos_t *l_light[MAX_LIGHT_PTS], /* Left and right light positions */
+        *r_light[MAX_LIGHT_PTS];
+    int num_m_rack; /* Number of missile racks */
+    clpos_t *m_rack[MAX_RACK_PTS];
+    int shield_radius; /* Radius of shield used by client. */
 
-#ifdef	_NAMEDSHIPS
-    char*	name;
-    char*	author;
+#ifdef _NAMEDSHIPS
+    char *name;
+    char *author;
 #endif
 } shipshape_t;
-
 
 static inline clpos_t ipos2clpos(ipos_t pos)
 {
@@ -115,7 +116,7 @@ extern shipshape_t *Convert_shape_str(char *str);
 extern void Calculate_shield_radius(shipshape_t *ship);
 extern int Validate_shape_str(char *str);
 extern void Convert_ship_2_string(shipshape_t *ship, char *buf, char *ext,
-				  unsigned shape_version);
+                                  unsigned shape_version);
 extern void Rotate_point(clpos_t pt[RES]);
 extern void Rotate_position(position_t pt[RES]);
 extern clpos_t *Shape_get_points(shape_t *s, int dir);
@@ -170,7 +171,6 @@ Ship_get_m_rack_clpos(shipshape_t *ship, int rack, int dir)
 {
     return ship->m_rack[rack][dir];
 }
-
 
 static inline position_t
 Ship_get_point_position(shipshape_t *ship, int i, int dir)

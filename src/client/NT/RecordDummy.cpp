@@ -1,10 +1,10 @@
-/* 
+/*
  * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,11 +17,11 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
-// RecordDummy.c 
+// RecordDummy.c
 // Used by Windows.
 // Dummy up the recording of xpilot sessions
 // cause i don't feel like dealing w/it.
@@ -29,10 +29,10 @@
 #include "../../common/NT/winX.h"
 #include "../record.h"
 
-int recording = False;		/* Are we recording or not. */
+int recording = False; /* Are we recording or not. */
 
 extern void paintItemSymbol(unsigned char type, Drawable drawable, GC mygc,
-			    int x, int y, int color);
+                            int x, int y, int color);
 
 static void Dummy_newFrame(void)
 {
@@ -67,7 +67,6 @@ static struct recordable_drawing Xdrawing = {
  * This is either a copy of Xdrawing or of Rdrawing.
  */
 struct recordable_drawing rd;
-
 
 /*
  * Store the name of the file where the user

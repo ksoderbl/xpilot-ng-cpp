@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,12 +19,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef	NETSERVER_H
-#define	NETSERVER_H
+#ifndef NETSERVER_H
+#define NETSERVER_H
 
 #ifndef PLAYER_H
 /* need player_t */
@@ -36,21 +36,21 @@ void Conn_change_nick(connection_t *connp, const char *nick);
 void Destroy_connection(connection_t *connp, const char *reason);
 int Check_connection(char *real, char *nick, char *dpy, char *addr);
 int Setup_connection(char *real, char *nick, char *dpy, int team,
-		     char *addr, char *host, unsigned version);
+					 char *addr, char *host, unsigned version);
 int Input(void);
 int Send_reply(connection_t *connp, int replyto, int result);
 int Send_self(connection_t *connp, player_t *pl,
-	      int lock_id,
-	      int lock_dist,
-	      int lock_dir,
-	      int autopilotlight,
-	      int status,
-	      char *mods);
+			  int lock_id,
+			  int lock_dist,
+			  int lock_dir,
+			  int autopilotlight,
+			  int status,
+			  char *mods);
 int Send_leave(connection_t *connp, int id);
 int Send_player(connection_t *connp, int id);
 int Send_team(connection_t *connp, int id, int team);
 int Send_score(connection_t *connp, int id, double score,
-	       int life, int mychar, int alliance);
+			   int life, int mychar, int alliance);
 int Send_score_object(connection_t *connp, double score, clpos_t pos, const char *string);
 int Send_timing(connection_t *connp, int id, int check, int round);
 int Send_base(connection_t *connp, int id, int num);
@@ -92,25 +92,25 @@ int Send_time_left(connection_t *connp, long sec);
 int Send_eyes(connection_t *connp, int id);
 int Send_trans(connection_t *connp, clpos_t pos1, clpos_t pos2);
 void Get_display_parameters(connection_t *connp, int *width, int *height,
-			    int *debris_colors, int *spark_rand);
+							int *debris_colors, int *spark_rand);
 int Get_player_id(connection_t *connp);
 const char *Player_get_addr(player_t *pl);
 const char *Player_get_dpy(player_t *pl);
 int Send_shape(connection_t *connp, int shape);
 int Check_max_clients_per_IP(char *host_addr);
-#define FEATURE(connp, feature)	((connp)->features & (feature))
-#define F_POLY			(1 << 0)
-#define F_FLOATSCORE		(1 << 1)
-#define F_EXPLICITSELF		(1 << 2)
-#define F_ASTEROID		(1 << 3)
-#define F_TEMPWORM		(1 << 4)
-#define F_FASTRADAR		(1 << 5)
-#define F_SEPARATEPHASING	(1 << 6)
-#define F_TEAMRADAR		(1 << 7)
-#define F_SHOW_APPEARING	(1 << 8)
-#define F_SENDTEAM		F_SHOW_APPEARING
-#define F_CUMULATIVETURN	(1 << 9)
-#define F_BALLSTYLE		(1 << 10)
-#define F_POLYSTYLE		(1 << 11)
+#define FEATURE(connp, feature) ((connp)->features & (feature))
+#define F_POLY (1 << 0)
+#define F_FLOATSCORE (1 << 1)
+#define F_EXPLICITSELF (1 << 2)
+#define F_ASTEROID (1 << 3)
+#define F_TEMPWORM (1 << 4)
+#define F_FASTRADAR (1 << 5)
+#define F_SEPARATEPHASING (1 << 6)
+#define F_TEAMRADAR (1 << 7)
+#define F_SHOW_APPEARING (1 << 8)
+#define F_SENDTEAM F_SHOW_APPEARING
+#define F_CUMULATIVETURN (1 << 9)
+#define F_BALLSTYLE (1 << 10)
+#define F_POLYSTYLE (1 << 11)
 
 #endif

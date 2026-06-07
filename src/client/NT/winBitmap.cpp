@@ -1,10 +1,10 @@
-/* 
+/*
  * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 #include "../xpclient.h"
 
@@ -35,69 +35,73 @@ extern int texturedObjects;
 
 void delete_bitmaps()
 {
-    int i, j;
-    SelectObject(itemsDC, GetStockObject(BLACK_PEN));
+	int i, j;
+	SelectObject(itemsDC, GetStockObject(BLACK_PEN));
 
-    for (i = 0; i < num_pixmaps; i++) {
-	for (j = 0; j < pixmaps[i].picture.count; j++) {
-	    if (pixmaps[i].bitmaps[j].bitmap) {
-		DeleteObject((HBITMAP) pixmaps[i].bitmaps[j].bitmap);
-	    }
+	for (i = 0; i < num_pixmaps; i++)
+	{
+		for (j = 0; j < pixmaps[i].picture.count; j++)
+		{
+			if (pixmaps[i].bitmaps[j].bitmap)
+			{
+				DeleteObject((HBITMAP)pixmaps[i].bitmaps[j].bitmap);
+			}
+		}
 	}
-    }
 }
 
-int Bitmap_create_begin(Drawable d, xp_pixmap_t * pm, int bmp)
+int Bitmap_create_begin(Drawable d, xp_pixmap_t *pm, int bmp)
 {
-    HBITMAP hbm;
-    hDC = GetDC(xid[d].hwnd.hWnd);
-    hDCb = CreateCompatibleDC(hDC);
+	HBITMAP hbm;
+	hDC = GetDC(xid[d].hwnd.hWnd);
+	hDCb = CreateCompatibleDC(hDC);
 
-    if (pm->bitmaps[bmp].bitmap) {
-	SelectObject(itemsDC, GetStockObject(BLACK_PEN));
-	DeleteObject((HBITMAP) pm->bitmaps[bmp].bitmap);
-    }
+	if (pm->bitmaps[bmp].bitmap)
+	{
+		SelectObject(itemsDC, GetStockObject(BLACK_PEN));
+		DeleteObject((HBITMAP)pm->bitmaps[bmp].bitmap);
+	}
 
-    hbm = CreateCompatibleBitmap(hDC, pm->width, pm->height);
-    SelectObject(hDCb, hbm);
-    SelectPalette(hDCb, myPal, FALSE);
-    RealizePalette(hDCb);
+	hbm = CreateCompatibleBitmap(hDC, pm->width, pm->height);
+	SelectObject(hDCb, hbm);
+	SelectPalette(hDCb, myPal, FALSE);
+	RealizePalette(hDCb);
 
-    if (!hbm) {
-	error("Can't create item bitmaps");
-	return -1;
-    }
-    pm->bitmaps[bmp].bitmap = (Pixmap) hbm;
-    // The following hack is used to pass the dimension information 
-    // to XFillPolygon
-    SetBitmapDimensionEx(hbm, pm->width, pm->height, NULL);
-    return 0;
+	if (!hbm)
+	{
+		error("Can't create item bitmaps");
+		return -1;
+	}
+	pm->bitmaps[bmp].bitmap = (Pixmap)hbm;
+	// The following hack is used to pass the dimension information
+	// to XFillPolygon
+	SetBitmapDimensionEx(hbm, pm->width, pm->height, NULL);
+	return 0;
 }
 
 int Bitmap_create_end(Drawable d)
 {
-    DeleteDC(hDCb);
-    ReleaseDC(xid[d].hwnd.hWnd, hDC);
-    return 0;
+	DeleteDC(hDCb);
+	ReleaseDC(xid[d].hwnd.hWnd, hDC);
+	return 0;
 }
 
-void Bitmap_set_pixel(xp_pixmap_t * xp_pixmap, int image, int x, int y,
-		      RGB_COLOR color)
+void Bitmap_set_pixel(xp_pixmap_t *xp_pixmap, int image, int x, int y,
+					  RGB_COLOR color)
 {
-    SetPixelV(hDCb, x, y, color);
+	SetPixelV(hDCb, x, y, color);
 }
 
-void Bitmap_paint_area(Drawable d, xp_bitmap_t * bit, int x, int y,
-		       irec_t * r)
+void Bitmap_paint_area(Drawable d, xp_bitmap_t *bit, int x, int y,
+					   irec_t *r)
 {
-    HDC hDC = xid[d].hwnd.hBmpDC;
+	HDC hDC = xid[d].hwnd.hBmpDC;
 
-    SelectObject(itemsDC, (HBITMAP) bit->bitmap);
-    SelectPalette(itemsDC, myPal, FALSE);
-    RealizePalette(itemsDC);
-    BitBlt(hDC, x, y, r->w, r->h, itemsDC, r->x, r->y, SRCPAINT);
+	SelectObject(itemsDC, (HBITMAP)bit->bitmap);
+	SelectPalette(itemsDC, myPal, FALSE);
+	RealizePalette(itemsDC);
+	BitBlt(hDC, x, y, r->w, r->h, itemsDC, r->x, r->y, SRCPAINT);
 }
-
 
 /****************************IRRELEVANT STUFF HERE ***************************/
 #if 0

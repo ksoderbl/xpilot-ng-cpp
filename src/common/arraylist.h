@@ -1,7 +1,7 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
- * Copyright (C) 2005 Kristian Söderblom <kps@users.sourceforge.net>
+ * Copyright (C) 2005 Kristian SÃ¶derblom
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,25 +14,26 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #ifndef ARRAYLIST_H
 #define ARRAYLIST_H
 
 #ifndef TYPES_H
-# include "types.h"
+#include "types.h"
 #endif
 
 #include "xpcommon.h"
 
-typedef struct {
-    void	*elements;
-    size_t	element_size;
-    size_t	element_padded_size;
-    int 	num_elements;
-    int 	max_elements;
+typedef struct
+{
+    void *elements;
+    size_t element_size;
+    size_t element_padded_size;
+    int num_elements;
+    int max_elements;
 } arraylist_t;
 
 static inline void *Arraylist_get_element_pointer(arraylist_t *alp, int ind)
@@ -96,13 +97,13 @@ bool Arraylist_contains(arraylist_t *alp, void *element);
 /* Sort arraylist entries, check qsort(3) for explanation of 'cmp'. */
 void Arraylist_sort(arraylist_t *alp, int (*cmp)(const void *, const void *));
 
-typedef struct {
-    uint8_t 	*current_element;
-    int 	current_ind;
-    int 	num_elements;
-    size_t	element_padded_size;
+typedef struct
+{
+    uint8_t *current_element;
+    int current_ind;
+    int num_elements;
+    size_t element_padded_size;
 } arraylist_iterator_t;
-
 
 /* Might implement something like this, but don't count on it. */
 arraylist_iterator_t *Arraylist_iterator(arraylist_t *alp);
@@ -111,6 +112,5 @@ void Arraylist_iterator_free(arraylist_iterator_t *ip);
 void Arraylist_static_iterator(arraylist_t *alp, arraylist_iterator_t *ip);
 bool Iterator_has_next(arraylist_iterator_t *ip);
 void *Iterator_get_next(arraylist_iterator_t *ip);
-
 
 #endif

@@ -1,14 +1,14 @@
-/* 
+/*
  * winAbout.cpp - XPilot.exe credits box
  *
  * This file contains the Windows about dialog and scrolling credits box.
  *
  * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 /*
  * $Log: winAbout.cpp,v $
@@ -39,10 +39,10 @@
  */
 
 #include "StdAfx.h"
-#ifndef	DRAW_H
+#ifndef DRAW_H
 #include "draw.h"
 #endif
-#ifndef	_WINX__H_
+#ifndef _WINX__H_
 #include "winX_.h"
 #include "resource.h"
 #endif
@@ -51,23 +51,22 @@
 
 /////////////////////////////////////////////////////////////////////////////
 
-#define	CR_WIDTH	crRect.Width()
-//#define       CR_HEIGHT       2500
-#define	LINEHEIGHT	19
+#define CR_WIDTH crRect.Width()
+// #define       CR_HEIGHT       2500
+#define LINEHEIGHT 19
 
 // read in from credits.inc.h
 CString credits;
 int creditsHeight = 0;
 int lineCount = 0;
 
-CAboutDlg::CAboutDlg():CDialog(CAboutDlg::IDD)
+CAboutDlg::CAboutDlg() : CDialog(CAboutDlg::IDD)
 {
     //{{AFX_DATA_INIT(CAboutDlg)
     //}}AFX_DATA_INIT
-
 }
 
-void CAboutDlg::DoDataExchange(CDataExchange * pDX)
+void CAboutDlg::DoDataExchange(CDataExchange *pDX)
 {
     CDialog::DoDataExchange(pDX);
     //{{AFX_DATA_MAP(CAboutDlg)
@@ -76,12 +75,12 @@ void CAboutDlg::DoDataExchange(CDataExchange * pDX)
 }
 
 BEGIN_MESSAGE_MAP(CAboutDlg, CDialog)
-    //{{AFX_MSG_MAP(CAboutDlg)
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CAboutDlg)
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 /////////////////////////////////////////////////////////////////////////////
 // CCredits
-    CCredits::CCredits()
+CCredits::CCredits()
 {
     scrollofs = 0;
     timer = FALSE;
@@ -97,20 +96,19 @@ CCredits::~CCredits()
 #endif
 }
 
-
 BEGIN_MESSAGE_MAP(CCredits, CStatic)
-    //{{AFX_MSG_MAP(CCredits)
-    ON_WM_PAINT()
-    ON_WM_TIMER()
-    //}}AFX_MSG_MAP
-    END_MESSAGE_MAP()
+//{{AFX_MSG_MAP(CCredits)
+ON_WM_PAINT()
+ON_WM_TIMER()
+//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
 ///////////////////////////////////////////////////////////////////////////////
 // CCredits message handlers
 void CCredits::OnTimer(UINT nIDEvent)
 {
     // TODO: Add your message handler code here and/or call default
     if (scrollofs++ > creditsHeight)
-	scrollofs = 0;
+        scrollofs = 0;
     TRACE("scrollofs = %d\n", scrollofs);
     CRect rect;
     GetClientRect(&rect);
@@ -121,58 +119,58 @@ void CCredits::OnTimer(UINT nIDEvent)
 ///////////////////////////////////////////////////////////////////////////////
 void CCredits::OnPaint()
 {
-    CPaintDC dc(this);		// device context for painting
+    CPaintDC dc(this); // device context for painting
     CString out;
-//      int             i;
+    //      int             i;
     int line = 0;
 
     // TODO: Add your message handler code here
-    //CFont*        oldFont = dc.SelectObject(&font);
+    // CFont*        oldFont = dc.SelectObject(&font);
     GetClientRect(&crRect);
 
-    if (virgin) {
-	// create the credits bitmap
-	CDC bdc;
-	//CDC* wdc;
+    if (virgin)
+    {
+        // create the credits bitmap
+        CDC bdc;
+        // CDC* wdc;
 
-	virgin = FALSE;
-	//wdc = GetDC();
-	bdc.CreateCompatibleDC(&dc);
-	creditsHeight = lineCount * LINEHEIGHT + crRect.Height();
-	bm.CreateCompatibleBitmap(&bdc, CR_WIDTH, creditsHeight);
+        virgin = FALSE;
+        // wdc = GetDC();
+        bdc.CreateCompatibleDC(&dc);
+        creditsHeight = lineCount * LINEHEIGHT + crRect.Height();
+        bm.CreateCompatibleBitmap(&bdc, CR_WIDTH, creditsHeight);
 
-	CBitmap *oldbm = bdc.SelectObject(&bm);
-	BuildBitmap(&bdc);
-	bdc.SelectObject(oldbm);
-	//ReleaseDC(wdc);
+        CBitmap *oldbm = bdc.SelectObject(&bm);
+        BuildBitmap(&bdc);
+        bdc.SelectObject(oldbm);
+        // ReleaseDC(wdc);
     }
     if (!timer)
-	SetTimer(32, 30, NULL);
+        SetTimer(32, 30, NULL);
     timer = TRUE;
 
     CDC bdc;
     bdc.CreateCompatibleDC(&dc);
     CBitmap *obm = bdc.SelectObject(&bm);
     dc.BitBlt(0, 0, crRect.Width(), crRect.Height(), &bdc, 0, scrollofs,
-	      SRCCOPY);
+              SRCCOPY);
     // dc.SelectObject(obm);
     // Do not call CStatic::OnPaint() for painting messages
     bdc.SelectObject(obm);
-    //ReleaseDC(&bdc);
-    //dc.SelectObject(oldFont);
+    // ReleaseDC(&bdc);
+    // dc.SelectObject(oldFont);
 }
-
 
 ///////////////////////////////////////////////////////////////////////////////
 BOOL CCredits::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName,
-		      DWORD dwStyle, const RECT & rect, CWnd * pParentWnd,
-		      UINT nID, CCreateContext * pContext)
+                      DWORD dwStyle, const RECT &rect, CWnd *pParentWnd,
+                      UINT nID, CCreateContext *pContext)
 {
     // TODO: Add your specialized code here and/or call the base class
     BOOL ret;
     ret =
-	CWnd::Create(lpszClassName, lpszWindowName, dwStyle, rect,
-		     pParentWnd, nID, pContext);
+        CWnd::Create(lpszClassName, lpszWindowName, dwStyle, rect,
+                     pParentWnd, nID, pContext);
     return (ret);
 }
 
@@ -183,7 +181,6 @@ BOOL CCredits::DestroyWindow()
     KillTimer(32);
     bm.DeleteObject();
 
-
     return CStatic::DestroyWindow();
 }
 
@@ -193,8 +190,8 @@ int GetAnInt(int *i)
     int x;
     char a;
 
-    (*i)++;			// skip control
-    a = credits[*i];		// get char
+    (*i)++;          // skip control
+    a = credits[*i]; // get char
     (*i)++;
     x = a & 0x0F;
     a = credits[*i];
@@ -207,7 +204,7 @@ int GetAnInt(int *i)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-void CCredits::BuildBitmap(CDC * dc)
+void CCredits::BuildBitmap(CDC *dc)
 {
     int row = 0;
     int col = 0;
@@ -218,7 +215,7 @@ void CCredits::BuildBitmap(CDC * dc)
     COLORREF myColor;
 
     CRect rect(0, 0, CR_WIDTH, creditsHeight);
-//      dc->FillSolidRect(&rect, objs[RED].color);
+    //      dc->FillSolidRect(&rect, objs[RED].color);
     COLORREF oldColor = dc->GetTextColor();
     dc->SetBkColor(RGB(0, 0, 0));
     myColor = RGB(255, 255, 255);
@@ -235,36 +232,41 @@ void CCredits::BuildBitmap(CDC * dc)
 #endif
     haveFont = font.CreateFontIndirect(&lf);
     CFont *oldfont = dc->SelectObject(&font);
-//      myColor = objs[RED].color;
+    //      myColor = objs[RED].color;
 
-    for (i = 0; i < credits.GetLength();) {
-	if (credits[i] == '#') {
-	    if (cs.GetLength())	// anything in the buffer?
-	    {			// yes, flush it
-		TRACE("color=%08x cs=%s\n", myColor, (PCSTR) cs);
-		dc->SetTextColor(myColor);
-		dc->TextOut(col * 10 + 2,
-			    row * LINEHEIGHT + crRect.Height(), cs);
-		cs = "";
-	    }
-	    switch (credits[++i]) {
-	    case 'r':
-		row = row + GetAnInt(&i);
-		col = 0;
-//                              myColor = objs[RED].color;
-		myColor = RGB(255, 0, 0);
-		break;
-	    case 'c':
-		col = GetAnInt(&i);
-//                              myColor = objs[WHITE].color;
-		break;
-	    default:
-		AfxMessageBox("Unknown command in credits");
-		break;
-	    }
-	} else {
-	    cs += credits[i++];
-	}
+    for (i = 0; i < credits.GetLength();)
+    {
+        if (credits[i] == '#')
+        {
+            if (cs.GetLength()) // anything in the buffer?
+            {                   // yes, flush it
+                TRACE("color=%08x cs=%s\n", myColor, (PCSTR)cs);
+                dc->SetTextColor(myColor);
+                dc->TextOut(col * 10 + 2,
+                            row * LINEHEIGHT + crRect.Height(), cs);
+                cs = "";
+            }
+            switch (credits[++i])
+            {
+            case 'r':
+                row = row + GetAnInt(&i);
+                col = 0;
+                //                              myColor = objs[RED].color;
+                myColor = RGB(255, 0, 0);
+                break;
+            case 'c':
+                col = GetAnInt(&i);
+                //                              myColor = objs[WHITE].color;
+                break;
+            default:
+                AfxMessageBox("Unknown command in credits");
+                break;
+            }
+        }
+        else
+        {
+            cs += credits[i++];
+        }
     }
     dc->SetTextColor(oldColor);
     dc->SelectObject(oldfont);
@@ -276,10 +278,10 @@ BOOL CAboutDlg::OnInitDialog()
     CDialog::OnInitDialog();
 
     SendDlgItemMessage(IDC_VERSION, WM_SETTEXT, 0,
-		       (LPARAM) ("XPilot " TITLE));
+                       (LPARAM)("XPilot " TITLE));
 
 #include "credits.inc.h"
 
-    return TRUE;		// return TRUE unless you set the focus to a control
+    return TRUE; // return TRUE unless you set the focus to a control
     // EXCEPTION: OCX Property Pages should return FALSE
 }

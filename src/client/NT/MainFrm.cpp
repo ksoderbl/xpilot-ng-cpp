@@ -1,10 +1,10 @@
-/* 
+/*
  * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 // MainFrm.cpp : implementation of the CMainFrame class
@@ -44,23 +44,23 @@ static char THIS_FILE[] = __FILE__;
 
 IMPLEMENT_DYNCREATE(CMainFrame, CFrameWnd)
 
-    BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
-    //{{AFX_MSG_MAP(CMainFrame)
-    // NOTE - the ClassWizard will add and remove mapping macros here.
-    //    DO NOT EDIT what you see in these blocks of generated code !
-    ON_WM_CREATE()
-    //}}AFX_MSG_MAP
-    // Global help commands
-    ON_COMMAND(ID_HELP_FINDER, CFrameWnd::OnHelpFinder)
-    ON_COMMAND(ID_HELP, CFrameWnd::OnHelp)
-    ON_COMMAND(ID_CONTEXT_HELP, CFrameWnd::OnContextHelp)
-    ON_COMMAND(ID_DEFAULT_HELP, CFrameWnd::OnHelpFinder)
-    ON_WM_PALETTECHANGED()
-    ON_WM_QUERYNEWPALETTE()
-    END_MESSAGE_MAP()
+BEGIN_MESSAGE_MAP(CMainFrame, CFrameWnd)
+//{{AFX_MSG_MAP(CMainFrame)
+// NOTE - the ClassWizard will add and remove mapping macros here.
+//    DO NOT EDIT what you see in these blocks of generated code !
+ON_WM_CREATE()
+//}}AFX_MSG_MAP
+// Global help commands
+ON_COMMAND(ID_HELP_FINDER, CFrameWnd::OnHelpFinder)
+ON_COMMAND(ID_HELP, CFrameWnd::OnHelp)
+ON_COMMAND(ID_CONTEXT_HELP, CFrameWnd::OnContextHelp)
+ON_COMMAND(ID_DEFAULT_HELP, CFrameWnd::OnHelpFinder)
+ON_WM_PALETTECHANGED()
+ON_WM_QUERYNEWPALETTE()
+END_MESSAGE_MAP()
 
 static UINT indicators[] = {
-    ID_SEPARATOR,		// status line indicator
+    ID_SEPARATOR, // status line indicator
     ID_INDICATOR_CAPS,
     ID_INDICATOR_NUM,
     ID_INDICATOR_SCRL,
@@ -72,7 +72,6 @@ static UINT indicators[] = {
 CMainFrame::CMainFrame()
 {
     // TODO: add member initialization code here
-
 }
 
 CMainFrame::~CMainFrame()
@@ -82,7 +81,7 @@ CMainFrame::~CMainFrame()
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
     if (CFrameWnd::OnCreate(lpCreateStruct) == -1)
-	return -1;
+        return -1;
 
 #if 0
     if (!m_wndToolBar.Create(this) ||
@@ -114,30 +113,31 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     return 0;
 }
 
-void CMainFrame::OnPaletteChanged(CWnd * pFocusWnd)
+void CMainFrame::OnPaletteChanged(CWnd *pFocusWnd)
 {
     CFrameWnd::OnPaletteChanged(pFocusWnd);
 
     if (pFocusWnd != this)
-	OnQueryNewPalette();
+        OnQueryNewPalette();
 }
 
 BOOL CMainFrame::OnQueryNewPalette()
 {
     ChangePalette(HWND(*this));
 
-    //return CFrameWnd::OnQueryNewPalette();
+    // return CFrameWnd::OnQueryNewPalette();
     return (TRUE);
 }
 
-BOOL CMainFrame::PreCreateWindow(CREATESTRUCT & cs)
+BOOL CMainFrame::PreCreateWindow(CREATESTRUCT &cs)
 {
     // TODO: Modify the Window class or styles here by modifying
     //  the CREATESTRUCT cs
 
-    if (cs.hMenu != NULL) {
-	::DestroyMenu(cs.hMenu);	// delete menu if loaded
-	cs.hMenu = NULL;	// no menu for this window
+    if (cs.hMenu != NULL)
+    {
+        ::DestroyMenu(cs.hMenu); // delete menu if loaded
+        cs.hMenu = NULL;         // no menu for this window
     }
 
     return CFrameWnd::PreCreateWindow(cs);
@@ -152,21 +152,21 @@ void CMainFrame::AssertValid() const
     CFrameWnd::AssertValid();
 }
 
-void CMainFrame::Dump(CDumpContext & dc) const
+void CMainFrame::Dump(CDumpContext &dc) const
 {
     CFrameWnd::Dump(dc);
 }
 
-#endif				//_DEBUG
+#endif //_DEBUG
 
 /////////////////////////////////////////////////////////////////////////////
 // CMainFrame message handlers
 
-BOOL CMainFrame::PreTranslateMessage(MSG * pMsg)
+BOOL CMainFrame::PreTranslateMessage(MSG *pMsg)
 {
     // TODO: Add your specialized code here and/or call the base class
 
     if (pMsg->message == WM_SYSKEYUP)
-	return (1);
+        return (1);
     return CFrameWnd::PreTranslateMessage(pMsg);
 }

@@ -1,17 +1,17 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 by
  *
- *      Uoti Urpala          <uau@users.sourceforge.net>
- *      Kristian Söderblom   <kps@users.sourceforge.net>
+ *      Uoti Urpala
+ *      Kristian SÃ¶derblom
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,15 +24,15 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #ifndef CLICK_H
 #define CLICK_H
 
 #ifndef CONST_H
-# include "const.h"
+#include "const.h"
 #endif
 
 /*
@@ -47,23 +47,25 @@
 
 typedef int click_t;
 
-typedef struct {
-    click_t		cx, cy;
+typedef struct
+{
+    click_t cx, cy;
 } clpos_t;
 
-typedef struct {
-    click_t		cx, cy;
+typedef struct
+{
+    click_t cx, cy;
 } clvec_t;
 
-#define CLICK_SHIFT		6
-#define CLICK			(1 << CLICK_SHIFT)
-#define PIXEL_CLICKS		CLICK
-#define BLOCK_CLICKS		(BLOCK_SZ << CLICK_SHIFT)
-#define CLICK_TO_PIXEL(C)	((int)((C) >> CLICK_SHIFT))
-#define CLICK_TO_BLOCK(C)	((int)((C) / (BLOCK_SZ << CLICK_SHIFT)))
-#define CLICK_TO_FLOAT(C)	((double)(C) * (1.0 / CLICK))
-#define PIXEL_TO_CLICK(I)	((click_t)(I) << CLICK_SHIFT)
-#define FLOAT_TO_CLICK(F)	((int)((F) * CLICK))
+#define CLICK_SHIFT 6
+#define CLICK (1 << CLICK_SHIFT)
+#define PIXEL_CLICKS CLICK
+#define BLOCK_CLICKS (BLOCK_SZ << CLICK_SHIFT)
+#define CLICK_TO_PIXEL(C) ((int)((C) >> CLICK_SHIFT))
+#define CLICK_TO_BLOCK(C) ((int)((C) / (BLOCK_SZ << CLICK_SHIFT)))
+#define CLICK_TO_FLOAT(C) ((double)(C) * (1.0 / CLICK))
+#define PIXEL_TO_CLICK(I) ((click_t)(I) << CLICK_SHIFT)
+#define FLOAT_TO_CLICK(F) ((int)((F) * CLICK))
 
 /*
  * Return the block position this click position is in.

@@ -1,7 +1,7 @@
 /*
  * XPilotNG/SDL, an SDL/OpenGL XPilot client.
  *
- * Copyright (C) 2003-2004 Darel Cullen <darelcullen@users.sourceforge.net>
+ * Copyright (C) 2003-2004 Darel Cullen
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,14 +14,14 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #ifndef SDLINIT_H
 #define SDLINIT_H
 
 int Init_window(void);
-int Resize_Window( int width, int height );
+int Resize_Window(int width, int height);
 
 #endif

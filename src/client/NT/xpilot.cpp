@@ -1,12 +1,12 @@
-/* 
+/*
  * XPilot NG, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,25 +19,25 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #include "xpclient_x11.h"
 
-char			**Argv;
-int			Argc;
+char **Argv;
+int Argc;
 
 static void printfile(const char *filename)
 {
-    FILE		*fp;
-    int			c;
+    FILE *fp;
+    int c;
 
     if ((fp = fopen(filename, "r")) == NULL)
-	return;
+        return;
 
     while ((c = fgetc(fp)) != EOF)
-	putchar(c);
+        putchar(c);
 
     fclose(fp);
 }
@@ -60,12 +60,12 @@ int main(int argc, char *argv[])
      * --- Output copyright notice ---
      */
     printf("  " COPYRIGHT ".\n"
-	   "  " TITLE " comes with ABSOLUTELY NO WARRANTY; "
-	      "for details see the\n"
-	   "  provided COPYING file.\n\n");
+           "  " TITLE " comes with ABSOLUTELY NO WARRANTY; "
+           "for details see the\n"
+           "  provided COPYING file.\n\n");
     if (strcmp(Conf_localguru(), PACKAGE_BUGREPORT))
-	printf("  %s is responsible for the local installation.\n\n",
-	       Conf_localguru());
+        printf("  %s is responsible for the local installation.\n\n",
+               Conf_localguru());
 
     Conf_print();
 
@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
      */
     init_error(argv[0]);
 
-    seedMT( (unsigned)time(NULL) ^ Get_process_id());
+    seedMT((unsigned)time(NULL) ^ Get_process_id());
 
     memset(conpar, 0, sizeof(Connect_param_t));
 
@@ -105,16 +105,17 @@ int main(int argc, char *argv[])
 
     Config_init();
     IFNWINDOWS(Handle_X_options();)
-    
+
     /* CLIENTRANK */
     Init_saved_scores();
 
     if (xpArgs.list_servers)
-	xpArgs.auto_connect = true;
+        xpArgs.auto_connect = true;
 
-    if (xpArgs.shutdown_reason[0] != '\0') {
-	auto_shutdown = true;
-	xpArgs.auto_connect = true;
+    if (xpArgs.shutdown_reason[0] != '\0')
+    {
+        auto_shutdown = true;
+        xpArgs.auto_connect = true;
     }
 
     /*
@@ -122,25 +123,27 @@ int main(int argc, char *argv[])
      */
     printfile(Conf_localmotdfile());
 
-    if (xpArgs.text || xpArgs.auto_connect || argv[1] || is_this_windows()) {
-	if (xpArgs.list_servers)
-	    printf("LISTING AVAILABLE SERVERS:\n");
+    if (xpArgs.text || xpArgs.auto_connect || argv[1] || is_this_windows())
+    {
+        if (xpArgs.list_servers)
+            printf("LISTING AVAILABLE SERVERS:\n");
 
-	result = Contact_servers(argc - 1, &argv[1],
-				 xpArgs.auto_connect, xpArgs.list_servers,
-				 auto_shutdown, xpArgs.shutdown_reason,
-				 0, NULL, NULL, NULL, NULL,
-				 conpar);
+        result = Contact_servers(argc - 1, &argv[1],
+                                 xpArgs.auto_connect, xpArgs.list_servers,
+                                 auto_shutdown, xpArgs.shutdown_reason,
+                                 0, NULL, NULL, NULL, NULL,
+                                 conpar);
     }
-    else {
-	IFNWINDOWS(result = Welcome_screen(conpar));
+    else
+    {
+        IFNWINDOWS(result = Welcome_screen(conpar));
     }
 
     if (result == 1)
-	retval = Join(conpar);
-    
+        retval = Join(conpar);
+
     if (instruments.clientRanker)
-	Print_saved_scores();
+        Print_saved_scores();
 
     return retval;
 }

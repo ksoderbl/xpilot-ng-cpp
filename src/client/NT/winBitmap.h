@@ -1,10 +1,10 @@
-/* 
+/*
  * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,20 +17,20 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 #ifndef WINBITMAP_H
 #define WINBITMAP_H
 #include "../gfx2d.h"
 #include "bitmaps.h"
 extern void PaintBitmap(Drawable d, int type, int x, int y,
-			int width, int height, int number);
+						int width, int height, int number);
 
-void Bitmap_set_pixel(xp_pixmap_t * xp_pixmap, int image,
-			    int x, int y, RGB_COLOR color);
+void Bitmap_set_pixel(xp_pixmap_t *xp_pixmap, int image,
+					  int x, int y, RGB_COLOR color);
 void Bitmap_paint(Drawable d, int img, int x, int y, int bmp);
-int Bitmap_create_begin(Drawable d, xp_pixmap_t * pm, int bmp);
+int Bitmap_create_begin(Drawable d, xp_pixmap_t *pm, int bmp);
 int Bitmap_create_end(Drawable d);
 
 #endif

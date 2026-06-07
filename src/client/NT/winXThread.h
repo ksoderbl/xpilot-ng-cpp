@@ -1,10 +1,10 @@
-/* 
+/*
  * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 /***************************************************************************\
@@ -33,7 +33,8 @@
 #ifndef WINXTHREAD_H
 #define WINXTHREAD_H
 
-typedef struct {
+typedef struct
+{
     HDC hDC;
     HDC hBmpDC;
     RECT rect;
@@ -41,7 +42,6 @@ typedef struct {
     Window w;
     int isDrawing;
     HPALETTE myPal;
-
 
     HANDLE eventDraw;
     HANDLE eventNotDrawing;
@@ -51,6 +51,6 @@ typedef struct {
 
 extern _dinfo dinfo;
 
-extern void winXTDraw(HDC hDC, Window xidno, RECT * rect);
+extern void winXTDraw(HDC hDC, Window xidno, RECT *rect);
 
 #endif

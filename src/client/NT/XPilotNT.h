@@ -1,10 +1,10 @@
-/* 
+/*
  * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
- *      Bjørn Stabell        <bjoern@xpilot.org>
- *      Ken Ronny Schouten   <ken@xpilot.org>
- *      Bert Gijsbers        <bert@xpilot.org>
- *      Dick Balaska         <dick@xpilot.org>
+ *      BjÃ¸rn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 // xpilot.h : main header file for the XPILOT application
@@ -28,43 +28,44 @@
 #error include 'stdafx.h' before including this file for PCH
 #endif
 
-#include "resource.h"		// main symbols
+#include "resource.h" // main symbols
 
 /////////////////////////////////////////////////////////////////////////////
 // CXpilotApp:
 // See xpilot.cpp for the implementation of this class
 //
 
-class CXpilotApp:public CWinApp {
-  public:
-    virtual BOOL PreTranslateMessage(MSG * pMsg);
-    CXpilotApp();
+class CXpilotApp : public CWinApp
+{
+public:
+  virtual BOOL PreTranslateMessage(MSG *pMsg);
+  CXpilotApp();
 
-// Overrides
-    // ClassWizard generated virtual function overrides
-    //{{AFX_VIRTUAL(CXpilotApp)
-  public:
-    virtual BOOL InitInstance();
-    virtual int ExitInstance();
-    //}}AFX_VIRTUAL
+  // Overrides
+  // ClassWizard generated virtual function overrides
+  //{{AFX_VIRTUAL(CXpilotApp)
+public:
+  virtual BOOL InitInstance();
+  virtual int ExitInstance();
+  //}}AFX_VIRTUAL
 
-// Implementation
+  // Implementation
 
-    //{{AFX_MSG(CXpilotApp)
-    afx_msg void OnAppAbout();
-    // NOTE - the ClassWizard will add and remove member functions here.
-    //    DO NOT EDIT what you see in these blocks of generated code !
-    //}}AFX_MSG
-     DECLARE_MESSAGE_MAP()
+  //{{AFX_MSG(CXpilotApp)
+  afx_msg void OnAppAbout();
+  // NOTE - the ClassWizard will add and remove member functions here.
+  //    DO NOT EDIT what you see in these blocks of generated code !
+  //}}AFX_MSG
+  DECLARE_MESSAGE_MAP()
 };
 
 extern CXpilotApp theApp;
 
-#ifdef	_BETAEXPIRE
+#ifdef _BETAEXPIRE
 extern BOOL betaexpired;
-#define	BETACHECK()	(betaexpired)
+#define BETACHECK() (betaexpired)
 #else
-#define	BETACHECK() (0)
+#define BETACHECK() (0)
 #endif
 
 /////////////////////////////////////////////////////////////////////////////

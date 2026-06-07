@@ -1,7 +1,7 @@
 /*
  * XPilotNG/SDL, an SDL/OpenGL XPilot client.
  *
- * Copyright (C) 2003-2004 Juha Lindström <juhal@users.sourceforge.net>
+ * Copyright (C) 2003-2004 Juha LindstrÃ¶m
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,8 +14,8 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
  */
 
 #include "xpclient_sdl.h"
@@ -42,21 +42,25 @@ int Console_init(void)
     SDL_Rect cr;
     cr.w = 500;
     cr.h = 100;
-    if (cr.w > draw_width) cr.w = draw_width;
-    if (cr.h > draw_height) cr.h = draw_height;
+    if (cr.w > draw_width)
+        cr.w = draw_width;
+    if (cr.h > draw_height)
+        cr.h = draw_height;
     cr.x = (draw_width - cr.w) / 2;
     cr.y = (draw_height - cr.h) / 2;
 
-    if (sdl_window_init(&console_window, cr.x, cr.y, cr.w, cr.h)) {
-	error("failed to init console window");
-	return -1;
+    if (sdl_window_init(&console_window, cr.x, cr.y, cr.w, cr.h))
+    {
+        error("failed to init console window");
+        return -1;
     }
-    
+
     console = CON_Init(CONF_FONTDIR "ConsoleFont.bmp", console_window.surface, 100, cr);
-    if (console == NULL) {
-	error("failed to init SDL_console");
-	sdl_window_destroy(&console_window);
-	return -1;
+    if (console == NULL)
+    {
+        error("failed to init SDL_console");
+        sdl_window_destroy(&console_window);
+        return -1;
     }
     CON_SetExecuteFunction(console, command_handler);
     CON_Topmost(console);
@@ -70,21 +74,23 @@ int Console_init(void)
 
 void Console_paint(void)
 {
-    if (!Console_isVisible()) return;
-    if (console->Visible != CON_OPEN) Console_refresh();
+    if (!Console_isVisible())
+        return;
+    if (console->Visible != CON_OPEN)
+        Console_refresh();
     console_window.x = (draw_width - console_window.w) / 2;
     console_window.y = (draw_height - console_window.h) / 2;
     sdl_window_paint(&console_window);
     glBegin(GL_LINE_LOOP);
     glColor4ub(0, 0, 0, 0xff);
-    glVertex2i(console_window.x, console_window.y + console_window.h + 2);    
+    glVertex2i(console_window.x, console_window.y + console_window.h + 2);
     glColor4ub(0, 0x90, 0x00, 0xff);
     glVertex2i(console_window.x, console_window.y);
     glColor4ub(0, 0, 0, 0xff);
     glVertex2i(console_window.x + console_window.w, console_window.y);
     glColor4ub(0, 0x90, 0x00, 0xff);
-    glVertex2i(console_window.x + console_window.w, 
-	       console_window.y + console_window.h + 2);
+    glVertex2i(console_window.x + console_window.w,
+               console_window.y + console_window.h + 2);
     glEnd();
 }
 
@@ -106,9 +112,10 @@ int Console_isVisible(void)
 
 int Console_process(SDL_Event *e)
 {
-    if (CON_Events(e) == NULL) {
-	Console_refresh();
-	return 1;
+    if (CON_Events(e) == NULL)
+    {
+        Console_refresh();
+        return 1;
     }
     return 0;
 }
