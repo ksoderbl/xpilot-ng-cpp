@@ -3,7 +3,7 @@ if(NOT X11_FOUND)
 endif()
 
 file(GLOB REPLAY_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
 )
 
 add_executable(xpilot-ng-replay ${REPLAY_SOURCES})

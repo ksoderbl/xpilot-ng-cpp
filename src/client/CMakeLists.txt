@@ -1,13 +1,13 @@
 # src/client/CMakeLists.txt
 file(GLOB CLIENT_CORE_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
 )
 
 set(_client_core_sources ${CLIENT_CORE_SOURCES})
 
 if(NOT XPILOT_HAVE_SOUND)
-    list(FILTER _client_core_sources EXCLUDE REGEX ".*/caudio\\.c$")
-    list(FILTER _client_core_sources EXCLUDE REGEX ".*/oalaudio\\.c$")
+    list(FILTER _client_core_sources EXCLUDE REGEX ".*/caudio\\.cpp$")
+    list(FILTER _client_core_sources EXCLUDE REGEX ".*/oalaudio\\.cpp$")
 endif()
 
 add_library(xpclient STATIC ${_client_core_sources})

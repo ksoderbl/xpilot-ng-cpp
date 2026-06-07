@@ -4,7 +4,7 @@ if(NOT OPENGL_FOUND)
 endif()
 
 file(GLOB SDL_CLIENT_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
 )
 
 # Keep the original automake behavior: choose one gameloop source.

@@ -1,6 +1,6 @@
 # src/common/CMakeLists.txt
 file(GLOB COMMON_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
 )
 
 add_library(xpcommon STATIC ${COMMON_SOURCES})

@@ -4,7 +4,7 @@ if(NOT X11_FOUND)
 endif()
 
 file(GLOB X11_CLIENT_SOURCES CONFIGURE_DEPENDS
-    "${CMAKE_CURRENT_SOURCE_DIR}/*.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
 )
 
 add_executable(xpilot-ng-x11 ${X11_CLIENT_SOURCES})
