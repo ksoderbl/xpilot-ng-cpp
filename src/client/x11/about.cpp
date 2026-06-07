@@ -23,6 +23,15 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cctype>
+#include <cstring>
+#include <cerrno>
+
+#include <unistd.h>
+#include <X11/Xlib.h>
+
 #include "xpclient_x11.h"
 
 /* How far away objects should be placed from each other etc... */

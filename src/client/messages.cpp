@@ -25,6 +25,13 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+// #include <stdlib.h>
+#include <cstring>
+#include <cstdio>
+// #include <errno.h>
+// #include <math.h>
+// #include <sys/types.h>
+
 #include "xpclient.h"
 
 message_t *TalkMsg[MAX_MSGS], *GameMsg[MAX_MSGS];
@@ -98,7 +105,7 @@ typedef struct
 /* recursive descent parser for messages */
 static bool Msg_match_fmt(const char *msg, const char *fmt, msgnames_t *mn)
 {
-	char *fp;
+	const char *fp;
 	int i;
 	size_t len;
 

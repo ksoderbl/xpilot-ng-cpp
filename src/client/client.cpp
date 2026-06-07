@@ -23,6 +23,15 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
+#include <cmath>
+#include <ctime>
+
+#include <sys/time.h>
+
 #include "xpclient.h"
 
 client_data_t clData = {

@@ -18,6 +18,14 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cassert>
+
+#include <cerrno>
+#include <sys/select.h>
+#include <sys/time.h>
+
+#include <SDL2/SDL.h>
+
 #include <X11/Xlib.h>
 
 #include "xpclient_sdl.h"

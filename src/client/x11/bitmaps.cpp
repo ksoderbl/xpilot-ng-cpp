@@ -23,6 +23,12 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cerrno>
+
+#include <X11/Xlib.h>
+
 #include "xpclient_x11.h"
 
 /* this gets rid of missing initializer warnings */

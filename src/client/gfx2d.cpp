@@ -23,6 +23,16 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <cmath>
+#include <climits>
+#include <cctype>
+
+#include <unistd.h>
+
 #include "xpclient.h"
 
 char *texturePath = NULL;	  /* Configured list of texture directories */

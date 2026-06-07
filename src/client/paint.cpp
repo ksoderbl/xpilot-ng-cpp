@@ -23,6 +23,9 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdio>
+#include <cstring>
+
 #include "xpclient.h"
 
 /*

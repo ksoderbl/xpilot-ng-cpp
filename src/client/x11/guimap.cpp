@@ -23,6 +23,16 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <X11/Xlib.h>
+#include <X11/Xos.h>
+
 #include "xpclient_x11.h"
 
 static int baseNameColor;		  /* Color index for base name drawing */

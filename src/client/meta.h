@@ -26,6 +26,10 @@
 #ifndef META_H
 #define META_H
 
+#include <cstdint>
+#include <string>
+#include <vector>
+
 /*
  * max number of servers we can find on the local network.
  */

@@ -29,6 +29,12 @@
  * Hence this file to monitor what's going on.
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+
+#include <unistd.h>
+
 #include "xpclient.h"
 
 int audioDeviceInit(char *display)
@@ -38,10 +44,10 @@ int audioDeviceInit(char *display)
     return 0;
 }
 
-void audioDevicePlay(char *filename, int type, int volume, void **private)
+void audioDevicePlay(char *filename, int type, int volume, void **private_data)
 {
     printf("debug audio: play file %s, type %d, vol %d, priv %p\n",
-           filename, type, volume, (void *)private);
+           filename, type, volume, (void *)private_data);
 }
 
 void audioDeviceEvents(void)
@@ -49,7 +55,7 @@ void audioDeviceEvents(void)
     /* printf("debug audio: events\n"); */
 }
 
-void audioDeviceFree(void *private)
+void audioDeviceFree(void *private_data)
 {
     printf("debug audio: audioDeviceFree\n");
 }

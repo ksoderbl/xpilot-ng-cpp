@@ -18,6 +18,20 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cctype>
+#include <cerrno>
+#include <climits>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/param.h>
+#include <sys/stat.h>
+#include <zlib.h>
+
 #include "xpclient.h"
 
 /* kps - you should be able to change this without a recompile */

@@ -92,6 +92,23 @@
  * if the acknowledgement timer expires.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
+#include <cctype>
+#include <ctime>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/param.h>
+#include <sys/time.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
 #include "xpserver.h"
 
 static int Init_setup(void);

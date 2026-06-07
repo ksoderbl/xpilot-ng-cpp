@@ -34,7 +34,7 @@
 
     You should have received a copy of the GNU Library General Public
     License along with this library; if not, write to the Free
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+    <https://www.gnu.org/licenses/>.
 
     The SDL_GL_* functions in this file are available in the public domain.
 
@@ -43,7 +43,7 @@
 */
 
 /* $Id: text.c,v 1.36 2005/09/08 11:09:05 maximan Exp $ */
-/* modified for xpilot by Erik Andersson deity_at_home.se */
+/* modified for xpilot by Erik Andersson */
 
 #ifdef _WINDOWS
 #include <windows.h>

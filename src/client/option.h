@@ -21,6 +21,8 @@
 #ifndef OPTION_H
 #define OPTION_H
 
+#include <cassert>
+
 typedef enum
 {
 	xp_noarg_option,

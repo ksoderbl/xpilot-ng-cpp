@@ -25,6 +25,15 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <cmath>
+#include <cassert>
+#include <cctype>
+#include <sys/types.h>
+
 #include "xpclient.h"
 
 int num_options = 0;

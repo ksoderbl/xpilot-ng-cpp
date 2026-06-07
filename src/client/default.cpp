@@ -25,6 +25,10 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstddef>
+#include <cstdio>
+#include <cstring>
+
 #include "xpclient.h"
 
 static double hudScale; /* Scale for HUD drawing */

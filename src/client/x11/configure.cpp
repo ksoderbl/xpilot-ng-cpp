@@ -29,6 +29,19 @@
  * Configure.c: real-time option control.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cctype>
+#include <cerrno>
+#include <climits>
+
+#include <unistd.h>
+#include <pwd.h>
+#include <X11/Xlib.h>
+#include <X11/Xos.h>
+#include <X11/Xutil.h>
+
 #include "xpclient_x11.h"
 
 static int Config_creator(xp_option_t *opt, int widget_desc, int *height);

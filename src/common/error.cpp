@@ -1,4 +1,4 @@
-/* 
+/*
  * Adapted from 'The UNIX Programming Environment' by Kernighan & Pike
  * and an example from the manualpage for vprintf by
  * Gaute Nessan, University of Tromsoe (gaute@staff.cs.uit.no).
@@ -6,6 +6,13 @@
  * Modified by Bjoern Stabell <bjoern@xpilot.org>.
  * Windows mods and memory leak detection by Dick Balaska <dick@xpilot.org>.
  */
+
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
+#include <cstdarg>
+
 #include "xpcommon.h"
 
 /*
@@ -20,13 +27,13 @@
 /*
  * File local static data.
  */
-#define	MAX_PROG_LENGTH	32
+#define MAX_PROG_LENGTH 32
 static char progname[MAX_PROG_LENGTH];
 
 static const char *prog_basename(const char *prog)
 {
 #ifndef _WINDOWS
-    char *p;
+    const char *p;
 
     p = strrchr(prog, '/');
 
@@ -36,13 +43,12 @@ static const char *prog_basename(const char *prog)
 #endif
 }
 
-
 /*
  * Functions.
  */
 void init_error(const char *prog)
 {
-    const char *p = prog_basename(prog);   /* Beautify argv[0] */
+    const char *p = prog_basename(prog); /* Beautify argv[0] */
 
     strlcpy(progname, p, MAX_PROG_LENGTH);
 }
@@ -60,13 +66,13 @@ void xpinfo(const char *fmt, ...)
     va_start(ap, fmt);
 
     if (progname[0] != '\0')
-	fprintf(stderr, "%s: INFO: ", progname);
+        fprintf(stderr, "%s: INFO: ", progname);
 
     vfprintf(stderr, fmt, ap);
 
     len = strlen(fmt);
     if (len == 0 || fmt[len - 1] != '\n')
-	fprintf(stderr, "\n");
+        fprintf(stderr, "\n");
 
     va_end(ap);
 }
@@ -79,13 +85,13 @@ void warn(const char *fmt, ...)
     va_start(ap, fmt);
 
     if (progname[0] != '\0')
-	fprintf(stderr, "%s: WARNING: ", progname);
+        fprintf(stderr, "%s: WARNING: ", progname);
 
     vfprintf(stderr, fmt, ap);
 
     len = strlen(fmt);
     if (len == 0 || fmt[len - 1] != '\n')
-	fprintf(stderr, "\n");
+        fprintf(stderr, "\n");
 
     va_end(ap);
 }
@@ -99,16 +105,16 @@ void error(const char *fmt, ...)
     va_start(ap, fmt);
 
     if (progname[0] != '\0')
-	fprintf(stderr, "%s: ERROR: ", progname);
+        fprintf(stderr, "%s: ERROR: ", progname);
 
     vfprintf(stderr, fmt, ap);
 
     if (e != 0)
-	fprintf(stderr, ": (%s)", strerror(e));
+        fprintf(stderr, ": (%s)", strerror(e));
 
     len = strlen(fmt);
     if (len == 0 || fmt[len - 1] != '\n')
-	fprintf(stderr, "\n");
+        fprintf(stderr, "\n");
 
     va_end(ap);
 }
@@ -121,13 +127,13 @@ void fatal(const char *fmt, ...)
     va_start(ap, fmt);
 
     if (progname[0] != '\0')
-	fprintf(stderr, "%s: FATAL: ", progname);
+        fprintf(stderr, "%s: FATAL: ", progname);
 
     vfprintf(stderr, fmt, ap);
 
     len = strlen(fmt);
     if (len == 0 || fmt[len - 1] != '\n')
-	fprintf(stderr, "\n");
+        fprintf(stderr, "\n");
 
     va_end(ap);
 
@@ -142,13 +148,13 @@ void dumpcore(const char *fmt, ...)
     va_start(ap, fmt);
 
     if (progname[0] != '\0')
-	fprintf(stderr, "%s: ABORT: ", progname);
+        fprintf(stderr, "%s: ABORT: ", progname);
 
     vfprintf(stderr, fmt, ap);
 
     len = strlen(fmt);
     if (len == 0 || fmt[len - 1] != '\n')
-	fprintf(stderr, "\n");
+        fprintf(stderr, "\n");
 
     va_end(ap);
 
@@ -161,25 +167,26 @@ static void Win_show_error(char *s)
 {
     static int inerror = FALSE;
     Trace("Error: %s\n", s);
-    if (inerror) return;
+    if (inerror)
+        return;
     inerror = TRUE;
     {
-#ifdef   _XPILOTNTSERVER_
-	/* putting up a message box on the server is a bad thing.
-	   It kinda halts the server, which is a bad thing to do for
-	   the simple info messages (nick in use) that call this routine
-	*/
-	xpprintf("%s %s\n", showtime(), s);
+#ifdef _XPILOTNTSERVER_
+        /* putting up a message box on the server is a bad thing.
+           It kinda halts the server, which is a bad thing to do for
+           the simple info messages (nick in use) that call this routine
+        */
+        xpprintf("%s %s\n", showtime(), s);
 #else
-	/*
-	if (MessageBox(NULL, s, "Error", MB_OKCANCEL | MB_TASKMODAL)
-	    == IDCANCEL) {
-# ifdef   _XPMON_
-	    xpmemShutdown();
-# endif
-	    ExitProcess(1);
-	}
-	*/
+        /*
+        if (MessageBox(NULL, s, "Error", MB_OKCANCEL | MB_TASKMODAL)
+            == IDCANCEL) {
+    # ifdef   _XPMON_
+            xpmemShutdown();
+    # endif
+            ExitProcess(1);
+        }
+        */
 #endif
     }
     /* kps - moved out from ifdef block, seems to be a better idea. */

@@ -23,6 +23,14 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <sys/types.h>
+
+#include <unistd.h>
+
 #include "xpclient.h"
 
 static double hrLimitTime = 0.0;

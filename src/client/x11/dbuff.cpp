@@ -23,6 +23,12 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <stdio.h>
+#include <stdlib.h>
+
+#include <X11/Xlib.h>
+#include <X11/Xos.h>
+
 #include "xpclient_x11.h"
 
 dbuff_state_t *dbuf_state; /* Holds current dbuff state */

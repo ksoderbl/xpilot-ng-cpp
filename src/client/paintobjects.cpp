@@ -23,6 +23,16 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <ctime>
+#include <climits>
+#include <sys/types.h>
+
+#include <unistd.h>
+
 #include "xpclient.h"
 
 #define COLOR(i) (i / areas)

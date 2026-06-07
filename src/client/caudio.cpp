@@ -27,6 +27,12 @@
  * client audio
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
+#include <sys/types.h>
+
 #define _CAUDIO_C_
 #include "xpclient.h"
 

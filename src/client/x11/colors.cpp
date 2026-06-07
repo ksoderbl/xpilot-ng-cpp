@@ -23,6 +23,18 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cctype>
+#include <cstring>
+#include <cerrno>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <X11/Xlib.h>
+#include <X11/Xos.h>
+#include <X11/Xutil.h>
+
 #include "xpclient_x11.h"
 
 /* Kludge for visuals under C++ */

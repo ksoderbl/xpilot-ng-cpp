@@ -25,6 +25,19 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <ctime>
+#include <climits>
+#include <cmath>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <X11/Xlib.h>
+#include <X11/Xos.h>
+
 #include "xpclient_x11.h"
 
 static bool texturedShips = false; /* Turned this off because the images drawn

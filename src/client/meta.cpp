@@ -23,6 +23,17 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <sys/time.h>
+#include <unistd.h>
+
+#include <algorithm>
+#include <cctype>
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
+#include <ctime>
+#include <string>
+
 #include "xpclient.h"
 
 static struct Meta metas[NUM_METAS] = {

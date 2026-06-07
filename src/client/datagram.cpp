@@ -23,6 +23,16 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <sys/param.h>
+#include <netdb.h>
+
 #include "xpclient.h"
 
 int dgram_one_socket = 0;
