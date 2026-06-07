@@ -22,7 +22,12 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdio>
+#include <cstring>
+
+#include <expat.h>
 #include <zlib.h>
+
 #include "xpserver.h"
 
 #define DEFAULT_POS {-1, -1}

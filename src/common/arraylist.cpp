@@ -18,6 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cassert>
+
 #include "xpcommon.h"
 
 #define ARRAYLIST_INITIAL_NUM_ELEMENTS 16

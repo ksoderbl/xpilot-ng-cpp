@@ -25,6 +25,22 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <csignal>
+#include <cerrno>
+#include <ctime>
+#include <cassert>
+
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <sys/param.h>
+#include <sys/time.h>
+
 #include "xpclient.h"
 
 #define TALK_RETRY 2

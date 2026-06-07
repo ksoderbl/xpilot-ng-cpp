@@ -25,6 +25,20 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cctype>
+#include <cerrno>
+#include <ctime>
+#include <cassert>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <sys/param.h>
+#include <netdb.h>
+#include <sys/time.h>
+
 #include "xpclient.h"
 
 #define MAX_LINE MSG_LEN /* should not be smaller than MSG_LEN */

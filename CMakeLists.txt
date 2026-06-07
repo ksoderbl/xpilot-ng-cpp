@@ -75,10 +75,10 @@ add_compile_options(
     -Wmissing-declarations
     -Wuninitialized
     -Winit-self
-    -Wredundant-decls
-    -Wstrict-prototypes
-    -Wmissing-prototypes
-    -Wold-style-definition
+    # -Wredundant-decls
+    # -Wstrict-prototypes
+    # -Wmissing-prototypes
+    # -Wold-style-definition
     -Wno-unused-parameter
 )
 

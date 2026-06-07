@@ -28,6 +28,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cmath>
+
 #include "xpserver.h"
 
 bool team_dead(int team)
