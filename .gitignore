@@ -1,0 +1,40 @@
+# CMake
+build/
+
+# Configure output
+config.log
+config.status
+config.cache
+
+# Generated headers
+config.h
+stamp-h1
+
+# Dependency tracking
+.deps/
+.libs/
+
+# Makefiles
+Makefile
+
+# Autotools generated files
+aclocal.m4
+autom4te.cache/
+compile
+config.guess
+config.sub
+depcomp
+install-sh
+ltmain.sh
+missing
+
+# Libtool
+libtool
+
+# Build outputs
+*.o
+*.lo
+*.la
+*.a
+*.so
+*.so.*
