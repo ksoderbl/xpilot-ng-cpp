@@ -263,7 +263,7 @@ struct world
     char author[MAX_CHARS];
     char dataURL[MAX_CHARS];
 
-    u_byte **block; /* type of item in each block */
+    uint8_t **block; /* type of item in each block */
     vector_t **gravity;
     item_t items[NUM_ITEMS];
     asteroid_t asteroids;

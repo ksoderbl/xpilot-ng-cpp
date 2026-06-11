@@ -27,7 +27,7 @@
 #define NETCLIENT_H
 
 #ifndef TYPES_H
-/* need u_byte */
+/* need uint8_t */
 #include "types.h"
 #endif
 
@@ -126,7 +126,7 @@ int Receive_quit(void);
 int Receive_string(void);
 int Receive_reply(int *replyto, int *result);
 int Send_ack(long rel_loops);
-int Send_keyboard(u_byte *);
+int Send_keyboard(uint8_t *);
 int Send_shape(char *);
 int Send_power(double pwr);
 int Send_power_s(double pwr_s);

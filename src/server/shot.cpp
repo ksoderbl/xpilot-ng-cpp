@@ -1875,13 +1875,13 @@ void Update_missile(missileobject_t *missile)
 	angle = angle - missile->missile_dir - RES / 2;
 
 	if (angle < 0)
-		missile->missile_dir += (u_byte)(((-angle < missile->missile_turnspeed)
-											  ? -angle
-											  : missile->missile_turnspeed));
+		missile->missile_dir += (uint8_t)(((-angle < missile->missile_turnspeed)
+											   ? -angle
+											   : missile->missile_turnspeed));
 	else
-		missile->missile_dir -= (u_byte)(((angle < missile->missile_turnspeed)
-											  ? angle
-											  : missile->missile_turnspeed));
+		missile->missile_dir -= (uint8_t)(((angle < missile->missile_turnspeed)
+											   ? angle
+											   : missile->missile_turnspeed));
 
 	missile->missile_dir = MOD2(missile->missile_dir, RES); /* NOTE!!!! */
 

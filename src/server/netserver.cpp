@@ -1914,7 +1914,7 @@ int Send_wreckage(connection_t *connp, clpos_t pos,
 int Send_asteroid(connection_t *connp, clpos_t pos,
 				  int type, int size, int rot)
 {
-	u_byte type_size;
+	uint8_t type_size;
 	int x = CLICK_TO_PIXEL(pos.cx), y = CLICK_TO_PIXEL(pos.cy);
 
 	if (!FEATURE(connp, F_ASTEROID))
@@ -2224,7 +2224,7 @@ static int Receive_keyboard(connection_t *connp)
 {
 	player_t *pl;
 	long change;
-	u_byte ch;
+	uint8_t ch;
 	size_t size = KEYBOARD_SIZE;
 
 	if (connp->r.ptr - connp->r.buf + (int)size + 1 + 4 > connp->r.len)

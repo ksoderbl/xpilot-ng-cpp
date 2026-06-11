@@ -26,7 +26,7 @@
 #ifndef PAINTDATA_H
 #define PAINTDATA_H
 
-/* need u_byte */
+/* need uint8_t */
 #ifndef TYPES_H
 #include "types.h"
 #endif

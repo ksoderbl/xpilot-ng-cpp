@@ -155,7 +155,7 @@ void Winpaint_world_radar(void)
     float xs, ys;
     int npoint = 0, nsegment = 0, start, end;
     const int max = 256;
-    u_byte visible[256], visibleColor[256];
+    uint8_t visible[256], visibleColor[256];
     int light;
     RGB_COLOR color;
     radar_exposures = 2;

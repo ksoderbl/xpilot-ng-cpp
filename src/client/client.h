@@ -305,7 +305,7 @@ typedef struct
 typedef struct
 {
     short x0, y0, x1, y1;
-    u_byte tractor;
+    uint8_t tractor;
 } connector_t;
 
 typedef struct
@@ -323,14 +323,14 @@ typedef struct
 typedef struct
 {
     short x, y, id;
-    u_byte style;
+    uint8_t style;
 } ball_t;
 
 typedef struct
 {
     short x, y, id, dir;
-    u_byte shield, cloak, eshield;
-    u_byte phased, deflector;
+    uint8_t shield, cloak, eshield;
+    uint8_t phased, deflector;
 } ship_t;
 
 typedef struct
@@ -393,7 +393,7 @@ typedef struct
 
 typedef struct
 {
-    u_byte x, y;
+    uint8_t x, y;
 } debris_t;
 
 typedef struct
@@ -404,13 +404,13 @@ typedef struct
 typedef struct
 {
     short x, y;
-    u_byte wrecktype, size, rotation;
+    uint8_t wrecktype, size, rotation;
 } wreckage_t;
 
 typedef struct
 {
     short x, y;
-    u_byte type, size, rotation;
+    uint8_t type, size, rotation;
 } asteroid_t;
 
 typedef struct
@@ -517,8 +517,8 @@ extern ipos_t selfPos;
 extern ipos_t selfVel;
 extern short heading;
 extern short nextCheckPoint;
-extern u_byte numItems[NUM_ITEMS];
-extern u_byte lastNumItems[NUM_ITEMS];
+extern uint8_t numItems[NUM_ITEMS];
+extern uint8_t lastNumItems[NUM_ITEMS];
 extern int numItemsTime[NUM_ITEMS];
 extern double showItemsTime;
 extern short autopilotLight;
@@ -559,9 +559,9 @@ extern int sparkSize;           /* size of sparks and debris */
 extern int shotSize;            /* size of shot */
 extern int teamShotSize;        /* size of team shot */
 
-extern double controlTime;    /* Display control for how long? */
-extern u_byte spark_rand;     /* Sparkling effect */
-extern u_byte old_spark_rand; /* previous value of spark_rand */
+extern double controlTime;     /* Display control for how long? */
+extern uint8_t spark_rand;     /* Sparkling effect */
+extern uint8_t old_spark_rand; /* previous value of spark_rand */
 
 extern double fuelSum;      /* Sum of fuel in all tanks */
 extern double fuelMax;      /* How much fuel can you take? */
@@ -784,10 +784,10 @@ int Handle_self(int x, int y, int vx, int vy, int newHeading,
                 double newPower, double newTurnspeed, double newTurnresistance,
                 int newLockId, int newLockDist, int newLockBearing,
                 int newNextCheckPoint, int newAutopilotLight,
-                u_byte *newNumItems, int newCurrentTank,
+                uint8_t *newNumItems, int newCurrentTank,
                 double newFuelSum, double newFuelMax, int newPacketSize,
                 int status);
-int Handle_self_items(u_byte *newNumItems);
+int Handle_self_items(uint8_t *newNumItems);
 int Handle_modifiers(char *m);
 int Handle_damaged(int dam);
 int Handle_destruct(int count);
@@ -805,8 +805,8 @@ int Handle_ship(int x, int y, int id, int dir, int shield, int cloak,
                 int eshield, int phased, int deflector);
 int Handle_mine(int x, int y, int teammine, int id);
 int Handle_item(int x, int y, int type);
-int Handle_fastshot(int type, u_byte *p, int n);
-int Handle_debris(int type, u_byte *p, int n);
+int Handle_fastshot(int type, uint8_t *p, int n);
+int Handle_debris(int type, uint8_t *p, int n);
 int Handle_wreckage(int x, int y, int wrecktype, int size, int rotation);
 int Handle_asteroid(int x, int y, int type, int size, int rotation);
 int Handle_wormhole(int x, int y);

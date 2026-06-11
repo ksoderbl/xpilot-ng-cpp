@@ -29,7 +29,7 @@
 #ifndef _WINDOWS
 typedef signed char byte;
 #endif
-typedef unsigned char u_byte;
+typedef unsigned char uint8_t;
 
 /*
  * On some systems an enum is smaller than an int.

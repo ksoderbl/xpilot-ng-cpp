@@ -29,6 +29,7 @@
 #include <cctype>
 #include <climits>
 #include <cerrno>
+#include <cassert>
 
 #include <string>
 #include <vector>
