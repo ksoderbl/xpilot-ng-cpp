@@ -1770,26 +1770,26 @@ int Handle_rounddelay(int count, int max)
 	return 0;
 }
 
-int Handle_refuel(int x_0, int y_0, int x_1, int y_1)
+int Handle_refuel(int x0, int y0, int x1, int y1)
 {
 	refuel_t t;
 
-	t.x0 = x_0;
-	t.x1 = x_1;
-	t.y0 = y_0;
-	t.y1 = y_1;
+	t.x0 = x0;
+	t.x1 = x1;
+	t.y0 = y0;
+	t.y1 = y1;
 	STORE(refuel_t, refuel_ptr, num_refuel, max_refuel, t);
 	return 0;
 }
 
-int Handle_connector(int x_0, int y_0, int x_1, int y_1, int tractor)
+int Handle_connector(int x0, int y0, int x1, int y1, int tractor)
 {
 	connector_t t;
 
-	t.x0 = x_0;
-	t.x1 = x_1;
-	t.y0 = y_0;
-	t.y1 = y_1;
+	t.x0 = x0;
+	t.x1 = x1;
+	t.y0 = y0;
+	t.y1 = y1;
 	t.tractor = tractor;
 	STORE(connector_t, connector_ptr, num_connector, max_connector, t);
 	return 0;
@@ -2034,14 +2034,14 @@ int Handle_ecm(int x, int y, int size)
 	return 0;
 }
 
-int Handle_trans(int x_1, int y_1, int x_2, int y_2)
+int Handle_trans(int x1, int y1, int x2, int y2)
 {
 	trans_t t;
 
-	t.x1 = x_1;
-	t.y1 = y_1;
-	t.x2 = x_2;
-	t.y2 = y_2;
+	t.x1 = x1;
+	t.y1 = y1;
+	t.x2 = x2;
+	t.y2 = y2;
 	STORE(trans_t, trans_ptr, num_trans, max_trans, t);
 	return 0;
 }

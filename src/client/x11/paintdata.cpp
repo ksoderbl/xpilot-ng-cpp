@@ -182,14 +182,14 @@ void Segment_end(void)
     }
 }
 
-int Segment_add(int color, int x_1, int y_1, int x_2, int y_2)
+int Segment_add(int color, int x1, int y1, int x2, int y2)
 {
     XSegment t;
 
-    t.x1 = WINSCALE(x_1);
-    t.y1 = WINSCALE(y_1);
-    t.x2 = WINSCALE(x_2);
-    t.y2 = WINSCALE(y_2);
+    t.x1 = WINSCALE(x1);
+    t.y1 = WINSCALE(y1);
+    t.x2 = WINSCALE(x2);
+    t.y2 = WINSCALE(y2);
     STORE(XSegment, seg_ptr[color], num_seg[color], max_seg[color], t);
     return 0;
 }

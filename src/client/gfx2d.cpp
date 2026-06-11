@@ -501,7 +501,7 @@ static void Picture_scale_x_slice(const xp_picture_t *picture, int image,
  * This is used by the scaling algorithm.
  */
 RGB_COLOR Picture_get_pixel_area(const xp_picture_t *picture, int image,
-								 double x_1, double y_1, double dx, double dy)
+								 double x1, double y1, double dx, double dy)
 {
 	int r, g, b;
 	double area;
@@ -513,11 +513,11 @@ RGB_COLOR Picture_get_pixel_area(const xp_picture_t *picture, int image,
 	g = 0;
 	b = 0;
 
-	x = (int)x_1;
-	y = (int)y_1;
+	x = (int)x1;
+	y = (int)y1;
 
-	xfrac = (x + 1) - x_1;
-	yfrac = (y + 1) - y_1;
+	xfrac = (x + 1) - x1;
+	yfrac = (y + 1) - y1;
 
 	area = dx * dy;
 

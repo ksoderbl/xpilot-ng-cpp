@@ -1701,13 +1701,13 @@ int Receive_modifiers(void)
 int Receive_refuel(void)
 {
 	int n;
-	short x_0, y_0, x_1, y_1;
+	short x0, y0, x1, y1;
 	uint8_t ch;
 
 	if ((n = Packet_scanf(&rbuf, "%c%hd%hd%hd%hd",
-						  &ch, &x_0, &y_0, &x_1, &y_1)) <= 0)
+						  &ch, &x0, &y0, &x1, &y1)) <= 0)
 		return n;
-	if ((n = Handle_refuel(x_0, y_0, x_1, y_1)) == -1)
+	if ((n = Handle_refuel(x0, y0, x1, y1)) == -1)
 		return -1;
 	return 1;
 }
@@ -1715,14 +1715,14 @@ int Receive_refuel(void)
 int Receive_connector(void)
 {
 	int n;
-	short x_0, y_0, x_1, y_1;
+	short x0, y0, x1, y1;
 	uint8_t ch, tractor;
 
 	n = Packet_scanf(&rbuf, "%c%hd%hd%hd%hd%c",
-					 &ch, &x_0, &y_0, &x_1, &y_1, &tractor);
+					 &ch, &x0, &y0, &x1, &y1, &tractor);
 	if (n <= 0)
 		return n;
-	if ((n = Handle_connector(x_0, y_0, x_1, y_1, tractor)) == -1)
+	if ((n = Handle_connector(x0, y0, x1, y1, tractor)) == -1)
 		return -1;
 	return 1;
 }
@@ -2005,13 +2005,13 @@ int Receive_ecm(void)
 int Receive_trans(void)
 {
 	int n;
-	short x_1, y_1, x_2, y_2;
+	short x1, y1, x2, y2;
 	uint8_t ch;
 
 	if ((n = Packet_scanf(&rbuf, "%c%hd%hd%hd%hd",
-						  &ch, &x_1, &y_1, &x_2, &y_2)) <= 0)
+						  &ch, &x1, &y1, &x2, &y2)) <= 0)
 		return n;
-	if ((n = Handle_trans(x_1, y_1, x_2, y_2)) == -1)
+	if ((n = Handle_trans(x1, y1, x2, y2)) == -1)
 		return -1;
 	return 1;
 }

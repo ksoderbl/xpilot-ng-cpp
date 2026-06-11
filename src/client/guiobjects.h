@@ -28,7 +28,7 @@
 
 void Gui_paint_item_object(int type, int x, int y);
 void Gui_paint_ball(int x, int y, int style);
-void Gui_paint_ball_connector(int x_1, int y_1, int x_2, int y_2);
+void Gui_paint_ball_connector(int x1, int y1, int x2, int y2);
 
 void Gui_paint_mine(int x, int y, int teammine, char *name);
 
@@ -49,18 +49,18 @@ void Gui_paint_missile(int x, int y, int len, int dir);
 
 void Gui_paint_lasers_begin(void);
 void Gui_paint_lasers_end(void);
-void Gui_paint_laser(int color, int x_1, int y_1, int len, int dir);
+void Gui_paint_laser(int color, int x1, int y1, int len, int dir);
 
 void Gui_paint_paused(int x, int y, int count);
 void Gui_paint_appearing(int x, int y, int id, int count);
 
 void Gui_paint_ecm(int x, int y, int size);
 
-void Gui_paint_refuel(int x_0, int y_0, int x_1, int y_1);
+void Gui_paint_refuel(int x0, int y0, int x1, int y1);
 
-void Gui_paint_connector(int x_0, int y_0, int x_1, int y_1, int tractor);
+void Gui_paint_connector(int x0, int y0, int x1, int y1, int tractor);
 
-void Gui_paint_transporter(int x_0, int y_0, int x_1, int y_1);
+void Gui_paint_transporter(int x0, int y0, int x1, int y1);
 
 void Gui_paint_all_connectors_begin(void);
 
