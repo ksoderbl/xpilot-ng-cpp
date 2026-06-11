@@ -168,7 +168,7 @@ void Expose_about_window(void)
 					   "\n"
 					   "XPilot NG is an improved version of XPilot.\n\n"
 					   "For more info visit http://xpilot.sourceforge.net/ or\n"
-					   "read the man pages xpilot-ng-x11(6) and xpilot-ng-server(6).\n\n"
+					   "read the man pages xpilot-ng-cpp-x11(6) and xpilot-ng-cpp-server(6).\n\n"
 					   "You can report any bug you find to <" PACKAGE_BUGREPORT ">.",
 					   colors[WHITE].pixel, colors[BLACK].pixel);
 		break;

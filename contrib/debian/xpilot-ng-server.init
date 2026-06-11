@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# xpilot-ng-server: start or stop the xpilot server
+# xpilot-ng-cpp-server: start or stop the xpilot server
 #
 #		Written by Miquel van Smoorenburg <miquels@cistron.nl>.
 #		Modified for Debian GNU/Linux
@@ -11,14 +11,14 @@
 
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 
-test -x /usr/games/start-xpilot-ng-server || exit 0
+test -x /usr/games/start-xpilot-ng-cpp-server || exit 0
 
 USER=xpilotng
-PIDFILE=/var/run/xpilot-ng-server/xpilot-ng-server.pid
+PIDFILE=/var/run/xpilot-ng-cpp-server/xpilot-ng-cpp-server.pid
 
 set -e
 
-source /etc/default/xpilot-ng-server
+source /etc/default/xpilot-ng-cpp-server
 
 case "$1" in
   start)
@@ -27,14 +27,14 @@ case "$1" in
 
 	echo -n "Starting XPilot NG server: "
 	start-stop-daemon --start --quiet --chuid $USER --background \
-		--oknodo --exec /usr/games/start-xpilot-ng-server
-	echo "xpilot-ng-server."
+		--oknodo --exec /usr/games/start-xpilot-ng-cpp-server
+	echo "xpilot-ng-cpp-server."
 	;;
   stop)
 	echo -n "Stopping XPilot NG server: "
 	if start-stop-daemon --stop --quiet --pidfile $PIDFILE \
 		--oknodo --retry 5 >/dev/null 2>&1; then
-	   echo "xpilot-ng-server."
+	   echo "xpilot-ng-cpp-server."
         else
            echo "system-wide XPilot NG server not running."
 	fi
@@ -47,11 +47,11 @@ case "$1" in
 	test -f "$DEFAULTMAP" || exit 0
 
 	start-stop-daemon --start --quiet --chuid $USER --background \
-		--oknodo --exec /usr/games/start-xpilot-ng-server
-	echo "xpilot-ng-server."
+		--oknodo --exec /usr/games/start-xpilot-ng-cpp-server
+	echo "xpilot-ng-cpp-server."
 	;;
   *)
-	N=/etc/init.d/xpilot-ng-server
+	N=/etc/init.d/xpilot-ng-cpp-server
 	echo "Usage: $N {start|stop|restart|force-reload}" >&2
 	exit 1
 	;;

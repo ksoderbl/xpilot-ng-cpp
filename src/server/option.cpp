@@ -23,6 +23,18 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cctype>
+#include <climits>
+#include <cerrno>
+
+#include <string>
+#include <vector>
+
+#include <unistd.h>
+
 #include "xpserver.h"
 
 /*
@@ -830,7 +842,7 @@ static void Option_parse_node(hash_node *np)
 	case valIPos:
 	{
 		ipos_t *ptr = (ipos_t *)desc->variable;
-		char *s;
+		const char *s;
 
 		s = strchr(value, ',');
 		if (!s)

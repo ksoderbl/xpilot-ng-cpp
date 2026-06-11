@@ -5,7 +5,7 @@
 !define PRODUCT_VERSION "4.7.1"
 !define PRODUCT_PUBLISHER "XPilotNG"
 !define PRODUCT_WEB_SITE "http://xpilot.sf.net"
-!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\xpilot-ng-sdl.exe"
+!define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\xpilot-ng-cpp-sdl.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 !define PRODUCT_STARTMENU_REGVAL "NSIS:StartMenuDir"
@@ -34,7 +34,7 @@ var ICONS_GROUP
 ; Instfiles page
 !insertmacro MUI_PAGE_INSTFILES
 ; Finish page
-!define MUI_FINISHPAGE_RUN "$INSTDIR\xpilot-ng-sdl.exe"
+!define MUI_FINISHPAGE_RUN "$INSTDIR\xpilot-ng-cpp-sdl.exe"
 !insertmacro MUI_PAGE_FINISH
 
 ; Uninstaller pages
@@ -319,8 +319,8 @@ Section "MainSection" SEC01
   File "C:\xpbackup\XPilotNG-SDL\SDL_ttf.dll"
   File "C:\xpbackup\XPilotNG-SDL\stdout.txt"
   File "C:\xpbackup\XPilotNG-SDL\wrap_oal.dll"
-  File "C:\xpbackup\XPilotNG-SDL\xpilot-ng-sdl.exe"
-  File "C:\xpbackup\XPilotNG-SDL\xpilot-ng-server.exe"
+  File "C:\xpbackup\XPilotNG-SDL\xpilot-ng-cpp-sdl.exe"
+  File "C:\xpbackup\XPilotNG-SDL\xpilot-ng-cpp-server.exe"
   File "C:\xpbackup\XPilotNG-SDL\xpilot.ico"
   File "C:\xpbackup\XPilotNG-SDL\xpilotrc.txt"
   File "C:\xpbackup\XPilotNG-SDL\zlib.dll"
@@ -329,8 +329,8 @@ Section "MainSection" SEC01
 ; Shortcuts
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
   CreateDirectory "$SMPROGRAMS\$ICONS_GROUP"
-  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\XPilotNG.lnk" "$INSTDIR\xpilot-ng-sdl.exe"
-  CreateShortCut "$DESKTOP\XPilotNG.lnk" "$INSTDIR\xpilot-ng-sdl.exe"
+  CreateShortCut "$SMPROGRAMS\$ICONS_GROUP\XPilotNG.lnk" "$INSTDIR\xpilot-ng-cpp-sdl.exe"
+  CreateShortCut "$DESKTOP\XPilotNG.lnk" "$INSTDIR\xpilot-ng-cpp-sdl.exe"
   !insertmacro MUI_STARTMENU_WRITE_END
 SectionEnd
 
@@ -344,10 +344,10 @@ SectionEnd
 
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\xpilot-ng-sdl.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\xpilot-ng-cpp-sdl.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\xpilot-ng-sdl.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\xpilot-ng-cpp-sdl.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_PUBLISHER}"
@@ -372,8 +372,8 @@ Section Uninstall
   Delete "$INSTDIR\zlib.dll"
   Delete "$INSTDIR\xpilotrc.txt"
   Delete "$INSTDIR\xpilot.ico"
-  Delete "$INSTDIR\xpilot-ng-server.exe"
-  Delete "$INSTDIR\xpilot-ng-sdl.exe"
+  Delete "$INSTDIR\xpilot-ng-cpp-server.exe"
+  Delete "$INSTDIR\xpilot-ng-cpp-sdl.exe"
   Delete "$INSTDIR\wrap_oal.dll"
   Delete "$INSTDIR\stdout.txt"
   Delete "$INSTDIR\SDL_ttf.dll"

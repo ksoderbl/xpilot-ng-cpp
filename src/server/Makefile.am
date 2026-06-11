@@ -1,5 +1,5 @@
 AM_CPPFLAGS = -DCONF_DATADIR=\"$(pkgdatadir)/\" -I$(top_srcdir)/src/common
-bin_PROGRAMS = xpilot-ng-server
+bin_PROGRAMS = xpilot-ng-cpp-server
 xpilot_ng_server_SOURCES = \
 	alliance.c asteroid.c asteroid.h \
 	cannon.c cannon.h cell.c cmdline.c collision.c \

@@ -44,7 +44,7 @@ static void printfile(const char *filename)
 
 const char *Program_name(void)
 {
-    return "xpilot-ng-x11";
+    return "xpilot-ng-cpp-x11";
 }
 
 /*

@@ -1,4 +1,4 @@
-bin_PROGRAMS = xpilot-ng-x11
+bin_PROGRAMS = xpilot-ng-cpp-x11
 AM_CPPFLAGS = -DCONF_DATADIR=\"$(pkgdatadir)/\" -I$(top_srcdir)/src/common -I$(top_srcdir)/src/client
 xpilot_ng_x11_SOURCES = \
 	about.c \

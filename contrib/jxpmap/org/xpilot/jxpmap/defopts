@@ -1,4 +1,4 @@
-# /opt2/projects/xpilot/src/server/xpilot-ng-server option dump
+# /opt2/projects/xpilot/src/server/xpilot-ng-cpp-server option dump
 # 
 # CONF_DATADIR = /usr/local/share/xpilot-ng/
 # CONF_DEFAULTS_FILE_NAME = /usr/local/share/xpilot-ng/defaults.txt

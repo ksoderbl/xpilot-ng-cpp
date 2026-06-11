@@ -15,7 +15,7 @@ Install XPilot NG.
 
 Start server, using options rankFileName and rankWebpageFileName, e.g.
 
-xpilot-ng-server -rankFileName rank.txt -rankWebpageFileName rank.html
+xpilot-ng-cpp-server -rankFileName rank.txt -rankWebpageFileName rank.html
 
 In this example ranking info will be stored in rank.txt and the webpage
 in rank.html. You might want to put the webpage in some public html
@@ -93,7 +93,7 @@ editor.
      touch "$RANKWEBPAGE"
      chmod 644 "$RANKWEBPAGE"
 
-     xpilot-ng-server -passwordFileName "$SERVERDIR/password.txt" \
+     xpilot-ng-cpp-server -passwordFileName "$SERVERDIR/password.txt" \
      -rankFileName "$RANKFILE" -rankWebpage "$RANKWEBPAGE" \
      -map polybloods.xp2 -FPS 50 -gameSpeed 12 -noQuit $@ >> "$LOGFILE"
 

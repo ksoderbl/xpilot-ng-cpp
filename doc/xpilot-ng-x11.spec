@@ -1,7 +1,7 @@
 
 
 Summary: 	A multiuser gravity war game client
-Name: 		xpilot-ng-x11
+Name: 		xpilot-ng-cpp-x11
 Version: 	4.6.5
 Release: 	1
 Packager: 	darel.cullen@bostream.nu
@@ -120,9 +120,9 @@ rm -rf $RPM_BUILD_ROOT
 rm -rf $RPM_BUILD_ROOT
 
 %files
-/usr/local/bin/xpilot-ng-x11
-/usr/local/bin/xpilot-ng-server
-/usr/local/bin/xpilot-ng-replay
+/usr/local/bin/xpilot-ng-cpp-x11
+/usr/local/bin/xpilot-ng-cpp-server
+/usr/local/bin/xpilot-ng-cpp-replay
 /usr/local/share/xpilot-ng/fonts/VeraMoBd.ttf
 /usr/local/share/xpilot-ng/fonts
 /usr/local/share/xpilot-ng/maps/polybloods.xp2

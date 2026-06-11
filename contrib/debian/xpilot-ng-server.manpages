@@ -1,2 +1,2 @@
-doc/man/xpilot-ng-server.man
-debian/start-xpilot-ng-server.8
+doc/man/xpilot-ng-cpp-server.man
+debian/start-xpilot-ng-cpp-server.8

@@ -40,7 +40,7 @@ static void sigcatch(int signum)
 
 const char *Program_name(void)
 {
-    return "xpilot-ng-sdl";
+    return "xpilot-ng-cpp-sdl";
 }
 
 int main(int argc, char *argv[])

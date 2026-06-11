@@ -91,7 +91,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-bin_PROGRAMS = xpilot-ng-sdl$(EXEEXT)
+bin_PROGRAMS = xpilot-ng-cpp-sdl$(EXEEXT)
 @COND_SDL_GAMELOOP_TRUE@am__append_1 = gameloop.c
 @COND_SDL_GAMELOOP_FALSE@am__append_2 = gameloop_x.c
 @COND_WINDOWS_TRUE@am__append_3 = win32hacks.c
@@ -412,8 +412,8 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-$(am__rm_f) $(bin_PROGRAMS)
 
-xpilot-ng-sdl$(EXEEXT): $(xpilot_ng_sdl_OBJECTS) $(xpilot_ng_sdl_DEPENDENCIES) $(EXTRA_xpilot_ng_sdl_DEPENDENCIES) 
-	@rm -f xpilot-ng-sdl$(EXEEXT)
+xpilot-ng-cpp-sdl$(EXEEXT): $(xpilot_ng_sdl_OBJECTS) $(xpilot_ng_sdl_DEPENDENCIES) $(EXTRA_xpilot_ng_sdl_DEPENDENCIES) 
+	@rm -f xpilot-ng-cpp-sdl$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(xpilot_ng_sdl_OBJECTS) $(xpilot_ng_sdl_LDADD) $(LIBS)
 
 mostlyclean-compile:

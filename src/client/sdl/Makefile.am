@@ -1,5 +1,5 @@
 
-bin_PROGRAMS = xpilot-ng-sdl
+bin_PROGRAMS = xpilot-ng-cpp-sdl
 AM_CPPFLAGS = -DCONF_DATADIR=\"$(pkgdatadir)/\" \
 	-I$(top_srcdir)/src/common -I$(top_srcdir)/src/client @SDL_CFLAGS@
 xpilot_ng_sdl_SOURCES = \

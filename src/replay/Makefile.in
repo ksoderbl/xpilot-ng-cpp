@@ -91,7 +91,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-bin_PROGRAMS = xpilot-ng-replay$(EXEEXT)
+bin_PROGRAMS = xpilot-ng-cpp-replay$(EXEEXT)
 subdir = src/replay
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -407,8 +407,8 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-$(am__rm_f) $(bin_PROGRAMS)
 
-xpilot-ng-replay$(EXEEXT): $(xpilot_ng_replay_OBJECTS) $(xpilot_ng_replay_DEPENDENCIES) $(EXTRA_xpilot_ng_replay_DEPENDENCIES) 
-	@rm -f xpilot-ng-replay$(EXEEXT)
+xpilot-ng-cpp-replay$(EXEEXT): $(xpilot_ng_replay_OBJECTS) $(xpilot_ng_replay_DEPENDENCIES) $(EXTRA_xpilot_ng_replay_DEPENDENCIES) 
+	@rm -f xpilot-ng-cpp-replay$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(xpilot_ng_replay_OBJECTS) $(xpilot_ng_replay_LDADD) $(LIBS)
 
 mostlyclean-compile:

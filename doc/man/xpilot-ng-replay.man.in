@@ -2,7 +2,7 @@
 .\"
 .\" @XP_COPYRIGHT@ & Steven Singer.
 .\"
-.TH XPILOT-NG-REPLAY 6 "Requires X11"
+.TH xpilot-ng-cpp-replay 6 "Requires X11"
 .ds )H GNU General Public License 2.0 applies
 .ds ]W @PACKAGE_STRING@: @XP_RELEASEDATE@
 .if n .ad l	\" If nroff formatter, adjust left margin only
@@ -10,12 +10,12 @@
 
 .SH NAME
 
-xpilot-ng-replay \- Playback an XPilot session.
+xpilot-ng-cpp-replay \- Playback an XPilot session.
 
 
 .SH SYNOPSIS
 
-.B xpilot-ng-replay
+.B xpilot-ng-cpp-replay
 .B [-help]
 .B [-scale \fIfactor\fC]
 .B [-gamma \fIfactor\fC]
@@ -30,8 +30,8 @@ xpilot-ng-replay \- Playback an XPilot session.
 
 .SH OVERVIEW
 
-xpilot-ng-replay is a program to view an XPilot recording. It takes record files
-produced by \fIxpilot-ng-x11(6)\fP and allows the user to replay them and make
+xpilot-ng-cpp-replay is a program to view an XPilot recording. It takes record files
+produced by \fIxpilot-ng-cpp-x11(6)\fP and allows the user to replay them and make
 snapshots of frames.
 
 .SS Options
@@ -194,18 +194,18 @@ option is available to save files in compressed format.
 
 The simplest invocation is
 .IP
-.B xpilot-ng-replay test-recording.xpr
+.B xpilot-ng-cpp-replay test-recording.xpr
 .PP
 which will play back a recording, and save frames at the original size.
 
 You may want to compress the recording files to save disk space. You can
 then play them back directly without uncompressing them first using
 .IP
-.B gzip -cd test-recording.xpr.gz | xpilot-ng-replay -
+.B gzip -cd test-recording.xpr.gz | xpilot-ng-cpp-replay -
 .PP
 however, this may limit your ability to rewind through the recording.
 
-.B xpilot-ng-replay
+.B xpilot-ng-cpp-replay
 automatically recognizes if a file is in gzip, bzip2 or compress format.
 If this is the case then it automatically starts
 .B gzip -d
@@ -217,7 +217,7 @@ to uncompress the file before playback.
 
 To save frames smaller that the original size use something like
 .IP
-.B xpilot-ng-replay -scale 0.5 -gamma 2 test-recording.xpr
+.B xpilot-ng-cpp-replay -scale 0.5 -gamma 2 test-recording.xpr
 .PP
 which will save frames at half size.
 
@@ -226,7 +226,7 @@ which will save frames at half size.
 
 \fBxp-replay\fP was originally designed and developed by
 Steven Singer (S.Singer@ph.surrey.ac.uk). Additional development was
-performed by Bert Gijsbers (bert@xpilot.org). \fBxpilot-ng-replay\fP
+performed by Bert Gijsbers (bert@xpilot.org). \fBxpilot-ng-cpp-replay\fP
 is a slightly improved version.
 
 The scaling and gamma correction code was taken from the \fBpbmplus\fP
@@ -239,8 +239,8 @@ Bugs can be mailed to \fB@PACKAGE_BUGREPORT@\fP.
 
 
 .SH SEE ALSO
-xpilot-ng-x11(6), xpilot-ng-server(6), ppm(5), gzip(1)
+xpilot-ng-cpp-x11(6), xpilot-ng-cpp-server(6), ppm(5), gzip(1)
 .\"
-.\" index		\fIxpilot-ng-x11\fP \- multiplayer war game
-.\" index		\fIxpilot-ng-server\fP \- @PACKAGE_NAME@ server
+.\" index		\fIxpilot-ng-cpp-x11\fP \- multiplayer war game
+.\" index		\fIxpilot-ng-cpp-server\fP \- @PACKAGE_NAME@ server
 

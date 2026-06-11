@@ -63,15 +63,15 @@ how easy can it be? :)
 
     Start a server first:
 
-        xpilot-ng-server
+        xpilot-ng-cpp-server
 
     Then start the X-based client in another window:
 
-        xpilot-ng-x11 -join
+        xpilot-ng-cpp-x11 -join
 
     Or if you compiled the SDL client:
 
-        xpilot-ng-sdl -join
+        xpilot-ng-cpp-sdl -join
 
     That -join switch tells the client to join a local server.
     If you run the client without -join it will allow you to join

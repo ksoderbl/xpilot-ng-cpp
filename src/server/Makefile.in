@@ -91,7 +91,7 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 target_triplet = @target@
-bin_PROGRAMS = xpilot-ng-server$(EXEEXT)
+bin_PROGRAMS = xpilot-ng-cpp-server$(EXEEXT)
 subdir = src/server
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -424,8 +424,8 @@ uninstall-binPROGRAMS:
 clean-binPROGRAMS:
 	-$(am__rm_f) $(bin_PROGRAMS)
 
-xpilot-ng-server$(EXEEXT): $(xpilot_ng_server_OBJECTS) $(xpilot_ng_server_DEPENDENCIES) $(EXTRA_xpilot_ng_server_DEPENDENCIES) 
-	@rm -f xpilot-ng-server$(EXEEXT)
+xpilot-ng-cpp-server$(EXEEXT): $(xpilot_ng_server_OBJECTS) $(xpilot_ng_server_DEPENDENCIES) $(EXTRA_xpilot_ng_server_DEPENDENCIES) 
+	@rm -f xpilot-ng-cpp-server$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(xpilot_ng_server_OBJECTS) $(xpilot_ng_server_LDADD) $(LIBS)
 
 mostlyclean-compile:

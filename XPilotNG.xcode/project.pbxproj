@@ -3111,7 +3111,7 @@
 			isa = PBXContainerItemProxy;
 			proxyType = 1;
 			remoteGlobalIDString = E3F9396C0812CCDE00F425B2;
-			remoteInfo = "xpilot-ng-server";
+			remoteInfo = "xpilot-ng-cpp-server";
 		};
 		E3A5D65908FC55A700869090 = {
 			isa = PBXTargetDependency;
@@ -3976,15 +3976,15 @@
 				OTHER_CFLAGS = "";
 				OTHER_REZFLAGS = "";
 				PREBINDING = NO;
-				PRODUCT_NAME = "xpilot-ng-server";
+				PRODUCT_NAME = "xpilot-ng-cpp-server";
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 			};
 			dependencies = (
 			);
 			isa = PBXNativeTarget;
-			name = "xpilot-ng-server";
-			productName = "xpilot-ng-server";
+			name = "xpilot-ng-cpp-server";
+			productName = "xpilot-ng-cpp-server";
 			productReference = E3F9396D0812CCDE00F425B2;
 			productType = "com.apple.product-type.tool";
 		};
@@ -3992,7 +3992,7 @@
 			explicitFileType = "compiled.mach-o.executable";
 			includeInIndex = 0;
 			isa = PBXFileReference;
-			path = "xpilot-ng-server";
+			path = "xpilot-ng-cpp-server";
 			refType = 3;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
@@ -4001,7 +4001,7 @@
 			isa = PBXContainerItemProxy;
 			proxyType = 1;
 			remoteGlobalIDString = E3F9396C0812CCDE00F425B2;
-			remoteInfo = "xpilot-ng-server";
+			remoteInfo = "xpilot-ng-cpp-server";
 		};
 		E3F939B80812D01600F425B2 = {
 			isa = PBXTargetDependency;

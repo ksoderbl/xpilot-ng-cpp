@@ -7,7 +7,7 @@ Standards-Version: 3.6.2
 
 Package: xpilot-ng
 Architecture: all
-Depends: xpilot-ng-client-x11 (= ${Source-Version}), xpilot-ng-client-sdl (= ${Source-Version}), xpilot-ng-server (= ${Source-Version}), xpilot-ng-utils (= ${Source-Version})
+Depends: xpilot-ng-client-x11 (= ${Source-Version}), xpilot-ng-client-sdl (= ${Source-Version}), xpilot-ng-cpp-server (= ${Source-Version}), xpilot-ng-utils (= ${Source-Version})
 Description: Multi-player tactical game for X (NG version)
  XPilot is a multi-player tactical manoeuvring game for X.  Each
  player controls their own fighter equipped with a variety of weapons
@@ -24,7 +24,7 @@ Description: Multi-player tactical game for X (NG version)
 Package: xpilot-ng-common
 Architecture: all
 Depends: ${misc:Depends}, adduser (>=3.34)
-Suggests: xpilot-ng-server, xpilot-ng-utils, xpilot-ng-client-x11, xpilot-ng-client-sdl
+Suggests: xpilot-ng-cpp-server, xpilot-ng-utils, xpilot-ng-client-x11, xpilot-ng-client-sdl
 Description: Common files for XPilot NG
  XPilot is a multi-player tactical manoeuvring game for X.  Each
  player controls their own fighter equipped with a variety of weapons
@@ -88,7 +88,7 @@ Description: Utilities for XPilot NG
  .
  This package is for the "Next Generation" (NG) fork at http://xpilot.sf.net
 
-Package: xpilot-ng-server
+Package: xpilot-ng-cpp-server
 Architecture: any
 Depends: ${shlibs:Depends}, xpilot-ng-common (= ${Source-Version})
 Description: Server for hosting XPilot NG games

@@ -12,22 +12,22 @@ def which(app):
 	return os.environ.get(app.replace('-', '_'), None)
 
 meta = ('meta.xpilot.org', 4401)
-client_x11 = which('xpilot-ng-x11')
-client_sdl = which('xpilot-ng-sdl')
+client_x11 = which('xpilot-ng-cpp-x11')
+client_sdl = which('xpilot-ng-cpp-sdl')
 if client_sdl:
 	client = client_sdl
 else:
 	client = client_x11
 if (sys.platform == 'win32'):
-	server = r'"C:\Program Files\XPilotNG-SDL\xpilot-ng-server"'
+	server = r'"C:\Program Files\XPilotNG-SDL\xpilot-ng-cpp-server"'
 else:
-	server = which('xpilot-ng-server')
+	server = which('xpilot-ng-cpp-server')
 if (sys.platform == 'win32'):
 	xpilotrc = r'C:\Progra~1\XPilotNG-SDL\xpilotrc.txt'
 else:
 	xpilotrc = os.path.expanduser('~/.xpilotrc')
 record_url = 'http://xpilot.sourceforge.net/ballruns/'
-xpreplay = which('xpilot-ng-replay')
+xpreplay = which('xpilot-ng-cpp-replay')
 jxpmap_url = 'http://xpilot.sf.net/jxpmap/jxpmap.jnlp'
 javaws = which('javaws')
 mapedit = which('xpilot-ng-xp-mapedit')

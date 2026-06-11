@@ -113,7 +113,7 @@ static inline double SHOT_MULT(object_t *obj)
 }
 
 #ifndef _WINDOWS
-#define APPNAME "xpilot-ng-server"
+#define APPNAME "xpilot-ng-cpp-server"
 #else
 #define APPNAME "XPilotNGServer"
 #endif

@@ -17,9 +17,9 @@ else()
     list(APPEND SDL_CLIENT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/gameloop.c")
 endif()
 
-add_executable(xpilot-ng-sdl ${SDL_CLIENT_SOURCES})
+add_executable(xpilot-ng-cpp-sdl ${SDL_CLIENT_SOURCES})
 
-target_include_directories(xpilot-ng-sdl
+target_include_directories(xpilot-ng-cpp-sdl
     PRIVATE
         ${CMAKE_SOURCE_DIR}/src/common
         ${CMAKE_SOURCE_DIR}/src/client
@@ -29,13 +29,13 @@ target_include_directories(xpilot-ng-sdl
         ${SDL_IMAGE_INCLUDE_DIRS}
 )
 
-target_compile_definitions(xpilot-ng-sdl
+target_compile_definitions(xpilot-ng-cpp-sdl
     PRIVATE
         HAVE_CONFIG_H=1
         CONF_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}/${PROJECT_NAME}/"
 )
 
-target_link_libraries(xpilot-ng-sdl
+target_link_libraries(xpilot-ng-cpp-sdl
     PRIVATE
         xpclient
         xpcommon
@@ -46,18 +46,18 @@ target_link_libraries(xpilot-ng-sdl
 )
 
 if(TARGET OpenGL::GLU)
-    target_link_libraries(xpilot-ng-sdl PRIVATE OpenGL::GLU)
+    target_link_libraries(xpilot-ng-cpp-sdl PRIVATE OpenGL::GLU)
 endif()
 
 if(X11_FOUND)
-    target_link_libraries(xpilot-ng-sdl PRIVATE ${X11_LIBRARIES})
+    target_link_libraries(xpilot-ng-cpp-sdl PRIVATE ${X11_LIBRARIES})
 endif()
 
 if(XPILOT_HAVE_SOUND)
-    target_link_libraries(xpilot-ng-sdl PRIVATE ${OPENAL_LIBRARIES} ${ALUT_LIBRARIES})
-    target_include_directories(xpilot-ng-sdl PRIVATE ${OPENAL_INCLUDE_DIRS} ${ALUT_INCLUDE_DIRS})
+    target_link_libraries(xpilot-ng-cpp-sdl PRIVATE ${OPENAL_LIBRARIES} ${ALUT_LIBRARIES})
+    target_include_directories(xpilot-ng-cpp-sdl PRIVATE ${OPENAL_INCLUDE_DIRS} ${ALUT_INCLUDE_DIRS})
 endif()
 
-install(TARGETS xpilot-ng-sdl
+install(TARGETS xpilot-ng-cpp-sdl
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )

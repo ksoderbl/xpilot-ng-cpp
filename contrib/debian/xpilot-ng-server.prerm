@@ -1,12 +1,12 @@
 #! /bin/sh
-# prerm script for xpilot-ng-server
+# prerm script for xpilot-ng-cpp-server
 
 set -e
 
 echo -n "Stopping XPilot NG server: "
 if start-stop-daemon --stop --quiet --user xpilotng \
-	--name xpilot-ng-server --retry 30 >/dev/null 2>&1; then
-   echo "xpilot-ng-server."
+	--name xpilot-ng-cpp-server --retry 30 >/dev/null 2>&1; then
+   echo "xpilot-ng-cpp-server."
 else
    # Take more draconian measures, as 'xpilotng' user may be
    # removed by this point by an earlier failed --stop.
@@ -14,8 +14,8 @@ else
    # than xpilotng here, but this is better than the alternative
    # (keeping an earlier, potentially buggy XPilot NG server
    # running).
-   if start-stop-daemon --stop --quiet --name xpilot-ng-server --retry 30; then
-      echo "xpilot-ng-server."
+   if start-stop-daemon --stop --quiet --name xpilot-ng-cpp-server --retry 30; then
+      echo "xpilot-ng-cpp-server."
    fi
 fi
 

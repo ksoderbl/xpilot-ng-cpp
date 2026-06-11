@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEFAULTFILE=/etc/default/xpilot-ng-server
+DEFAULTFILE=/etc/default/xpilot-ng-cpp-server
 
 if [ ! -e $DEFAULTFILE ]; then
   touch $DEFAULTFILE
@@ -62,9 +62,9 @@ EOF
 
 # Normally added by dh_installinit, but included here manually because
 # we customize the prerm and therefore run dh_installinit --noscripts.
-if [ -x "/etc/init.d/xpilot-ng-server" ]; then
-        update-rc.d xpilot-ng-server defaults >/dev/null
-        /etc/init.d/xpilot-ng-server start
+if [ -x "/etc/init.d/xpilot-ng-cpp-server" ]; then
+        update-rc.d xpilot-ng-cpp-server defaults >/dev/null
+        /etc/init.d/xpilot-ng-cpp-server start
 fi
 
 #DEBHELPER#
