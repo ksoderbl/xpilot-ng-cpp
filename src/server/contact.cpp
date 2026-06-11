@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 /*
  * Global variables
  */
@@ -279,8 +277,6 @@ void Contact(int fd, void *arg)
 	char user_name[MAX_CHARS], disp_name[MAX_CHARS], nick_name[MAX_CHARS];
 	char host_name[MAX_CHARS], host_addr[24], str[MSG_LEN];
 
-	UNUSED_PARAM(fd);
-	UNUSED_PARAM(arg);
 	/*
 	 * Someone connected to us, now try and decipher the message :)
 	 */

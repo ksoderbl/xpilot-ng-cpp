@@ -25,7 +25,6 @@
 
 /* Robot code originally submitted by Maurice Abraham. */
 /* Rewrite started by Karsten Siegmund - in progress */
-#include "xpserver.h"
 
 #define ROB_LOOK_AH 2
 
@@ -192,8 +191,6 @@ static int Robot_suibot_war_on_player(player_t *pl)
  */
 static void Robot_suibot_message(player_t *pl, const char *message)
 {
-    UNUSED_PARAM(pl);
-    UNUSED_PARAM(message);
 }
 
 /*

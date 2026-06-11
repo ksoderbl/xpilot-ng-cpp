@@ -31,8 +31,6 @@
 #include <cstdio>
 #include <cstring>
 
-#include "xpclient.h"
-
 const char c_commands[][16] = {
 	"ignore",
 	"i",

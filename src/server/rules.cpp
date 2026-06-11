@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 #define MAX_FUEL 10000
 #define MAX_WIDEANGLE 99
 #define MAX_REARSHOT 99

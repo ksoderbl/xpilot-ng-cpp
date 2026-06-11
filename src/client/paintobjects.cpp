@@ -33,8 +33,6 @@
 
 #include <unistd.h>
 
-#include "xpclient.h"
-
 #define COLOR(i) (i / areas)
 #define BASE_X(i) (((i % x_areas) << 8) + ext_view_x_offset)
 #define BASE_Y(i) ((ext_view_height - 1 - (((i / x_areas) % y_areas) << 8)) - ext_view_y_offset)

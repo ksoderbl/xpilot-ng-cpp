@@ -26,7 +26,7 @@
  */
 
 /*
- * Configure.c: real-time option control.
+ * Configure.cpp: real-time option control.
  */
 
 #include <cstdlib>
@@ -42,7 +42,7 @@
 #include <X11/Xos.h>
 #include <X11/Xutil.h>
 
-#include "xpclient_x11.h"
+#include "option.h"
 
 static int Config_creator(xp_option_t *opt, int widget_desc, int *height);
 static int Config_create_save(int widget_desc, int *height);
@@ -111,7 +111,6 @@ static int Update_bool_option(int widget_desc, void *data, bool *val)
 {
 	xp_option_t *opt = (xp_option_t *)data;
 
-	UNUSED_PARAM(widget_desc);
 	Set_bool_option(opt, *val, xp_option_origin_config);
 
 	return 0;
@@ -121,7 +120,6 @@ static int Update_int_option(int widget_desc, void *data, int *val)
 {
 	xp_option_t *opt = (xp_option_t *)data;
 
-	UNUSED_PARAM(widget_desc);
 	Set_int_option(opt, *val, xp_option_origin_config);
 
 	return 0;
@@ -131,7 +129,6 @@ static int Update_double_option(int widget_desc, void *data, double *val)
 {
 	xp_option_t *opt = (xp_option_t *)data;
 
-	UNUSED_PARAM(widget_desc);
 	Set_double_option(opt, *val, xp_option_origin_config);
 
 	return 0;
@@ -292,9 +289,6 @@ static void Create_config(void)
 
 static int Config_close(int widget_desc, void *data, const char **strptr)
 {
-	UNUSED_PARAM(widget_desc);
-	UNUSED_PARAM(data);
-	UNUSED_PARAM(strptr);
 	Widget_unmap(config_widget_desc[config_page]);
 	config_mapped = false;
 	return 0;
@@ -304,9 +298,6 @@ static int Config_next(int widget_desc, void *data, const char **strptr)
 {
 	int prev_page = config_page;
 
-	UNUSED_PARAM(widget_desc);
-	UNUSED_PARAM(data);
-	UNUSED_PARAM(strptr);
 	if (config_max > 1)
 	{
 		config_page = (config_page + 1) % config_max;
@@ -321,9 +312,6 @@ static int Config_prev(int widget_desc, void *data, const char **strptr)
 {
 	int prev_page = config_page;
 
-	UNUSED_PARAM(widget_desc);
-	UNUSED_PARAM(data);
-	UNUSED_PARAM(strptr);
 	if (config_max > 1)
 	{
 		config_page = (config_page - 1 + config_max) % config_max;
@@ -600,8 +588,6 @@ static int Config_save(int widget_desc, void *button_str, const char **strptr)
 static int Config_save_confirm_callback(int widget_desc, void *popup_desc,
 										const char **strptr)
 {
-	UNUSED_PARAM(widget_desc);
-	UNUSED_PARAM(strptr);
 	if (config_save_confirm_desc != NO_WIDGET)
 	{
 		Widget_destroy((int)(long int)popup_desc);

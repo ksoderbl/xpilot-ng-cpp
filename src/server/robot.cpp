@@ -25,8 +25,6 @@
 
 /* Robot code originally submitted by Maurice Abraham. */
 
-#include "xpserver.h"
-
 #define DEFAULT_ROBOT_TYPE "default"
 
 /*

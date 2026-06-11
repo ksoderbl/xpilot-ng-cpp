@@ -27,8 +27,6 @@
  * A double linked list similar to the STL list, but implemented in C.
  */
 
-#include "xpcommon.h"
-
 /* store a list node. */
 struct ListNode
 {

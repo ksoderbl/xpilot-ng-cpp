@@ -21,8 +21,6 @@
 #ifndef SDLKEYS_H
 #define SDLKEYS_H
 
-#include "xpclient_sdl.h"
-
 #define NUM_MOUSE_BUTTONS 5
 
 SDLKey Get_key_by_name(const char *name);

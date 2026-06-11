@@ -24,7 +24,6 @@
  * OpenAL audio driver.
  */
 
-#include "xpclient.h"
 #if defined(_WINDOWS)
 #include <al.h>
 #include <alut.h>

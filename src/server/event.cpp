@@ -33,8 +33,6 @@
 #include <cstdio>
 #include <cmath>
 
-#include "xpserver.h"
-
 bool team_dead(int team)
 {
 	int i;

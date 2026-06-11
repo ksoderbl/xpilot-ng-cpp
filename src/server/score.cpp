@@ -28,8 +28,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 void Score(player_t *pl, double points, clpos_t pos, const char *msg)
 {
 	Rank_add_score(pl, points);

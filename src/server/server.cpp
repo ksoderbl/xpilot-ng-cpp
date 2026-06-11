@@ -28,8 +28,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 /*
  * Global variables
  */
@@ -873,9 +871,6 @@ extern bool in_move_player;
 
 bool Friction_area_hitfunc(group_t *groupptr, const move_t *move)
 {
-	UNUSED_PARAM(groupptr);
-	UNUSED_PARAM(move);
-
 	if (in_move_player)
 		return true;
 	return false;

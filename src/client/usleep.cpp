@@ -15,8 +15,6 @@
 #include <cstdlib>
 #include <sys/select.h>
 
-#include "xpclient.h"
-
 int micro_delay(unsigned usec)
 {
 #if 0 /* SYSV */

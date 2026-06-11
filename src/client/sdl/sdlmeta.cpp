@@ -21,8 +21,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_sdl.h"
-
 #include "sdlmeta.h"
 #include "sdlwindow.h"
 #include "text.h"

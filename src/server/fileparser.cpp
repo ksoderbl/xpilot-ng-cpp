@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 static char *FileName;
 static int LineNumber;
 

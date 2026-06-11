@@ -23,8 +23,6 @@
 #ifndef SDL_CONSOLE_H
 #define SDL_CONSOLE_H
 
-#include "xpclient_sdl.h"
-
 #ifdef USUAL_SDL_INCLUDE_CONVENTION
 #include "begin_code.h"
 #endif

@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_x11.h"
-
 /*
  * GC elements for line drawing operations.
  */
@@ -60,12 +58,6 @@ static void Dummy_endFrame(void) {}
 static void Dummy_paintItemSymbol(int type, Drawable drawable,
 								  GC mygc, int x, int y, int color)
 {
-	UNUSED_PARAM(type);
-	UNUSED_PARAM(drawable);
-	UNUSED_PARAM(mygc);
-	UNUSED_PARAM(x);
-	UNUSED_PARAM(y);
-	UNUSED_PARAM(color);
 }
 
 /*
@@ -692,8 +684,6 @@ static int RFillPolygon(Display *display, Drawable drawable, GC gc,
 static void RPaintItemSymbol(int type, Drawable drawable, GC mygc,
 							 int x, int y, int color)
 {
-	UNUSED_PARAM(mygc);
-	UNUSED_PARAM(color);
 	if (drawable == drawPixmap)
 	{
 		putc(RC_PAINTITEMSYMBOL, recordFP);
@@ -939,8 +929,6 @@ void Record_init(const char *filename)
 
 static bool setRecordFile(xp_option_t *opt, const char *value)
 {
-	UNUSED_PARAM(opt);
-
 	assert(value);
 	/* Don't allow changing record file after file has been opened. */
 	if (recordFP != NULL)
@@ -951,7 +939,6 @@ static bool setRecordFile(xp_option_t *opt, const char *value)
 
 static const char *getRecordFile(xp_option_t *opt)
 {
-	UNUSED_PARAM(opt);
 	return record_filename;
 }
 

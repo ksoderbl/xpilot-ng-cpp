@@ -18,8 +18,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 int playback = 0;
 int record = 0;
 int *playback_ints;

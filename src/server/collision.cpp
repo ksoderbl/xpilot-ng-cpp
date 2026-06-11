@@ -28,8 +28,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 /* new acd functions */
 /* doubles because the multiplies might overflow ints */
 static bool in_range_acd(double dx, double dy, double dvx, double dvy,

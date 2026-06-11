@@ -28,7 +28,7 @@
 
 #ifndef WALLS_H
 /* need hitmask_t */
-#include "walls.h"
+#include "walls2.h"
 #endif
 
 /*

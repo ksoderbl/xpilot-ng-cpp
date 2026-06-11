@@ -28,8 +28,6 @@
 #include <cstring>
 #include <cerrno>
 
-#include "xpclient.h"
-
 char *talk_fast_msgs[TALK_FAST_NR_OF_MSGS]; /* talk macros */
 
 /*

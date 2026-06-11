@@ -18,8 +18,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_sdl.h"
-
 extern int Process_event(SDL_Event *evt);
 
 void Game_loop(void)

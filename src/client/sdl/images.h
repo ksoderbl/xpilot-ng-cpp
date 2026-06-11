@@ -21,8 +21,6 @@
 #ifndef IMAGES_H
 #define IMAGES_H
 
-#include "xpclient_sdl.h"
-
 typedef enum
 {
     IMG_STATE_UNINITIALIZED,

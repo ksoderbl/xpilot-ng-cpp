@@ -38,8 +38,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xos.h>
 
-#include "xpclient_x11.h"
-
 static bool texturedShips = false; /* Turned this off because the images drawn
 									* don't match the actual shipshape used
 									* for wall collisions by the server. */

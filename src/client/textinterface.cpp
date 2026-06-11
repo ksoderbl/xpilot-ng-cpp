@@ -39,8 +39,6 @@
 #include <netdb.h>
 #include <sys/time.h>
 
-#include "xpclient.h"
-
 #define MAX_LINE MSG_LEN /* should not be smaller than MSG_LEN */
 
 extern int dgram_one_socket; /* from datagram.c */

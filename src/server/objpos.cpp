@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 void Object_position_set_clpos(object_t *obj, clpos_t pos)
 {
 	if (!World_contains_clpos(pos))

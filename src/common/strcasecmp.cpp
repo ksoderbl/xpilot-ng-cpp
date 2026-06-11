@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpcommon.h"
-
 #ifndef HAVE_STRCASECMP
 /*
  * By Ian Malcom Brown.

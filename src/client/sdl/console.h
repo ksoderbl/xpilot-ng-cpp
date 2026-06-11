@@ -21,8 +21,6 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include "xpclient_sdl.h"
-
 int Console_init(void);
 void Console_paint(void);
 void Console_show(void);

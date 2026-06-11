@@ -25,8 +25,6 @@
 #include "types.h"
 #endif
 
-#include "xpcommon.h"
-
 typedef struct
 {
     void *elements;

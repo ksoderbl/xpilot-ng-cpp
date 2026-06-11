@@ -20,8 +20,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_sdl.h"
-
 #include "text.h"
 #include "console.h"
 #include "sdlkeys.h"
@@ -377,7 +375,6 @@ static const char *Get_geometry(xp_option_t *opt)
 
 static bool Set_fontName(xp_option_t *opt, const char *value)
 {
-    UNUSED_PARAM(opt);
     XFREE(gamefontname);
     gamefontname = xp_safe_strdup(value);
 
@@ -386,7 +383,6 @@ static bool Set_fontName(xp_option_t *opt, const char *value)
 
 static const char *Get_fontName(xp_option_t *opt)
 {
-    UNUSED_PARAM(opt);
     return gamefontname;
 }
 

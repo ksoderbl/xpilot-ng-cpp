@@ -25,8 +25,6 @@
 
 /* Original options parsing code contributed by Ted Lemon <mellon@ncd.com> */
 
-#include "xpserver.h"
-
 /*
  * Print the option list in "-help" format.
  * NT uses this to generate the ServerOpts.txt file
@@ -116,7 +114,6 @@ static void Parser_dump_options(char *progname)
 	int j, option_count;
 	option_desc *option_descs;
 
-	UNUSED_PARAM(progname);
 	option_descs = Get_option_descs(&option_count);
 
 	for (j = 0; j < option_count; j++)
@@ -144,7 +141,6 @@ static void Parser_dump_flags(char *progname)
 	option_desc *option_descs;
 	char msg[MSG_LEN];
 
-	UNUSED_PARAM(progname);
 	option_descs = Get_option_descs(&option_count);
 
 	for (j = 0; j < option_count; j++)

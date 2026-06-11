@@ -26,8 +26,6 @@
 #include <cstdio>
 #include <cstring>
 
-#include "xpclient.h"
-
 /*
  * Globals.
  */

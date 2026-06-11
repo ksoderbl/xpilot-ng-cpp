@@ -18,8 +18,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_sdl.h"
-
 #include "images.h"
 #include "sdlpaint.h"
 

@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 #define GRAV_RANGE 10
 
 static void Compute_global_gravity(void)

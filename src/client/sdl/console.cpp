@@ -18,8 +18,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_sdl.h"
-
 #include "console.h"
 #include "SDL_console.h"
 #include "sdlwindow.h"

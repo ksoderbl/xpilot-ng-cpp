@@ -29,8 +29,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xos.h>
 
-#include "xpclient_x11.h"
-
 dbuff_state_t *dbuf_state; /* Holds current dbuff state */
 
 static void dbuff_release(dbuff_state_t *state)
@@ -249,8 +247,6 @@ void dbuff_init_buffer(dbuff_state_t *state)
 		}
 		drawPixmap = state->dbe.dbe_draw;
 	}
-#else
-	UNUSED_PARAM(state);
 #endif
 }
 
@@ -337,7 +333,5 @@ void dbuff_list(Display *display)
 {
 #ifdef DBE
 	dbuff_list_dbe(display);
-#else
-	UNUSED_PARAM(display);
 #endif
 }

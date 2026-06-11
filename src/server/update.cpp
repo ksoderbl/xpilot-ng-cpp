@@ -28,8 +28,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 int roundtime = -1;				  /* time left this round */
 static double time_to_tick = 1.0; /* game time till next tick */
 static bool tick = false;		  /* new tick of game time this frame */

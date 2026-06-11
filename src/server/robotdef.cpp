@@ -25,8 +25,6 @@
 
 /* Robot code originally submitted by Maurice Abraham. */
 
-#include "xpserver.h"
-
 #define ROB_LOOK_AH 2
 
 #define WITHIN(NOW, THEN, DIFF) (NOW <= THEN && (THEN - NOW) < DIFF)
@@ -75,8 +73,6 @@ static bool Really_empty_space(player_t *pl, int bx, int by)
     int group;
     hitmask_t hitmask = NONBALL_BIT; /* kps - ok ? */
     clpos_t pos;
-
-    UNUSED_PARAM(pl);
 
     pos.cx = BLOCK_CENTER(bx);
     pos.cy = BLOCK_CENTER(by);
@@ -331,8 +327,6 @@ static int Robot_default_war_on_player(player_t *pl)
  */
 static void Robot_default_message(player_t *pl, const char *message)
 {
-	UNUSED_PARAM(pl);
-	UNUSED_PARAM(message);
 }
 
 /*

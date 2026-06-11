@@ -28,8 +28,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpcommon.h"
-
 double tbl_sin[TABLE_SIZE];
 double tbl_cos[TABLE_SIZE];
 

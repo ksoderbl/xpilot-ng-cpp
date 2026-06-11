@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_x11.h"
-
 static int Handle_input(int new_input)
 {
 	return x_event(new_input);

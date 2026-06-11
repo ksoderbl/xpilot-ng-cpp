@@ -30,8 +30,6 @@
 
 /* Options parsing code contributed by Ted Lemon <mellon@ncd.com> */
 
-#include "xpserver.h"
-
 double friction;
 double coriolisCosine, coriolisSine; /* cos and sin of cor. angle */
 int roundsPlayed;					 /* # of rounds played sofar. */
@@ -59,22 +57,18 @@ static void Tune_robot_user_name(void)
 }
 static void Tune_robot_host_name(void)
 {
-	UNUSED_PARAM(world);
 	Fix_host_name(options.robotHostName);
 }
 static void Tune_tank_user_name(void)
 {
-	UNUSED_PARAM(world);
 	Fix_user_name(options.tankUserName);
 }
 static void Tune_tank_host_name(void)
 {
-	UNUSED_PARAM(world);
 	Fix_host_name(options.tankHostName);
 }
 static void Tune_tagGame(void)
 {
-	UNUSED_PARAM(world);
 	if (!options.tagGame)
 		tagItPlayerId = NO_ID;
 }

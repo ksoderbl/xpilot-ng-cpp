@@ -28,8 +28,6 @@
 
 #include <X11/Xlib.h>
 
-#include "xpclient_sdl.h"
-
 extern int Process_event(SDL_Event *evt);
 
 static int Poll_input(void)

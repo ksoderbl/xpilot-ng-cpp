@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpcommon.h"
-
 void *xp_safe_malloc(size_t size)
 {
     void *p;

@@ -25,8 +25,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_x11.h"
-
 bool pre_exists = False;
 int pre_acc_num, new_acc_num = 0; /* pre are the Saved mouse settings */
 int pre_acc_denom, new_acc_denom = 1;
@@ -69,7 +67,6 @@ static char keyboardName[MAX_DISP_LEN];
 /* kps - this is quite useless currently */
 static bool Set_geometry(xp_option_t *opt, const char *value)
 {
-	UNUSED_PARAM(opt);
 	XFREE(geometry);
 	geometry = xp_safe_strdup(value);
 	return true;
@@ -78,7 +75,6 @@ static bool Set_geometry(xp_option_t *opt, const char *value)
 static const char *Get_geometry(xp_option_t *opt)
 {
 	static char buf[20]; /* should be enough */
-	UNUSED_PARAM(opt);
 	snprintf(buf, sizeof(buf), "%dx%d", top_width, top_height);
 	return buf;
 }
@@ -87,8 +83,6 @@ static bool Set_texturedObjects(xp_option_t *opt, bool val);
 
 static bool Set_fullColor(xp_option_t *opt, bool val)
 {
-	UNUSED_PARAM(opt);
-
 	if (val == fullColor)
 		return true;
 
@@ -116,8 +110,6 @@ static bool Set_fullColor(xp_option_t *opt, bool val)
 
 static bool Set_texturedObjects(xp_option_t *opt, bool val)
 {
-	UNUSED_PARAM(opt);
-
 	if (val == texturedObjects)
 		return true;
 
@@ -140,8 +132,6 @@ static bool Set_texturedObjects(xp_option_t *opt, bool val)
 
 static bool Set_mouseAccelNum(xp_option_t *opt, int value)
 {
-	UNUSED_PARAM(opt);
-
 	if (value < 0)
 	{
 		new_acc_num = 0;
@@ -159,8 +149,6 @@ static bool Set_mouseAccelNum(xp_option_t *opt, int value)
 
 static bool Set_mouseAccelDenom(xp_option_t *opt, int value)
 {
-	UNUSED_PARAM(opt);
-
 	if (value < 0)
 	{
 		new_acc_denom = 1;
@@ -178,8 +166,6 @@ static bool Set_mouseAccelDenom(xp_option_t *opt, int value)
 
 static bool Set_mouseAccelThresh(xp_option_t *opt, int value)
 {
-	UNUSED_PARAM(opt);
-
 	if (value < 0)
 	{
 		new_threshold = 0;
@@ -479,7 +465,6 @@ static void X_after(Display *display)
 {
 	static int n;
 
-	UNUSED_PARAM(display);
 	if (n < 1000)
 		printf("_X_ %4d\n", n++);
 }
@@ -558,7 +543,6 @@ void Handle_X_options(void)
 
 bool Set_scaleFactor(xp_option_t *opt, double val)
 {
-	UNUSED_PARAM(opt);
 	clData.scaleFactor = val;
 	clData.scale = 1.0 / val;
 	clData.fscale = (float)clData.scale;
@@ -571,7 +555,6 @@ bool Set_scaleFactor(xp_option_t *opt, double val)
 
 bool Set_altScaleFactor(xp_option_t *opt, double val)
 {
-	UNUSED_PARAM(opt);
 	clData.altScaleFactor = val;
 	return true;
 }

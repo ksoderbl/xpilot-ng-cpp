@@ -25,8 +25,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 #define MISSILE_POWER_SPEED_FACT 0.25
 #define MISSILE_POWER_TURNSPEED_FACT 0.75
 #define MINI_TORPEDO_SPREAD_TIME 6
@@ -1492,8 +1490,6 @@ void Update_connector_force(ballobject_t *ball)
 	/* const double		k = 1500.0, b = 2.0; */
 	/* const double		max_spring_ratio = 0.30; */
 
-	UNUSED_PARAM(world);
-
 	/* no player connected ? */
 	if (!pl)
 		return;
@@ -1551,7 +1547,6 @@ void Update_torpedo(torpobject_t *torp)
 {
 	double acc;
 
-	UNUSED_PARAM(world);
 	if (Mods_get(torp->mods, ModsNuclear))
 		acc = (torp->torp_count < NUKE_SPEED_TIME) ? NUKE_ACC : 0.0;
 	else
@@ -1896,8 +1891,6 @@ void Update_missile(missileobject_t *missile)
 
 void Update_mine(mineobject_t *mine)
 {
-	UNUSED_PARAM(world);
-
 	if (BIT(mine->obj_status, CONFUSED))
 	{
 		if ((mine->mine_count -= timeStep) <= 0)

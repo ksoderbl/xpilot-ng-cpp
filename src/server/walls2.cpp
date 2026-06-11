@@ -25,8 +25,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 struct move_parameters mp;
 static char msg[MSG_LEN];
 

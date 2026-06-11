@@ -26,8 +26,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 /* Windows incorrectly uses u_int in FD_CLR */
 #ifdef _WINDOWS
 typedef u_int FDTYPE;
@@ -420,7 +418,6 @@ static void catch_timer(int signum)
 {
 	static unsigned int timer_count = 0;
 
-	UNUSED_PARAM(signum);
 	timer_count += FPS;
 	if (timer_count >= (unsigned)options.timerResolution)
 	{

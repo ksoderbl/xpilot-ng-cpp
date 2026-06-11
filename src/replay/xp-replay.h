@@ -24,8 +24,6 @@
 #ifndef XP_REPLAY_H
 #define XP_REPLAY_H
 
-#include "xpcommon.h"
-
 #ifdef HAVE_X11_XLIB_H
 #include <X11/Xlib.h>
 #endif

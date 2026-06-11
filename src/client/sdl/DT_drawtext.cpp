@@ -45,8 +45,6 @@
  *  Modified for xpilot: Juha Lindström
  */
 
-#include "xpclient_sdl.h"
-
 #include "DT_drawtext.h"
 
 #ifdef _WINDOWS

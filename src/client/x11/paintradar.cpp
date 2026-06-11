@@ -25,8 +25,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_x11.h"
-
 Window radarWindow;
 Pixmap radarPixmap, radarPixmap2;
 /* Pixmaps for the radar (implements */
@@ -723,24 +721,18 @@ void Radar_hide_target(int x, int y)
 
 static bool Set_wallRadarColor(xp_option_t *opt, int value)
 {
-	UNUSED_PARAM(opt);
-
 	wallRadarColor = value;
 	return true;
 }
 
 static bool Set_decorRadarColor(xp_option_t *opt, int value)
 {
-	UNUSED_PARAM(opt);
-
 	decorRadarColor = value;
 	return true;
 }
 
 static bool Set_targetRadarColor(xp_option_t *opt, int value)
 {
-	UNUSED_PARAM(opt);
-
 	targetRadarColor = value;
 	return true;
 }

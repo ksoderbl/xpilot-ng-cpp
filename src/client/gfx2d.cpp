@@ -33,8 +33,6 @@
 
 #include <unistd.h>
 
-#include "xpclient.h"
-
 char *texturePath = NULL;	  /* Configured list of texture directories */
 char *realTexturePath = NULL; /* Real texture lookup path */
 

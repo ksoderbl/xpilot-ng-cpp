@@ -33,8 +33,6 @@
 #include <sys/param.h>
 #include <netdb.h>
 
-#include "xpclient.h"
-
 int dgram_one_socket = 0;
 
 int create_dgram_addr_socket(sock_t *sock, char *dotaddr, int port)

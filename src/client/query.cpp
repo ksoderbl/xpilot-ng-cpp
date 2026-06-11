@@ -39,8 +39,6 @@
 #include <netdb.h>
 #include <sys/time.h>
 
-#include "xpclient.h"
-
 #include <net/if.h>
 #include <sys/ioctl.h>
 

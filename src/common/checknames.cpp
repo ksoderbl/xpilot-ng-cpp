@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpcommon.h"
-
 int Check_user_name(char *name)
 {
     unsigned char *str;

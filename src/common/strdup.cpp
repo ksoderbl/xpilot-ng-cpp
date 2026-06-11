@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpcommon.h"
-
 char *xp_strdup(const char *old_string)
 {
     char *new_string;

@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpcommon.h"
-
 char *Conf_datadir(void)
 {
     static char conf[] = CONF_DATADIR;

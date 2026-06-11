@@ -34,8 +34,6 @@
 #include <cctype>
 #include <sys/types.h>
 
-#include "xpclient.h"
-
 int num_options = 0;
 int max_options = 0;
 

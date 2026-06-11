@@ -21,8 +21,6 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-#include "xpclient_sdl.h"
-
 #include "sdlpaint.h"
 
 #define LEFT 0

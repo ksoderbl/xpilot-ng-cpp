@@ -28,8 +28,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 static void Item_update_flags(player_t *pl)
 {
 	if (pl->item[ITEM_CLOAK] <= 0 && BIT(pl->have, HAS_CLOAKING_DEVICE))

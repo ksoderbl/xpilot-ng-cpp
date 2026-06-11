@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 #define META_VERSION VERSION "ng"
 
 struct MetaServer

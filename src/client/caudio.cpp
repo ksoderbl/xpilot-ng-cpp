@@ -34,7 +34,6 @@
 #include <sys/types.h>
 
 #define _CAUDIO_C_
-#include "xpclient.h"
 
 #define MAX_RANDOM_SOUNDS 6
 

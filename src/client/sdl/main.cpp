@@ -18,8 +18,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_sdl.h"
-
 #include "sdlinit.h"
 #include "sdlmeta.h"
 

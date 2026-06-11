@@ -21,8 +21,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 /* polygon map format related stuff */
 int num_edges, max_edges;
 

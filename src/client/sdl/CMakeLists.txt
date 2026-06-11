@@ -8,13 +8,13 @@ file(GLOB SDL_CLIENT_SOURCES CONFIGURE_DEPENDS
 )
 
 # Keep the original automake behavior: choose one gameloop source.
-list(FILTER SDL_CLIENT_SOURCES EXCLUDE REGEX ".*/gameloop\\.c$")
-list(FILTER SDL_CLIENT_SOURCES EXCLUDE REGEX ".*/gameloop_x\\.c$")
+list(FILTER SDL_CLIENT_SOURCES EXCLUDE REGEX ".*/gameloop\\.cpp$")
+list(FILTER SDL_CLIENT_SOURCES EXCLUDE REGEX ".*/gameloop_x\\.cpp$")
 
 if(UNIX AND NOT WIN32)
-    list(APPEND SDL_CLIENT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/gameloop_x.c")
+    list(APPEND SDL_CLIENT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/gameloop_x.cpp")
 else()
-    list(APPEND SDL_CLIENT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/gameloop.c")
+    list(APPEND SDL_CLIENT_SOURCES "${CMAKE_CURRENT_SOURCE_DIR}/gameloop.cpp")
 endif()
 
 add_executable(xpilot-ng-cpp-sdl ${SDL_CLIENT_SOURCES})

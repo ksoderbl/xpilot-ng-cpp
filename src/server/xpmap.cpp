@@ -25,8 +25,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 static int Compress_map(unsigned char *map, size_t size);
 
 static void Xpmap_treasure_to_polygon(int treasure_ind);

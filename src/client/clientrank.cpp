@@ -18,8 +18,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient.h"
-
 #define MAX_SCORES 500
 
 char clientRankFile[PATH_MAX];

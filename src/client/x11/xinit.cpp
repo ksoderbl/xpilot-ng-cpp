@@ -23,7 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_x11.h"
 #include "icon.h"
 
 /*
@@ -615,27 +614,18 @@ int Init_playing_windows(void)
 
 static int Config_callback(int widget_desc, void *data, const char **str)
 {
-    UNUSED_PARAM(widget_desc);
-    UNUSED_PARAM(data);
-    UNUSED_PARAM(str);
     Config(true, CONFIG_DEFAULT);
     return 0;
 }
 
 static int Colors_callback(int widget_desc, void *data, const char **str)
 {
-    UNUSED_PARAM(widget_desc);
-    UNUSED_PARAM(data);
-    UNUSED_PARAM(str);
     Config(true, CONFIG_COLORS);
     return 0;
 }
 
 static int Score_callback(int widget_desc, void *data, const char **str)
 {
-    UNUSED_PARAM(widget_desc);
-    UNUSED_PARAM(data);
-    UNUSED_PARAM(str);
     Config(false, CONFIG_NONE);
     if (showUserName)
     {
@@ -647,9 +637,6 @@ static int Score_callback(int widget_desc, void *data, const char **str)
 
 static int Player_callback(int widget_desc, void *data, const char **str)
 {
-    UNUSED_PARAM(widget_desc);
-    UNUSED_PARAM(data);
-    UNUSED_PARAM(str);
     Config(false, CONFIG_NONE);
     if (!showUserName)
     {
@@ -661,9 +648,6 @@ static int Player_callback(int widget_desc, void *data, const char **str)
 
 static int Quit_callback(int widget_desc, void *data, const char **str)
 {
-    UNUSED_PARAM(widget_desc);
-    UNUSED_PARAM(data);
-    UNUSED_PARAM(str);
     quitting = true;
     return 0;
 }
@@ -738,7 +722,6 @@ void Platform_specific_cleanup(void)
 
 int FatalError(Display *display)
 {
-    UNUSED_PARAM(display);
     Client_exit(0);
     /* make complier not warn */
     return 0;

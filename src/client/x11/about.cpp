@@ -32,8 +32,6 @@
 #include <unistd.h>
 #include <X11/Xlib.h>
 
-#include "xpclient_x11.h"
-
 /* How far away objects should be placed from each other etc... */
 #define BORDER 10
 #define BTN_BORDER 4
@@ -440,9 +438,6 @@ void About(Window w)
 
 int About_callback(int widget_desc, void *data, const char **str)
 {
-	UNUSED_PARAM(widget_desc);
-	UNUSED_PARAM(data);
-	UNUSED_PARAM(str);
 	if (about_created == false)
 	{
 		About_create_window();
@@ -461,10 +456,6 @@ int Keys_callback(int widget_desc, void *data, const char **unused)
 	char *buf = XCALLOC(char, bufsize), *end = buf, *str;
 	const char *help;
 	int i, len, maxkeylen = 0;
-
-	UNUSED_PARAM(widget_desc);
-	UNUSED_PARAM(data);
-	UNUSED_PARAM(unused);
 
 	for (i = 0; i < num_keydefs; i++)
 	{
@@ -527,10 +518,6 @@ static bool motd_auto_popup;
 
 int Motd_callback(int widget_desc, void *data, const char **str)
 {
-	UNUSED_PARAM(widget_desc);
-	UNUSED_PARAM(data);
-	UNUSED_PARAM(str);
-
 	/* always refresh motd */
 	motd_auto_popup = false;
 	Net_ask_for_motd(0, MAX_MOTD_SIZE);

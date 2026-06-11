@@ -23,7 +23,29 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpcommon.h"
+#include <cstring>
+#include <cstdlib>
+#include <cstdio>
+#include <csignal>
+#include <csetjmp>
+#include <cerrno>
+#include <ctime>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <sys/param.h>
+#include <sys/ioctl.h>
+#include <sys/time.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netinet/tcp.h>
+#include <arpa/inet.h>
+#include <netdb.h>
+
+#include <fcntl.h>
+
+/* Socklib Includes And Definitions */
+#include "socklib.h"
 
 /* Debug macro */
 #ifdef DEBUG
@@ -767,7 +789,6 @@ int sock_readable(sock_t *sock)
 
 static void sock_catch_alarm(int signum)
 {
-    UNUSED_PARAM(signum);
     printf("DNS lookup cancelled\n");
 
     longjmp(env, 1);

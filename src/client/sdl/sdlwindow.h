@@ -21,8 +21,6 @@
 #ifndef SDLWINDOW_H
 #define SDLWINDOW_H
 
-#include "xpclient_sdl.h"
-
 typedef struct
 {
     GLuint tx_id;

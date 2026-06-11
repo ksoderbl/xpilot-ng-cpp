@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_x11.h"
-
 /* Information window dimensions */
 #define TALK_TEXT_HEIGHT (talkFont->ascent + talkFont->descent)
 #define TALK_OUTSIDE_BORDER 2

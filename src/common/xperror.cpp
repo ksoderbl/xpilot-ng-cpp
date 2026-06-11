@@ -16,9 +16,9 @@
 /*
  * This file defines several entry points:
  *
- * init_error()		- Initialize the error routine, accepts program name
- *			  as input.
- * error()		- perror() with printf functionality.
+ * init_error()        - Initialize the error routine, accepts program name
+ *              as input.
+ * error()        - perror() with printf functionality.
  * warn(), ...
  */
 

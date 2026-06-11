@@ -25,8 +25,6 @@
 
 /* This piece of code was provided by Greg Renda (greg@ncd.com). */
 
-#include "xpserver.h"
-
 #define SOUND_RANGE_FACTOR 0.5 /* factor to increase sound \
                                 * range by */
 #define SOUND_DEFAULT_RANGE (BLOCK_CLICKS * 15)

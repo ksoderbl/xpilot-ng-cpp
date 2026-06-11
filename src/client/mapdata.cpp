@@ -32,8 +32,6 @@
 #include <sys/stat.h>
 #include <zlib.h>
 
-#include "xpclient.h"
-
 /* kps - you should be able to change this without a recompile */
 #define DATADIR ".xpilot_data"
 #define COPY_BUF_SIZE 8192

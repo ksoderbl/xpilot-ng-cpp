@@ -26,8 +26,6 @@
 #ifndef DBUFF_H
 #define DBUFF_H
 
-#include "xpcommon.h"
-
 #ifdef DBE
 #include <X11/extensions/Xdbe.h>
 #undef MBX

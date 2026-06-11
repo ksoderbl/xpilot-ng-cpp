@@ -23,7 +23,21 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpcommon.h"
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
+#include <cctype>
+#include <cmath>
+
+// #include "commonmacros.h"
+// #include "xpmath.h"
+#include "shipshape.h"
+
+#include "version.h"
+#include "xpconfig.h"
+#include "const.h"
+#include "xperror.h"
 
 static int Get_shape_keyword(char *keyw);
 static int shape2wire(char *ship_shape_str, shipshape_t *ship);

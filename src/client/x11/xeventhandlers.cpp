@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_x11.h"
-
 #ifdef DEVELOPMENT
 time_t back_in_play_since;
 #endif
@@ -153,7 +151,6 @@ void SelectionRequest_event(XEvent *event)
 
 void MapNotify_event(XEvent *event)
 {
-	UNUSED_PARAM(event);
 	if (ignoreWindowManager == 1)
 	{
 		XSetInputFocus(dpy, topWindow, RevertToParent, CurrentTime);
@@ -188,7 +185,6 @@ int ClientMessage_event(XEvent *event)
 
 void FocusIn_event(XEvent *event)
 {
-	UNUSED_PARAM(event);
 #ifdef DEVELOPMENT
 	if (!gotFocus)
 		time(&back_in_play_since);
@@ -205,7 +201,6 @@ void FocusIn_event(XEvent *event)
 
 void UnmapNotify_event(XEvent *event)
 {
-	UNUSED_PARAM(event);
 #if 0 /* kps - this is probably not useful any more */
     if (clData.pointerControl) {
 	clData.restorePointerControl = true;

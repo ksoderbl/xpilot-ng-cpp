@@ -27,8 +27,6 @@
  * This file deals with low-level object structure manipulations.
  */
 
-#include "xpserver.h"
-
 /*
  * Global variables
  */

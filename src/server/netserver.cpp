@@ -109,8 +109,6 @@
 #include <netinet/in.h>
 #include <netdb.h>
 
-#include "xpserver.h"
-
 static int Init_setup(void);
 static int Handle_listening(connection_t *connp);
 static int Handle_setup(connection_t *connp);
@@ -1364,7 +1362,6 @@ static void Handle_input(int fd, void *arg)
 	short *pbscheck = NULL;
 	char *pbdcheck = NULL;
 
-	UNUSED_PARAM(fd);
 	if (connp->state & (CONN_PLAYING | CONN_READY))
 		receive_tbl = &playing_receive[0];
 	else if (connp->state == CONN_LOGIN)

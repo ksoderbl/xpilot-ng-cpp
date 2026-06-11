@@ -29,8 +29,6 @@
 
 #include <X11/Xlib.h>
 
-#include "xpclient_x11.h"
-
 /* this gets rid of missing initializer warnings */
 #define XP_PIXMAP_INITIALIZER(f, c)                         \
     {                                                       \
@@ -526,7 +524,6 @@ static int Bitmap_create_begin(Drawable d, xp_pixmap_t *pm, int bmp)
  */
 static int Bitmap_create_end(Drawable d)
 {
-    UNUSED_PARAM(d);
     return 0;
 }
 

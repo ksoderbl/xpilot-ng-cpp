@@ -24,8 +24,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 /* list containing pointers to all asteroids */
 static list_t Asteroid_list = NULL;
 

@@ -32,8 +32,6 @@
 
 #include <sys/time.h>
 
-#include "xpclient.h"
-
 client_data_t clData = {
 	0,
 };

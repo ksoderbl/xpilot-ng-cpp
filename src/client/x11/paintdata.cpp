@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_x11.h"
-
 static XRectangle *rect_ptr[MAX_COLORS];
 static int num_rect[MAX_COLORS], max_rect[MAX_COLORS];
 static XArc *arc_ptr[MAX_COLORS];

@@ -18,8 +18,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_sdl.h"
-
 /* from talk.c */
 selection_t selection;
 int Startup_server_motd(void);

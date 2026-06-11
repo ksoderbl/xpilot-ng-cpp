@@ -33,8 +33,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xos.h>
 
-#include "xpclient_x11.h"
-
 static int baseNameColor;		  /* Color index for base name drawing */
 static int backgroundPointColor;  /* background point drawing */
 static int fuelColor;			  /* fuel station drawing */

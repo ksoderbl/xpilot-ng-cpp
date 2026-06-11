@@ -23,7 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpclient_x11.h"
 #include "../xhacks.h"
 
 int talk_key_repeating;
@@ -38,8 +37,6 @@ int mouseMovement;	  /* horizontal mouse movement. */
 keys_t Lookup_key(XEvent *event, KeySym ks, bool reset)
 {
 	keys_t ret = Generic_lookup_key((xp_keysym_t)ks, reset);
-
-	UNUSED_PARAM(event);
 
 #ifdef DEVELOPMENT
 	if (reset && ret == KEY_DUMMY)

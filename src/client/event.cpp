@@ -29,8 +29,6 @@
 #include <cstdio>
 #include <cstring>
 
-#include "xpclient.h"
-
 #define MAX_BUTTON_DEFS 10
 
 static BITV_DECL(keyv, NUM_KEYS);

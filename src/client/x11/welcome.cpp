@@ -28,8 +28,6 @@
 /* Changelog: CB Added metaserver interface improvements */
 /*            CB Fixed Warnings                          */
 
-#include "xpclient_x11.h"
-
 /*
  * Are we in the process of quitting, or joining a game.
  */
@@ -223,8 +221,6 @@ static int Local_join_cb(int widget, void *user_data, const char **text)
 	Connect_param_t *conpar = (Connect_param_t *)user_data;
 	int result;
 
-	UNUSED_PARAM(widget);
-	UNUSED_PARAM(text);
 	result = Connect_to_server(1, 0, 0, NULL, conpar);
 	if (result)
 	{
@@ -244,7 +240,6 @@ static int Local_status_cb(int widget, void *user_data, const char **text)
 {
     /* Connect_param_t          *conpar = (Connect_param_t *) user_data; */
 
-    UNUSED_PARAM(widget); UNUSED_PARAM(user_data); UNUSED_PARAM(text);
     return 0;
 }
 #endif
@@ -304,9 +299,6 @@ static int Localnet_cb(int widget, void *user_data, const char **text)
 	int button3_height;
 	int button3_x;
 	int button3_y;
-
-	UNUSED_PARAM(widget);
-	UNUSED_PARAM(text);
 
 	Internet_widget_cleanup();
 
@@ -430,9 +422,6 @@ static int Internet_server_join_cb(int widget, void *user_data,
 	int result;
 	char *server_addr_ptr = conpar->server_addr;
 
-	UNUSED_PARAM(widget);
-	UNUSED_PARAM(text);
-
 	/* structure copy */
 	*conpar = *global_conpar;
 	strlcpy(conpar->server_name, sip->hostname,
@@ -493,8 +482,6 @@ static int Internet_server_show_cb(int widget, void *user_data,
 
 	char *s;
 
-	UNUSED_PARAM(widget);
-	UNUSED_PARAM(text);
 	global_sip = sip;
 
 	Widget_destroy_children(subform_widget);
@@ -782,8 +769,6 @@ static int Internet_next_page_cb(int widget, void *user_data,
 {
 	Connect_param_t *conpar = (Connect_param_t *)user_data;
 
-	UNUSED_PARAM(widget);
-	UNUSED_PARAM(text);
 	Welcome_show_server_list(conpar);
 
 	return 0;
@@ -797,8 +782,6 @@ static int Internet_first_page_cb(int widget, void *user_data,
 {
 	Connect_param_t *conpar = (Connect_param_t *)user_data;
 
-	UNUSED_PARAM(widget);
-	UNUSED_PARAM(text);
 	server_it = List_begin(server_list);
 
 	Welcome_show_server_list(conpar);
@@ -812,9 +795,6 @@ static int Internet_first_page_cb(int widget, void *user_data,
 static int Internet_ping_cb(int widget, void *user_data, const char **text)
 {
 	Connect_param_t *conpar = (Connect_param_t *)user_data;
-
-	UNUSED_PARAM(widget);
-	UNUSED_PARAM(text);
 
 	sprintf(buf, "Pinging servers...");
 
@@ -1114,8 +1094,6 @@ static int Internet_cb(int widget, void *user_data, const char **text)
 {
 	Connect_param_t *conpar = (Connect_param_t *)user_data;
 
-	UNUSED_PARAM(widget);
-	UNUSED_PARAM(text);
 	Welcome_set_mode(ModeInternet);
 
 	if (!server_list ||
@@ -1153,8 +1131,6 @@ static int Internet_cb(int widget, void *user_data, const char **text)
  */
 static int Configure_cb(int widget, void *user_data, const char **text)
 {
-    UNUSED_PARAM(widget); UNUSED_PARAM(text);
-
     Config(true, CONFIG_DEFAULT);
 
     return 0;
@@ -1197,9 +1173,6 @@ static int Help_cb(int widget, void *user_data, const char **text)
  */
 static int Quit_cb(int widget, void *user_data, const char **text)
 {
-	UNUSED_PARAM(widget);
-	UNUSED_PARAM(user_data);
-	UNUSED_PARAM(text);
 	Welcome_set_mode(ModeQuit);
 
 	quitting = true;

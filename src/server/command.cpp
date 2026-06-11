@@ -29,8 +29,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 /*
  * Look if any player's name is exactly 'str',
  * If not, look if any player's name contains 'str'.
@@ -427,8 +425,6 @@ static int Cmd_addr(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 	player_t *pl2 = NULL;
 	const char *errorstr;
 
-	UNUSED_PARAM(pl);
-
 	if (!oper)
 		return CMD_RESULT_NOT_OPERATOR;
 
@@ -466,8 +462,6 @@ static int Cmd_advance(char *arg, player_t *pl, bool oper,
 					   char *msg, size_t size)
 {
 	int result;
-
-	UNUSED_PARAM(pl);
 
 	if (!oper)
 		return CMD_RESULT_NOT_OPERATOR;
@@ -517,9 +511,6 @@ static int Cmd_ally(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 		NumAllyCmds = 6
 	};
 	int i, cmd;
-
-	UNUSED_PARAM(pl);
-	UNUSED_PARAM(oper);
 
 	if (!BIT(world->rules->mode, ALLIANCES))
 	{
@@ -604,9 +595,6 @@ static int Cmd_get(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 	char *valcpy, *name;
 	int i, retval = CMD_RESULT_ERROR;
 
-	UNUSED_PARAM(pl);
-	UNUSED_PARAM(oper);
-
 	if (!arg || !*arg)
 	{
 		strlcpy(msg, "Usage: /get option.", size);
@@ -645,9 +633,6 @@ static int Cmd_get(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 static int Cmd_help(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 {
 	int i;
-
-	UNUSED_PARAM(pl);
-	UNUSED_PARAM(oper);
 
 	if (!*arg)
 	{
@@ -770,8 +755,6 @@ static int Cmd_lock(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 static int Cmd_maxturnsps(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 {
 	int new_maxturnsps;
-
-	UNUSED_PARAM(oper);
 
 	if (!arg || !*arg)
 	{
@@ -920,8 +903,6 @@ static int Cmd_op(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 static int Cmd_password(char *arg, player_t *pl, bool oper,
 						char *msg, size_t size)
 {
-	UNUSED_PARAM(oper);
-
 	if (!options.password || !arg || strcmp(arg, options.password))
 	{
 		strlcpy(msg, "Wrong.", size);
@@ -987,9 +968,6 @@ static int Cmd_plinfo(char *arg, player_t *pl, bool oper, char *msg, size_t size
 	const char *errorstr;
 	player_t *pl2;
 
-	UNUSED_PARAM(pl);
-	UNUSED_PARAM(oper);
-
 	if (!arg || !*arg)
 		return CMD_RESULT_NO_NAME;
 
@@ -1020,10 +998,6 @@ static int Cmd_plinfo(char *arg, player_t *pl, bool oper, char *msg, size_t size
 static int Cmd_queue(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 {
 	int result;
-
-	UNUSED_PARAM(arg);
-	UNUSED_PARAM(pl);
-	UNUSED_PARAM(oper);
 
 	if (record || playback)
 	{
@@ -1092,9 +1066,6 @@ static int Cmd_reset(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 
 static int Cmd_stats(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 {
-	UNUSED_PARAM(pl);
-	UNUSED_PARAM(oper);
-
 	if (!arg || !*arg)
 		return CMD_RESULT_NO_NAME;
 
@@ -1111,8 +1082,6 @@ static int Cmd_team(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 {
 	int i, team, swap_allowed;
 	char *arg2;
-
-	UNUSED_PARAM(oper);
 
 	/*
 	 * Assume nothing will be said or done.
@@ -1371,9 +1340,6 @@ static int Cmd_shutdown(char *arg, player_t *pl, bool oper,
 static int Cmd_version(char *arg, player_t *pl, bool oper,
 					   char *msg, size_t size)
 {
-	UNUSED_PARAM(arg);
-	UNUSED_PARAM(pl);
-	UNUSED_PARAM(oper);
 	snprintf(msg, size, "%s version %s.", PACKAGE_NAME, VERSION);
 	return CMD_RESULT_SUCCESS;
 }

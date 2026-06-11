@@ -18,8 +18,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 static char teamcup_score_file_name[1024];
 static FILE *teamcup_score_file = NULL;
 

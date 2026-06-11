@@ -18,8 +18,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 /* RECORDING WON'T WORK PROPERLY ON WINDOWS BECAUSE OF
  * errno = WSAGetLastError();
  */

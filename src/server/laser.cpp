@@ -25,8 +25,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 void Fire_laser(player_t *pl)
 {
 	clpos_t m_gun, pos;

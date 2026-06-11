@@ -53,8 +53,6 @@
 #endif
 #endif
 
-#include "xpclient_sdl.h"
-
 #include "text.h"
 
 #define BUFSIZE 1024

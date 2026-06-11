@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpcommon.h"
-
 int last_packet_of_frame;
 
 int Sockbuf_init(sockbuf_t *sbuf, sock_t *sock, size_t size, int state)

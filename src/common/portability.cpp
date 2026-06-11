@@ -27,8 +27,6 @@
  * This file contains function wrappers around OS specific services.
  */
 
-#include "xpcommon.h"
-
 int Get_process_id(void)
 {
 #if defined(_WINDOWS)

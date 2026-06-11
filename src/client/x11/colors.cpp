@@ -35,8 +35,6 @@
 #include <X11/Xos.h>
 #include <X11/Xutil.h>
 
-#include "xpclient_x11.h"
-
 /* Kludge for visuals under C++ */
 #if defined(__cplusplus)
 #define class c_class
@@ -1113,7 +1111,6 @@ void Init_spark_colors(void)
 
 static bool Set_sparkColors(xp_option_t *opt, const char *val)
 {
-	UNUSED_PARAM(opt);
 	strlcpy(sparkColors, val, sizeof sparkColors);
 	Init_spark_colors();
 	/* might fail to set what we wanted, but return ok nonetheless */
@@ -1122,7 +1119,6 @@ static bool Set_sparkColors(xp_option_t *opt, const char *val)
 
 static bool Set_maxColors(xp_option_t *opt, int val)
 {
-	UNUSED_PARAM(opt);
 	if (val == 4 || val == 8)
 	{
 		warn("Values 4 or 8 for maxColors are not actively "

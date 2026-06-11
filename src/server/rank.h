@@ -24,8 +24,6 @@
 #ifndef RANK_H
 #define RANK_H
 
-#include "xpcommon.h"
-
 #ifndef PLAYER_H
 /* need player */
 #include "player.h"

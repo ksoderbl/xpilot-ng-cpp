@@ -28,8 +28,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 #define MAX_SHUFFLE_INDEX 65535
 
 typedef unsigned short shuffle_t;

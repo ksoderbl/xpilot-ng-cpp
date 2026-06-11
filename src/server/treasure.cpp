@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 void Make_treasure_ball(treasure_t *t)
 {
     ballobject_t *ball;

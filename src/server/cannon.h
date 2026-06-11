@@ -32,7 +32,7 @@
 #endif
 
 #ifndef WALLS_H
-#include "walls.h"
+#include "walls2.h"
 #endif
 
 extern long CANNON_USE_ITEM;

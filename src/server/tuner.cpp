@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 void tuner_plock(void)
 {
     options.pLockServer = (plock_server(options.pLockServer) == 1) ? true : false;

@@ -35,8 +35,6 @@
 
 #include <unistd.h>
 
-#include "xpclient.h"
-
 int audioDeviceInit(char *display)
 {
     printf("debug audio: init\n");

@@ -23,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "xpserver.h"
-
 /*
  * Fast conversion of 'num' into 'str' starting at position 'i', returns
  * index of character after converted number.

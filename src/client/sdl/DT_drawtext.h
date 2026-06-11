@@ -23,8 +23,6 @@
 #ifndef Drawtext_h
 #define Drawtext_h
 
-#include "xpclient_sdl.h"
-
 #define TRANS_FONT 1
 
 #ifdef __cplusplus
