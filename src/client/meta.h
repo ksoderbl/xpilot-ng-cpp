@@ -81,7 +81,7 @@ struct ServerInfo
 	unsigned port,
 		ip, users, bases, fps, uptime, teambases, queue, pingtime;
 	struct timeval start;
-	unsigned char serial;
+	uint8_t serial;
 };
 
 extern list_t server_list;

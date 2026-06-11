@@ -428,7 +428,7 @@ void Ping_servers(void)
 	char *reply_ip;
 	int reply_port;
 	unsigned reply_magic;
-	unsigned char reply_serial, reply_status;
+	uint8_t reply_serial, reply_status;
 	int outstanding;
 
 	if (sock_open_udp(&sock, NULL, 0) == -1)

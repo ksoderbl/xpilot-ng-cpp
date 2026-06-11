@@ -644,7 +644,7 @@ static void Count_labels(void)
 
 	for (todo = map.datasize; todo--;)
 	{
-		map.flood_count[(unsigned char)map.data[todo]]++;
+		map.flood_count[(uint8_t)map.data[todo]]++;
 	}
 }
 
@@ -699,7 +699,7 @@ static void Label_map(int label)
 	tbl[label] = 1;
 	for (todo = map.datasize; todo--;)
 	{
-		map.data[todo] = tbl[(unsigned char)map.data[todo]];
+		map.data[todo] = tbl[(uint8_t)map.data[todo]];
 	}
 
 	map.flood_trigger = 1;
@@ -722,7 +722,7 @@ static void Label_map(int label)
 				}
 				for (i = map.datasize; i--;)
 				{
-					map.data[i] = del[(unsigned char)map.data[i]];
+					map.data[i] = del[(uint8_t)map.data[i]];
 				}
 				map.flood_marker = 224;
 			}
@@ -762,7 +762,7 @@ static void Partition_map(void)
 	tbl[marker] = 1;
 	for (todo = map.datasize; todo--;)
 	{
-		map.data[todo] = tbl[(unsigned char)map.data[todo]];
+		map.data[todo] = tbl[(uint8_t)map.data[todo]];
 	}
 
 	Label_map(0);
@@ -797,7 +797,7 @@ static void Partition_map(void)
 		del[tbl[i]] = 0;
 		for (todo = map.datasize; todo--;)
 		{
-			map.data[todo] = del[(unsigned char)map.data[todo]];
+			map.data[todo] = del[(uint8_t)map.data[todo]];
 		}
 	}
 }
@@ -1356,7 +1356,7 @@ static void Picture_map(void)
 	char name[1024];
 	FILE *fp;
 	int x, y;
-	unsigned char *line;
+	uint8_t *line;
 
 	if (!getenv("WILDMAPDUMP"))
 	{
@@ -1370,7 +1370,7 @@ static void Picture_map(void)
 		perror(name);
 		return;
 	}
-	line = (unsigned char *)malloc(3 * map.width);
+	line = (uint8_t *)malloc(3 * map.width);
 	if (!line)
 	{
 		perror("No memory for wildmap dump");

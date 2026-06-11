@@ -214,7 +214,7 @@ static void Feature_init(connection_t *connp)
 static int Init_setup(void)
 {
 	size_t size;
-	unsigned char *mapdata;
+	uint8_t *mapdata;
 
 	Oldsetup = Xpmap_init_setup();
 
@@ -799,7 +799,7 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
  */
 static int Handle_listening(connection_t *connp)
 {
-	unsigned char type;
+	uint8_t type;
 	int n;
 	char nick[MAX_CHARS], user[MAX_CHARS];
 
@@ -1868,7 +1868,7 @@ int Send_phasingtime(connection_t *connp, int count, int max)
 	return Packet_printf(&connp->w, "%c%hd%hd", PKT_PHASINGTIME, count, max);
 }
 
-int Send_debris(connection_t *connp, int type, unsigned char *p, unsigned n)
+int Send_debris(connection_t *connp, int type, uint8_t *p, unsigned n)
 {
 	int avail;
 	sockbuf_t *w = &connp->w;
@@ -1923,7 +1923,7 @@ int Send_asteroid(connection_t *connp, clpos_t pos,
 						 x, y, type_size, rot);
 }
 
-int Send_fastshot(connection_t *connp, int type, unsigned char *p, unsigned n)
+int Send_fastshot(connection_t *connp, int type, uint8_t *p, unsigned n)
 {
 	int avail;
 	sockbuf_t *w = &connp->w;
@@ -2087,7 +2087,7 @@ int Send_radar(connection_t *connp, int x, int y, int size)
 	return Packet_printf(&connp->w, "%c%hd%hd%c", PKT_RADAR, x, y, size);
 }
 
-int Send_fastradar(connection_t *connp, unsigned char *buf, unsigned n)
+int Send_fastradar(connection_t *connp, uint8_t *buf, unsigned n)
 {
 	int avail;
 	sockbuf_t *w = &connp->w;
@@ -2106,7 +2106,7 @@ int Send_fastradar(connection_t *connp, unsigned char *buf, unsigned n)
 			return 0;
 	}
 	w->buf[w->len++] = PKT_FASTRADAR;
-	w->buf[w->len++] = (unsigned char)(n & 0xFF);
+	w->buf[w->len++] = (uint8_t)(n & 0xFF);
 	memcpy(&w->buf[w->len], buf, (size_t)n * 3);
 	w->len += n * 3;
 
@@ -2263,7 +2263,7 @@ static int Receive_quit(connection_t *connp)
 
 static int Receive_play(connection_t *connp)
 {
-	unsigned char ch;
+	uint8_t ch;
 	int n;
 	char errmsg[MAX_CHARS];
 
@@ -2310,7 +2310,7 @@ static int Receive_play(connection_t *connp)
 static int Receive_power(connection_t *connp)
 {
 	player_t *pl;
-	unsigned char ch;
+	uint8_t ch;
 	short tmp;
 	int n, autopilot;
 	double power;
@@ -2494,7 +2494,7 @@ int Send_reliable(connection_t *connp)
 static int Receive_ack(connection_t *connp)
 {
 	int n;
-	unsigned char ch;
+	uint8_t ch;
 	long rel, rtt; /* RoundTrip Time */
 	long diff, delta, rel_loops;
 
@@ -2611,9 +2611,9 @@ static int Receive_undefined(connection_t *connp)
 static int Receive_ack_cannon(connection_t *connp)
 {
 	long loops_ack;
-	unsigned char ch;
+	uint8_t ch;
 	int n;
-	unsigned short num;
+	uint16_t num;
 	cannon_t *cannon;
 
 	if ((n = Packet_scanf(&connp->r, "%c%ld%hu",
@@ -2638,9 +2638,9 @@ static int Receive_ack_cannon(connection_t *connp)
 static int Receive_ack_fuel(connection_t *connp)
 {
 	long loops_ack;
-	unsigned char ch;
+	uint8_t ch;
 	int n;
-	unsigned short num;
+	uint16_t num;
 	fuel_t *fs;
 
 	if ((n = Packet_scanf(&connp->r, "%c%ld%hu",
@@ -2664,9 +2664,9 @@ static int Receive_ack_fuel(connection_t *connp)
 static int Receive_ack_target(connection_t *connp)
 {
 	long loops_ack;
-	unsigned char ch;
+	uint8_t ch;
 	int n;
-	unsigned short num;
+	uint16_t num;
 	target_t *targ;
 
 	if ((n = Packet_scanf(&connp->r, "%c%ld%hu",
@@ -2705,9 +2705,9 @@ static int Receive_ack_target(connection_t *connp)
 static int Receive_ack_polystyle(connection_t *connp)
 {
 	long loops_ack;
-	unsigned char ch;
+	uint8_t ch;
 	int n;
-	unsigned short num;
+	uint16_t num;
 	poly_t *poly;
 
 	if ((n = Packet_scanf(&connp->r, "%c%ld%hu",
@@ -2837,7 +2837,7 @@ static void Handle_talk(connection_t *connp, char *str)
 
 static int Receive_talk(connection_t *connp)
 {
-	unsigned char ch;
+	uint8_t ch;
 	int n;
 	long seq;
 	char str[MAX_CHARS];
@@ -2867,7 +2867,7 @@ static int Receive_talk(connection_t *connp)
 
 static int Receive_display(connection_t *connp)
 {
-	unsigned char ch, debris_colors, spark_rand;
+	uint8_t ch, debris_colors, spark_rand;
 	short width, height;
 	int n;
 
@@ -2899,7 +2899,7 @@ static int Receive_display(connection_t *connp)
 static int Receive_modifier_bank(connection_t *connp)
 {
 	player_t *pl;
-	unsigned char bank, ch;
+	uint8_t bank, ch;
 	char str[MAX_CHARS];
 	int n;
 
@@ -2967,7 +2967,7 @@ static int Receive_shape(connection_t *connp)
 
 static int Receive_motd(connection_t *connp)
 {
-	unsigned char ch;
+	uint8_t ch;
 	long offset, nbytes;
 	int n;
 
@@ -3126,7 +3126,7 @@ static int Send_motd(connection_t *connp)
 static int Receive_pointer_move(connection_t *connp)
 {
 	player_t *pl;
-	unsigned char ch;
+	uint8_t ch;
 	short movement;
 	int n;
 	double turnspeed, turndir;
@@ -3188,7 +3188,7 @@ static int Receive_fps_request(connection_t *connp)
 {
 	player_t *pl;
 	int n;
-	unsigned char ch, fps;
+	uint8_t ch, fps;
 
 	if ((n = Packet_scanf(&connp->r, "%c%c", &ch, &fps)) <= 0)
 	{
@@ -3217,7 +3217,7 @@ static int Receive_audio_request(connection_t *connp)
 {
 	player_t *pl;
 	int n;
-	unsigned char ch, on;
+	uint8_t ch, on;
 
 	if ((n = Packet_scanf(&connp->r, "%c%c", &ch, &on)) <= 0)
 	{

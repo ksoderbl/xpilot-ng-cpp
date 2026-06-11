@@ -30,7 +30,7 @@
 
 #define MAX_SHUFFLE_INDEX 65535
 
-typedef unsigned short shuffle_t;
+typedef uint16_t shuffle_t;
 
 /*
  * Structure for calculating if a click position is visible by a player.
@@ -49,7 +49,7 @@ typedef struct
 
 typedef struct
 {
-	unsigned char x, y;
+	uint8_t x, y;
 } debris_t;
 
 typedef struct
@@ -167,8 +167,8 @@ static inline bool clpos_inview(click_visibility_t *v, clpos_t pos)
 			return;                                                                                                     \
 		}                                                                                                               \
 	}                                                                                                                   \
-	ptr_[num_].x = (unsigned char)xd;                                                                                   \
-	ptr_[num_].y = (unsigned char)yd;                                                                                   \
+	ptr_[num_].x = (uint8_t)xd;                                                                                         \
+	ptr_[num_].y = (uint8_t)yd;                                                                                         \
 	num_++;
 
 static void fastshot_store(int cx, int cy, int color, int offset)
@@ -206,7 +206,7 @@ static void fastshot_end(connection_t *conn)
 		if (fastshot_num[i] != 0)
 		{
 			Send_fastshot(conn, i,
-						  (unsigned char *)fastshot_ptr[i],
+						  (uint8_t *)fastshot_ptr[i],
 						  fastshot_num[i]);
 			fastshot_num[i] = 0;
 		}
@@ -222,7 +222,7 @@ static void debris_end(connection_t *conn)
 		if (debris_num[i] != 0)
 		{
 			Send_debris(conn, i,
-						(unsigned char *)debris_ptr[i],
+						(uint8_t *)debris_ptr[i],
 						debris_num[i]);
 			debris_num[i] = 0;
 		}
@@ -289,7 +289,7 @@ static void Frame_radar_buffer_send(connection_t *conn, player_t *pl)
 	}
 	else
 	{
-		unsigned char buf[3 * 256];
+		uint8_t buf[3 * 256];
 		int buf_index = 0;
 		unsigned fast_count = 0;
 
@@ -302,12 +302,12 @@ static void Frame_radar_buffer_send(connection_t *conn, player_t *pl)
 			radar_y = (radar_height * p->y) / world->height;
 			if (radar_y >= 1024)
 				continue;
-			buf[buf_index++] = (unsigned char)(radar_x);
-			buf[buf_index++] = (unsigned char)(radar_y & 0xFF);
-			buf[buf_index] = (unsigned char)((radar_y >> 2) & 0xC0);
+			buf[buf_index++] = (uint8_t)(radar_x);
+			buf[buf_index++] = (uint8_t)(radar_y & 0xFF);
+			buf[buf_index] = (uint8_t)((radar_y >> 2) & 0xC0);
 			if (p->size & 0x80)
-				buf[buf_index] |= (unsigned char)(0x20);
-			buf[buf_index] |= (unsigned char)(p->size & 0x07);
+				buf[buf_index] |= (uint8_t)(0x20);
+			buf[buf_index] |= (uint8_t)(p->size & 0x07);
 			buf_index++;
 			fast_count++;
 		}

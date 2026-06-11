@@ -23,16 +23,30 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cerrno>
+#include <cstring>
+#include <cctype>
+
+// #include "strlcpy.h"
+
+#include "xpconfig.h"
+#include "const.h"
+#include "xperror.h"
+#include "pack.h"
+#include "checknames.h"
+
 int Check_user_name(char *name)
 {
-    unsigned char *str;
+    uint8_t *str;
 
     if (strlen(name) > MAX_NAME_LEN - 1)
         return NAME_ERROR;
     if (!*name)
         return NAME_ERROR;
 
-    str = (unsigned char *)name;
+    str = (uint8_t *)name;
     for (; *str; str++)
     {
         if (!isgraph(*str))
@@ -44,7 +58,7 @@ int Check_user_name(char *name)
 
 void Fix_user_name(char *name)
 {
-    unsigned char *str;
+    uint8_t *str;
 
     if (strlen(name) > MAX_NAME_LEN - 1)
         name[MAX_NAME_LEN - 1] = 0;
@@ -53,7 +67,7 @@ void Fix_user_name(char *name)
         strlcpy(name, "X", sizeof(name));
         return;
     }
-    str = (unsigned char *)name;
+    str = (uint8_t *)name;
     for (; *str; str++)
     {
         if (!isgraph(*str))
@@ -63,14 +77,14 @@ void Fix_user_name(char *name)
 
 int Check_nick_name(char *name)
 {
-    unsigned char *str;
+    uint8_t *str;
 
     if (strlen(name) > MAX_NAME_LEN - 1)
         return NAME_ERROR;
     if (!*name)
         return NAME_ERROR;
 
-    str = (unsigned char *)name;
+    str = (uint8_t *)name;
     if (!isupper(*str))
         return NAME_ERROR;
 
@@ -88,7 +102,7 @@ int Check_nick_name(char *name)
 
 void Fix_nick_name(char *name)
 {
-    unsigned char *str;
+    uint8_t *str;
 
     if (strlen(name) > MAX_NAME_LEN - 1)
         name[MAX_NAME_LEN - 1] = 0;
@@ -98,7 +112,7 @@ void Fix_nick_name(char *name)
         sprintf(name, "X%d", n++);
         return;
     }
-    str = (unsigned char *)name;
+    str = (uint8_t *)name;
     if (!isupper(*str))
     {
         if (islower(*str))
@@ -130,11 +144,11 @@ static bool is_alpha_numeric(int c)
 
 int Check_host_name(char *name)
 {
-    unsigned char *str;
+    uint8_t *str;
 
     if (strlen(name) > MAX_HOST_LEN - 1)
         return NAME_ERROR;
-    str = (unsigned char *)name;
+    str = (uint8_t *)name;
     if (!is_alpha_numeric(*str))
         return NAME_ERROR;
     for (; *str; str++)
@@ -155,11 +169,11 @@ int Check_host_name(char *name)
 
 void Fix_host_name(char *name)
 {
-    unsigned char *str;
+    uint8_t *str;
 
     if (strlen(name) > MAX_HOST_LEN - 1)
         name[MAX_HOST_LEN - 1] = 0;
-    str = (unsigned char *)name;
+    str = (uint8_t *)name;
     if (!is_alpha_numeric(*str))
     {
         strlcpy(name, "xxx.xxx", sizeof(name));
@@ -184,11 +198,11 @@ void Fix_host_name(char *name)
  */
 int Check_disp_name(char *name)
 {
-    unsigned char *str;
+    uint8_t *str;
 
     if (strlen(name) > MAX_DISP_LEN - 1)
         return NAME_ERROR;
-    str = (unsigned char *)name;
+    str = (uint8_t *)name;
     for (; *str; str++)
     {
         if (!isgraph(*str))
@@ -199,11 +213,11 @@ int Check_disp_name(char *name)
 
 void Fix_disp_name(char *name)
 {
-    unsigned char *str;
+    uint8_t *str;
 
     if (strlen(name) > MAX_DISP_LEN - 1)
         name[MAX_DISP_LEN - 1] = 0;
-    str = (unsigned char *)name;
+    str = (uint8_t *)name;
     for (; *str; str++)
     {
         if (!isgraph(*str))

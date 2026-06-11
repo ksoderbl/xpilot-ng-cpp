@@ -23,6 +23,10 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+
+#include "list.h"
+
 /*
  * A double linked list similar to the STL list, but implemented in C.
  */

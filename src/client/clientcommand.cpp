@@ -52,7 +52,7 @@ static void print_ignorelist(void)
 {
 	char buffer[MAX_CHARS] = "";
 	int i;
-	unsigned short check = 0;
+	uint16_t check = 0;
 
 	for (i = 0; i < num_others; i++)
 	{

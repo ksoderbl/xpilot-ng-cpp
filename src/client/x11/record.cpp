@@ -240,7 +240,7 @@ static void RWriteTile(Pixmap tile)
 	{
 		struct tile_list *next;
 		Pixmap tile;
-		unsigned char tile_id;
+		uint8_t tile_id;
 	} tile_list_t;
 	static tile_list_t *list = NULL;
 	tile_list_t *lptr;
@@ -310,7 +310,7 @@ static void RWriteGC(GC gc, unsigned long req_mask)
 	static unsigned long prev_mask;
 	static XGCValues prev_values;
 	static int prev_frame_count = -1;
-	unsigned short gc_mask;
+	uint16_t gc_mask;
 
 	if (prev_frame_count != record_frame_count)
 	{

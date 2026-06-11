@@ -455,16 +455,16 @@ void World_free(void)
 static bool World_alloc(void)
 {
     int x;
-    unsigned char *map_line;
-    unsigned char **map_pointer;
+    uint8_t *map_line;
+    uint8_t **map_pointer;
     vector_t *grav_line;
     vector_t **grav_pointer;
 
     assert(world->block == NULL);
     assert(world->gravity == NULL);
 
-    world->block = (unsigned char **)
-        malloc(sizeof(unsigned char *) * world->x + world->x * sizeof(unsigned char) * world->y);
+    world->block = (uint8_t **)
+        malloc(sizeof(uint8_t *) * world->x + world->x * sizeof(uint8_t) * world->y);
     world->gravity = (vector_t **)
         malloc(sizeof(vector_t *) * world->x + world->x * sizeof(vector_t) * world->y);
 
@@ -485,7 +485,7 @@ static bool World_alloc(void)
     }
 
     map_pointer = world->block;
-    map_line = (unsigned char *)((unsigned char **)map_pointer + world->x);
+    map_line = (uint8_t *)((uint8_t **)map_pointer + world->x);
 
     grav_pointer = world->gravity;
     grav_line = (vector_t *)((vector_t **)grav_pointer + world->x);

@@ -111,7 +111,7 @@ void Meta_init(void)
 static void asciidump(void *p, size_t size)
 {
     int i;
-    unsigned char *up = p;
+    uint8_t *up = p;
     char c;
 
     for (i = 0; i < size; i++) {

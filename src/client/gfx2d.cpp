@@ -386,7 +386,7 @@ static RGB_COLOR Picture_get_pixel_avg(const xp_picture_t *picture,
 		g += GREEN_VALUE(c[i]) * p[i];
 		b += BLUE_VALUE(c[i]) * p[i];
 	}
-	return RGB24((unsigned char)r, (unsigned char)g, (unsigned char)b);
+	return RGB24((uint8_t)r, (uint8_t)g, (uint8_t)b);
 }
 
 /*
@@ -538,8 +538,8 @@ RGB_COLOR Picture_get_pixel_area(const xp_picture_t *picture, int image,
 	if (dy > .00001)
 		Picture_scale_x_slice(picture, image, &r, &g, &b, x, y, dx, xfrac, dy);
 
-	return RGB24((unsigned char)(r / area), (unsigned char)(g / area),
-				 (unsigned char)(b / area));
+	return RGB24((uint8_t)(r / area), (uint8_t)(g / area),
+				 (uint8_t)(b / area));
 }
 
 /*

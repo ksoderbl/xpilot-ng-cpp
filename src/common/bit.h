@@ -38,6 +38,6 @@
 #define BITV_ISSET(X, N) ((X)[(N) / BITV_SIZE] & (1 << (N) % BITV_SIZE))
 #define BITV_TOGGLE(X, N) ((X)[(N) / BITV_SIZE] ^= 1 << (N) % BITV_SIZE)
 
-typedef unsigned char bitv_t;
+typedef uint8_t bitv_t;
 
 #endif

@@ -493,7 +493,7 @@ void Gui_paint_decor(int x, int y, int xi, int yi, int type,
 		fill_top_right = -1,
 		fill_bottom_left = -1,
 		fill_bottom_right = -1;
-	static unsigned char decor[256];
+	static uint8_t decor[256];
 	static int decorReady = 0;
 
 	SET_FG(colors[decorColor].pixel);

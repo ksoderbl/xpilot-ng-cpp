@@ -555,7 +555,7 @@ int Init_player(int ind, shipshape_t *ship, int type)
 		pl->lockbank[i] = NO_ID;
 
 	{
-		static unsigned short pseudo_team_no = 0;
+		static uint16_t pseudo_team_no = 0;
 
 		pl->pseudo_team = pseudo_team_no++;
 	}

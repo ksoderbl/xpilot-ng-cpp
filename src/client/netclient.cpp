@@ -2060,7 +2060,7 @@ int Receive_fastradar(void)
 {
 	int n, i, r = 1;
 	int x, y, size;
-	unsigned char *ptr;
+	uint8_t *ptr;
 
 	rbuf.ptr++; /* skip PKT_FASTRADAR packet id */
 
@@ -2069,7 +2069,7 @@ int Receive_fastradar(void)
 	n = (*rbuf.ptr++ & 0xFF);
 	if (rbuf.ptr - rbuf.buf + (n * 3) > rbuf.len)
 		return 0;
-	ptr = (unsigned char *)rbuf.ptr;
+	ptr = (uint8_t *)rbuf.ptr;
 	for (i = 0; i < n; i++)
 	{
 		x = *ptr++;
@@ -2194,7 +2194,7 @@ int Receive_team(void)
 int Receive_score_object(void)
 {
 	int n;
-	unsigned short x, y;
+	uint16_t x, y;
 	double score = 0;
 	char msg[MAX_CHARS];
 	uint8_t ch;
@@ -2274,7 +2274,7 @@ int Receive_timing(void)
 		check,
 		round;
 	short id;
-	unsigned short timing;
+	uint16_t timing;
 	uint8_t ch;
 
 	n = Packet_scanf(&cbuf, "%c%hd%hu", &ch, &id, &timing);
@@ -2290,7 +2290,7 @@ int Receive_timing(void)
 int Receive_fuel(void)
 {
 	int n;
-	unsigned short num, fuel;
+	uint16_t num, fuel;
 	uint8_t ch;
 
 	if ((n = Packet_scanf(&rbuf, "%c%hu%hu", &ch, &num, &fuel)) <= 0)
@@ -2305,7 +2305,7 @@ int Receive_fuel(void)
 int Receive_cannon(void)
 {
 	int n;
-	unsigned short num, dead_time;
+	uint16_t num, dead_time;
 	uint8_t ch;
 
 	if ((n = Packet_scanf(&rbuf, "%c%hu%hu", &ch, &num, &dead_time)) <= 0)
@@ -2320,7 +2320,7 @@ int Receive_cannon(void)
 int Receive_target(void)
 {
 	int n;
-	unsigned short num,
+	uint16_t num,
 		dead_time,
 		damage;
 	uint8_t ch;
@@ -2338,7 +2338,7 @@ int Receive_target(void)
 int Receive_polystyle(void) /* since ng 4.7.0 */
 {
 	int n;
-	unsigned short num, newstyle;
+	uint16_t num, newstyle;
 	uint8_t ch;
 
 	if ((n = Packet_scanf(&rbuf, "%c%hu%hu", &ch, &num, &newstyle)) <= 0)
@@ -2354,7 +2354,7 @@ int Receive_base(void)
 {
 	int n;
 	short id;
-	unsigned short num;
+	uint16_t num;
 	uint8_t ch;
 
 	if ((n = Packet_scanf(&cbuf, "%c%hd%hu", &ch, &id, &num)) <= 0)
@@ -2379,7 +2379,7 @@ int Receive_string(void)
 	int n;
 	uint8_t ch,
 		type;
-	unsigned short arg1,
+	uint16_t arg1,
 		arg2;
 
 	if ((n = Packet_scanf(&cbuf, "%c%c%hu%hu", &ch, &type, &arg1, &arg2)) <= 0)
@@ -2604,7 +2604,7 @@ int Send_turnresistance_s(double turnres_s)
 
 int Receive_quit(void)
 {
-	unsigned char pkt;
+	uint8_t pkt;
 	sockbuf_t *sbuf;
 	char reason[MAX_CHARS];
 
@@ -2626,7 +2626,7 @@ int Receive_quit(void)
 int Receive_audio(void)
 {
 	int n;
-	unsigned char pkt, type, vol;
+	uint8_t pkt, type, vol;
 
 	if ((n = Packet_scanf(&rbuf, "%c%c%c", &pkt, &type, &vol)) <= 0)
 		return n;
@@ -2640,7 +2640,7 @@ int Receive_audio(void)
 int Receive_talk_ack(void)
 {
 	int n;
-	unsigned char pkt;
+	uint8_t pkt;
 	long talk_ack;
 
 	if ((n = Packet_scanf(&cbuf, "%c%ld", &pkt, &talk_ack)) <= 0)

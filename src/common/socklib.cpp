@@ -348,7 +348,7 @@ int sock_open_tcp_connected_non_blocking(sock_t *sock, char *host, int port)
 
     memset(&dest, 0, sizeof(dest));
     dest.sin_family = AF_INET;
-    dest.sin_port = htons((unsigned short)port);
+    dest.sin_port = htons((uint16_t)port);
     dest.sin_addr.s_addr = inet_addr(host);
     if ((dest.sin_addr.s_addr & 0xFFFFFFFF) == 0xFFFFFFFF)
     {
@@ -403,7 +403,7 @@ int sock_open_udp(sock_t *sock, char *dotaddr, int port)
 
     memset(&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
-    addr.sin_port = htons((unsigned short)port);
+    addr.sin_port = htons((uint16_t)port);
     addr.sin_addr.s_addr = (dotaddr) ? inet_addr(dotaddr) : INADDR_ANY;
     if (bind(sock->fd, (struct sockaddr *)&addr, sizeof(addr)) < 0)
     {
@@ -422,7 +422,7 @@ int sock_connect(sock_t *sock, char *host, int port)
 
     memset(&dest, 0, sizeof(dest));
     dest.sin_family = AF_INET;
-    dest.sin_port = htons((unsigned short)port);
+    dest.sin_port = htons((uint16_t)port);
     dest.sin_addr.s_addr = inet_addr(host);
     if ((dest.sin_addr.s_addr & 0xFFFFFFFF) == 0xFFFFFFFF)
     {
@@ -544,7 +544,7 @@ int sock_send_dest(sock_t *sock, char *host, int port, char *buf, int len)
 
     memset(&dest, 0, sizeof(dest));
     dest.sin_family = AF_INET;
-    dest.sin_port = htons((unsigned short)port);
+    dest.sin_port = htons((uint16_t)port);
     dest.sin_addr.s_addr = inet_addr(host);
     if ((dest.sin_addr.s_addr & 0xFFFFFFFF) == 0xFFFFFFFF)
     {
@@ -688,7 +688,7 @@ int sock_get_port(sock_t *sock)
 {
     struct sockaddr_in addr;
     socklen_t len = sizeof(addr);
-    unsigned short port;
+    uint16_t port;
 
     if (getsockname(sock->fd, (struct sockaddr *)&addr, &len) < 0)
     {

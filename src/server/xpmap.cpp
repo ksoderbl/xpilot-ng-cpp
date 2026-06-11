@@ -25,7 +25,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-static int Compress_map(unsigned char *map, size_t size);
+static int Compress_map(uint8_t *map, size_t size);
 
 static void Xpmap_treasure_to_polygon(int treasure_ind);
 static void Xpmap_target_to_polygon(int target_ind);
@@ -74,7 +74,7 @@ static void Xpmap_missing_error(int line_num)
  * This works well for most maps which have lots of series of the
  * same map object and is simple enough to got implemented quickly.
  */
-static int Compress_map(unsigned char *map, size_t size)
+static int Compress_map(uint8_t *map, size_t size)
 {
 	int i, j, k;
 
@@ -380,12 +380,12 @@ setup_t *Xpmap_init_setup(void)
 {
 	int i, x, y, team, type = -1, dir, wtype;
 	int wormhole_i = 0, treasure_i = 0, target_i = 0, base_i = 0, cannon_i = 0;
-	unsigned char *mapdata, *mapptr;
+	uint8_t *mapdata, *mapptr;
 	size_t size, numblocks;
 	setup_t *setup;
 
 	numblocks = world->x * world->y;
-	if ((mapdata = XMALLOC(unsigned char, numblocks)) == NULL)
+	if ((mapdata = XMALLOC(uint8_t, numblocks)) == NULL)
 	{
 		error("No memory for mapdata");
 		return NULL;
@@ -675,7 +675,7 @@ setup_t *Xpmap_init_setup(void)
 			free(mapdata);
 			return NULL;
 		}
-		if ((mapdata = XREALLOC(unsigned char, mapdata, size)) == NULL)
+		if ((mapdata = XREALLOC(uint8_t, mapdata, size)) == NULL)
 		{
 			error("Cannot reallocate mapdata");
 			return NULL;

@@ -89,7 +89,7 @@ static int Get_contact_message(sockbuf_t *sbuf,
 	int len;
 	int server_version;
 	unsigned magic;
-	unsigned char reply_to, status;
+	uint8_t reply_to, status;
 	int readable = 0;
 
 	sock_set_timeout(&sbuf->sock, 2, 0);
@@ -238,7 +238,7 @@ static bool Process_commands(sockbuf_t *ibuf,
 {
 	int i, len, retries, delay, success, cmd_credentials = 0, max_replies;
 	char c, status, reply_to, linebuf[MAX_LINE];
-	unsigned short port, qpos;
+	uint16_t port, qpos;
 	bool has_credentials = false, privileged_cmd;
 	long key = 0;
 	time_t qsent = 0;

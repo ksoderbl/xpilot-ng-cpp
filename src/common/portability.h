@@ -93,7 +93,7 @@ double rint(double x);
 #endif
 
 #ifdef _MSC_VER
-typedef unsigned short uint16_t; /* e.g. in client.c */
+typedef uint16_t uint16_t; /* e.g. in client.c */
 typedef unsigned int uint32_t;
 typedef int int32_t;
 #endif

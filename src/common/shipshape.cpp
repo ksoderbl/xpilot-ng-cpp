@@ -230,7 +230,7 @@ shipshape_t *Default_ship(void)
 typedef struct
 {
 	int todo, done;
-	unsigned char pt[32][32];
+	uint8_t pt[32][32];
 	ipos_t chk[32 * 32];
 } grid_t;
 

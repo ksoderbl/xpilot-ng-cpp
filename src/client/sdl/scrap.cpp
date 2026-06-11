@@ -67,7 +67,7 @@ static HWND SDL_Window;
 
 #elif defined(QNX_SCRAP)
 /* * */
-static unsigned short InputGroup;
+static uint16_t InputGroup;
 
 #endif /* scrap type */
 
@@ -357,7 +357,7 @@ put_scrap(int type, int srclen, char *src)
     Lock_Display();
     convert_data(type, dst, src, srclen);
     XChangeProperty(SDL_Display, DefaultRootWindow(SDL_Display),
-                    XA_CUT_BUFFER0, format, 8, PropModeReplace, (unsigned char *)dst, dstlen);
+                    XA_CUT_BUFFER0, format, 8, PropModeReplace, (uint8_t *)dst, dstlen);
     free(dst);
     if (lost_scrap())
       XSetSelectionOwner(SDL_Display, XA_PRIMARY, SDL_Window, CurrentTime);
@@ -456,7 +456,7 @@ get_scrap(int type, int *dstlen, char **dst)
     int seln_format;
     unsigned long nbytes;
     unsigned long overflow;
-    unsigned char *src;
+    uint8_t *src;
 
     Lock_Display();
     owner = XGetSelectionOwner(SDL_Display, XA_PRIMARY);
@@ -611,7 +611,7 @@ PRIVATE int clipboard_filter(const SDL_Event *event)
     int seln_format;
     unsigned long nbytes;
     unsigned long overflow;
-    unsigned char *seln_data;
+    uint8_t *seln_data;
 
     req = &event->syswm.msg->event.xevent.xselectionrequest;
     sevent.xselection.type = SelectionNotify;

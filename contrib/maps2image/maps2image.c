@@ -22,11 +22,10 @@
 
 #include "font.h"
 
-#define	STRING_HEIGHT	(FONTY)
+#define STRING_HEIGHT (FONTY)
 
-#define	PUBLIC
-#define	PRIVATE		static
-
+#define PUBLIC
+#define PRIVATE static
 
 /* Private routines
  * ================
@@ -37,29 +36,25 @@ PRIVATE void add_title(char *image, int x, int y, char *filename);
 PRIVATE char *convert_map(int width, int height, FILE *fl);
 PRIVATE void build_image(char *image, int x, int y, FILE *fl);
 
-
 /* Private variables
  * =================
  */
-
 
 /* Public routines
  * ===============
  */
 
-
 /* Public variables
  * ================
  */
-int	mapsize = 64;
-int	xcount = 0, ycount = 0;
-int	count;
-int	xsize, ysize;
-int	label = 1;		/* Produce a map label by default */
-int	invert = 0;
-int	verbose = 0;
-int	bitmap = 0;
-
+int mapsize = 64;
+int xcount = 0, ycount = 0;
+int count;
+int xsize, ysize;
+int label = 1; /* Produce a map label by default */
+int invert = 0;
+int verbose = 0;
+int bitmap = 0;
 
 /**************************************************************************
  * PUBLIC int main(int ac, char **av)
@@ -67,14 +62,14 @@ int	bitmap = 0;
  */
 PUBLIC int main(int ac, char **av)
 {
-	int		c;
-	extern char	*optarg;
-	extern int	optind;
-	char		*image;
-	int		x, y;
-	int		i;
-	int		value;
-	char		*p;
+	int c;
+	extern char *optarg;
+	extern int optind;
+	char *image;
+	int x, y;
+	int i;
+	int value;
+	char *p;
 
 	/*
 	 * Deal with arguments
@@ -83,27 +78,27 @@ PUBLIC int main(int ac, char **av)
 	{
 		switch (c)
 		{
-			case 's':
-				mapsize = atoi(optarg);
-				break;
-			case 'x':
-				xcount = atoi(optarg);
-				break;
-			case 'i':
-				invert = 1;
-				break;
-			case 'v':
-				verbose = 1;
-				break;
-			case 'b':
-				bitmap = 1;
-				break;
-			case 'l':
-				label = 0;
-				break;
-			default:
-				fprintf(stderr, "usage: %s [-s size][-x nmaps][-i][-v][-l] xpmap ...\n", av[0]);
-				exit(1);
+		case 's':
+			mapsize = atoi(optarg);
+			break;
+		case 'x':
+			xcount = atoi(optarg);
+			break;
+		case 'i':
+			invert = 1;
+			break;
+		case 'v':
+			verbose = 1;
+			break;
+		case 'b':
+			bitmap = 1;
+			break;
+		case 'l':
+			label = 0;
+			break;
+		default:
+			fprintf(stderr, "usage: %s [-s size][-x nmaps][-i][-v][-l] xpmap ...\n", av[0]);
+			exit(1);
 		}
 	}
 
@@ -131,7 +126,7 @@ PUBLIC int main(int ac, char **av)
 	}
 	else
 	{
-		ycount = sqrt((double) count);
+		ycount = sqrt((double)count);
 		xcount = (count + ycount - 1) / ycount;
 	}
 
@@ -142,7 +137,7 @@ PUBLIC int main(int ac, char **av)
 	if (label)
 		ysize = (mapsize + 2 + STRING_HEIGHT) * ycount;
 	else
-	    	ysize = (mapsize + 2) * ycount;
+		ysize = (mapsize + 2) * ycount;
 
 	if (verbose)
 		fprintf(stderr, "Image size: %d x %d\n", xsize, ysize);
@@ -156,12 +151,13 @@ PUBLIC int main(int ac, char **av)
 	/*
 	 *   Build the image
 	 */
-	x = 0; y = 0;
+	x = 0;
+	y = 0;
 	for (i = optind; i < ac; i++)
 	{
-		char	*p = strrchr(av[i], '.');
-		char	command[100];
-		FILE	*fl;
+		char *p = strrchr(av[i], '.');
+		char command[100];
+		FILE *fl;
 
 		command[0] = '\0';
 		if (p && strcmp(p, ".gz") == 0)
@@ -201,11 +197,11 @@ PUBLIC int main(int ac, char **av)
 	 */
 	if (bitmap)
 	{
-		int	count = 0;
-		int	Xsize = (xsize + 7) & 0xfff8;
+		int count = 0;
+		int Xsize = (xsize + 7) & 0xfff8;
 
 		printf("#define maps_width %d\n#define maps_height %d\n", Xsize, ysize);
-		printf("static unsigned char maps_bits[] = {\n   ");
+		printf("static uint8_t maps_bits[] = {\n   ");
 		p = image;
 		value = 0;
 		i = 0x80;
@@ -281,7 +277,6 @@ PUBLIC int main(int ac, char **av)
 	return 0;
 }
 
-
 /**************************************************************************
  * PRIVATE void build_image(char *image, int x, int y, FILE *fl)
  *   Read a map and create the image for it. The image is placed
@@ -289,10 +284,10 @@ PUBLIC int main(int ac, char **av)
  */
 PRIVATE void build_image(char *image, int x, int y, FILE *fl)
 {
-	int	width = 0;
-	int	height = 0;
-	char	buffer[1024];
-	char	*token;
+	int width = 0;
+	int height = 0;
+	char buffer[1024];
+	char *token;
 
 	if (!fl)
 		return;
@@ -314,8 +309,8 @@ PRIVATE void build_image(char *image, int x, int y, FILE *fl)
 		}
 		else if (strncasecmp(buffer, "mapdata", 7) == 0)
 		{
-			char	*p, *data, *topleft;
-			int	j;
+			char *p, *data, *topleft;
+			int j;
 
 			if (!width || !height)
 			{
@@ -343,7 +338,6 @@ PRIVATE void build_image(char *image, int x, int y, FILE *fl)
 	}
 }
 
-
 /**************************************************************************
  * PRIVATE void add_title(char *image, int x, int y, char *filename)
  *   Create the title for the map below the map image. The title
@@ -351,11 +345,11 @@ PRIVATE void build_image(char *image, int x, int y, FILE *fl)
  */
 PRIVATE void add_title(char *image, int x, int y, char *filename)
 {
-	char	*p = strrchr(filename, '/');
-	int	pos;
-	char	*s;
-	char	*botleft;
-	int	j;
+	char *p = strrchr(filename, '/');
+	int pos;
+	char *s;
+	char *botleft;
+	int j;
 
 	if (!p)
 		p = filename;
@@ -393,16 +387,15 @@ PRIVATE void add_title(char *image, int x, int y, char *filename)
 	free(s);
 }
 
-
 /**************************************************************************
  * PRIVATE int build_char(char ch, char *image, int x, int y, int pos)
  *
  */
 PRIVATE int build_char(char ch, char *image, int x, int y, int pos)
 {
-	int	i, j, n;
-	char	*p;
-	char	*data;
+	int i, j, n;
+	char *p;
+	char *data;
 
 	/*
 	 *   Locate the character
@@ -416,10 +409,10 @@ PRIVATE int build_char(char ch, char *image, int x, int y, int pos)
 		return pos;
 
 	if (pos + font[i].width > x)
-		return pos;		/* Don't overwrite the bounding box */
+		return pos; /* Don't overwrite the bounding box */
 
 	p = image + pos;
-	data = (char *) font[i].data;
+	data = (char *)font[i].data;
 	for (n = 0; n <= FONTY; n++)
 	{
 		for (j = 0; j < FONTX; j++)
@@ -431,15 +424,14 @@ PRIVATE int build_char(char ch, char *image, int x, int y, int pos)
 	return pos + font[i].width + 1;
 }
 
-
 /**************************************************************************
  * PRIVATE void one2eight(char data, char *image)
  *   Convert one byte (8 bits) to a sequence of 8 bytes.
  */
 PRIVATE void one2eight(char data, char *image)
 {
-	int	mask = 0x80;
-	int	i;
+	int mask = 0x80;
+	int i;
 
 	for (i = 0; i < 8; i++)
 	{
@@ -450,31 +442,30 @@ PRIVATE void one2eight(char data, char *image)
 	}
 }
 
-
 /**************************************************************************
  * PRIVATE char *convert_map(int width, int height, FILE *fl)
  *   Create an image from map data.
  */
 PRIVATE char *convert_map(int width, int height, FILE *fl)
 {
-	char	buffer[10240];
-	char	*p;
-	float	div;
-	int	x, y;
-	int	lx, ly, px, py;
-	int	value = 1;
-	int	i, j;
-	char	*output = malloc(mapsize * mapsize);
+	char buffer[10240];
+	char *p;
+	float div;
+	int x, y;
+	int lx, ly, px, py;
+	int value = 1;
+	int i, j;
+	char *output = malloc(mapsize * mapsize);
 
 	if (width >= height)
-		div = ((float) mapsize) / width;
+		div = ((float)mapsize) / width;
 	else
-		div = ((float) mapsize) / height;
+		div = ((float)mapsize) / height;
 
 	value ^= invert;
 
 	y = 0;
-	memset((char *) output, invert, mapsize * mapsize);
+	memset((char *)output, invert, mapsize * mapsize);
 
 	/*
 	 *   If the map is smaller than the image we are producing, we
@@ -540,6 +531,3 @@ PRIVATE char *convert_map(int width, int height, FILE *fl)
 	}
 	return output;
 }
-
-
-
