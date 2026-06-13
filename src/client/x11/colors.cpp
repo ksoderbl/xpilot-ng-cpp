@@ -35,10 +35,18 @@
 #include <X11/Xos.h>
 #include <X11/Xutil.h>
 
-/* Kludge for visuals under C++ */
-#if defined(__cplusplus)
-#define class c_class
-#endif
+#include "const.h"
+
+#include "paint.h"
+#include "option.h"
+
+#include "xpconfig.h"
+#include "types.h"
+#include "xpaint.h"
+#include "xinit.h"
+#include "xperror.h"
+#include "dbuff.h"
+#include "client.h"
 
 /*
  * The number of X11 visuals.
@@ -217,7 +225,7 @@ void List_visuals(void)
 	for (i = 0; i < num; i++)
 	{
 		printf("Visual class    %12s\n",
-			   Visual_class_name(vinfo_ptr[i].class));
+			   Visual_class_name(vinfo_ptr[i].c_class));
 		printf("    id                  0x%02x\n", (unsigned)vinfo_ptr[i].visualid);
 		printf("    screen          %8d\n", vinfo_ptr[i].screen);
 		printf("    depth           %8d\n", vinfo_ptr[i].depth);

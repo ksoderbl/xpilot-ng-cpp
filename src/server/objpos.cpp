@@ -25,6 +25,7 @@
 
 #include "object.h"
 #include "objpos.h"
+#include "server.h"
 
 void Object_position_set_clpos(object_t *obj, clpos_t pos)
 {

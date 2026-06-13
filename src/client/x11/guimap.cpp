@@ -33,6 +33,28 @@
 #include <X11/Xlib.h>
 #include <X11/Xos.h>
 
+#include "commonproto.h"
+
+#include "client.h"
+#include "option.h"
+#include "paint.h"
+
+#include "gfx2d.h"
+#include "xpconfig.h"
+#include "const.h"
+#include "xperror.h"
+#include "bit.h"
+#include "types.h"
+#include "keys.h"
+#include "rules.h"
+#include "clientsetup.h"
+#include "xpaint.h"
+#include "paintdata.h"
+#include "record.h"
+#include "xinit.h"
+#include "bitmaps.h"
+#include "guimap.h"
+
 static int baseNameColor;		  /* Color index for base name drawing */
 static int backgroundPointColor;  /* background point drawing */
 static int fuelColor;			  /* fuel station drawing */

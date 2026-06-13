@@ -53,6 +53,7 @@
 #include "netserver.h"
 // #include "walls1.h"
 #include "robot.h"
+#include "rank.h"
 
 int roundtime = -1;				  /* time left this round */
 static double time_to_tick = 1.0; /* game time till next tick */

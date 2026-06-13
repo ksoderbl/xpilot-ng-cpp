@@ -29,6 +29,22 @@
 
 #include <X11/Xlib.h>
 
+#include "commonmacros.h"
+#include "commonproto.h"
+
+#include "paint.h"
+#include "paintdata.h"
+#include "gfx2d.h"
+#include "xpmemory.h"
+
+#include "xperror.h"
+#include "const.h"
+#include "portability.h"
+
+#include "bitmaps.h"
+#include "xpaint.h"
+#include "xinit.h"
+
 /* this gets rid of missing initializer warnings */
 #define XP_PIXMAP_INITIALIZER(f, c)                         \
     {                                                       \

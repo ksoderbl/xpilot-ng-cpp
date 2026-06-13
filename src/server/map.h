@@ -79,6 +79,7 @@
 
 typedef struct world world_t;
 extern world_t World, *world;
+extern bool is_polygon_map;
 
 typedef struct fuel
 {

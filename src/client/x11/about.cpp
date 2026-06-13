@@ -33,7 +33,7 @@
 #include <unistd.h>
 #include <X11/Xlib.h>
 
-// #include "commonmacros.h"
+#include "commonmacros.h"
 #include "const.h"
 #include "item.h"
 #include "keys.h"

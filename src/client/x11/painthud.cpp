@@ -25,6 +25,39 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <cmath>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <X11/Xlib.h>
+#include <X11/Xos.h>
+
+#include "commonproto.h"
+
+#include "client.h"
+// #include "messages.h"
+#include "netclient.h"
+#include "option.h"
+#include "paint.h"
+#include "paintdata.h"
+
+#include "xpconfig.h"
+#include "const.h"
+#include "xperror.h"
+#include "bit.h"
+#include "types.h"
+#include "keys.h"
+#include "rules.h"
+#include "clientsetup.h"
+#include "paintdata.h"
+#include "record.h"
+#include "xinit.h"
+#include "bitmaps.h"
+
 int hudColor;					 /* Color index for HUD drawing, has to be global for windoze */
 static int hudHLineColor;		 /* Color index for horiz. HUD line drawing */
 static int hudVLineColor;		 /* Color index for vert. HUD line drawing */
