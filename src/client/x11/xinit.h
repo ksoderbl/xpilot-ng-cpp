@@ -25,6 +25,10 @@
 
 #pragma once
 
+#include <X11/Xlib.h>
+
+#include "paint.h"
+
 #define MAX_VISUAL_NAME 12
 
 #define MIN_TOP_WIDTH (640 + 2)

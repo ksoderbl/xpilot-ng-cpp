@@ -54,11 +54,12 @@
 #include "xinit.h"
 #include "bitmaps.h"
 #include "guimap.h"
+#include "guiobjects.h"
 
-static int baseNameColor;		  /* Color index for base name drawing */
-static int backgroundPointColor;  /* background point drawing */
-static int fuelColor;			  /* fuel station drawing */
-static int visibilityBorderColor; /* visibility border drawing */
+static int baseNameColor = BLUE;	  /* Color index for base name drawing */
+static int backgroundPointColor = 4;  /* background point drawing */
+static int fuelColor = RED;			  /* fuel station drawing */
+static int visibilityBorderColor = 0; /* visibility border drawing */
 
 void Gui_paint_walls(int x, int y, int type)
 {

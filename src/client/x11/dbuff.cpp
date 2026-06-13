@@ -29,6 +29,14 @@
 #include <X11/Xlib.h>
 #include <X11/Xos.h>
 
+#include "version.h"
+#include "xpconfig.h"
+#include "xperror.h"
+#include "commonmacros.h"
+#include "const.h"
+#include "bit.h"
+#include "dbuff.h"
+
 dbuff_state_t *dbuf_state; /* Holds current dbuff state */
 
 static void dbuff_release(dbuff_state_t *state)

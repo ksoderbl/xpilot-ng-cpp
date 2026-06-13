@@ -296,7 +296,7 @@ static void Choose_visual(void)
 	if (visual_class < 0 && visual_id < 0)
 	{
 		visual = DefaultVisual(dpy, DefaultScreen(dpy));
-		if (visual->class == TrueColor || visual->class == DirectColor)
+		if (visual->c_class == TrueColor || visual->c_class == DirectColor)
 		{
 			visual_class = PseudoColor;
 			strcpy(visualName, "PseudoColor");
@@ -313,7 +313,7 @@ static void Choose_visual(void)
 		mask |= VisualScreenMask;
 		if (visual_class >= 0)
 		{
-			my_vinfo.class = visual_class;
+			my_vinfo.c_class = visual_class;
 			mask |= VisualClassMask;
 		}
 		if (visual_id >= 0)
@@ -346,11 +346,11 @@ static void Choose_visual(void)
 					best_vinfo = &vinfo_ptr[i];
 			}
 			visual = best_vinfo->visual;
-			visual_class = best_vinfo->class;
+			visual_class = best_vinfo->c_class;
 			dispDepth = best_vinfo->depth;
 			XFree((void *)vinfo_ptr);
 			printf("Using visual %s with depth %d and %d colors\n",
-				   Visual_class_name(visual->class), dispDepth,
+				   Visual_class_name(visual->c_class), dispDepth,
 				   visual->map_entries);
 			Get_colormap();
 		}
@@ -469,8 +469,8 @@ int Colors_init(void)
 	/*
 	 * Get misc. display info.
 	 */
-	if (visual->class == StaticColor ||
-		visual->class == TrueColor)
+	if (visual->c_class == StaticColor ||
+		visual->c_class == TrueColor)
 		colorSwitch = false;
 
 	if (visual->map_entries < 16)
@@ -554,7 +554,7 @@ int Colors_init(void)
 	{
 		/* Can't setup double buffering */
 		warn("Can't setup colors with visual %s and %d colormap entries",
-			 Visual_class_name(visual->class), visual->map_entries);
+			 Visual_class_name(visual->c_class), visual->map_entries);
 		return -1;
 	}
 
@@ -631,7 +631,7 @@ static int Colors_init_bitmap_colors(void)
 {
 	int r = -1;
 
-	switch (visual->class)
+	switch (visual->c_class)
 	{
 	case PseudoColor:
 		r = Colors_init_color_cube();
@@ -652,7 +652,7 @@ static int Colors_init_bitmap_colors(void)
 
 	default:
 		warn("fullColor not implemented for visual \"%s\"",
-			 Visual_class_name(visual->class));
+			 Visual_class_name(visual->c_class));
 		fullColor = false;
 		texturedObjects = false;
 		break;
@@ -891,7 +891,7 @@ static int Colors_init_true_color(void)
 	{
 
 		printf("Your visual \"%s\" has weird characteristics:\n",
-			   Visual_class_name(visual->class));
+			   Visual_class_name(visual->c_class));
 		printf("\tred mask 0x%06lx, green mask 0x%06lx, blue mask 0x%06lx,\n",
 			   visual->red_mask, visual->green_mask, visual->blue_mask);
 		printf("\toverlap mask 0x%06lx\n",

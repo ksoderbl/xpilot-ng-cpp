@@ -23,6 +23,46 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cctype>
+#include <cerrno>
+#include <ctime>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <sys/time.h>
+#include <sys/param.h>
+#include <netdb.h>
+
+#include "commonproto.h"
+
+#include "version.h"
+#include "xpconfig.h"
+#include "const.h"
+#include "types.h"
+#include "pack.h"
+#include "bit.h"
+#include "xperror.h"
+#include "socklib.h"
+#include "net.h"
+#include "connectparam.h"
+#include "portability.h"
+#include "checknames.h"
+
+#include "client.h"
+#include "configure.h"
+#include "guimap.h"
+#include "guiobjects.h"
+#include "record.h"
+#include "talk.h"
+
+#include "xinit.h"
+#include "xpaint.h"
+
+#include "clientrank.h"
+
 char **Argv;
 int Argc;
 

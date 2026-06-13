@@ -41,11 +41,8 @@
 
 // #include "recordfile.h"
 
-// #include "commonmacros.h"
+#include "commonmacros.h"
 #include "const.h"
-// #include "strdup.h"
-// #include "strlcpy.h"
-// #include "xpmemory.h"
 
 #include "option.h"
 #include "paint.h"

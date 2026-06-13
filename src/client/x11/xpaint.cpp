@@ -25,6 +25,46 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
+
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <climits>
+#include <ctime>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <X11/Xlib.h>
+#include <X11/Xos.h>
+
+#include "commonproto.h"
+
+#include "netclient.h"
+#include "option.h"
+#include "paint.h"
+#include "paintdata.h"
+
+// #include "keydefs.h"
+
+#include "version.h"
+#include "xpconfig.h"
+#include "const.h"
+#include "xperror.h"
+#include "bit.h"
+#include "types.h"
+#include "keys.h"
+#include "rules.h"
+#include "clientsetup.h"
+#include "dbuff.h"
+#include "xpaint.h"
+#include "paintdata.h"
+#include "record.h"
+#include "xinit.h"
+#include "bitmaps.h"
+#include "portability.h"
+
 /*
  * Globals.
  */

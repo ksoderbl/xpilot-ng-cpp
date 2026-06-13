@@ -25,6 +25,53 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <string>
+
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cctype>
+#include <cerrno>
+#include <climits>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <X11/Xos.h>
+#include <X11/keysym.h>
+#include <X11/Xlib.h>
+#include <X11/Xresource.h>
+#include <sys/param.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "const.h"
+
+#include "configure.h"
+// #include "messages.h"
+#include "option.h"
+#include "paint.h"
+
+#include "bitmaps.h"
+// #include "keydefs.h"
+
+#include "version.h"
+#include "xpconfig.h"
+#include "xpaint.h"
+#include "pack.h"
+#include "bit.h"
+#include "keys.h"
+#include "netclient.h"
+#include "xinit.h"
+#include "xperror.h"
+#include "types.h"
+#include "client.h"
+#include "audio.h"
+#include "portability.h"
+#include "talk.h"
+// #include "xdefault.h"
+#include "checknames.h"
+#include "record.h"
+
 bool pre_exists = False;
 int pre_acc_num, new_acc_num = 0; /* pre are the Saved mouse settings */
 int pre_acc_denom, new_acc_denom = 1;

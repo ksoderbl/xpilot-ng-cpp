@@ -23,6 +23,36 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <csignal>
+#include <ctime>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <X11/Xlib.h>
+#include <sys/time.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
+#include "commonmacros.h"
+
+#include "client.h"
+
+#include "version.h"
+#include "xpconfig.h"
+#include "const.h"
+#include "xperror.h"
+#include "types.h"
+#include "netclient.h"
+#include "portability.h"
+#include "xpaint.h"
+#include "xevent.h"
+#include "record.h"
+
 static int Handle_input(int new_input)
 {
 	return x_event(new_input);

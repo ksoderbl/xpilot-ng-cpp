@@ -23,7 +23,38 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
+
+#include <cassert>
+#include <cstdio>
+#include <cstdlib>
+#include <cctype>
+#include <cstring>
+#include <cerrno>
+
+#include <unistd.h>
+#include <X11/Xlib.h>
+#include <X11/Xos.h>
+#include <X11/Xutil.h>
+
+#include "const.h"
+
+// #include "messages.h"
+#include "paint.h"
+
+#include "version.h"
+#include "xpconfig.h"
+#include "keys.h"
 #include "icon.h"
+#include "xpaint.h"
+#include "xinit.h"
+#include "widget.h"
+#include "configure.h"
+#include "xperror.h"
+#include "netclient.h"
+#include "dbuff.h"
+#include "client.h"
+#include "portability.h"
 
 /*
  * Item structures.

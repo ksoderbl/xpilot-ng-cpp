@@ -23,6 +23,17 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <X11/Xlib.h>
+
+#include "commonmacros.h"
+
+#include "paint.h"
+
+#include "paintdata.h"
+#include "record.h"
+#include "xinit.h"
+#include "xpaint.h"
+
 static XRectangle *rect_ptr[MAX_COLORS];
 static int num_rect[MAX_COLORS], max_rect[MAX_COLORS];
 static XArc *arc_ptr[MAX_COLORS];

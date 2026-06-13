@@ -49,6 +49,7 @@
 #include "netclient.h"
 #include "paint.h"
 
+#include "xevent.h"
 #include "xinit.h"
 #include "xpaint.h"
 
