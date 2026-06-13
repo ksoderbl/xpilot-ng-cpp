@@ -632,6 +632,9 @@ static void Ecm_update(void)
 {
 	int i;
 
+	// if (Num_ecms() > 0)
+	// 	warn("Ecm_Update: ecms: %d", Num_ecms());
+
 	for (i = 0; i < Num_ecms(); i++)
 	{
 		ecm_t *ecm = Ecm_by_index(i);
@@ -646,10 +649,10 @@ static void Ecm_update(void)
 					pl->ecmcount--;
 			}
 #if 0
-	    --world->NumEcms;
-	    world->ecms[i] = world->ecms[world->NumEcms];
+	    	--world->NumEcms;
+	    	world->ecms[i] = world->ecms[world->NumEcms];
 #else
-			Arraylist_fast_remove(world->ecms, i);
+			world->ecms.erase(world->ecms.begin() + i);
 #endif
 			i--;
 		}
@@ -660,6 +663,9 @@ static void Transporter_update(void)
 {
 	int i;
 
+	if (Num_transporters() > 0)
+		warn("Num_transporters: transporters: %d", Num_transporters());
+
 	for (i = 0; i < Num_transporters(); i++)
 	{
 		transporter_t *trans = Transporter_by_index(i);
@@ -667,11 +673,11 @@ static void Transporter_update(void)
 		if ((trans->count -= timeStep) <= 0)
 		{
 #if 0
-	    --world->NumTransporters;
-	    world->transporters[i]
-		= world->transporters[world->NumTransporters];
+			--world->NumTransporters;
+			world->transporters[i]
+			= world->transporters[world->NumTransporters];
 #else
-			Arraylist_fast_remove(world->transporters, i);
+			world->transporters.erase(world->transporters.begin() + i);
 #endif
 			i--;
 		}

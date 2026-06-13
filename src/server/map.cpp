@@ -155,7 +155,7 @@ int World_place_cannon(clpos_t pos, int dir, int team)
         t.initial_items[i] = -1;
     t.shot_speed = -1;
     t.smartness = -1;
-    Arraylist_add(world->cannons, &t);
+    world->cannons.push_back(t);
     cannon = Cannon_by_index(ind);
     assert(Cannon_by_id(t.id) == cannon);
 
@@ -172,7 +172,7 @@ int World_place_fuel(clpos_t pos, int team)
     t.conn_mask = ~0;
     t.last_change = frame_loops;
     t.team = team;
-    Arraylist_add(world->fuels, &t);
+    world->fuels.push_back(t);
 
     return ind;
 }
@@ -217,7 +217,7 @@ int World_place_base(clpos_t pos, int dir, int team, int order)
 
     for (i = 0; i < NUM_ITEMS; i++)
         t.initial_items[i] = -1;
-    Arraylist_add(world->bases, &t);
+    world->bases.push_back(t);
 
     return ind;
 }
@@ -239,7 +239,7 @@ int World_place_treasure(clpos_t pos, int team, bool empty,
         world->teams[team].NumTreasures++;
         world->teams[team].TreasuresLeft++;
     }
-    Arraylist_add(world->treasures, &t);
+    world->treasures.push_back(t);
 
     return ind;
 }
@@ -261,7 +261,7 @@ int World_place_target(clpos_t pos, int team)
     t.update_mask = 0;
     t.last_change = frame_loops;
     t.group = NO_GROUP;
-    Arraylist_add(world->targets, &t);
+    world->targets.push_back(t);
 
     return ind;
 }
@@ -278,7 +278,7 @@ int World_place_wormhole(clpos_t pos, wormtype_t type)
     t.lastblock = SPACE;
     t.lastID = NO_ID;
     t.group = NO_GROUP;
-    Arraylist_add(world->wormholes, &t);
+    world->wormholes.push_back(t);
 
     return ind;
 }
@@ -356,7 +356,7 @@ int World_place_item_concentrator(clpos_t pos)
     int ind = Num_itemConcs();
 
     t.pos = pos;
-    Arraylist_add(world->itemConcs, &t);
+    world->itemConcs.push_back(t);
 
     return ind;
 }
@@ -367,7 +367,7 @@ int World_place_asteroid_concentrator(clpos_t pos)
     int ind = Num_asteroidConcs();
 
     t.pos = pos;
-    Arraylist_add(world->asteroidConcs, &t);
+    world->asteroidConcs.push_back(t);
 
     return ind;
 }
@@ -380,7 +380,7 @@ int World_place_grav(clpos_t pos, double force, int type)
     t.pos = pos;
     t.force = force;
     t.type = type;
-    Arraylist_add(world->gravs, &t);
+    world->gravs.push_back(t);
 
     return ind;
 }
@@ -393,7 +393,7 @@ int World_place_friction_area(clpos_t pos, double fric)
     t.pos = pos;
     t.friction_setting = fric;
     /*t.friction = ... ; handled in timing setup */
-    Arraylist_add(world->frictionAreas, &t);
+    world->frictionAreas.push_back(t);
 
     return ind;
 }
@@ -428,31 +428,6 @@ int World_init(void)
     int i;
 
     memset(world, 0, sizeof(world_t));
-
-    if ((world->asteroidConcs = Arraylist_alloc(sizeof(asteroid_concentrator_t))) == NULL)
-        return -1;
-    if ((world->bases = Arraylist_alloc(sizeof(base_t))) == NULL)
-        return -1;
-    if ((world->cannons = Arraylist_alloc(sizeof(cannon_t))) == NULL)
-        return -1;
-    if ((world->ecms = Arraylist_alloc(sizeof(ecm_t))) == NULL)
-        return -1;
-    if ((world->frictionAreas = Arraylist_alloc(sizeof(friction_area_t))) == NULL)
-        return -1;
-    if ((world->fuels = Arraylist_alloc(sizeof(fuel_t))) == NULL)
-        return -1;
-    if ((world->itemConcs = Arraylist_alloc(sizeof(item_concentrator_t))) == NULL)
-        return -1;
-    if ((world->gravs = Arraylist_alloc(sizeof(grav_t))) == NULL)
-        return -1;
-    if ((world->targets = Arraylist_alloc(sizeof(target_t))) == NULL)
-        return -1;
-    if ((world->treasures = Arraylist_alloc(sizeof(treasure_t))) == NULL)
-        return -1;
-    if ((world->transporters = Arraylist_alloc(sizeof(transporter_t))) == NULL)
-        return -1;
-    if ((world->wormholes = Arraylist_alloc(sizeof(wormhole_t))) == NULL)
-        return -1;
 
     for (i = 0; i < MAX_TEAMS; i++)
         Team_by_index(i)->SwapperId = NO_ID;
@@ -670,6 +645,21 @@ bool Grok_map(void)
 
     Compute_gravity();
     Find_base_direction();
+
+    // Print out amount of map objects.
+    printf("===========\n");
+    printf("Asteroid concentrators: %d\n", Num_asteroidConcs());
+    printf("Bases.................: %d\n", Num_bases());
+    printf("Cannons...............: %d\n", Num_cannons());
+    printf("ECMs..................: %d\n", Num_ecms());
+    printf("Fuels.................: %d\n", Num_fuels());
+    printf("Friction areas........: %d\n", Num_frictionAreas());
+    printf("Gravs.................: %d\n", Num_gravs());
+    printf("Item concentrators....: %d\n", Num_itemConcs());
+    printf("Targets...............: %d\n", Num_targets());
+    printf("Transporters..........: %d\n", Num_transporters());
+    printf("Treasures.............: %d\n", Num_treasures());
+    printf("Wormholes.............: %d\n", Num_wormholes());
 
     return true;
 }

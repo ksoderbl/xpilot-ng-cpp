@@ -692,11 +692,7 @@ void Do_general_transporter(int id, clpos_t pos,
 		t.victim_id = victim->id;
 		t.id = (pl ? pl->id : NO_ID);
 		t.count = 5.0;
-		if (Arraylist_add(world->transporters, &t) < 0)
-		{
-			sound_play_sensors(pos, TRANSPORTER_FAIL_SOUND);
-			return;
-		}
+		world->transporters.push_back(t);
 		sound_play_sensors(pos, TRANSPORTER_SUCCESS_SOUND);
 	}
 
@@ -954,7 +950,8 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
 	t.pos = pos;
 	t.id = (pl ? pl->id : NO_ID);
 	t.size = ECM_DISTANCE;
-	ecm_ind = Arraylist_add(world->ecms, &t);
+	world->ecms.push_back(t);
+	ecm_ind = Num_ecms();
 	if (ecm_ind < 0)
 		return;
 
