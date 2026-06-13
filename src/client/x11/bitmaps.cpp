@@ -35,7 +35,6 @@
 #include "paint.h"
 #include "paintdata.h"
 #include "gfx2d.h"
-#include "xpmemory.h"
 
 #include "xperror.h"
 #include "const.h"

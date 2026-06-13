@@ -23,6 +23,42 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <cerrno>
+#include <cmath>
+
+#include <X11/Xlib.h>
+#include <X11/Xos.h>
+#include <X11/Xutil.h>
+#include <X11/keysym.h>
+#include <X11/Xatom.h>
+#include <X11/Xmd.h>
+
+// #include "messages.h"
+#include "paint.h"
+
+// #include "keydefs.h"
+
+#include "xpconfig.h"
+#include "const.h"
+#include "xinit.h"
+#include "keys.h"
+#include "packet.h"
+#include "bit.h"
+#include "clientsetup.h"
+#include "netclient.h"
+#include "widget.h"
+#include "xperror.h"
+#include "record.h"
+#include "portability.h"
+#include "paintdata.h"
+#include "talk.h"
+#include "configure.h"
+#include "xeventhandlers.h"
+#include "xevent.h"
+#include "xpaint.h"
+
 #include "../xhacks.h"
 
 int talk_key_repeating;

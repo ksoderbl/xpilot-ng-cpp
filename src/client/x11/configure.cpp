@@ -42,7 +42,27 @@
 #include <X11/Xos.h>
 #include <X11/Xutil.h>
 
-#include "option.h"
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "const.h"
+
+#include "client.h"
+// #include "messages.h"
+#include "paint.h"
+
+// #include "keydefs.h"
+
+#include "xpconfig.h"
+#include "xpaint.h"
+#include "xinit.h"
+#include "bit.h"
+#include "keys.h"
+#include "netclient.h"
+#include "widget.h"
+#include "configure.h"
+#include "clientsetup.h"
+#include "xperror.h"
+#include "portability.h"
 
 static int Config_creator(xp_option_t *opt, int widget_desc, int *height);
 static int Config_create_save(int widget_desc, int *height);

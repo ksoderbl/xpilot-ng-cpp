@@ -25,6 +25,30 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdio>
+#include <cstdlib>
+#include <cctype>
+#include <cerrno>
+#include <cstring>
+#include <climits>
+
+#include <X11/Xlib.h>
+#include <X11/Xos.h>
+#include <X11/Xutil.h>
+
+#include "commonmacros.h"
+
+#include "xpconfig.h"
+#include "const.h"
+#include "xpaint.h"
+#include "paintdata.h"
+#include "xinit.h"
+#include "bit.h"
+#include "xperror.h"
+#include "widget.h"
+#include "client.h"
+#include "portability.h"
+
 typedef enum widget_type
 {
 	WIDGET_DUMMY,

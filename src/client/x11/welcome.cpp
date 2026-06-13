@@ -28,6 +28,38 @@
 /* Changelog: CB Added metaserver interface improvements */
 /*            CB Fixed Warnings                          */
 
+#include <algorithm>
+#include <cctype>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <string>
+
+#include <unistd.h>
+#include <sys/time.h>
+#include <X11/Xlib.h>
+
+#include "commonproto.h"
+#include "const.h"
+
+#include "xpconfig.h"
+#include "xpaint.h"
+#include "xinit.h"
+#include "widget.h"
+#include "xperror.h"
+#include "dbuff.h"
+#include "socklib.h"
+#include "net.h"
+#include "pack.h"
+#include "connectparam.h"
+#include "client.h"
+#include "portability.h"
+#include "socklib.h"
+
+#include "meta.h"
+
 /*
  * Are we in the process of quitting, or joining a game.
  */

@@ -25,6 +25,32 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+
+#include <unistd.h>
+#include <X11/Xlib.h>
+#include <X11/Xos.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+
+#include "paint.h"
+#include "paintdata.h"
+
+#include "xpconfig.h"
+#include "const.h"
+#include "xperror.h"
+#include "bit.h"
+#include "keys.h"
+#include "rules.h"
+#include "clientsetup.h"
+#include "xpaint.h"
+#include "paintdata.h"
+#include "xinit.h"
+
 Window radarWindow;
 Pixmap radarPixmap, radarPixmap2;
 /* Pixmaps for the radar (implements */

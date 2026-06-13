@@ -57,6 +57,7 @@
 #include "record.h"
 #include "xinit.h"
 #include "bitmaps.h"
+#include "xpaint.h"
 
 int hudColor;					 /* Color index for HUD drawing, has to be global for windoze */
 static int hudHLineColor;		 /* Color index for horiz. HUD line drawing */

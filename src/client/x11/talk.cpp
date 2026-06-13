@@ -23,6 +23,35 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cassert>
+#include <cstdlib>
+#include <cstdio>
+#include <cctype>
+#include <cstring>
+#include <cerrno>
+
+#include <unistd.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xatom.h>
+#include <X11/Xmd.h>
+
+#include "bit.h"
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "const.h"
+#include "keys.h"
+#include "xpconfig.h"
+#include "xperror.h"
+
+#include "client.h"
+// #include "messages.h"
+#include "netclient.h"
+#include "paint.h"
+
+#include "xinit.h"
+#include "xpaint.h"
+
 /* Information window dimensions */
 #define TALK_TEXT_HEIGHT (talkFont->ascent + talkFont->descent)
 #define TALK_OUTSIDE_BORDER 2

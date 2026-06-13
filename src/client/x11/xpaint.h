@@ -25,6 +25,17 @@
 
 #pragma once
 
+#include <cstring>
+
+#include <X11/Xlib.h>
+
+#include "commonproto.h"
+
+#include "paint.h"
+
+#include "types.h"
+#include "xperror.h"
+
 /* how to draw a selection */
 #define DRAW_EMPHASIZED BLUE
 
