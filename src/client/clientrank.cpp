@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) TODO Erik Andersson
  *
@@ -17,6 +17,14 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include "clientrank.h"
+
+#include <cstdio>
+#include <cstring>
+#include <ctime>
+
+#include "xperror.h"
 
 #define MAX_SCORES 500
 

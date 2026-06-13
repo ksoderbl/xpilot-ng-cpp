@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,30 +23,18 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-char *xp_strdup(const char *old_string)
-{
-    char *new_string;
-    size_t string_length;
+#pragma once
 
-    string_length = strlen(old_string);
-    new_string = (char *)malloc(string_length + 1);
-    if (new_string)
-    {
-        memcpy(new_string, old_string, string_length + 1);
-    }
+#include "pack.h"
 
-    return new_string;
-}
+extern int protocolVersion;
 
-char *xp_safe_strdup(const char *old_string)
-{
-    char *new_string;
+#define MAGIC (VERSION2MAGIC(protocolVersion))
 
-    new_string = xp_strdup(old_string);
-    if (new_string == NULL)
-    {
-        fatal("Not enough memory.");
-    }
+#define MY_VERSION MAGIC2VERSION(MAGIC)
 
-    return new_string;
-}
+/*
+ * Which server versions can this client join.
+ */
+#define MIN_SERVER_VERSION 0x4F09
+#define MAX_SERVER_VERSION MY_VERSION

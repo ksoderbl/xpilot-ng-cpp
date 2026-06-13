@@ -1,22 +1,28 @@
-# src/common/CMakeLists.txt
-file(GLOB COMMON_SOURCES CONFIGURE_DEPENDS
+file(GLOB XPCOMMON_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
 )
 
-add_library(xpcommon STATIC ${COMMON_SOURCES})
+add_library(xpcommon STATIC
+    ${XPCOMMON_SOURCES}
+)
 
 target_include_directories(xpcommon
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
-        ${CMAKE_BINARY_DIR}
+        ${CMAKE_SOURCE_DIR}/src/common
+        ${CMAKE_BINARY_DIR}/generated
 )
 
 target_compile_definitions(xpcommon
     PUBLIC
-        HAVE_CONFIG_H=1
-        CONF_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}/${PROJECT_NAME}/"
+        CONF_DATADIR="${XPILOT_CONF_DATADIR}"
 )
 
-if(UNIX AND NOT APPLE)
-    target_link_libraries(xpcommon PUBLIC m)
-endif()
+target_link_libraries(xpcommon
+    PUBLIC
+        m
+)
+
+set_target_properties(xpcommon PROPERTIES
+    OUTPUT_NAME xpcommon
+)

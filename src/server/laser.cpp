@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2003 Kristian Söderblom
  *
@@ -24,6 +24,35 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <vector>
+
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <cmath>
+#include <climits>
+
+#include "click.h"
+
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "map.h"
+#include "score.h"
+#include "saudio.h"
+#include "xperror.h"
+#include "portability.h"
+#include "object.h"
+#include "asteroid.h"
+#include "commonproto.h"
+#include "objpos.h"
+#include "robot.h"
+#include "cannon.h"
 
 void Fire_laser(player_t *pl)
 {

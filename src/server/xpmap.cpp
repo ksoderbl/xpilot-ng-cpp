@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2003-2004 Kristian Söderblom
  *
@@ -24,6 +24,30 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cstdint>
+
+#include "commonproto.h"
+
+#include "cannon.h"
+
+#define SERVER
+#include "bit.h"
+#include "commonmacros.h"
+#include "const.h"
+#include "setup.h"
+#include "xpconfig.h"
+#include "xperror.h"
+#include "xpmap.h"
+
+#include "map.h"
+// #include "polygon.h"
+#include "server.h"
+#include "wormhole.h"
 
 static int Compress_map(uint8_t *map, size_t size);
 
@@ -683,8 +707,8 @@ setup_t *Xpmap_init_setup(void)
 	}
 
 	if (type != SETUP_MAP_UNCOMPRESSED)
-		xpprintf("%s Block map compression ratio is %-4.2f%%\n",
-				 showtime(), 100.0 * size / numblocks);
+		printf("%s Block map compression ratio is %-4.2f%%\n",
+			   showtime(), 100.0 * size / numblocks);
 
 	if ((setup = (setup_t *)malloc(sizeof(setup_t) + size)) == NULL)
 	{
@@ -1712,5 +1736,5 @@ void Xpmap_blocks_to_polygons(void)
 	for (i = 0; i < Num_frictionAreas(); i++)
 		Xpmap_friction_area_to_polygon(i);
 
-	/*xpprintf("Created %d polygons.\n", num_polys);*/
+	/*printf("Created %d polygons.\n", num_polys);*/
 }

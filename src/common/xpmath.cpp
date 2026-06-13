@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2003-2004 by
  *
@@ -27,6 +27,20 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
+#include <cmath>
+
+// #include "randommt.h"
+#include "commonproto.h"
+
+#include "version.h"
+#include "xpconfig.h"
+#include "const.h"
+#include "xperror.h"
 
 double tbl_sin[TABLE_SIZE];
 double tbl_cos[TABLE_SIZE];

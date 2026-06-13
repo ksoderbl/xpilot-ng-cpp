@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2002 Uoti Urpala
  *
@@ -18,9 +18,9 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef RECWRAP_H
-#define RECWRAP_H
+#pragma once
 
+#include "socklib.h"
 #include "net.h"
 
 int sock_closeRec(sock_t *sock);
@@ -33,5 +33,3 @@ int sock_get_errorRec(sock_t *sock);
 int Sockbuf_flushRec(sockbuf_t *sbuf);
 int Sockbuf_writeRec(sockbuf_t *sbuf, char *buf, int len);
 int Sockbuf_readRec(sockbuf_t *sbuf);
-
-#endif /* RECWRAP_H */

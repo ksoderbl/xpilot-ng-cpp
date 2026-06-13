@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,13 +23,10 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CONNECTPARAM_H
-#define CONNECTPARAM_H
+#pragma once
 
-#ifndef PACK_H
 /* need MAX_..._LEN */
-#include "pack.h"
-#endif
+#include "clientpack.h"
 
 typedef struct Connect_param
 {
@@ -45,5 +42,3 @@ typedef struct Connect_param
 	unsigned server_version;
 	int team;
 } Connect_param_t;
-
-#endif

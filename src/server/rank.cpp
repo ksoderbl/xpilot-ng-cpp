@@ -1,9 +1,9 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1999-2004 by
  *
- *      Marcus Sundberg      <mackan@stacken.kth.se>
+ *      Marcus Sundberg
  *      Kristian Söderblom
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,21 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstring>
+#include <ctime>
+#include <expat.h>
+#include <unistd.h>
+
+#include "config.h"
+
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "xperror.h"
+
+#include "score.h"
+#include "rank.h"
+#include "server.h"
 
 /* MAX_SCORES = how many players we remember */
 #define MAX_SCORES 300
@@ -585,8 +600,8 @@ void Rank_init_saved_scores(void)
 
 	fclose(file);
 
-	xpprintf("%s Rank file with %d entries opened successfully.\n",
-			 showtime(), num_players);
+	printf("%s Rank file with %d entries opened successfully.\n",
+		   showtime(), num_players);
 }
 
 /*
@@ -783,7 +798,7 @@ void Rank_write_rankfile(void)
 
 	remove(tmp_file);
 
-	/*xpprintf("%s Rank file with %d entries written successfully.\n",
+	/*printf("%s Rank file with %d entries written successfully.\n",
 	  showtime(), rank_entries);*/
 
 	return;

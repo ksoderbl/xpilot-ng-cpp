@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -28,6 +28,27 @@
 #include <cstddef>
 #include <cstdio>
 #include <cstring>
+
+#include "config.h"
+
+#include "commonmacros.h"
+#include "commonproto.h"
+
+#include "checknames.h"
+#include "clientpack.h"
+#include "portability.h"
+#include "socklib.h"
+#include "xpconfig.h"
+#include "xperror.h"
+
+#include "client.h"
+#include "gfx2d.h"
+// #include "messages.h"
+#include "netclient.h"
+#include "paint.h"
+#include "option.h"
+#include "clientrank.h"
+#include "clientsetup.h"
 
 static double hudScale; /* Scale for HUD drawing */
 

@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef GFX2D_H
-#define GFX2D_H
+#pragma once
 
 extern char *texturePath;     /* Path list of texture directories */
 extern char *realTexturePath; /* Real texture lookup path */
@@ -83,5 +82,3 @@ RGB_COLOR Picture_get_pixel(const xp_picture_t *picture, int image,
 RGB_COLOR Picture_get_pixel_area(const xp_picture_t *picture, int image,
                                  double x1, double y1, double dx, double dy);
 void Picture_get_bounding_box(xp_picture_t *picture);
-
-#endif

@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -1319,7 +1319,7 @@ int Widget_event(XEvent *event)
 	widget_arrow_t *arroww;
 	widget_slider_t *sliderw;
 
-	/* xpprintf("Widget_event type=%d w=%d\n",
+	/* printf("Widget_event type=%d w=%d\n",
 	   event->type, event->xany.window); */
 
 	if (!widgets)

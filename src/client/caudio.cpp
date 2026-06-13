@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -33,7 +33,20 @@
 #include <cerrno>
 #include <sys/types.h>
 
-#define _CAUDIO_C_
+#include "caudio.h"
+#include "xpconfig.h"
+#include "const.h"
+#include "types.h"
+
+#include "commonproto.h"
+#include "commonmacros.h"
+#include "xperror.h"
+
+#include "client.h"
+
+#include "audio.h"
+
+#ifdef SOUND
 
 #define MAX_RANDOM_SOUNDS 6
 
@@ -191,3 +204,4 @@ int Handle_audio(int type, int volume)
 
 	return 0;
 }
+#endif /* SOUND */

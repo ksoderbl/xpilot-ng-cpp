@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ITEM_H
-#define ITEM_H
+#pragma once
 
 typedef enum Item
 {
@@ -79,5 +78,3 @@ typedef enum Item
 #define ITEM_SIZE 16
 
 #define ITEM_TRIANGLE_SIZE (5 * ITEM_SIZE / 7 + 1)
-
-#endif /* ITEM_H */

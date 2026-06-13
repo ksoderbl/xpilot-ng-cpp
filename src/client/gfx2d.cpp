@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -32,6 +32,15 @@
 #include <cctype>
 
 #include <unistd.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "const.h"
+#include "portability.h"
+#include "xpconfig.h"
+#include "xperror.h"
+
+#include "gfx2d.h"
 
 char *texturePath = NULL;	  /* Configured list of texture directories */
 char *realTexturePath = NULL; /* Real texture lookup path */

@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -22,6 +22,14 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include "wormhole.h"
+
+#include "xperror.h"
+
+#include "objpos.h"
+#include "server.h"
+#include "saudio.h"
 
 shape_t wormhole_wire;
 

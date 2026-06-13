@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef RULES_H
-#define RULES_H
+#pragma once
 
 /*
  * Bitfield definitions for playing mode.
@@ -63,5 +62,3 @@ typedef struct
     int lives;
     long mode;
 } rules_t;
-
-#endif

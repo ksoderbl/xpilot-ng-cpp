@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,30 +23,32 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef COMMONPROTO_H
-#define COMMONPROTO_H
+#pragma once
 
-/* randommt.c */
-extern void seedMT(unsigned int seed);
-extern unsigned int reloadMT(void);
-extern unsigned int randomMT(void);
+#include <cstdlib>
 
-/* math.c */
+#include "config.h"
+
+/* randommt.cpp */
+#include "randommt.h"
+
+/* xpmath.cpp */
 extern double rfrac(void);
 extern int mod(int x, int y);
 extern void Make_table(void);
 extern int ON(const char *optval);
 extern int OFF(const char *optval);
 extern double findDir(double x, double y);
+extern double findDir(double x, double y);
+void Make_table(void);
+// extern double tcos(double x);
+// extern double tsin(double x);
 
-/* strdup.c */
+/* xpstrdup.cpp */
 extern char *xp_strdup(const char *);
 extern char *xp_safe_strdup(const char *old_string);
 
-/* default.c */
-unsigned String_hash(const char *s);
-
-/* strlcpy.c */
+/* xpstrlcpy.ccp */
 #ifndef HAVE_STRLCPY
 size_t strlcpy(char *dest, const char *src, size_t size);
 #endif
@@ -54,7 +56,7 @@ size_t strlcpy(char *dest, const char *src, size_t size);
 size_t strlcat(char *dest, const char *src, size_t size);
 #endif
 
-/* strcasecmp.c */
+/* xpstrcasecmp.cpp */
 #ifndef HAVE_STRCASECMP
 int strcasecmp(const char *str1, const char *str2);
 #endif
@@ -62,10 +64,8 @@ int strcasecmp(const char *str1, const char *str2);
 int strncasecmp(const char *str1, const char *str2, size_t n);
 #endif
 
-/* xpmemory.c */
+/* xpmemory.cpp */
 void *xp_safe_malloc(size_t size);
 void *xp_safe_realloc(void *oldptr, size_t size);
 void *xp_safe_calloc(size_t nmemb, size_t size);
 void xp_safe_free(void *p);
-
-#endif

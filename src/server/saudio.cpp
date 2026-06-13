@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,7 +23,21 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-/* This piece of code was provided by Greg Renda (greg@ncd.com). */
+/* This piece of code was provided by Greg Renda. */
+
+#include <cstdlib>
+#include <cstdio>
+
+#include "click.h"
+
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "netserver.h"
+#include "saudio.h"
 
 #define SOUND_RANGE_FACTOR 0.5 /* factor to increase sound \
                                 * range by */

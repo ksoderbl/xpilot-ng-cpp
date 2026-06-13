@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -33,6 +33,19 @@
 #include <cstring>
 #include <ctime>
 #include <string>
+
+#include "metaserver.h"
+
+#include "meta.h"
+
+#include "xpconfig.h"
+
+#include "clientpack.h"
+#include "list.h"
+#include "const.h"
+#include "net.h"
+#include "commonproto.h"
+#include "xperror.h"
 
 static struct Meta metas[NUM_METAS] = {
 	{META_HOST, META_IP, META_INIT_SOCK, MetaConnecting},

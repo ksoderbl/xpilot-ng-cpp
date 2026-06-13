@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,23 +23,27 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstdio>
+#include <ctime>
+
+#include <sys/time.h>
+
+#include "server.h"
+
 char *showtime(void)
 {
     time_t now;
     static time_t past;
     struct tm *tmp;
-    static char month_names[13][4] = {
-        "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-        "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
-        "Bug"};
     static char buf[80];
 
     time(&now);
     if (now != past)
     {
         tmp = localtime(&now);
-        sprintf(buf, "%02d %s %02d:%02d:%02d",
-                tmp->tm_mday, month_names[tmp->tm_mon],
+        sprintf(buf, "%04d-%02d-%02d %02d:%02d:%02d",
+                tmp->tm_year + 1900, tmp->tm_mon + 1, tmp->tm_mday,
                 tmp->tm_hour, tmp->tm_min, tmp->tm_sec);
         past = now;
     }

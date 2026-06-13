@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -22,6 +22,23 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <ctime>
+
+#include "commonproto.h"
+
+#include "cannon.h"
+#include "server.h"
+
+#define SERVER
+#include "serverconst.h"
+
+#include "xperror.h"
+#include "sched.h"
+// #include "walls1.h"
+#include "robot.h"
+#include "modifiers.h"
 
 void tuner_plock(void)
 {

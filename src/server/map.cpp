@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 by
  *
@@ -28,10 +28,35 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cmath>
+#include <cerrno>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/file.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+
+#include "cannon.h"
+#include "score.h"
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "map.h"
+#include "bit.h"
+#include "xperror.h"
+
 /*
  * Globals.
  */
-world_t World, *world;
+world_t World,
+    *world;
 bool is_polygon_map = false;
 
 static void Find_base_direction(void);
@@ -635,10 +660,10 @@ bool Grok_map(void)
     if (Num_bases() <= 0)
         fatal("Map has no bases!");
 
-    xpprintf("World....: %s\nBases....: %d\nMapsize..: %dx%d pixels\n"
-             "Team play: %s\n",
-             world->name, Num_bases(), world->width, world->height,
-             BIT(world->rules->mode, TEAM_PLAY) ? "on" : "off");
+    printf("World....: %s\nBases....: %d\nMapsize..: %dx%d pixels\n"
+           "Team play: %s\n",
+           world->name, Num_bases(), world->width, world->height,
+           BIT(world->rules->mode, TEAM_PLAY) ? "on" : "off");
 
     if (!is_polygon_map)
         Xpmap_blocks_to_polygons();

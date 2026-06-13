@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ASTERSHAPE_H
-#define ASTERSHAPE_H
+#pragma once
 
 #include "types.h"
 
@@ -40,5 +39,3 @@
         {10, 0}, {9, -4}, {7, -7}, {0, -10}, {-6, -9}, {-9, -7}
 
 extern position_t *asteroidShapes[NUM_ASTEROID_SHAPES][NUM_ASTEROID_POINTS];
-
-#endif

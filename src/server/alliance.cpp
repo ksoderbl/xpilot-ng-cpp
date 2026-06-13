@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2003-2004 by
  *
@@ -11,7 +11,7 @@
  *      Ken Ronny Schouten
  *      Bert Gijsbers
  *      Dick Balaska
- *      Kimiko Koopman       <kimiko@xpilot.org>
+ *      Kimiko Koopman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,23 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+
+#include "commonproto.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+#include "server.h"
+#include "map.h"
+#include "bit.h"
+#include "netserver.h"
+#include "xperror.h"
+#include "player.h"
+#include "robot.h"
 
 /*
  * Alliance information.

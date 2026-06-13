@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -22,6 +22,20 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <cstdio>
+
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "map.h"
+#include "rules.h"
+#include "bit.h"
+#include "cannon.h"
 
 #define MAX_FUEL 10000
 #define MAX_WIDEANGLE 99

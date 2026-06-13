@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -22,6 +22,15 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include "modifiers.h"
+#include "player.h"
+
+#include "xperror.h"
+
+#include <cctype>
+
+#include "bit.h"
 
 /*
  * Fast conversion of 'num' into 'str' starting at position 'i', returns

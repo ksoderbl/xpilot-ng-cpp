@@ -23,32 +23,36 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-/* This piece of code was provided by Greg Renda (greg@ncd.com). */
-/* 961112 - Bucko - Header file */
-/*
- * client audio
- */
+#include <cstdlib>
+#include <cstring>
 
-#pragma once
+#include "xperror.h"
+#include "commonproto.h"
 
-#ifdef SOUND
+char *xp_strdup(const char *old_string)
+{
+    char *new_string;
+    size_t string_length;
 
-#include <climits>
+    string_length = strlen(old_string);
+    new_string = (char *)malloc(string_length + 1);
+    if (new_string)
+    {
+        memcpy(new_string, old_string, string_length + 1);
+    }
 
-extern char soundFile[PATH_MAX]; /* audio mappings */
-extern int maxVolume;            /* maximum volume (in percent) */
-extern bool sound;               /* option 'sound' */
+    return new_string;
+}
 
-int Handle_audio(int type, int volume);
-void audioInit(char *display);
-void audioCleanup(void);
-void audioEvents(void);
-void audioUpdate(void);
-int audioDeviceInit(char *display);
-void audioDevicePlay(char *filename, int type, int volume, void **priv);
-void audioDeviceEvents(void);
-void audioDeviceUpdate(void);
-void audioDeviceFree(void *priv);
-void audioDeviceClose(void);
+char *xp_safe_strdup(const char *old_string)
+{
+    char *new_string;
 
-#endif
+    new_string = xp_strdup(old_string);
+    if (new_string == NULL)
+    {
+        fatal("Not enough memory.");
+    }
+
+    return new_string;
+}

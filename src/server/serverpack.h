@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,47 +23,20 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef HAVE_STRCASECMP
+#pragma once
+
+#include "pack.h"
+
+extern bool is_polygon_map;
+
+#define MAGIC (is_polygon_map                       \
+                   ? VERSION2MAGIC(POLYGON_VERSION) \
+                   : VERSION2MAGIC(OLD_VERSION))
+
+#define MY_VERSION MAGIC2VERSION(MAGIC)
+
 /*
- * By Ian Malcom Brown.
- * Changes by BG: prototypes with const,
- * moved the ++ expressions out of the macro.
- * Only test for the null byte in one string.
+ * Which client versions can join this server.
  */
-int strcasecmp(const char *str1, const char *str2)
-{
-	int c1, c2;
-
-	do
-	{
-		c1 = *str1++;
-		c2 = *str2++;
-		c1 = tolower(c1);
-		c2 = tolower(c2);
-	} while (c1 == c2 && c1 != 0);
-
-	return (c1 - c2);
-}
-#endif
-
-#ifndef HAVE_STRNCASECMP
-/*
- * By Bert Gijsbers, derived from Ian Malcom Brown's strcasecmp().
- */
-int strncasecmp(const char *str1, const char *str2, size_t n)
-{
-	int c1, c2;
-
-	do
-	{
-		if (n-- <= 0)
-			return 0;
-		c1 = *str1++;
-		c2 = *str2++;
-		c1 = tolower(c1);
-		c2 = tolower(c2);
-	} while (c1 == c2 && c1 != 0);
-
-	return (c1 - c2);
-}
-#endif
+#define MIN_CLIENT_VERSION 0x4203
+#define MAX_CLIENT_VERSION MY_VERSION

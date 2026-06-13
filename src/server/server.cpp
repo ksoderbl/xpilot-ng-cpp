@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 by
  *
@@ -27,6 +27,48 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
+#include <cstdio>
+#include <csignal>
+#include <cerrno>
+#include <ctime>
+#include <climits>
+#include <sys/types.h>
+#include <sys/stat.h>
+
+#include <unistd.h>
+#include <sys/time.h>
+#include <pwd.h>
+#include <sys/param.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+
+#include "cannon.h"
+#include "score.h"
+#include "server.h"
+#include "robot.h"
+
+#define SERVER
+#include "version.h"
+#include "xpconfig.h"
+#include "types.h"
+#include "serverconst.h"
+#include "socklib.h"
+#include "map.h"
+#include "bit.h"
+#include "sched.h"
+#include "netserver.h"
+#include "xperror.h"
+#include "portability.h"
+#include "server.h"
+// #include "walls1.h"
+#include "rank.h"
+#include "teamcup.h"
+#include "srecord.h"
 
 /*
  * Global variables
@@ -95,10 +137,10 @@ int main(int argc, char **argv)
 	 * --- Output copyright notice ---
 	 */
 
-	xpprintf("  " COPYRIGHT ".\n"
-			 "  " TITLE " comes with ABSOLUTELY NO WARRANTY; "
-			 "for details see the\n"
-			 "  provided COPYING file.\n\n");
+	printf("  " COPYRIGHT ".\n"
+		   "  " TITLE " comes with ABSOLUTELY NO WARRANTY; "
+		   "for details see the\n"
+		   "  provided COPYING file.\n\n");
 
 	init_error(argv[0]);
 
@@ -187,8 +229,8 @@ int main(int argc, char **argv)
 	 */
 	serverStartTime = time(NULL);
 
-	xpprintf("%s Server runs at %d frames per second\n",
-			 showtime(), options.framesPerSecond);
+	printf("%s Server runs at %d frames per second\n",
+		   showtime(), options.framesPerSecond);
 
 	teamcup_init();
 
@@ -253,8 +295,8 @@ void Main_loop(void)
 				NoPlayersEnteredYet = false;
 				if (options.gameDuration > 0.0)
 				{
-					xpprintf("%s Server will stop in %g minutes.\n",
-							 showtime(), options.gameDuration);
+					printf("%s Server will stop in %g minutes.\n",
+						   showtime(), options.gameDuration);
 					gameOverTime = (time_t)(options.gameDuration * 60) + time(NULL);
 				}
 			}
@@ -710,7 +752,7 @@ void Game_Over(void)
 			snprintf(msg, sizeof(msg), "Best team (%.2f Pts): Team %d",
 					 maxsc, win_team);
 			Set_message(msg);
-			xpprintf("%s\n", msg);
+			printf("%s\n", msg);
 		}
 
 		if (lose_team != TEAM_NOT_SET && lose_team != win_team)
@@ -718,7 +760,7 @@ void Game_Over(void)
 			snprintf(msg, sizeof(msg), "Worst team (%.2f Pts): Team %d",
 					 minsc, lose_team);
 			Set_message(msg);
-			xpprintf("%s\n", msg);
+			printf("%s\n", msg);
 		}
 	}
 
@@ -751,13 +793,13 @@ void Game_Over(void)
 	{
 		snprintf(msg, sizeof(msg), "Best human player: %s", win_pl->name);
 		Set_message(msg);
-		xpprintf("%s\n", msg);
+		printf("%s\n", msg);
 	}
 	if (lose_pl && lose_pl != win_pl)
 	{
 		snprintf(msg, sizeof(msg), "Worst human player: %s", lose_pl->name);
 		Set_message(msg);
-		xpprintf("%s\n", msg);
+		printf("%s\n", msg);
 	}
 }
 
@@ -861,7 +903,7 @@ int plock_server(bool on)
 	return on ? 1 : 0;
 #else
 	if (on)
-		xpprintf("Can't plock: Server was not compiled with plock support\n");
+		printf("Can't plock: Server was not compiled with plock support\n");
 	return 0;
 #endif
 }

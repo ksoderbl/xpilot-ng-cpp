@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,13 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef OPTION_H
-#define OPTION_H
+#pragma once
+
+#include <string>
+#include <vector>
+
+#include "types.h"
+#include "list.h"
 
 extern struct options
 {
@@ -339,5 +344,3 @@ bool Convert_string_to_float(const char *value_str, double *float_ptr);
 bool Convert_string_to_bool(const char *value_str, bool *bool_ptr);
 void Convert_list_to_string(list_t list, char **string);
 void Convert_string_to_list(const char *value, list_t *list_ptr);
-
-#endif

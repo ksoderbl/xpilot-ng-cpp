@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -28,8 +28,9 @@
 #include <cerrno>
 #include <cstring>
 #include <cctype>
+#include <cstdint>
 
-// #include "strlcpy.h"
+#include "commonproto.h"
 
 #include "xpconfig.h"
 #include "const.h"

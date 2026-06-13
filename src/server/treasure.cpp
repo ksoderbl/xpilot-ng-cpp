@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,6 +23,27 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <climits>
+#include <cmath>
+
+#include "commonproto.h"
+#include "xperror.h"
+
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "saudio.h"
+#include "score.h"
+#include "object.h"
+#include "rank.h"
+#include "objpos.h"
+
 void Make_treasure_ball(treasure_t *t)
 {
     ballobject_t *ball;
@@ -35,10 +56,10 @@ void Make_treasure_ball(treasure_t *t)
         return;
     if (t->have)
     {
-        xpprintf("%s Failed Make_treasure_ball(treasure=%ld):\n",
-                 showtime(), (long)t);
-        xpprintf("\ttreasure: destroyed = %d, team = %d, have = %d\n",
-                 t->destroyed, t->team, t->have);
+        printf("%s Failed Make_treasure_ball(treasure=%ld):\n",
+               showtime(), (long)t);
+        printf("\ttreasure: destroyed = %d, team = %d, have = %d\n",
+               t->destroyed, t->team, t->have);
         return;
     }
 

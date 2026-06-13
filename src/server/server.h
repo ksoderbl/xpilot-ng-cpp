@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,27 +23,28 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SERVER_H
-#define SERVER_H
+#pragma once
 
-#ifndef WALLS_H
+#include <cstdio>
+#include <cstdint>
+
+#include "click.h"
+#include "setup.h"
+#include "shipshape.h"
+
+#include "defaults.h"
+#include "map.h"
+#include "object.h"
+#include "player.h"
+// #include "polygon.h"
+
+#include "object.h"
+#include "map.h"
+
+#include "option.h"
+
 /* need hitmask_t */
 #include "walls2.h"
-#endif
-
-/*
- * When using this, add a final realloc later to free wasted memory
- */
-#define STORE(T, P, N, M, V)                                                    \
-	if (N >= M && ((M <= 0)                                                     \
-					   ? (P = (T *)malloc((M = 1) * sizeof(*P)))                \
-					   : (P = (T *)realloc(P, (M += M) * sizeof(*P)))) == NULL) \
-	{                                                                           \
-		warn("No memory");                                                      \
-		exit(1);                                                                \
-	}                                                                           \
-	else                                                                        \
-		(P[N++] = V)
 
 typedef struct
 {
@@ -551,5 +552,3 @@ void Object_hits_wormhole(object_t *obj, int ind);
 hitmask_t Wormhole_hitmask(wormhole_t *wormhole);
 bool Wormhole_hitfunc(group_t *groupptr, const move_t *move);
 bool Verify_wormhole_consistency(void);
-
-#endif

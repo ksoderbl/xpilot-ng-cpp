@@ -1,9 +1,9 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2002-2004 by
  *
- *      Kimiko Koopman       <kimiko@xpilot.org
+ *      Kimiko Koopman
  *      Kristian Söderblom
  *
  * This program is free software; you can redistribute it and/or modify
@@ -20,6 +20,9 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include "player.h"
+#include "server.h"
 
 int tagItPlayerId = NO_ID; /* player who is 'it' */
 

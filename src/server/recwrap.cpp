@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2002 Uoti Urpala
  *
@@ -18,9 +18,14 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-/* RECORDING WON'T WORK PROPERLY ON WINDOWS BECAUSE OF
- * errno = WSAGetLastError();
- */
+#include <cerrno>
+
+#include "bit.h"
+#include "xperror.h"
+
+#include "recwrap.h"
+#include "srecord.h"
+#include <cstring>
 
 int sock_closeRec(sock_t *sock)
 {

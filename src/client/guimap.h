@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef GUIMAP_H
-#define GUIMAP_H
+#pragma once
 
 void Gui_paint_cannon(int x, int y, int type);
 void Gui_paint_fuel(int x, int y, double fuel);
@@ -58,5 +57,3 @@ void Gui_paint_filled_slice(int bl, int tl, int tr, int br, int y);
 void Gui_paint_polygon(int i, int xoff, int yoff);
 
 void Store_guimap_options(void);
-
-#endif

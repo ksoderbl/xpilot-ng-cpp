@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -38,6 +38,22 @@
 #include <sys/param.h>
 #include <netdb.h>
 #include <sys/time.h>
+
+#include "commonproto.h"
+
+#include "xpconfig.h"
+#include "const.h"
+#include "types.h"
+#include "clientpack.h"
+#include "bit.h"
+#include "xperror.h"
+#include "socklib.h"
+#include "net.h"
+#include "datagram.h"
+#include "portability.h"
+#include "checknames.h"
+#include "connectparam.h"
+#include "client.h"
 
 #define MAX_LINE MSG_LEN /* should not be smaller than MSG_LEN */
 
@@ -102,7 +118,7 @@ static int Get_contact_message(sockbuf_t *sbuf,
 		{
 			if (len == 0)
 				continue;
-			xpprintf("Error from sock_receive_any, contact message failed.\n");
+			printf("Error from sock_receive_any, contact message failed.\n");
 			/* exit(1);  no good since meta gui. */
 			return 0;
 		}
@@ -250,7 +266,7 @@ static bool Process_commands(sockbuf_t *ibuf,
 #endif
 
 	if (auto_connect && !list_servers && !auto_shutdown)
-		xpprintf("*** Connected to %s\n", conpar->server_name);
+		printf("*** Connected to %s\n", conpar->server_name);
 
 	for (;;)
 	{
@@ -631,7 +647,6 @@ static bool Process_commands(sockbuf_t *ibuf,
 					else
 					{
 						printf("... queued at position %2d\n", qpos);
-						IFWINDOWS(Progress("Queued at position %2d\n", qpos));
 					}
 					/*
 					 * Acknowledge each 10 seconds that we are still
@@ -836,13 +851,10 @@ int Contact_servers(int count, char **servers,
 			{
 				printf("Searching for an XPilot "
 					   "server on the local net...\n");
-				IFWINDOWS(Progress("Searching for an XPilot "
-								   "server on the local net..."));
 			}
 			else
 			{
 				printf("Searching once more...\n");
-				IFWINDOWS(Progress("Searching once more..."));
 			}
 			while (Get_contact_message(&sbuf, "", conpar))
 			{
@@ -892,7 +904,6 @@ int Contact_servers(int count, char **servers,
 			do
 			{
 				printf("Contacting server %s.\n", servers[i]);
-				IFWINDOWS(Progress("Contacting server %s", servers[i]));
 				Sockbuf_clear(&sbuf);
 				Packet_printf(&sbuf, "%u%s%hu%c",
 							  compat_mode ? COMPATIBILITY_MAGIC : MAGIC,
@@ -905,8 +916,6 @@ int Contact_servers(int count, char **servers,
 					if (sbuf.sock.error.call == SOCK_CALL_GETHOSTBYNAME)
 					{
 						printf("Can't find the server '%s'.\n", servers[i]);
-						IFWINDOWS(Progress("Can't find the server '%s'.",
-										   servers[i]));
 						break;
 					}
 					error("Can't contact %s on port %d",
@@ -915,7 +924,6 @@ int Contact_servers(int count, char **servers,
 				if (retries)
 				{
 					printf("Retrying %s...\n", servers[i]);
-					IFWINDOWS(Progress("Retrying %s...", servers[i]));
 				}
 				ret = Get_contact_message(&sbuf, servers[i], conpar);
 				if (ret == 2 && !compat_mode)
@@ -929,7 +937,6 @@ int Contact_servers(int count, char **servers,
 				if (ret == 1)
 				{
 					contacted++;
-					IFWINDOWS(Progress("Contacted %s", servers[i]));
 					connected = Connect_to_server(auto_connect, list_servers,
 												  auto_shutdown,
 												  shutdown_reason,

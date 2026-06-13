@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -22,6 +22,42 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
+#include <cctype>
+#include <ctime>
+#include <cstdint>
+
+#include <unistd.h>
+#include <X11/X.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/Xos.h>
+
+#include "commonproto.h"
+
+// #include "recordfile.h"
+
+// #include "commonmacros.h"
+#include "const.h"
+// #include "strdup.h"
+// #include "strlcpy.h"
+// #include "xpmemory.h"
+
+#include "option.h"
+#include "paint.h"
+#include "netclient.h"
+
+#include "xpconfig.h"
+#include "xperror.h"
+#include "xpaint.h"
+#include "clientsetup.h"
+#include "record.h"
+#include "recordfmt.h"
+#include "xinit.h"
 
 /*
  * GC elements for line drawing operations.

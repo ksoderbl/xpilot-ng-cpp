@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 by
  *
@@ -28,8 +28,9 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SCORE_H
-#define SCORE_H
+#pragma once
+
+#include "player.h"
 
 #define ASTEROID_SCORE (-1436.0)
 #define CANNON_SCORE (-1436.0)
@@ -73,4 +74,3 @@ typedef enum
 
 void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
                     void *extra, const char *somemsg);
-#endif

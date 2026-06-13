@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 by
  *
@@ -27,6 +27,40 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cmath>
+#include <cerrno>
+#include <ctime>
+#include <climits>
+#include <cstdarg>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <sys/param.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "const.h"
+#include "xperror.h"
+
+#include "modifiers.h"
+#include "server.h"
+
+#define SERVER
+#include "map.h"
+#include "xpconfig.h"
+#include "serverconst.h"
+#include "bit.h"
+#include "netserver.h"
+#include "saudio.h"
+#include "xperror.h"
+#include "player.h"
+#include "robot.h"
+#include "srecord.h"
+#include "teamcup.h"
 
 #define MAX_SHUFFLE_INDEX 65535
 
@@ -629,7 +663,7 @@ static void Frame_shots(connection_t *conn, player_t *pl)
 		}
 		if ((color = shot->color) == BLACK)
 		{
-			xpprintf("black %d,%d\n", shot->type, shot->id);
+			printf("black %d,%d\n", shot->type, shot->id);
 			color = WHITE;
 		}
 		switch (shot->type)

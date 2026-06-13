@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,24 +23,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef TYPES_H
-#define TYPES_H
+#pragma once
 
-#ifndef _WINDOWS
-typedef signed char byte;
-#endif
-typedef uint8_t uint8_t;
+#include <cstdint>
 
-/*
- * On some systems an enum is smaller than an int.
- * On others bool is already a builtin type.
- * Using preprocessor macros to circumvent both situations.
- */
-#ifndef __cplusplus
-#define false 0
-#define true 1
-#define bool char
-#endif
+// typedef signed char byte;
 
 typedef struct
 {
@@ -61,10 +48,3 @@ typedef struct
     int bx, by;
 } blkvec_t;
 typedef blkvec_t blkpos_t;
-
-#ifdef _WINDOWS
-#define strncasecmp(__s, __t, __l) strnicmp(__s, __t, __l)
-#define strcasecmp(__s, __t) stricmp(__s, __t)
-#endif
-
-#endif

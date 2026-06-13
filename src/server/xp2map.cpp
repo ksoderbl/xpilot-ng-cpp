@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 by
  *
@@ -27,6 +27,14 @@
 
 #include <expat.h>
 #include <zlib.h>
+
+#include "commonproto.h"
+#include "xperror.h"
+
+#include "cannon.h"
+#include "map.h"
+// #include "polygon.h"
+#include "server.h"
 
 #define DEFAULT_POS {-1, -1}
 

@@ -26,8 +26,12 @@ set(VERSION "${PROJECT_VERSION}")
 set(XPILOT_PKGDATADIR "${CMAKE_INSTALL_FULL_DATADIR}/${PROJECT_NAME}")
 set(XPILOT_CONF_DATADIR "${XPILOT_PKGDATADIR}/")
 
+include(CheckFunctionExists)
+
 check_function_exists(strlcpy HAVE_STRLCPY)
 check_function_exists(strlcat HAVE_STRLCAT)
+check_function_exists(strcasecmp HAVE_STRCASECMP)
+check_function_exists(strncasecmp HAVE_STRNCASECMP)
 
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/config.h.in

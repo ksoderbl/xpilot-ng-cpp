@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,13 +23,10 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PAINTDATA_H
-#define PAINTDATA_H
+#pragma once
 
 /* need uint8_t */
-#ifndef TYPES_H
 #include "types.h"
-#endif
 
 extern void Rectangle_start(void);
 extern void Rectangle_end(void);
@@ -48,5 +45,3 @@ extern int Arc_add_rgb(unsigned long color, /* Used if fullColor is on. */
 extern void Segment_start(void);
 extern void Segment_end(void);
 extern int Segment_add(int color, int x1, int y1, int x2, int y2);
-
-#endif

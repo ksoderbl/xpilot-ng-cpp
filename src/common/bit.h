@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,9 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef BIT_H
-#define BIT_H
+#pragma once
+
+#include <cstdint>
 
 #define SET_BIT(w, bit) ((w) |= (bit))
 #define CLR_BIT(w, bit) ((w) &= ~(bit))
@@ -39,5 +40,3 @@
 #define BITV_TOGGLE(X, N) ((X)[(N) / BITV_SIZE] ^= 1 << (N) % BITV_SIZE)
 
 typedef uint8_t bitv_t;
-
-#endif

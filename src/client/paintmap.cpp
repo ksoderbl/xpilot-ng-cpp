@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -30,6 +30,22 @@
 #include <sys/types.h>
 
 #include <unistd.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+
+#include "paint.h"
+
+#include "xpconfig.h"
+#include "const.h"
+#include "xperror.h"
+#include "bit.h"
+#include "types.h"
+#include "keys.h"
+#include "rules.h"
+#include "clientsetup.h"
+#include "client.h"
+#include "guimap.h"
 
 static double hrLimitTime = 0.0;
 

@@ -1,11 +1,11 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2004 by
  *
  *      Uoti Urpala
  *      Erik Andersson
- *      Kristian S�derblom
+ *      Kristian Söderblom
  *      Bjørn Stabell
  *      Ken Ronny Schouten
  *      Bert Gijsbers
@@ -26,29 +26,28 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-/* Windows incorrectly uses u_int in FD_CLR */
-#ifdef _WINDOWS
-typedef u_int FDTYPE;
-#else
-typedef int FDTYPE;
-#endif
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <csignal>
+#include <cerrno>
+#include <ctime>
+#include <sys/types.h>
 
-#ifndef _WINDOWS
+#include <unistd.h>
+#include <sys/time.h>
+
+#define SERVER
+#include "version.h"
+#include "xpconfig.h"
+#include "serverconst.h"
+#include "xperror.h"
+#include "types.h"
+#include "sched.h"
+#include "server.h"
+#include "srecord.h"
+
 #define NUM_SELECT_FD ((int)sizeof(int) * 8)
-#else
-/*
-	Windoze:
-	The first call to socket() returns 560ish.  Successive calls keep bumping
-	up the SOCKET returned until about 880 when it wraps back to 8.
-	(It seems to increment by 8 with each connect - but that's not important)
-	I can't find a manifest constant to tell me what the upper limit will be
-	*sigh*
-
-	--- Now, the Windoze gurus tell me that SOCKET is an opaque data type.
-	So i need to make a lookup array for the lookup array :(
-*/
-#define NUM_SELECT_FD 2000
-#endif
 
 struct io_handler
 {
@@ -74,7 +73,7 @@ void stop_sched(void)
 
 static void io_dummy(int fd, void *arg)
 {
-	xpprintf("io_dummy called!  (%d, %p)\n", fd, arg);
+	printf("io_dummy called!  (%d, %p)\n", fd, arg);
 }
 
 void install_input(void (*func)(int, void *), int fd, void *arg)
@@ -107,7 +106,7 @@ void install_input(void (*func)(int, void *), int fd, void *arg)
 			input_handlers[i].arg = 0;
 		}
 	}
-	/* IFWINDOWS(xpprintf("install_input: fd %d min_fd=%d\n", fd, min_fd)); */
+	/* IFWINDOWS(printf("install_input: fd %d min_fd=%d\n", fd, min_fd)); */
 	if (!playback && (fd < min_fd || fd >= min_fd + NUM_SELECT_FD))
 	{
 		error("install illegal input handler fd %d (%d)", fd, min_fd);
@@ -144,7 +143,7 @@ void remove_input(int fd)
 			input_handlers[fd - min_fd].fd = -1;
 			input_handlers[fd - min_fd].func = io_dummy;
 			input_handlers[fd - min_fd].arg = 0;
-			FD_CLR((FDTYPE)fd, &input_mask);
+			FD_CLR(fd, &input_mask);
 			if (fd == max_fd)
 			{
 				int i = fd;
@@ -360,14 +359,10 @@ void sched(void)
 
 #else /* SELECT_SCHED */
 
-static volatile long timer_ticks; /* SIGALRMs that have occurred */
-static long timers_used;		  /* SIGALRMs that have been used */
-static long timer_freq;			  /* rate at which timer ticks. (in FPS) */
-#ifndef _WINDOWS
+static long timer_ticks; /* SIGALRMs that have occurred */
+static long timers_used; /* SIGALRMs that have been used */
+static long timer_freq;	 /* rate at which timer ticks. (in FPS) */
 static void (*timer_handler)(void);
-#else
-static TIMERPROC timer_handler;
-#endif
 static time_t current_time;
 static int ticks_till_second;
 

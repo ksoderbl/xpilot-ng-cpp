@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 Uoti Urpala
  *
@@ -108,6 +108,39 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+
+#include "commonmacros.h"
+#include "const.h"
+#include "commonproto.h"
+
+#include "modifiers.h"
+
+#define SERVER
+#include "version.h"
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "map.h"
+#include "serverpack.h"
+#include "bit.h"
+#include "types.h"
+#include "socklib.h"
+#include "sched.h"
+#include "net.h"
+#include "xperror.h"
+#include "netserver.h"
+#include "packet.h"
+#include "setup.h"
+#include "connection.h"
+#include "saudio.h"
+#include "checknames.h"
+#include "server.h"
+#include "asteroid.h"
+#include "score.h"
+// #include "polygon.h"
+#include "rank.h"
+#include "srecord.h"
+#include "recwrap.h"
 
 static int Init_setup(void);
 static int Handle_listening(connection_t *connp);
@@ -227,8 +260,8 @@ static int Init_setup(void)
 	}
 
 	size = Polys_to_client(&mapdata);
-	xpprintf("%s Server->client polygon map transfer size is %d bytes.\n",
-			 showtime(), size);
+	printf("%s Server->client polygon map transfer size is %d bytes.\n",
+		   showtime(), size);
 
 	if ((Setup = (setup_t *)malloc(sizeof(setup_t) + size)) == NULL)
 	{
@@ -410,13 +443,13 @@ void Destroy_connection(connection_t *connp, const char *reason)
 		sock_get_errorRec(sock);
 		sock_writeRec(sock, pkt, len);
 	}
-	xpprintf("%s Goodbye %s=%s@%s|%s (\"%s\")\n",
-			 showtime(),
-			 connp->nick ? connp->nick : "",
-			 connp->user ? connp->user : "",
-			 connp->host ? connp->host : "",
-			 connp->dpy ? connp->dpy : "",
-			 reason);
+	printf("%s Goodbye %s=%s@%s|%s (\"%s\")\n",
+		   showtime(),
+		   connp->nick ? connp->nick : "",
+		   connp->user ? connp->user : "",
+		   connp->host ? connp->host : "",
+		   connp->dpy ? connp->dpy : "",
+		   reason);
 
 	Conn_set_state(connp, CONN_FREE, CONN_FREE);
 
@@ -712,8 +745,8 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
 
 	if (free_conn_index >= max_connections)
 	{
-		xpprintf("%s Full house for %s(%s)@%s(%s)\n",
-				 showtime(), user, nick, host, dpy);
+		printf("%s Full house for %s(%s)@%s(%s)\n",
+			   showtime(), user, nick, host, dpy);
 		return -1;
 	}
 	connp = &Conn[free_conn_index];
@@ -846,10 +879,10 @@ static int Handle_listening(connection_t *connp)
 			return -1;
 		}
 	}
-	xpprintf("%s Welcome %s=%s@%s|%s (%s/%d)", showtime(),
-			 connp->nick, connp->user, connp->host, connp->dpy,
-			 connp->addr, connp->his_port);
-	xpprintf(" (version %04x)\n", connp->version);
+	printf("%s Welcome %s=%s@%s|%s (%s/%d)", showtime(),
+		   connp->nick, connp->user, connp->host, connp->dpy,
+		   connp->addr, connp->his_port);
+	printf(" (version %04x)\n", connp->version);
 	if (connp->r.ptr[0] != PKT_VERIFY)
 	{
 		Send_reply(connp, PKT_VERIFY, PKT_FAILURE);
@@ -869,8 +902,8 @@ static int Handle_listening(connection_t *connp)
 	Fix_nick_name(nick);
 	if (strcmp(user, connp->user) || strcmp(nick, connp->nick))
 	{
-		xpprintf("%s Client verified incorrectly (%s,%s)(%s,%s)\n",
-				 showtime(), user, nick, connp->user, connp->nick);
+		printf("%s Client verified incorrectly (%s,%s)(%s,%s)\n",
+			   showtime(), user, nick, connp->user, connp->nick);
 		Send_reply(connp, PKT_VERIFY, PKT_FAILURE);
 		Send_reliable(connp);
 		Destroy_connection(connp, "verify incorrect");
@@ -1157,11 +1190,11 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
 	}
 
 	if (pl->rectype < 2)
-		xpprintf("%s %s (%d) starts at startpos %d.\n", showtime(),
-				 pl->name, NumPlayers, pl->home_base ? pl->home_base->ind : -1);
+		printf("%s %s (%d) starts at startpos %d.\n", showtime(),
+			   pl->name, NumPlayers, pl->home_base ? pl->home_base->ind : -1);
 	else
-		xpprintf("%s spectator %s (%d) starts.\n", showtime(), pl->name,
-				 NumSpectators);
+		printf("%s spectator %s (%d) starts.\n", showtime(), pl->name,
+			   NumSpectators);
 
 	/*
 	 * Tell him about himself first.
@@ -1464,7 +1497,7 @@ static void Handle_input(int fd, void *arg)
 			 * OPTIMIZED RECORDING MIGHT NOT WORK CORRECTLY
 			 */
 			Sockbuf_clear(&connp->r);
-			xpprintf("Incomplete packet\n");
+			printf("Incomplete packet\n");
 			break;
 		}
 		if (connp->state == CONN_PLAYING)

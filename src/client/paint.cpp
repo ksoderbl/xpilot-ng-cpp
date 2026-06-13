@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -25,6 +25,16 @@
 
 #include <cstdio>
 #include <cstring>
+#include <cstdlib>
+
+#include "bit.h"
+#include "const.h"
+#include "rules.h"
+#include "clientsetup.h"
+#include "xperror.h"
+
+#include "netclient.h"
+#include "paint.h"
 
 /*
  * Globals.
@@ -379,8 +389,6 @@ void Paint_score_table(void)
 		Add_roundend_messages(order);
 
 	free(order);
-
-	IFWINDOWS(MarkPlayersForRedraw());
 
 	scoresChanged = false;
 }

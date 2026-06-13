@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,9 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef AUDIO_H
-#define AUDIO_H
+/* This piece of code was provided by Greg Renda. */
+
+#pragma once
 
 enum
 {
@@ -114,8 +115,6 @@ enum
     MAX_SOUNDS
 };
 
-#ifdef _CAUDIO_C_
-
 static const char *soundNames[] =
     {
         "start",
@@ -202,7 +201,3 @@ static const char *soundNames[] =
         "asteroid_hit",
         "asteroid_break",
 };
-
-#endif /* _CAUDIO_C_ */
-
-#endif /* AUDIO_H */

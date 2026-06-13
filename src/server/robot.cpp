@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -24,6 +24,34 @@
  */
 
 /* Robot code originally submitted by Maurice Abraham. */
+
+#include <cstdlib>
+#include <cerrno>
+#include <cctype>
+#include <cstring>
+#include <cstdio>
+#include <climits>
+
+#include <unistd.h>
+
+#include "commonmacros.h"
+#include "const.h"
+#include "commonproto.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "map.h"
+#include "score.h"
+#include "bit.h"
+#include "saudio.h"
+#include "netserver.h"
+#include "serverpack.h"
+#include "rank.h"
+#include "robot.h"
+#include "xperror.h"
+#include "server.h"
 
 #define DEFAULT_ROBOT_TYPE "default"
 
@@ -732,9 +760,9 @@ static void Robot_create(void)
 	Robot_talks(ROBOT_TALK_ENTER, robot->name, "");
 
 	if (options.logRobots)
-		xpprintf("%s %s (%d, %s) starts at startpos %d.\n",
-				 showtime(), robot->name, NumPlayers, robot->username,
-				 robot->home_base->ind);
+		printf("%s %s (%d, %s) starts at startpos %d.\n",
+			   showtime(), robot->name, NumPlayers, robot->username,
+			   robot->home_base->ind);
 
 	if (NumPlayers == 1)
 	{

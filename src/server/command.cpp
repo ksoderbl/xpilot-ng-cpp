@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 by
  *
@@ -28,6 +28,32 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <cstdio>
+#include <cctype>
+#include <cstring>
+#include <cerrno>
+
+#include <unistd.h>
+
+#include "xpconfig.h"
+
+#include "commonmacros.h"
+#include "commonproto.h"
+
+#include "rank.h"
+#include "server.h"
+
+#define SERVER
+#include "version.h"
+#include "serverconst.h"
+#include "xperror.h"
+#include "netserver.h"
+#include "score.h"
+
+#include "teamcup.h"
+#include "srecord.h"
 
 /*
  * Look if any player's name is exactly 'str',

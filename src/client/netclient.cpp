@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -40,6 +40,31 @@
 #include <netdb.h>
 #include <sys/param.h>
 #include <sys/time.h>
+
+#include "bit.h"
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "const.h"
+#include "item.h"
+#include "net.h"
+#include "clientsetup.h"
+#include "clientpack.h"
+#include "packet.h"
+#include "portability.h"
+#include "socklib.h"
+#include "talk.h"
+#include "types.h"
+#include "xpconfig.h"
+#include "xperror.h"
+
+#include "client.h"
+#include "clientcommand.h"
+#include "netclient.h"
+#include "paint.h"
+
+#ifdef SOUND
+#include "audio.h"
+#endif
 
 #define TALK_RETRY 2
 #define MAX_MAP_ACK_LEN 500
@@ -452,7 +477,6 @@ int Net_verify(char *user_name, char *nick_name, char *disp)
 			if (retries > 1)
 			{
 				printf("Waiting for verify response\n");
-				IFWINDOWS(Progress("Waiting for verify response"));
 			}
 		}
 		sock_set_timeout(&rbuf.sock, 1, 0);
@@ -510,7 +534,6 @@ int Net_verify(char *user_name, char *nick_name, char *disp)
 	if (retries > 1)
 	{
 		printf("Verified correctly\n");
-		IFWINDOWS(Progress("Verified correctly"));
 	}
 	return 0;
 }

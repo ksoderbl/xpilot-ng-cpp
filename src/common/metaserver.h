@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,13 +23,10 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef METASERVER_H
-#define METASERVER_H
+#pragma once
 
 #define META_PORT 5500 /* for server-metaserver communication */
 #define META_HOST "meta.xpilot.org"
 #define META_HOST_TWO "meta2.xpilot.org"
 #define META_IP "45.55.104.252"
 #define META_IP_TWO "132.235.197.27"
-
-#endif

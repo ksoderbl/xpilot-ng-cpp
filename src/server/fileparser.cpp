@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -22,6 +22,28 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cctype>
+#include <climits>
+#include <cerrno>
+#include <sys/types.h>
+
+#include <unistd.h>
+
+#include "commonmacros.h"
+
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+#include "defaults.h"
+#include "map.h"
+#include "xperror.h"
+#include "types.h"
 
 static char *FileName;
 static int LineNumber;
@@ -139,6 +161,10 @@ static char *getMultilineValue(char **map_ptr, char *delimiter)
  * expand: name
  *
  */
+
+// in commonmacros
+#undef EXPAND
+
 #define EXPAND     \
 	if (i == slen) \
 		s = (char *)realloc(s, slen *= 2);

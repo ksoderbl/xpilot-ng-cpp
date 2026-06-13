@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -22,6 +22,19 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <cstdio>
+#include <cerrno>
+
+#include <unistd.h>
+
+#include "server.h"
+
+#define SERVER
+#include "serverconst.h"
+
+#include "xperror.h"
 
 static int ID_queue[NUM_IDS];
 static int ID_inuse[NUM_IDS + 1];

@@ -23,32 +23,51 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-/* This piece of code was provided by Greg Renda (greg@ncd.com). */
-/* 961112 - Bucko - Header file */
+#include <stdlib.h>
+#include <stdio.h>
+#include <ctype.h>
+
+#ifndef HAVE_STRCASECMP
 /*
- * client audio
+ * By Ian Malcom Brown.
+ * Changes by BG: prototypes with const,
+ * moved the ++ expressions out of the macro.
+ * Only test for the null byte in one string.
  */
+int strcasecmp(const char *str1, const char *str2)
+{
+	int c1, c2;
 
-#pragma once
+	do
+	{
+		c1 = *str1++;
+		c2 = *str2++;
+		c1 = tolower(c1);
+		c2 = tolower(c2);
+	} while (c1 == c2 && c1 != 0);
 
-#ifdef SOUND
+	return (c1 - c2);
+}
+#endif
 
-#include <climits>
+#ifndef HAVE_STRNCASECMP
+/*
+ * By Bert Gijsbers, derived from Ian Malcom Brown's strcasecmp().
+ */
+int strncasecmp(const char *str1, const char *str2, size_t n)
+{
+	int c1, c2;
 
-extern char soundFile[PATH_MAX]; /* audio mappings */
-extern int maxVolume;            /* maximum volume (in percent) */
-extern bool sound;               /* option 'sound' */
+	do
+	{
+		if (n-- <= 0)
+			return 0;
+		c1 = *str1++;
+		c2 = *str2++;
+		c1 = tolower(c1);
+		c2 = tolower(c2);
+	} while (c1 == c2 && c1 != 0);
 
-int Handle_audio(int type, int volume);
-void audioInit(char *display);
-void audioCleanup(void);
-void audioEvents(void);
-void audioUpdate(void);
-int audioDeviceInit(char *display);
-void audioDevicePlay(char *filename, int type, int volume, void **priv);
-void audioDeviceEvents(void);
-void audioDeviceUpdate(void);
-void audioDeviceFree(void *priv);
-void audioDeviceClose(void);
-
+	return (c1 - c2);
+}
 #endif

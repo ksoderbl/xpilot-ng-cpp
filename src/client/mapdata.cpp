@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2001 Juha Lindström
  *
@@ -31,6 +31,14 @@
 #include <sys/param.h>
 #include <sys/stat.h>
 #include <zlib.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "portability.h"
+#include "socklib.h"
+#include "xperror.h"
+
+#include "gfx2d.h"
 
 /* kps - you should be able to change this without a recompile */
 #define DATADIR ".xpilot_data"

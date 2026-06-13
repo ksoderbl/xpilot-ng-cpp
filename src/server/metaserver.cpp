@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,7 +23,36 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#define META_VERSION VERSION "ng"
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
+#include <cerrno>
+#include <cstdio>
+#include <ctime>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <sys/time.h>
+
+#include "commonproto.h"
+
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "version.h"
+#include "serverconst.h"
+#include "types.h"
+
+#include "socklib.h"
+#include "map.h"
+#include "serverpack.h"
+#include "metaserver.h"
+#include "saudio.h"
+#include "xperror.h"
+#include "netserver.h"
+
+#define META_VERSION VERSION "ng-cpp"
 
 struct MetaServer
 {
@@ -87,7 +116,7 @@ void Meta_init(void)
 	if (!options.reportToMetaServer)
 		return;
 
-	xpprintf("%s Locating Internet Meta server... ", showtime());
+	printf("%s Locating Internet Meta server... ", showtime());
 	fflush(stdout);
 
 	for (i = 0; i < NELEM(meta_servers); i++)
@@ -96,13 +125,13 @@ void Meta_init(void)
 		if (addr)
 			strlcpy(meta_servers[i].addr, addr, sizeof(meta_servers[i].addr));
 		if (addr)
-			xpprintf("found %d", i + 1);
+			printf("found %d", i + 1);
 		else
-			xpprintf("%d not found", i + 1);
+			printf("%d not found", i + 1);
 		if (i + 1 == NELEM(meta_servers))
-			xpprintf("\n");
+			printf("\n");
 		else
-			xpprintf("... ");
+			printf("... ");
 		fflush(stdout);
 	}
 }

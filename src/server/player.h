@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,45 +23,19 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PLAYER_H
-#define PLAYER_H
+#pragma once
 
-#ifndef OBJECT_H
-/* need OBJECT_BASE */
+#include <cmath>
+
 #include "object.h"
-#endif
-#ifndef CONNECTION_H
-/* need connection_t */
 #include "connection.h"
-#endif
-#ifndef SERVERCONST_H
-/* need MAX_TANKS */
 #include "serverconst.h"
-#endif
-#ifndef KEYS_H
-/* need NUM_KEYS */
 #include "keys.h"
-#endif
-#ifndef BIT_H
-/* need BITV_DECL */
 #include "bit.h"
-#endif
-#ifndef DRAW_H
-/* need shipshape_t */
 #include "shipshape.h"
-#endif
-#ifndef ITEM_H
-/* need NUM_ITEMS */
 #include "item.h"
-#endif
-#ifndef CLICK_H
-/* need CLICK */
 #include "click.h"
-#endif
-#ifndef OPTION_H
-/* need options */
 #include "option.h"
-#endif
 
 extern bool updateScores;
 
@@ -759,5 +733,3 @@ static inline void Player_set_float_dir(player_t *pl, double new_float_dir)
 void Player_print_state(player_t *pl, const char *funcname);
 void Player_set_state(player_t *pl, int state);
 void Player_set_modbank(player_t *pl, int bank, const char *str);
-
-#endif

@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -24,6 +24,32 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <cmath>
+#include <climits>
+
+#include "commonproto.h"
+#include "const.h"
+
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "score.h"
+#include "saudio.h"
+#include "cannon.h"
+#include "object.h"
+#include "netserver.h"
+#include "xperror.h"
+#include "asteroid.h"
+#include "rank.h"
+#include "objpos.h"
 
 #define MISSILE_POWER_SPEED_FACT 0.25
 #define MISSILE_POWER_TURNSPEED_FACT 0.75
@@ -1394,8 +1420,8 @@ void Delete_shot(int ind)
 		break;
 
 	default:
-		xpprintf("%s Delete_shot(): Unknown shot type %d.\n",
-				 showtime(), shot->type);
+		printf("%s Delete_shot(): Unknown shot type %d.\n",
+			   showtime(), shot->type);
 		break;
 	}
 

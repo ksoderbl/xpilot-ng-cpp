@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,10 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJPOS_H
-#define OBJPOS_H
+#pragma once
+
+#include "object.h"
+#include "player.h"
 
 void Object_position_set_clpos(object_t *obj, clpos_t pos);
 void Object_position_init_clpos(object_t *obj, clpos_t pos);
@@ -46,5 +48,3 @@ static inline void Object_position_set_clvec(object_t *obj, clvec_t vec)
 
     Object_position_set_clpos(obj, pos);
 }
-
-#endif

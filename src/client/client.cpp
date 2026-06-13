@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -29,8 +29,26 @@
 #include <cerrno>
 #include <cmath>
 #include <ctime>
+#include <cstdint>
+#include <climits>
 
 #include <sys/time.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "bit.h"
+#include "const.h"
+#include "rules.h"
+#include "clientsetup.h"
+#include "shipshape.h"
+#include "types.h"
+#include "xperror.h"
+
+#include "client.h"
+#include "clientcommand.h"
+#include "netclient.h"
+#include "paint.h"
+#include "talk.h"
 
 client_data_t clData = {
 	0,
@@ -163,7 +181,7 @@ int cumulativeMouseMovement = 0;
 int clientPortStart = 0; /* First UDP port for clients */
 int clientPortEnd = 0;	 /* Last one (these are for firewalls) */
 
-byte lose_item;		  /* index for dropping owned item */
+int lose_item;		  /* index for dropping owned item */
 int lose_item_active; /* one of the lose keys is pressed */
 
 static double teamscores[MAX_TEAMS];

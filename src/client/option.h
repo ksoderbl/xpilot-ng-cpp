@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2003 Kristian Söderblom
  *
@@ -18,10 +18,12 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef OPTION_H
-#define OPTION_H
+#pragma once
 
 #include <cassert>
+#include <cstdint>
+
+#include "keys.h"
 
 typedef enum
 {
@@ -369,5 +371,3 @@ typedef struct
 extern xp_keydefs_t *keydefs;
 extern int num_keydefs;
 extern int max_keydefs;
-
-#endif /* OPTION_H */

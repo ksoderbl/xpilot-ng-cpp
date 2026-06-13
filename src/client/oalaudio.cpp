@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -24,16 +24,10 @@
  * OpenAL audio driver.
  */
 
-#if defined(_WINDOWS)
-#include <al.h>
-#include <alut.h>
-#elif defined(MACOSX_FRAMEWORKS)
-#include <OpenAL/al.h>
-#include <OpenAL/alut.h>
-#else
+#ifdef SOUND
+
 #include <AL/al.h>
 #include <AL/alut.h>
-#endif
 
 #define MAX_SOUNDS 16
 #define VOL_THRESHOLD 10
@@ -279,3 +273,4 @@ void audioDeviceClose()
     alutExit();
 #endif
 }
+#endif /* SOUND */

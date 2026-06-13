@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,7 +23,25 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-/* Original options parsing code contributed by Ted Lemon <mellon@ncd.com> */
+/* Original options parsing code contributed by Ted Lemon */
+
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
+
+#include "commonproto.h"
+
+#include "server.h"
+
+#define SERVER
+#include "version.h"
+#include "xpconfig.h"
+#include "serverconst.h"
+#include "defaults.h"
+#include "xperror.h"
+#include "portability.h"
+#include "checknames.h"
 
 /*
  * Print the option list in "-help" format.
@@ -62,7 +80,7 @@ static void Parse_help(char *progname)
 			   option_descs[j].name);
 		if (strcasecmp(option_descs[j].commandLineOption,
 					   option_descs[j].name))
-			xpprintf(" or %s", option_descs[j].commandLineOption);
+			printf(" or %s", option_descs[j].commandLineOption);
 		printf(" %s\n",
 			   option_descs[j].type == valInt ? "<integer>" : option_descs[j].type == valReal ? "<real>"
 														  : option_descs[j].type == valString ? "<string>"
@@ -122,14 +140,14 @@ static void Parser_dump_options(char *progname)
 		{
 			int len = strlen(option_descs[j].name);
 
-			xpprintf("%s:%*s%s\n", option_descs[j].name,
-					 (len < 40) ? (40 - len) : 1, "",
-					 (option_descs[j].defaultValue != NULL)
-						 ? option_descs[j].defaultValue
-						 : "");
+			printf("%s:%*s%s\n", option_descs[j].name,
+				   (len < 40) ? (40 - len) : 1, "",
+				   (option_descs[j].defaultValue != NULL)
+					   ? option_descs[j].defaultValue
+					   : "");
 		}
 	}
-	xpprintf("\n");
+	printf("\n");
 }
 
 /*
@@ -161,10 +179,10 @@ static void Parser_dump_flags(char *progname)
 		if ((strlen(msg) >= 2))
 			msg[strlen(msg) - 2] = '\0';
 		strlcat(msg, "}", sizeof(msg));
-		xpprintf("%s:%*s%s\n", option_descs[j].name,
-				 (len < 40) ? (40 - len) : 1, "", msg);
+		printf("%s:%*s%s\n", option_descs[j].name,
+			   (len < 40) ? (40 - len) : 1, "", msg);
 	}
-	xpprintf("\n");
+	printf("\n");
 }
 
 /*
@@ -177,17 +195,17 @@ static void Parser_dump_config(char *progname)
 
 	option_descs = Get_option_descs(&option_count);
 
-	xpprintf("\n");
-	xpprintf("# %s option dump\n", progname);
-	xpprintf("# \n");
-	xpprintf("# CONF_DATADIR = %s\n", Conf_datadir());
-	xpprintf("# CONF_DEFAULTS_FILE_NAME = %s\n", Conf_defaults_file_name());
-	xpprintf("# CONF_PASSWORD_FILE_NAME = %s\n", Conf_password_file_name());
-	xpprintf("# CONF_MAPDIR = %s\n", Conf_mapdir());
-	xpprintf("# CONF_DEFAULT_MAP = %s\n", Conf_default_map());
-	xpprintf("# CONF_SERVERMOTDFILE = %s\n", Conf_servermotdfile());
-	xpprintf("# CONF_ROBOTFILE = %s\n", Conf_robotfile());
-	xpprintf("# \n");
+	printf("\n");
+	printf("# %s option dump\n", progname);
+	printf("# \n");
+	printf("# CONF_DATADIR = %s\n", Conf_datadir());
+	printf("# CONF_DEFAULTS_FILE_NAME = %s\n", Conf_defaults_file_name());
+	printf("# CONF_PASSWORD_FILE_NAME = %s\n", Conf_password_file_name());
+	printf("# CONF_MAPDIR = %s\n", Conf_mapdir());
+	printf("# CONF_DEFAULT_MAP = %s\n", Conf_default_map());
+	printf("# CONF_SERVERMOTDFILE = %s\n", Conf_servermotdfile());
+	printf("# CONF_ROBOTFILE = %s\n", Conf_robotfile());
+	printf("# \n");
 }
 
 /*
@@ -404,18 +422,18 @@ bool Parser(int argc, char **argv)
 		{
 			if (!parseMapFile(fname))
 			{
-				xpprintf("Unable to read %s, trying to open %s\n",
-						 fname, Conf_default_map());
+				printf("Unable to read %s, trying to open %s\n",
+					   fname, Conf_default_map());
 				if (!parseMapFile(Conf_default_map()))
-					xpprintf("Unable to read %s\n", Conf_default_map());
+					printf("Unable to read %s\n", Conf_default_map());
 			}
 		}
 		else
 		{
-			xpprintf("Map not specified, trying to open %s\n",
-					 Conf_default_map());
+			printf("Map not specified, trying to open %s\n",
+				   Conf_default_map());
 			if (!parseMapFile(Conf_default_map()))
-				xpprintf("Unable to read %s\n", Conf_default_map());
+				printf("Unable to read %s\n", Conf_default_map());
 		}
 	}
 	/*

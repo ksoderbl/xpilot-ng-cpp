@@ -1,9 +1,9 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1999-2004 by
  *
- *      Marcus Sundberg      <mackan@stacken.kth.se>
+ *      Marcus Sundberg
  *      Kristian Söderblom
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,13 +21,10 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef RANK_H
-#define RANK_H
+#pragma once
 
-#ifndef PLAYER_H
-/* need player */
+#include "serverpack.h"
 #include "player.h"
-#endif
 
 typedef struct ranknode
 {
@@ -168,5 +165,3 @@ static inline void Rank_add_shove_kill(player_t *pl) { Rank_add_kill(pl); }
 static inline void Rank_add_tank_kill(player_t *pl) { Rank_add_kill(pl); }
 static inline void Rank_add_target_kill(player_t *pl) { Rank_add_kill(pl); }
 static inline void Rank_add_treasure_kill(player_t *pl) { Rank_add_kill(pl); }
-
-#endif /* RANK_H */

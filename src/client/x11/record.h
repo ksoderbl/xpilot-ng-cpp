@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef RECORD_H
-#define RECORD_H
+#pragma once
 
 /*
  * Structure to call all user-interface drawing routines
@@ -79,5 +78,3 @@ long Record_size(void);
 void Record_init(const char *filename);
 void Record_cleanup(void);
 void Store_record_options(void);
-
-#endif

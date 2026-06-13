@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,31 +23,16 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CLIENT_H
-#define CLIENT_H
+#pragma once
 
-#ifdef _WINDOWS
-#ifndef _WINSOCKAPI_
-#include <winsock.h>
-#endif
-#endif
+#include <ctime>
 
-#ifndef DRAW_H
-/* need shipshape_t */
+#include "socklib.h"
 #include "shipshape.h"
-#endif
-#ifndef ITEM_H
-/* need NUM_ITEMS */
 #include "item.h"
-#endif
-#ifndef CONNECTPARAM_H
-/* need Connect_param_t */
 #include "connectparam.h"
-#endif
-#ifndef OPTION_H
-/* need xp_keysym_t */
 #include "option.h"
-#endif
+#include "types.h"
 
 typedef struct
 {
@@ -125,86 +110,6 @@ typedef struct
 #define MSG_FLASH_TIME 105.0 /* Old messages have life time less \
                 than this */
 #define MAX_POINTER_BUTTONS 5
-
-/*
- * Macros to manipulate dynamic arrays.
- */
-
-/*
- * Macro to add one new element of a given type to a dynamic array.
- * T is the type of the element.
- * P is the pointer to the array memory.
- * N is the current number of elements in the array.
- * M is the current size of the array.
- * V is the new element to add.
- * The goal is to keep the number of malloc/realloc calls low
- * while not wasting too much memory because of over-allocation.
- */
-#define STORE(T, P, N, M, V)                                                    \
-    if (N >= M && ((M <= 0)                                                     \
-                       ? (P = (T *)malloc((M = 1) * sizeof(*P)))                \
-                       : (P = (T *)realloc(P, (M += M) * sizeof(*P)))) == NULL) \
-    {                                                                           \
-        error("No memory");                                                     \
-        exit(1);                                                                \
-    }                                                                           \
-    else                                                                        \
-        (P[N++] = V)
-/*
- * Macro to make room in a given dynamic array for new elements.
- * P is the pointer to the array memory.
- * N is the current number of elements in the array.
- * M is the current size of the array.
- * T is the type of the elements.
- * E is the number of new elements to store in the array.
- * The goal is to keep the number of malloc/realloc calls low
- * while not wasting too much memory because of over-allocation.
- */
-#define EXPAND(P, N, M, T, E)                     \
-    if ((N) + (E) > (M))                          \
-    {                                             \
-        if ((M) <= 0)                             \
-        {                                         \
-            M = (E) + 2;                          \
-            P = (T *)malloc((M) * sizeof(T));     \
-            N = 0;                                \
-        }                                         \
-        else                                      \
-        {                                         \
-            M = ((M) << 1) + (E);                 \
-            P = (T *)realloc(P, (M) * sizeof(T)); \
-        }                                         \
-        if (P == NULL)                            \
-        {                                         \
-            error("No memory");                   \
-            N = M = 0;                            \
-            return; /* ! */                       \
-        }                                         \
-    }
-
-#define UNEXPAND(P, N, M) \
-    if ((N) < ((M) >> 2)) \
-    {                     \
-        free(P);          \
-        M = 0;            \
-    }                     \
-    N = 0;
-
-#ifndef PAINT_FREE
-#define PAINT_FREE 1
-#endif
-#if PAINT_FREE
-#define RELEASE(P, N, M)                 \
-    do                                   \
-    {                                    \
-        if (!(N))                        \
-            ;                            \
-        else                             \
-            (free(P), (M) = 0, (N) = 0); \
-    } while (0)
-#else
-#define RELEASE(P, N, M) ((N) = 0)
-#endif
 
 typedef struct
 {
@@ -620,7 +525,7 @@ extern int clientPortStart; /* First UDP port for clients */
 extern int clientPortEnd;   /* Last one (these are for firewalls) */
 extern int baseWarningType; /* Which type of base warning you prefer */
 extern int maxCharsInNames;
-extern byte lose_item;       /* flag and index to drop item */
+extern int lose_item;        /* flag and index to drop item */
 extern int lose_item_active; /* one of the lose keys is pressed */
 
 /* mapdata accessible to outside world */
@@ -843,10 +748,6 @@ void Raise_window(void);
 void Reset_shields(void);
 void Platform_specific_cleanup(void);
 
-#ifdef _WINDOWS
-void MarkPlayersForRedraw(void);
-#endif
-
 int Check_client_fps(void);
 
 /*
@@ -854,11 +755,6 @@ int Check_client_fps(void);
  */
 extern int Handle_motd(long off, char *buf, int len, long filesize);
 extern void aboutCleanup(void);
-
-#ifdef _WINDOWS
-extern void Motd_destroy(void);
-extern void Keys_destroy(void);
-#endif
 
 extern int motd_viewer; /* so Windows can clean him up */
 extern int keys_viewer;
@@ -873,10 +769,6 @@ extern void defaultCleanup(void); /* memory cleanup */
 
 extern bool Set_scaleFactor(xp_option_t *opt, double val);
 extern bool Set_altScaleFactor(xp_option_t *opt, double val);
-
-#ifdef _WINDOWS
-extern char *Get_xpilotini_file(int level);
-#endif
 
 /*
  * event.c
@@ -943,12 +835,3 @@ extern int Welcome_screen(Connect_param_t *conpar);
  * widget.c
  */
 extern void Widget_cleanup(void);
-
-/*
- * xinit.c
- */
-#ifdef _WINDOWS
-extern void WinXCreateItemBitmaps();
-#endif
-
-#endif

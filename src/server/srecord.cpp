@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2002 Uoti Urpala
  *
@@ -17,6 +17,18 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdio>
+#include <climits>
+#include <ctime>
+
+#include <netinet/in.h>
+
+#include "xperror.h"
+
+#include "option.h"
+#include "server.h"
+#include "srecord.h"
 
 int playback = 0;
 int record = 0;

@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef XINIT_H
-#define XINIT_H
+#pragma once
 
 #define MAX_VISUAL_NAME 12
 
@@ -110,5 +109,3 @@ extern int Motd_callback(int, void *, const char **);
 extern void Motd_destroy(void);
 extern void Expose_about_window(void);
 extern void Scale_dashes(void);
-
-#endif

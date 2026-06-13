@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 by
  *
@@ -27,6 +27,41 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <ctime>
+#include <cmath>
+#include <climits>
+#include <cassert>
+
+#include "commonproto.h"
+#include "list.h"
+
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "cannon.h"
+#include "map.h"
+#include "score.h"
+#include "saudio.h"
+#include "item.h"
+#include "netserver.h"
+#include "serverpack.h"
+#include "xperror.h"
+#include "portability.h"
+#include "object.h"
+#include "asteroid.h"
+// #include "xpmath.h"
+
+#include "player.h"
+#include "robot.h"
+#include "rank.h"
 
 /* new acd functions */
 /* doubles because the multiplies might overflow ints */

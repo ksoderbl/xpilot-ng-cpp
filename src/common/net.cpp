@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -22,6 +22,32 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cassert>
+#include <cstdlib>
+#include <cstdio>
+#include <cerrno>
+#include <cstring>
+#include <cstdarg>
+#include <sys/types.h>
+#include <ctime>
+
+#include <unistd.h>
+#include <sys/time.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
+#include "commonmacros.h"
+
+#include "version.h"
+#include "xpconfig.h"
+#include "const.h"
+#include "xperror.h"
+#include "net.h"
+#include "packet.h"
+#include "bit.h"
+#include "socklib.h"
 
 int last_packet_of_frame;
 

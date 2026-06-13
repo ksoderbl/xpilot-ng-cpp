@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef LIST_H
-#define LIST_H
+#pragma once
 
 /*
  * A double linked list similar to the STL list, but implemented in C.
@@ -117,5 +116,3 @@ void *List_iter_data(list_iter_t pos);
 #define LI_FORWARD(pos_) List_iter_forward(&(pos_))
 #define LI_BACKWARD(pos_) List_iter_backward(&(pos_))
 #define LI_DATA(pos_) List_iter_data((pos_))
-
-#endif

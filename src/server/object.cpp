@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -26,6 +26,21 @@
 /*
  * This file deals with low-level object structure manipulations.
  */
+
+#include <cstdio>
+#include <cstdlib>
+
+#include "commonmacros.h"
+
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "types.h"
+#include "serverconst.h"
+
+#include "xperror.h"
+#include "portability.h"
 
 /*
  * Global variables

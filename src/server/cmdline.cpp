@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 by
  *
@@ -29,6 +29,26 @@
  */
 
 /* Options parsing code contributed by Ted Lemon <mellon@ncd.com> */
+
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <cerrno>
+
+#include "option.h"
+
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "defaults.h"
+#include "xperror.h"
+#include "portability.h"
+#include "checknames.h"
+#include "tuner.h"
+#include "sched.h"
 
 double friction;
 double coriolisCosine, coriolisSine; /* cos and sin of cor. angle */

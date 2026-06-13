@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 by
  *
@@ -28,18 +28,18 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef MAP_H
-#define MAP_H
+#pragma once
 
-#ifndef TYPES_H
+#include <cstdint>
+#include <cassert>
+
+#include "click.h"
+#include "const.h"
+#include "commonproto.h"
+#include "arraylist.h"
 #include "types.h"
-#endif
-#ifndef RULES_H
 #include "rules.h"
-#endif
-#ifndef ITEM_H
 #include "item.h"
-#endif
 
 #define SPACE 0
 #define BASE 1
@@ -247,8 +247,6 @@ typedef struct
     double count;
 } transporter_t;
 
-extern bool is_polygon_map;
-
 struct world
 {
     int x, y;            /* Size of world in blocks, rounded up */
@@ -447,5 +445,3 @@ static inline team_t *Team_by_index(int ind)
         return &world->teams[ind];
     return NULL;
 }
-
-#endif

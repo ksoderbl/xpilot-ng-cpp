@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) TODO Erik Andersson
  *
@@ -18,8 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CLIENTRANK_H
-#define CLIENTRANK_H 1
+#pragma once
+
+#include <cstdint>
+
+#include "const.h"
 
 extern char clientname[16]; /*assigned in xpilot.c :( */
 extern char clientRankFile[PATH_MAX];
@@ -43,5 +46,3 @@ void Add_rank_Kill(char *nick);
 void Add_rank_Death(char *nick);
 int Get_kills(char *nick);
 int Get_deaths(char *nick);
-
-#endif

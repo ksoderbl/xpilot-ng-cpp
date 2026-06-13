@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SOCKLIB_H
-#define SOCKLIB_H
+#pragma once
 
 #define SOCK_HOSTNAME_LENGTH 256
 #define SOCK_FD_INVALID (-1)
@@ -79,10 +78,10 @@ typedef struct sock_s
     char *hostname;
 } sock_t;
 
-#if !defined(select) && defined(__linux__)
-#define select(N, R, W, E, T) select((N), \
-                                     (fd_set *)(R), (fd_set *)(W), (fd_set *)(E), (T))
-#endif
+// #if !defined(select) && defined(__linux__)
+// #define select(N, R, W, E, T) select((N), \
+//                                      (fd_set *)(R), (fd_set *)(W), (fd_set *)(E), (T))
+// #endif
 
 int sock_startup(void);
 void sock_cleanup(void);
@@ -111,5 +110,3 @@ int sock_set_receive_buffer_size(sock_t *sock, int size);
 int sock_set_send_buffer_size(sock_t *sock, int size);
 int sock_set_timeout(sock_t *sock, int seconds, int useconds);
 int sock_readable(sock_t *sock);
-
-#endif

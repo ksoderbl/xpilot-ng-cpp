@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 Uoti Urpala
  *
@@ -24,6 +24,35 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cerrno>
+#include <cmath>
+#include <climits>
+
+#include "const.h"
+#include "commonproto.h"
+#include "xperror.h"
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "score.h"
+#include "saudio.h"
+#include "item.h"
+#include "walls2.h"
+#include "click.h"
+#include "object.h"
+#include "robot.h"
+#include "cannon.h"
+#include "asteroid.h"
+#include "srecord.h"
+#include "rank.h"
+#include "objpos.h"
 
 struct move_parameters mp;
 static char msg[MSG_LEN];

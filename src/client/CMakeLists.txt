@@ -1,28 +1,21 @@
-# src/client/CMakeLists.txt
-file(GLOB CLIENT_CORE_SOURCES CONFIGURE_DEPENDS
+file(GLOB XPCLIENT_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp"
 )
 
-set(_client_core_sources ${CLIENT_CORE_SOURCES})
-
-if(NOT XPILOT_HAVE_SOUND)
-    list(FILTER _client_core_sources EXCLUDE REGEX ".*/caudio\\.cpp$")
-    list(FILTER _client_core_sources EXCLUDE REGEX ".*/oalaudio\\.cpp$")
-endif()
-
-add_library(xpclient STATIC ${_client_core_sources})
+add_library(xpclient STATIC
+    ${XPCLIENT_SOURCES}
+)
 
 target_include_directories(xpclient
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}
         ${CMAKE_SOURCE_DIR}/src/common
-        ${CMAKE_BINARY_DIR}
+        ${CMAKE_BINARY_DIR}/generated
 )
 
 target_compile_definitions(xpclient
     PUBLIC
-        HAVE_CONFIG_H=1
-        CONF_DATADIR="${CMAKE_INSTALL_FULL_DATADIR}/${PROJECT_NAME}/"
+        CONF_DATADIR="${XPILOT_CONF_DATADIR}"
 )
 
 target_link_libraries(xpclient
@@ -31,9 +24,7 @@ target_link_libraries(xpclient
         ZLIB::ZLIB
 )
 
-if(XPILOT_BUILD_X11_CLIENT)
-    add_subdirectory(x11)
-endif()
+add_subdirectory(x11)
 
 if(XPILOT_BUILD_SDL_CLIENT)
     add_subdirectory(sdl)

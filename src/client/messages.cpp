@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2004 by
  *
@@ -32,15 +32,30 @@
 // #include <math.h>
 // #include <sys/types.h>
 
+// #include "const.h"
+
+#include "bit.h"
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "rules.h"
+#include "xpconfig.h"
+#include "xperror.h"
+
+#include "client.h"
+// #include "messages.h"
+#include "netclient.h"
+#include "clientrank.h"
+#include "clientsetup.h"
+
 message_t *TalkMsg[MAX_MSGS], *GameMsg[MAX_MSGS];
 message_t *TalkMsg_pending[MAX_MSGS], *GameMsg_pending[MAX_MSGS];
 char *HistoryMsg[MAX_HIST_MSGS];
 
 /* provide cut&paste and message history */
 static char *HistoryBlock = NULL;
-int maxLinesInHistory;
-int maxMessages;	  /* Max. number of messages to display */
-int messagesToStdout; /* Send messages to standard output */
+int maxLinesInHistory = 32;
+int maxMessages = 8;	  /* Max. number of messages to display */
+int messagesToStdout = 0; /* Send messages to standard output */
 
 static bool ball_shout = false;
 static bool need_cover = false;
@@ -969,7 +984,7 @@ void Add_message(const char *message)
 		(messagesToStdout == 1 &&
 		 message[0] &&
 		 message[strlen(message) - 1] == ']'))
-		xpprintf("%s\n", message);
+		printf("%s\n", message);
 }
 
 void Add_newbie_message(const char *message)
@@ -1122,18 +1137,18 @@ void Print_messages_to_stdout(void)
 {
 	int i;
 
-	xpprintf("[talk messages]\n");
+	printf("[talk messages]\n");
 	for (i = 0; i < maxMessages; i++)
 	{
 		if (TalkMsg[i] && TalkMsg[i]->len > 0)
-			xpprintf("  %s\n", TalkMsg[i]->txt);
+			printf("  %s\n", TalkMsg[i]->txt);
 	}
 
-	xpprintf("[server messages]\n");
+	printf("[server messages]\n");
 	for (i = maxMessages - 1; i >= 0; i--)
 	{
 		if (GameMsg[i] && GameMsg[i]->len > 0)
-			xpprintf("  %s\n", GameMsg[i]->txt);
+			printf("  %s\n", GameMsg[i]->txt);
 	}
-	xpprintf("\n");
+	printf("\n");
 }

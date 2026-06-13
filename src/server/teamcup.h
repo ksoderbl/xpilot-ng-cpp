@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) TODO
  *
@@ -18,8 +18,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef TEAMCUP_H
-#define TEAMCUP_H
+#pragma once
 
 void teamcup_init(void);
 void teamcup_log(const char *fmt, ...);
@@ -27,5 +26,3 @@ void teamcup_game_start(void);
 void teamcup_round_start(void);
 void teamcup_round_end(int winning_team);
 void teamcup_game_over(void);
-
-#endif

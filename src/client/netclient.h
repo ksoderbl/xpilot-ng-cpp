@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,13 +23,9 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef NETCLIENT_H
-#define NETCLIENT_H
+#pragma once
 
-#ifndef TYPES_H
-/* need uint8_t */
 #include "types.h"
-#endif
 
 #define MIN_RECEIVE_WINDOW_SIZE 1
 #define MAX_RECEIVE_WINDOW_SIZE 4
@@ -149,5 +145,3 @@ int Receive_magic(void);
 int Send_audio_request(int on);
 int Send_fps_request(int fps);
 int Receive_loseitem(void);
-
-#endif

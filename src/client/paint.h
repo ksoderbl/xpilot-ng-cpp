@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,15 +23,10 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PAINT_H
-#define PAINT_H
+#pragma once
 
-#ifndef TYPES_H
 #include "types.h"
-#endif
-#ifndef CLIENT_H
 #include "client.h"
-#endif
 
 /* constants begin */
 #define MAX_COLORS 16    /* Max. switched colors ever */
@@ -161,5 +156,3 @@ void Play_beep(void);
 int Check_view_dimensions(void);
 void Store_hud_options(void);
 void Store_paintradar_options(void);
-
-#endif

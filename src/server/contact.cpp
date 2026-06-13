@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -22,6 +22,43 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
+#include <cstdio>
+#include <ctime>
+#include <cerrno>
+#include <climits>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <sys/time.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+
+#include "score.h"
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "types.h"
+#include "serverconst.h"
+#include "socklib.h"
+#include "map.h"
+#include "serverpack.h"
+#include "bit.h"
+#include "net.h"
+#include "netserver.h"
+#include "sched.h"
+#include "xperror.h"
+#include "checknames.h"
+#include "server.h"
+#include "portability.h"
+#include "connection.h"
+#include "robot.h"
+#include "srecord.h"
 
 /*
  * Global variables
@@ -293,10 +330,10 @@ void Contact(int fd, void *arg)
 	ibuf.len = bytes;
 
 	strlcpy(host_addr, sock_get_last_addr(&contactSocket), sizeof(host_addr));
-	xpprintf("%s Checking Address:(%s)\n", showtime(), host_addr);
+	printf("%s Checking Address:(%s)\n", showtime(), host_addr);
 	if (Check_address(host_addr))
 	{
-		xpprintf("%s Host blocked!:(%s)\n", showtime(), host_addr);
+		printf("%s Host blocked!:(%s)\n", showtime(), host_addr);
 		return;
 	}
 
@@ -422,8 +459,8 @@ void Contact(int fd, void *arg)
 		 * Someone asked for information.
 		 */
 
-		xpprintf("%s %s@%s asked for info about current game.\n",
-				 showtime(), user_name, host_addr);
+		printf("%s %s@%s asked for info about current game.\n",
+			   showtime(), user_name, host_addr);
 		Sockbuf_clear(&ibuf);
 		Packet_printf(&ibuf, "%u%c%c", my_magic, reply_to, SUCCESS);
 		assert(ibuf.size - ibuf.len >= 0);
@@ -571,8 +608,8 @@ void Contact(int fd, void *arg)
 		 */
 		bool bad = false, full, change;
 
-		xpprintf("%s %s@%s asked for an option list.\n",
-				 showtime(), user_name, host_addr);
+		printf("%s %s@%s asked for an option list.\n",
+			   showtime(), user_name, host_addr);
 		i = 0;
 		do
 		{

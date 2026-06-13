@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -35,6 +35,19 @@
 #include <vector>
 
 #include <unistd.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "defaults.h"
+#include "xperror.h"
+#include "types.h"
 
 /*
  * This module implements an in memory server option database.

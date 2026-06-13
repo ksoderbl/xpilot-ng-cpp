@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -108,23 +108,6 @@ extern double tbl_cos[];
 #define MOD2(x, m) ((x) & ((m) - 1))
 #endif /* MOD2 */
 
-/* borrowed from autobook */
-#define XCALLOC(type, num) \
-        ((type *)calloc((num), sizeof(type)))
-#define XMALLOC(type, num) \
-        ((type *)malloc((num) * sizeof(type)))
-#define XREALLOC(type, p, num) \
-        ((type *)realloc((p), (num) * sizeof(type)))
-#define XFREE(ptr)                  \
-        do                          \
-        {                           \
-                if (ptr)            \
-                {                   \
-                        free(ptr);  \
-                        ptr = NULL; \
-                }                   \
-        } while (0)
-
 /* Do NOT change these! */
 #define OLD_MAX_CHECKS 26
 #define MAX_TEAMS 10
@@ -164,9 +147,6 @@ extern double tbl_cos[];
 #define TEAM_NOT_SET 0xffff
 
 #define DEBRIS_TYPES (8 * 4 * 4)
-
-#undef rand
-#define rand() please dont use rand.
 
 /*
  * The server supports only 4 colors, except for spark/debris, which

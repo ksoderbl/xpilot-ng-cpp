@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,12 +23,9 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SERVERCONST_H
-#define SERVERCONST_H
+#pragma once
 
-#ifndef CONST_H
 #include "const.h"
-#endif
 
 /*
  * Two macros for edge wrap of x and y coordinates measured in map blocks.
@@ -248,5 +245,3 @@
 
 /* Maximum frames per second the server code supports. */
 #define MAX_SERVER_FPS 255
-
-#endif

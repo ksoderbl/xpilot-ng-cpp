@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,13 +23,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef NET_H
-#define NET_H
+#pragma once
 
-#ifndef SOCKLIB_H
-/* need sock_t */
+#include <cstddef>
+
 #include "socklib.h"
-#endif
 
 #define MIN_SOCKBUF_SIZE 1024
 #define MAX_SOCKBUF_SIZE (50 * 1024)
@@ -92,5 +90,3 @@ int Sockbuf_copy(sockbuf_t *dest, sockbuf_t *src, int len);
 
 int Packet_printf(sockbuf_t *, const char *fmt, ...);
 int Packet_scanf(sockbuf_t *, const char *fmt, ...);
-
-#endif

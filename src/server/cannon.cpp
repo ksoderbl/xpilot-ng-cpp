@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -7,7 +7,7 @@
  *      Ken Ronny Schouten
  *      Bert Gijsbers
  *      Dick Balaska
- *      Kimiko Koopman       <kimiko@xpilot.org>
+ *      Kimiko Koopman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,36 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cassert>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cmath>
+#include <climits>
+
+#include "commonproto.h"
+#include "const.h"
+// #include "randommt.h"
+#include "xperror.h"
+
+#include "objpos.h"
+#include "score.h"
+#include "server.h"
+
+#include "click.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "bit.h"
+#include "object.h"
+#include "cannon.h"
+#include "saudio.h"
+// #include "xpmath.h"
+// #include "polygon.h"
+#include "map.h"
 
 static int Cannon_select_weapon(cannon_t *cannon);
 static void Cannon_aim(cannon_t *cannon, int weapon,

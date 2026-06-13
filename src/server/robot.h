@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -25,12 +25,10 @@
 
 /* Robot code originally submitted by Maurice Abraham. */
 
-#ifndef ROBOT_H
-#define ROBOT_H
+#pragma once
 
-#ifndef MAP_H
+#include "serverpack.h"
 #include "map.h"
-#endif
 
 /*
  * We would like to support several different robot types.
@@ -197,5 +195,3 @@ int Robot_war_on_player(player_t *robot);
 void Robot_go_home(player_t *robot);
 void Robot_program(player_t *robot, int victim_id);
 void Robot_message(player_t *robot, const char *message);
-
-#endif

@@ -174,7 +174,7 @@ static void Win_show_error(char *s)
            It kinda halts the server, which is a bad thing to do for
            the simple info messages (nick in use) that call this routine
         */
-        xpprintf("%s %s\n", showtime(), s);
+        printf("%s %s\n", showtime(), s);
 #else
         /*
         if (MessageBox(NULL, s, "Error", MB_OKCANCEL | MB_TASKMODAL)

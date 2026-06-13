@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 by
  *
@@ -20,6 +20,19 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <cassert>
+#include <climits>
+#include <cstring>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "xperror.h"
+
+#include "cannon.h"
+#include "server.h"
+#include "map.h"
+// #include "polygon.h"
 
 /* polygon map format related stuff */
 int num_edges, max_edges;

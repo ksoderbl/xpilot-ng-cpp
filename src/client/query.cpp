@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -40,16 +40,12 @@
 #include <sys/time.h>
 
 #include <net/if.h>
-#include <sys/ioctl.h>
+// #include <sys/ioctl.h>
 
-#if defined(_WINDOWS)
-#ifndef QUERY_FUDGED
-#define QUERY_FUDGED
-#endif
-#endif
-#ifdef _IBMESA
-#define _SOCKADDR_LEN
-#endif
+#include "xpconfig.h"
+#include "xperror.h"
+#include "socklib.h"
+#include "client.h"
 
 #ifndef MAX_INTERFACE
 #define MAX_INTERFACE 16 /* Max. number of network interfaces. */

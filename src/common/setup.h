@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2003-2004 by
  *
@@ -28,8 +28,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SETUP_H
-#define SETUP_H
+#pragma once
+
+#include <cstdint>
+
+#include "const.h"
 
 /*
  * Definitions to tell the client how the server has been setup.
@@ -142,16 +145,3 @@ typedef struct
     uint8_t map_data[4];     /* compressed map data */
     /* plus more mapdata here (HACK) */
 } setup_t;
-
-#ifndef SERVER
-#ifdef FPS
-#error "FPS needs a different definition in the client"
-#undef FPS
-#endif
-#define FPS (Setup->frames_per_second)
-
-extern setup_t *Setup;
-
-#endif
-
-#endif

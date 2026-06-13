@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -27,6 +27,22 @@
 #include <cstdlib>
 #include <cstring>
 #include <cerrno>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+
+#include "client.h"
+#include "option.h"
+
+#include "xpconfig.h"
+#include "const.h"
+#include "netclient.h"
+#include "clientsetup.h"
+#include "bit.h"
+#include "xperror.h"
+#include "portability.h"
+#include "talk.h"
+#include "rules.h"
 
 char *talk_fast_msgs[TALK_FAST_NR_OF_MSGS]; /* talk macros */
 

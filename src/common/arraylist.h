@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2005 Kristian Söderblom
  *
@@ -18,12 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ARRAYLIST_H
-#define ARRAYLIST_H
+#pragma once
 
-#ifndef TYPES_H
+#include <cstdint>
+
 #include "types.h"
-#endif
 
 typedef struct
 {
@@ -110,5 +109,3 @@ void Arraylist_iterator_free(arraylist_iterator_t *ip);
 void Arraylist_static_iterator(arraylist_t *alp, arraylist_iterator_t *ip);
 bool Iterator_has_next(arraylist_iterator_t *ip);
 void *Iterator_get_next(arraylist_iterator_t *ip);
-
-#endif

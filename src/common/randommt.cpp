@@ -48,9 +48,9 @@
 **	Changes for ANSI C.
 **	Indentation.
 **	No typedefs in external interface.
-**
-**
 */
+
+#include "randommt.h"
 
 /*
 ** uint32 must be an unsigned integer type capable of holding at least 32

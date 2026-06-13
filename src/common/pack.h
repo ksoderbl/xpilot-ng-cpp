@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 Uoti Urpala
  *
@@ -25,8 +25,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PACK_H
-#define PACK_H
+#pragma once
 
 #define CAP_LETTER(c) ((c) = ((c) >= 'a' && (c) <= 'z') ? (c) - 'a' + 'A' : (c))
 
@@ -114,31 +113,31 @@
 #define MAGIC_WORD 0xF4ED
 #define POLYGON_VERSION 0x4F15
 #define OLD_VERSION 0x4501
-#ifdef SERVER
-#define MAGIC (is_polygon_map                       \
-                   ? VERSION2MAGIC(POLYGON_VERSION) \
-                   : VERSION2MAGIC(OLD_VERSION))
-#else
-#define MAGIC (VERSION2MAGIC(protocolVersion))
-#endif
+// #ifdef SERVER
+// #define MAGIC (is_polygon_map                       \
+//                    ? VERSION2MAGIC(POLYGON_VERSION) \
+//                    : VERSION2MAGIC(OLD_VERSION))
+// #else
+// #define MAGIC (VERSION2MAGIC(protocolVersion))
+// #endif
 
 #define MAGIC2VERSION(M) (((M) >> 16) & 0xFFFF)
 #define VERSION2MAGIC(V) ((((V) & 0xFFFF) << 16) | MAGIC_WORD)
-#define MY_VERSION MAGIC2VERSION(MAGIC)
+// #define MY_VERSION MAGIC2VERSION(MAGIC)
 
-/*
- * Which client versions can join this server.
- */
-#ifdef SERVER
-#define MIN_CLIENT_VERSION 0x4203
-#define MAX_CLIENT_VERSION MY_VERSION
-#endif
+// /*
+//  * Which client versions can join this server.
+//  */
+// #ifdef SERVER
+// #define MIN_CLIENT_VERSION 0x4203
+// #define MAX_CLIENT_VERSION MY_VERSION
+// #endif
 
-/*
- * Which server versions can this client join.
- */
-#define MIN_SERVER_VERSION 0x4F09
-#define MAX_SERVER_VERSION MY_VERSION
+// /*
+//  * Which server versions can this client join.
+//  */
+// #define MIN_SERVER_VERSION 0x4F09
+// #define MAX_SERVER_VERSION MY_VERSION
 
 /*
  * We want to keep support for servers using the old map format in the client,
@@ -191,5 +190,3 @@
 #define E_VERSION 0x0C      /* Incompatible version */
 #define E_NOENT 0x0D        /* No such variable */
 #define E_UNDEFINED 0x0E    /* Operation undefined */
-
-#endif

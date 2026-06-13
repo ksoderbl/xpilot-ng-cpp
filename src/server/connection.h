@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,18 +23,15 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CONNECTION_H
-#define CONNECTION_H
+#pragma once
 
 /*
  * This include file holds defines and types related to the
  * connection of a player.  It is mainly used by netserver.c.
  */
 
-#ifndef NET_H
-/* need sockbuf_t. */
 #include "net.h"
-#endif
+#include "shipshape.h"
 
 /*
  * Different states a connection can be in.
@@ -121,5 +118,3 @@ typedef struct
     int rectype;                 /* normal/saved/spectator */
     int features;                /* supported features */
 } connection_t;
-
-#endif

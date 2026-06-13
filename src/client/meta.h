@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,12 +23,15 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef META_H
-#define META_H
+#pragma once
 
 #include <cstdint>
 #include <string>
 #include <vector>
+
+#include "list.h"
+#include "clientpack.h"
+#include "socklib.h"
 
 /*
  * max number of servers we can find on the local network.
@@ -128,5 +131,3 @@ void Meta_connect(int *connections_ptr, int *maxfd_ptr);
 void Meta_dns_lookup(void);
 void Ping_servers(void);
 int Get_meta_data(char *errorstr);
-
-#endif

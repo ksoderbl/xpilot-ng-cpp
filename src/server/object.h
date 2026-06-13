@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,18 +23,19 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef OBJECT_H
-#define OBJECT_H
+#pragma once
 
-#ifndef MAP_H
-/* need treasure_t */
+#define SERVER
+
+#include "bit.h"
+#include "click.h"
+#include "connection.h"
+#include "item.h"
+#include "keys.h"
+#include "shipshape.h"
+
 #include "map.h"
-#endif
-
-#ifndef MODIFIERS_H
-/* need modifiers_t */
 #include "modifiers.h"
-#endif
 
 /*
  * Different types of objects, including player.
@@ -351,5 +352,3 @@ union xp_anyobject
     pulseobject_t pulse;
     itemobject_t item;
 };
-
-#endif

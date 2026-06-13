@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef WIDGET_H
-#define WIDGET_H
+#pragma once
 
 #define NO_WIDGET 0 /* Not a widget descriptor */
 
@@ -100,5 +99,3 @@ int Widget_create_viewer(const char *buf, int len,
 						 const char *window_name, const char *icon_name,
 						 XFontStruct *font);
 int Widget_update_viewer(int popup_desc, const char *buf, int len);
-
-#endif

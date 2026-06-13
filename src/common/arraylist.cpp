@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2005 Kristian Söderblom
  *
@@ -22,6 +22,10 @@
 #include <cstdio>
 #include <cstring>
 #include <cassert>
+
+#include "arraylist.h"
+
+#include "commonmacros.h"
 
 #define ARRAYLIST_INITIAL_NUM_ELEMENTS 16
 #define ARRAYLIST_ELEMENT_ALIGNMENT sizeof(double)

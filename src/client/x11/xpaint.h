@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef XPAINT_H
-#define XPAINT_H
+#pragma once
 
 /* how to draw a selection */
 #define DRAW_EMPHASIZED BLUE
@@ -133,5 +132,3 @@ extern void Colors_cleanup(void);
 extern void Colors_debug(void);
 extern void Init_spark_colors(void);
 extern void Store_color_options(void);
-
-#endif

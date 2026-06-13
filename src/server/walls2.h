@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 Uoti Urpala
  *
@@ -25,18 +25,13 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef WALLS_H
-#define WALLS_H
+#pragma once
 
-#include <stdint.h>
+#include <cstdint>
 
-#ifndef CLICK_H
 #include "click.h"
-#endif
-
-#ifndef OBJECT_H
 #include "object.h"
-#endif
+#include "player.h"
 
 /*
  * Wall collision detection and bouncing.
@@ -205,5 +200,3 @@ struct collans
     int point;
     clvec_t moved;
 };
-
-#endif

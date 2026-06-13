@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -7,7 +7,7 @@
  *      Ken Ronny Schouten
  *      Bert Gijsbers
  *      Dick Balaska
- *      Kimiko Koopman       <kimiko@xpilot.org>
+ *      Kimiko Koopman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,52 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include "commonproto.h"
+
+#include "list.h"
+
+// #include <iostream>
+
+#include <algorithm>
+#include <vector>
+
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cmath>
+#include <climits>
+#include <cassert>
+
+#include "server.h"
+
+#define SERVER
+
+#include "bit.h"
+#include "click.h"
+#include "const.h"
+#include "keys.h"
+#include "xpconfig.h"
+// #include "xpmath.h"
+
+#include "asteroid.h"
+#include "map.h"
+#include "object.h"
+#include "objpos.h"
+#include "saudio.h"
+// #include "walls1.h"
+
+// #define SERVER
+// #include "xpconfig.h"
+// #include "serverconst.h"
+// #include "list.h"
+//
+// #include "proto.h"
+// #include "saudio.h"
+// #include "bit.h"
+// #include "objpos.h"
+// #include "asteroid.h"
+// #include "xpmath.h"
 
 /* list containing pointers to all asteroids */
 static list_t Asteroid_list = NULL;

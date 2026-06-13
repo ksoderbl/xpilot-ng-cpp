@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -24,6 +24,37 @@
  */
 
 /* Robot code originally submitted by Maurice Abraham. */
+
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
+#include <cmath>
+#include <cerrno>
+#include <climits>
+
+#include <unistd.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+
+#include "server.h"
+
+#define SERVER
+#include "version.h"
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "map.h"
+#include "score.h"
+#include "bit.h"
+#include "saudio.h"
+#include "netserver.h"
+#include "serverpack.h"
+#include "robot.h"
+#include "xperror.h"
+#include "portability.h"
+#include "object.h"
+// #include "walls1.h"
 
 #define ROB_LOOK_AH 2
 

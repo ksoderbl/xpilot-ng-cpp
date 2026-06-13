@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 2000-2004 by
  *
@@ -32,6 +32,22 @@
 #include <cstring>
 #include <cstdio>
 #include <cmath>
+
+#include "click.h"
+#include "xperror.h"
+
+#include "server.h"
+
+#define SERVER
+#include "xpconfig.h"
+#include "serverconst.h"
+
+#include "score.h"
+#include "map.h"
+#include "saudio.h"
+#include "bit.h"
+#include "netserver.h"
+#include "modifiers.h"
 
 bool team_dead(int team)
 {

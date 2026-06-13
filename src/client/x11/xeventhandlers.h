@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -23,8 +23,9 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef XEVENTHANDLERS_H
-#define XEVENTHANDLERS_H
+#pragma once
+
+#include <X11/Xlib.h>
 
 /* avoid trouble with Atoms and 64 bit archs */
 typedef CARD32 Atom32;
@@ -41,4 +42,3 @@ void KeyChanged_event(XEvent *event);
 void ButtonPress_event(XEvent *xevent);
 void MotionNotify_event(XEvent *event);
 int ButtonRelease_event(XEvent *event);
-#endif

@@ -1,5 +1,5 @@
 /*
- * XPilot NG, a multiplayer space war game.
+ * XPilot NG CPP, a multiplayer space war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -28,9 +28,28 @@
 #include <cctype>
 #include <cstring>
 #include <cerrno>
+#include <cstdint>
 
 #include <unistd.h>
 #include <X11/Xlib.h>
+
+// #include "commonmacros.h"
+#include "const.h"
+#include "item.h"
+#include "keys.h"
+#include "xpconfig.h"
+#include "xperror.h"
+
+#include "client.h"
+#include "configure.h"
+#include "netclient.h"
+#include "paint.h"
+
+#include "dbuff.h"
+// #include "keydefs.h"
+#include "widget.h"
+#include "xinit.h"
+#include "xpaint.h"
 
 /* How far away objects should be placed from each other etc... */
 #define BORDER 10
@@ -138,8 +157,8 @@ void Expose_about_window(void)
 					   "ABOUT XPILOT\n"
 					   "\n"
 					   "The game was conceived in its original form at the "
-					   "University of Troms� (Norway) by Ken Ronny Schouten and "
-					   "Bj�rn Stabell during the fall of 1991, but much of the game today "
+					   "University of Tromsø (Norway) by Ken Ronny Schouten and "
+					   "Bjørn Stabell during the fall of 1991, but much of the game today "
 					   "is the result of hard efforts by Bert Gijsbers of the "
 					   "molecular cytology lab at the University of Amsterdam "
 					   "(The Netherlands).  "
@@ -155,7 +174,7 @@ void Expose_about_window(void)
 					   "read the XPilot FAQ (Frequently Asked Questions).\n"
 					   "\n\n"
 					   "Good luck as a future xpilot,\n"
-					   "Bj�rn Stabell, Ken Ronny Schouten, Bert Gijsbers & Dick Balaska",
+					   "Bjørn Stabell, Ken Ronny Schouten, Bert Gijsbers & Dick Balaska",
 					   colors[WHITE].pixel, colors[BLACK].pixel);
 		break;
 
@@ -472,7 +491,7 @@ int Keys_callback(int widget_desc, void *data, const char **unused)
 		if ((end - buf) + (maxkeylen + strlen(help) + 4) >= bufsize)
 		{
 			bufsize += 4096;
-			xpprintf("realloc: %d\n", bufsize);
+			printf("realloc: %d\n", bufsize);
 			if (!(buf = XREALLOC(char, buf, bufsize)))
 			{
 				error("No memory for key list");
