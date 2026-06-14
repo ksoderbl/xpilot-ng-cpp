@@ -190,6 +190,7 @@ static int num_cannons = 0;
 static target_t *targets = NULL;
 static int num_targets = 0;
 
+// TODO: put all these in std::vectors
 fuelstation_t *fuels = NULL;
 int num_fuels = 0;
 homebase_t *bases = NULL;
