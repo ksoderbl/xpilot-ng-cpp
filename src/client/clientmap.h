@@ -34,6 +34,8 @@
 #include "option.h"
 #include "types.h"
 
+#define MAX_SCORE_OBJECTS 10
+
 typedef struct
 {
     double score;
@@ -262,6 +264,12 @@ typedef struct
 } score_object_t;
 
 /* mapdata accessible to outside world */
+
+extern double teamscores[MAX_TEAMS];
+extern cannontime_t *cannons;
+extern int num_cannons;
+extern target_t *targets;
+extern int num_targets;
 
 extern fuelstation_t *fuels;
 extern int num_fuels;
