@@ -65,19 +65,6 @@ static void Check_map_object_counters(void)
 {
     int i;
 
-    /*assert(world->NumCannons == 0);*/
-
-    /*assert(world->NumGravs == 0);*/
-    /*assert(world->NumWormholes == 0);*/
-    /*assert(world->NumTreasures == 0);*/
-    /*assert(world->NumTargets == 0);*/
-    /*assert(world->NumBases == 0);*/
-    /*assert(world->NumItemConcs == 0);
-      assert(world->NumAsteroidConcs == 0);
-      assert(world->NumFrictionAreas == 0);*/
-    /*assert(world->NumEcms == 0);*/
-    /*assert(world->NumTransporters == 0);*/
-
     for (i = 0; i < MAX_TEAMS; i++)
     {
         assert(world->teams[i].NumMembers == 0);
@@ -112,25 +99,6 @@ static void shrink(void **pp, size_t size)
             M = (N);                                \
         }                                           \
     }
-
-static void Realloc_map_objects(void)
-{
-    /*SHRINK(cannon_t, world->cannons, world->NumCannons, world->MaxCannons);*/
-    /*SHRINK(fuel_t, world->fuels, world->NumFuels, world->MaxFuels);*/
-    /*SHRINK(grav_t, world->gravs, world->NumGravs, world->MaxGravs);*/
-    /*SHRINK(wormhole_t, world->wormholes,
-      world->NumWormholes, world->MaxWormholes);*/
-    /*SHRINK(treasure_t, world->treasures,
-      world->NumTreasures, world->MaxTreasures);*/
-    /*SHRINK(target_t, world->targets, world->NumTargets, world->MaxTargets);*/
-    /*SHRINK(base_t, world->bases, world->NumBases, world->MaxBases);*/
-    /*SHRINK(item_concentrator_t, world->itemConcs,
-      world->NumItemConcs, world->MaxItemConcs);
-      SHRINK(asteroid_concentrator_t, world->asteroidConcs,
-      world->NumAsteroidConcs, world->MaxAsteroidConcs);
-      SHRINK(friction_area_t, world->frictionAreas,
-      world->NumFrictionAreas, world->MaxFrictionAreas);*/
-}
 
 int World_place_cannon(clpos_t pos, int dir, int team)
 {
@@ -629,8 +597,6 @@ bool Grok_map(void)
 
     if (options.minRobots == -1)
         options.minRobots = options.maxRobots;
-
-    Realloc_map_objects();
 
     if (Num_bases() <= 0)
         fatal("Map has no bases!");
