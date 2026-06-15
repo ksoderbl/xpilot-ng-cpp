@@ -25,14 +25,8 @@
 
 #pragma once
 
-#include <ctime>
-
-#include "socklib.h"
+#include "const.h"
 #include "shipshape.h"
-#include "item.h"
-#include "connectparam.h"
-#include "option.h"
-#include "types.h"
 
 #define MAX_SCORE_OBJECTS 10
 
