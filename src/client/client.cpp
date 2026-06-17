@@ -1528,15 +1528,15 @@ int Handle_start(long server_loops)
 
     start_loops = server_loops;
 
-    num_refuel = 0;
-    num_connector = 0;
+    clMap.refuels.clear();
+    clMap.connectors.clear();
     num_missile = 0;
     num_ball = 0;
     num_ship = 0;
     num_mine = 0;
     num_itemtype = 0;
     num_ecm = 0;
-    num_trans = 0;
+    clMap.transporters.clear();
     num_paused = 0;
     num_radar = 0;
     num_vcannon = 0;
@@ -1721,7 +1721,7 @@ int Handle_refuel(int x0, int y0, int x1, int y1)
     t.x1 = x1;
     t.y0 = y0;
     t.y1 = y1;
-    STORE(refuel_t, refuel_ptr, num_refuel, max_refuel, t);
+    clMap.refuels.push_back(t);
     return 0;
 }
 
@@ -1734,7 +1734,7 @@ int Handle_connector(int x0, int y0, int x1, int y1, int tractor)
     t.y0 = y0;
     t.y1 = y1;
     t.tractor = tractor;
-    STORE(connector_t, connector_ptr, num_connector, max_connector, t);
+    clMap.connectors.push_back(t);
     return 0;
 }
 
@@ -1985,7 +1985,7 @@ int Handle_trans(int x1, int y1, int x2, int y2)
     t.y1 = y1;
     t.x2 = x2;
     t.y2 = y2;
-    STORE(trans_t, trans_ptr, num_trans, max_trans, t);
+    clMap.transporters.push_back(t);
     return 0;
 }
 
@@ -2268,16 +2268,18 @@ void Client_cleanup(void)
         num_others = 0;
         max_others = 0;
     }
-    if (max_refuel > 0 && refuel_ptr)
-    {
-        max_refuel = 0;
-        XFREE(refuel_ptr);
-    }
-    if (max_connector > 0 && connector_ptr)
-    {
-        max_connector = 0;
-        XFREE(connector_ptr);
-    }
+    // if (max_refuel > 0 && refuel_ptr)
+    // {
+    //     max_refuel = 0;
+    //     XFREE(refuel_ptr);
+    // }
+    clMap.refuels.clear();
+    // if (max_connector > 0 && connector_ptr)
+    // {
+    //     max_connector = 0;
+    //     XFREE(connector_ptr);
+    // }
+    clMap.connectors.clear();
     if (max_laser > 0 && laser_ptr)
     {
         max_laser = 0;
@@ -2308,11 +2310,12 @@ void Client_cleanup(void)
         max_ecm = 0;
         XFREE(ecm_ptr);
     }
-    if (max_trans > 0 && trans_ptr)
-    {
-        max_trans = 0;
-        XFREE(trans_ptr);
-    }
+    // if (max_trans > 0 && trans_ptr)
+    // {
+    //     max_trans = 0;
+    //     XFREE(trans_ptr);
+    // }
+    clMap.transporters.clear();
     if (max_paused > 0 && paused_ptr)
     {
         max_paused = 0;
