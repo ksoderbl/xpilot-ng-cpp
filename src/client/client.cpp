@@ -259,25 +259,26 @@ int num_playing_teams = 0;
 long time_left = -1;
 long start_loops, end_loops;
 
+// TODO: use some sane data structure here
 static fuelstation_t *Fuelstation_by_pos(int x, int y)
 {
     int i, lo, hi, pos;
 
     lo = 0;
-    hi = num_fuels - 1;
+    hi = clMap.fuels.size() - 1;
     pos = x * Setup->y + y;
     while (lo < hi)
     {
         i = (lo + hi) >> 1;
-        if (pos > fuels[i].pos)
+        if (pos > clMap.fuels[i].pos)
             lo = i + 1;
         else
             hi = i;
     }
-    if (lo == hi && pos == fuels[lo].pos)
-        return &fuels[lo];
+    if (lo == hi && pos == clMap.fuels[lo].pos)
+        return &clMap.fuels[lo];
     warn("No fuelstation at (%d,%d)", x, y);
-    return NULL;
+    return nullptr;
 }
 
 double Fuel_by_pos(int x, int y)
@@ -326,12 +327,12 @@ int Target_alive(int x, int y, double *damage)
 
 int Handle_fuel(int ind, double fuel)
 {
-    if (ind < 0 || ind >= num_fuels)
+    if (ind < 0 || ind >= clMap.fuels.size())
     {
         warn("Bad fuelstation index (%d)", ind);
         return -1;
     }
-    fuels[ind].fuel = fuel;
+    clMap.fuels[ind].fuel = fuel;
     return 0;
 }
 
@@ -1026,12 +1027,6 @@ static int init_polymap(void)
         poly->bounds.h = max.y - min.y;
     }
     int num_bases = *ptr++ & 0xff;
-    // bases = XMALLOC(homebase_t, num_bases);
-    // if (bases == NULL)
-    // {
-    //     error("No memory for Map bases (%d)", num_bases);
-    //     exit(1);
-    // }
     for (i = 0; i < num_bases; i++)
     {
         homebase_t base;
@@ -1058,25 +1053,17 @@ static int init_polymap(void)
         clMap.bases.push_back(base);
         ptr++;
     }
-    num_fuels = get_ushort(&ptr);
-    if (num_fuels != 0)
-    {
-        fuels = XMALLOC(fuelstation_t, num_fuels);
-        if (fuels == NULL)
-        {
-            error("No memory for Map fuels (%d)", num_fuels);
-            exit(1);
-        }
-    }
+    int num_fuels = get_ushort(&ptr);
     for (i = 0; i < num_fuels; i++)
     {
+        fuelstation_t fs;
         cx = get_ushort(&ptr);
         cy = get_ushort(&ptr);
-        fuels[i].fuel = MAX_STATION_FUEL;
-        fuels[i].bounds.x = cx - BLOCK_SZ / 2;
-        fuels[i].bounds.y = cy - BLOCK_SZ / 2;
-        fuels[i].bounds.w = BLOCK_SZ;
-        fuels[i].bounds.h = BLOCK_SZ;
+        fs.fuel = MAX_STATION_FUEL;
+        fs.bounds.x = cx - BLOCK_SZ / 2;
+        fs.bounds.y = cy - BLOCK_SZ / 2;
+        fs.bounds.w = BLOCK_SZ;
+        fs.bounds.h = BLOCK_SZ;
     }
     num_checks = *ptr++ & 0xff;
     if (num_checks != 0)
@@ -1117,11 +1104,10 @@ static int init_blockmap(void)
         type;
     uint8_t types[256];
 
-    num_fuels = 0;
     num_cannons = 0;
     num_targets = 0;
     num_checks = 0;
-    fuels = NULL;
+    clMap.fuels.clear();
     clMap.bases.clear();
     cannons = NULL;
     targets = NULL;
@@ -1143,44 +1129,18 @@ static int init_blockmap(void)
     {
         switch (types[Setup->map_data[i]])
         {
-        case 1:
-            num_fuels++;
-            break;
         case 2:
             num_cannons++;
             break;
         case 3:
             num_targets++;
             break;
-        // case 4:
-        // 	num_bases++;
-        // 	break;
         case 5:
             num_checks++;
             break;
         default:
             break;
         }
-    }
-    // if (num_bases != 0)
-    // {
-    // 	bases = XMALLOC(homebase_t, num_bases);
-    // 	if (bases == NULL)
-    // 	{
-    // 		error("No memory for Map bases (%d)", num_bases);
-    // 		return -1;
-    // 	}
-    // 	num_bases = 0;
-    // }
-    if (num_fuels != 0)
-    {
-        fuels = XMALLOC(fuelstation_t, num_fuels);
-        if (fuels == NULL)
-        {
-            error("No memory for Map fuels (%d)", num_fuels);
-            return -1;
-        }
-        num_fuels = 0;
     }
     if (num_targets != 0)
     {
@@ -1219,9 +1179,10 @@ static int init_blockmap(void)
         switch (types[type])
         {
         case 1:
-            fuels[num_fuels].pos = i;
-            fuels[num_fuels].fuel = MAX_STATION_FUEL;
-            num_fuels++;
+            fuelstation_t fs;
+            fs.pos = i;
+            fs.fuel = MAX_STATION_FUEL;
+            clMap.fuels.push_back(fs);
             break;
         case 2:
             cannons[num_cannons].pos = i;
@@ -1264,17 +1225,8 @@ static int Map_init(void)
 
 static int Map_cleanup(void)
 {
-    // if (num_bases > 0)
-    // {
-    // 	XFREE(bases);
-    // 	num_bases = 0;
-    // }
     clMap.bases.clear();
-    if (num_fuels > 0)
-    {
-        XFREE(fuels);
-        num_fuels = 0;
-    }
+    clMap.fuels.clear();
     if (num_targets > 0)
     {
         XFREE(targets);

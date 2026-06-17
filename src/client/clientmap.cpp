@@ -36,8 +36,8 @@ target_t *targets = NULL;
 int num_targets = 0;
 
 // TODO: put all these in std::vectors
-fuelstation_t *fuels = NULL;
-int num_fuels = 0;
+// fuelstation_t *fuels = NULL;
+// int num_fuels = 0;
 // homebase_t *bases = NULL;
 // int num_bases = 0;
 checkpoint_t *checks = NULL;
