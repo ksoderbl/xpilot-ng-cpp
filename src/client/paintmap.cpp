@@ -91,17 +91,17 @@ void Paint_vdecor(void)
     int i;
     bool last, more_y;
 
-    if (num_vdecor > 0)
+    if (clMap.vdecors.size() > 0)
     {
-        for (i = 0; i < num_vdecor; i++)
+        for (const auto &vdecor : clMap.vdecors)
         {
-            last = (i + 1 == num_vdecor);
-            more_y = (vdecor_ptr[i].yi != vdecor_ptr[i + 1].yi);
-            Gui_paint_decor(vdecor_ptr[i].x, vdecor_ptr[i].y,
-                            vdecor_ptr[i].xi, vdecor_ptr[i].yi,
-                            vdecor_ptr[i].type, last, more_y);
+            last = (i + 1 == clMap.vdecors.size());
+            more_y = (vdecor.yi != clMap.vdecors[i + 1].yi);
+            Gui_paint_decor(vdecor.x, vdecor.y,
+                            vdecor.xi, vdecor.yi,
+                            vdecor.type, last, more_y);
         }
-        RELEASE(vdecor_ptr, num_vdecor, max_vdecor);
+        clMap.vdecors.clear();
     }
 }
 

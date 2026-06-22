@@ -281,14 +281,13 @@ public:
     std::vector<itemtype_t> itemtypes;
     std::vector<ecm_t> ecms;
     std::vector<trans_t> transporters;
-
     std::vector<paused_t> pausers;
-
+    std::vector<appearing_t> appearers;
     std::vector<radar_t> radarObjects;
     std::vector<vcannon_t> vcannons;
     std::vector<vfuel_t> vfuels;
     std::vector<vbase_t> vbases;
-
+    std::vector<vdecor_t> vdecors;
     std::vector<wreckage_t> wreckages;
     std::vector<asteroid_t> asteroids;
     std::vector<wormhole_t> wormholes;
@@ -331,8 +330,8 @@ extern int num_others, max_others;
 // extern int num_trans, max_trans;
 // extern paused_t *paused_ptr;
 // extern int num_paused, max_paused;
-extern appearing_t *appearing_ptr;
-extern int num_appearing, max_appearing;
+// extern appearing_t *appearing_ptr;
+// extern int num_appearing, max_appearing;
 // extern radar_t *radar_ptr;
 // extern int num_radar, max_radar;
 // extern vcannon_t *vcannon_ptr;
@@ -347,8 +346,8 @@ extern int num_debris[DEBRIS_TYPES],
 extern debris_t *fastshot_ptr[DEBRIS_TYPES * 2];
 extern int num_fastshot[DEBRIS_TYPES * 2],
     max_fastshot[DEBRIS_TYPES * 2];
-extern vdecor_t *vdecor_ptr;
-extern int num_vdecor, max_vdecor;
+// extern vdecor_t *vdecor_ptr;
+// extern int num_vdecor, max_vdecor;
 // extern wreckage_t *wreckage_ptr;
 // extern int num_wreckage, max_wreckage;
 // extern asteroid_t *asteroid_ptr;
