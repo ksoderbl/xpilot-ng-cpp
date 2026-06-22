@@ -418,7 +418,7 @@ extern char *talk_fast_msgs[]; /* talk macros */
 extern score_object_t score_objects[MAX_SCORE_OBJECTS];
 extern int score_object;
 
-extern int oldServer; /* Compatibility mode for old block-based servers */
+extern bool oldServer; /* Compatibility mode for old block-based servers */
 extern ipos_t selfPos;
 extern ipos_t selfVel;
 extern short heading;

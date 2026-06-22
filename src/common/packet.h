@@ -23,8 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef PACKET_H
-#define PACKET_H
+#pragma once
 
 /* before version 3.8.0 this was 8 bytes. */
 #define KEYBOARD_SIZE 9
@@ -153,5 +152,3 @@
 
 /* optimized packet types: 128 - 255 */
 #define PKT_DEBRIS 128 /* + color + x + y */
-
-#endif

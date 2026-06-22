@@ -75,7 +75,7 @@ unsigned RadarHeight = 0;
 unsigned RadarWidth = 256; /* radar width at the server */
 bool UpdateRadar = false;  /* radar update because of polystyle changes? */
 
-int oldServer;
+bool oldServer;
 ipos_t selfPos;
 ipos_t selfVel;
 short heading;
@@ -936,7 +936,7 @@ static int init_polymap(void)
     ipos_t *points, min, max;
     char *ptr, *edgeptr;
 
-    oldServer = 0;
+    oldServer = false;
     ptr = (char *)Setup->map_data;
 
     parse_styles(&ptr);
@@ -2161,9 +2161,9 @@ int Client_init(char *server, unsigned server_version)
 {
     version = server_version;
     if (server_version < 0x4F09)
-        oldServer = 1;
+        oldServer = true;
     else
-        oldServer = 0;
+        oldServer = false;
 
     Make_table();
 
