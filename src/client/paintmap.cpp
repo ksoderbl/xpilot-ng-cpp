@@ -51,39 +51,38 @@ static double hrLimitTime = 0.0;
 
 void Paint_vcannon(void)
 {
-    int i;
-    if (num_vcannon > 0)
+    if (clMap.vcannons.size() > 0)
     {
-        for (i = 0; i < num_vcannon; i++)
-            Gui_paint_cannon(vcannon_ptr[i].x, vcannon_ptr[i].y,
-                             vcannon_ptr[i].type);
-        RELEASE(vcannon_ptr, num_vcannon, max_vcannon);
+        for (const auto &vcannon : clMap.vcannons)
+            Gui_paint_cannon(vcannon.x, vcannon.y,
+                             vcannon.type);
+        clMap.vcannons.clear();
     }
 }
 
 void Paint_vfuel(void)
 {
-    int i;
-    if (num_vfuel > 0)
+    if (clMap.vfuels.size() > 0)
     {
-        for (i = 0; i < num_vfuel; i++)
-            Gui_paint_fuel(vfuel_ptr[i].x, vfuel_ptr[i].y, vfuel_ptr[i].fuel);
-        RELEASE(vfuel_ptr, num_vfuel, max_vfuel);
+        for (const auto &vfuel : clMap.vfuels)
+            Gui_paint_fuel(vfuel.x, vfuel.y, vfuel.fuel);
+        clMap.vfuels.clear();
     }
 }
 
 void Paint_vbase(void)
 {
-    int i, id, team;
-    if (num_vbase > 0)
+    int id, team;
+
+    if (clMap.vbases.size() > 0)
     {
-        for (i = 0; i < num_vbase; i++)
+        for (const auto &vbase : clMap.vbases)
         {
-            Base_info_by_pos(vbase_ptr[i].xi, vbase_ptr[i].yi, &id, &team);
-            Gui_paint_base(vbase_ptr[i].x, vbase_ptr[i].y, id, team,
-                           vbase_ptr[i].type);
+            Base_info_by_pos(vbase.xi, vbase.yi, &id, &team);
+            Gui_paint_base(vbase.x, vbase.y, id, team,
+                           vbase.type);
         }
-        RELEASE(vbase_ptr, num_vbase, max_vbase);
+        clMap.vbases.clear();
     }
 }
 

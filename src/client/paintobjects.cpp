@@ -89,17 +89,16 @@ static void Paint_items(void)
 {
     int i, x, y;
 
-    if (num_itemtype > 0)
+    if (clMap.itemtypes.size() > 0)
     {
-
-        for (i = 0; i < num_itemtype; i++)
+        for (const auto &item : clMap.itemtypes)
         {
-            x = itemtype_ptr[i].x;
-            y = itemtype_ptr[i].y;
+            x = item.x;
+            y = item.y;
             if (wrap(&x, &y))
-                Gui_paint_item_object(itemtype_ptr[i].type, x, y);
+                Gui_paint_item_object(item.type, x, y);
         }
-        RELEASE(itemtype_ptr, num_itemtype, max_itemtype);
+        clMap.itemtypes.clear();
     }
 }
 
@@ -107,15 +106,14 @@ static void Paint_balls(void)
 {
     int i, j, id, style, x, y, xs, ys;
 
-    if (num_ball > 0)
+    if (clMap.balls.size() > 0)
     {
-
-        for (i = 0; i < num_ball; i++)
+        for (const auto &ball : clMap.balls)
         {
-            x = ball_ptr[i].x;
-            y = ball_ptr[i].y;
-            id = ball_ptr[i].id;
-            style = ball_ptr[i].style;
+            x = ball.x;
+            y = ball.y;
+            id = ball.id;
+            style = ball.style;
 
             if (wrap(&x, &y))
             {
@@ -124,23 +122,25 @@ static void Paint_balls(void)
                 if (id == -1)
                     continue;
 
-                for (j = 0; j < num_ship && ship_ptr[j].id != id; j++)
+                // Also paint connectors for ship that has connected to this ball.
+                // This code makes implies that only one ship can be connected to a ball at a time.
+                for (j = 0; j < clMap.ships.size() && clMap.ships[j].id != id; j++)
                 {
-                    if (ship_ptr[j].id == id)
+                    if (clMap.ships[j].id == id)
                         break;
                 }
 
-                if (j >= num_ship)
+                if (j >= clMap.ships.size())
                     continue;
 
-                xs = ship_ptr[j].x;
-                ys = ship_ptr[j].y;
+                xs = clMap.ships[j].x;
+                ys = clMap.ships[j].y;
 
                 if (wrap(&xs, &ys))
                     Gui_paint_ball_connector(x, y, xs, ys);
             }
         }
-        RELEASE(ball_ptr, num_ball, max_ball);
+        clMap.balls.clear();
     }
 }
 
@@ -149,17 +149,15 @@ static void Paint_mines(void)
     int i, x, y;
     char *name = NULL;
 
-    if (num_mine > 0)
+    if (clMap.mines.size() > 0)
     {
-
-        for (i = 0; i < num_mine; i++)
+        for (const auto &mine : clMap.mines)
         {
-            x = mine_ptr[i].x;
-            y = mine_ptr[i].y;
+            x = mine.x;
+            y = mine.y;
 
             if (wrap(&x, &y))
             {
-
                 /*
                  * Determine if the name of the player who is safe
                  * from the mine should be drawn.
@@ -167,15 +165,15 @@ static void Paint_mines(void)
                  * We do not know who is safe for mines sent with id==0
                  */
                 name = NULL;
-                if (mine_ptr[i].id != 0)
+                if (mine.id != 0)
                 {
                     other_t *other;
-                    if (mine_ptr[i].id == EXPIRED_MINE_ID)
+                    if (mine.id == EXPIRED_MINE_ID)
                     {
                         static char expired_name[] = "Expired";
                         name = expired_name;
                     }
-                    else if ((other = Other_by_id(mine_ptr[i].id)) != NULL)
+                    else if ((other = Other_by_id(mine.id)) != NULL)
                         name = other->id_string;
                     else
                     {
@@ -183,10 +181,10 @@ static void Paint_mines(void)
                         name = unknown_name;
                     }
                 }
-                Gui_paint_mine(x, y, mine_ptr[i].teammine, name);
+                Gui_paint_mine(x, y, mine.teammine, name);
             }
         }
-        RELEASE(mine_ptr, num_mine, max_mine);
+        clMap.mines.clear();
     }
 }
 
@@ -227,25 +225,24 @@ static void Paint_wreckages(void)
     int wtype, size, rot;
     bool deadly;
 
-    if (num_wreckage > 0)
+    if (clMap.wreckages.size() > 0)
     {
-
-        for (i = 0; i < num_wreckage; i++)
+        for (const auto &wreckage : clMap.wreckages)
         {
-            x = wreckage_ptr[i].x;
-            y = wreckage_ptr[i].y;
+            x = wreckage.x;
+            y = wreckage.y;
             if (wrap(&x, &y))
             {
-                deadly = (wreckage_ptr[i].wrecktype & 0x80);
+                deadly = (wreckage.wrecktype & 0x80);
 
-                wtype = (wreckage_ptr[i].wrecktype & 0x7F) % NUM_WRECKAGE_SHAPES;
-                rot = wreckage_ptr[i].rotation;
-                size = wreckage_ptr[i].size;
+                wtype = (wreckage.wrecktype & 0x7F) % NUM_WRECKAGE_SHAPES;
+                rot = wreckage.rotation;
+                size = wreckage.size;
 
                 Gui_paint_wreck(x, y, deadly, wtype, rot, size);
             }
         }
-        RELEASE(wreckage_ptr, num_wreckage, max_wreckage);
+        clMap.wreckages.clear();
     }
 }
 
@@ -254,24 +251,24 @@ static void Paint_asteroids(void)
     int i, x, y;
     int type, size, rot;
 
-    if (num_asteroids > 0)
+    if (clMap.asteroids.size() > 0)
     {
         Gui_paint_asteroids_begin();
-        for (i = 0; i < num_asteroids; i++)
+        for (const auto &asteroid : clMap.asteroids)
         {
-            x = asteroid_ptr[i].x;
-            y = asteroid_ptr[i].y;
+            x = asteroid.x;
+            y = asteroid.y;
             if (wrap(&x, &y))
             {
-                type = asteroid_ptr[i].type;
-                rot = asteroid_ptr[i].rotation;
-                size = asteroid_ptr[i].size;
+                type = asteroid.type;
+                rot = asteroid.rotation;
+                size = asteroid.size;
 
                 Gui_paint_asteroid(x, y, type, rot, size);
             }
         }
         Gui_paint_asteroids_end();
-        RELEASE(asteroid_ptr, num_asteroids, max_asteroids);
+        clMap.asteroids.clear();
     }
 }
 
@@ -279,16 +276,16 @@ static void Paint_wormholes(void)
 {
     int i, x, y;
 
-    if (num_wormholes > 0)
+    if (clMap.wormholes.size() > 0)
     {
-        for (i = 0; i < num_wormholes; i++)
+        for (const auto &wormhole : clMap.wormholes)
         {
-            x = wormhole_ptr[i].x;
-            y = wormhole_ptr[i].y;
+            x = wormhole.x;
+            y = wormhole.y;
             if (wrap(&x, &y))
                 Gui_paint_setup_worm(x, y);
         }
-        RELEASE(wormhole_ptr, num_wormholes, max_wormholes);
+        clMap.wormholes.clear();
     }
 }
 
@@ -297,24 +294,24 @@ static void Paint_missiles(void)
     int i, x, y;
     int len, dir;
 
-    if (num_missile > 0)
+    if (clMap.missiles.size() > 0)
     {
         Gui_paint_missiles_begin();
 
-        for (i = 0; i < num_missile; i++)
+        for (const auto &missile : clMap.missiles)
         {
-            x = missile_ptr[i].x;
-            y = missile_ptr[i].y;
-            dir = missile_ptr[i].dir;
+            x = missile.x;
+            y = missile.y;
+            dir = missile.dir;
             len = MISSILE_LEN;
-            if (missile_ptr[i].len > 0)
-                len = missile_ptr[i].len;
+            if (missile.len > 0)
+                len = missile.len;
 
             if (wrap(&x, &y))
                 Gui_paint_missile(x, y, len, dir);
         }
         Gui_paint_missiles_end();
-        RELEASE(missile_ptr, num_missile, max_missile);
+        clMap.missiles.clear();
     }
 }
 
@@ -322,25 +319,23 @@ static void Paint_lasers(void)
 {
     int color, i, x1, y1, len, dir;
 
-    if (num_laser > 0)
+    if (clMap.lasers.size() > 0)
     {
-
         Gui_paint_lasers_begin();
 
-        for (i = 0; i < num_laser; i++)
+        for (const auto &laser : clMap.lasers)
         {
-            x1 = laser_ptr[i].x;
-            y1 = laser_ptr[i].y;
-            len = laser_ptr[i].len;
-            dir = laser_ptr[i].dir;
-            color = laser_ptr[i].color;
+            x1 = laser.x;
+            y1 = laser.y;
+            len = laser.len;
+            dir = laser.dir;
+            color = laser.color;
 
             if (wrap(&x1, &y1))
                 Gui_paint_laser(color, x1, y1, len, dir);
         }
         Gui_paint_lasers_end();
-
-        RELEASE(laser_ptr, num_laser, max_laser);
+        clMap.lasers.clear();
     }
 }
 
@@ -350,7 +345,6 @@ static void Paint_fastshots(int i, int x_areas, int y_areas, int areas)
 
     if (num_fastshot[i] > 0)
     {
-
         x = BASE_X(i);
         y = BASE_Y(i);
         color = COLOR(i);
@@ -421,16 +415,16 @@ static void Paint_paused(void)
 {
     int i, x, y;
 
-    if (num_paused > 0)
+    if (clMap.pausers.size() > 0)
     {
-        for (i = 0; i < num_paused; i++)
+        for (const auto &paused : clMap.pausers)
         {
-            x = paused_ptr[i].x;
-            y = paused_ptr[i].y;
+            x = paused.x;
+            y = paused.y;
             if (wrap(&x, &y))
-                Gui_paint_paused(x, y, paused_ptr[i].count);
+                Gui_paint_paused(x, y, paused.count);
         }
-        RELEASE(paused_ptr, num_paused, max_paused);
+        clMap.pausers.clear();
     }
 }
 
@@ -456,20 +450,19 @@ static void Paint_ecm(void)
 {
     int i, x, y, size;
 
-    if (num_ecm > 0)
+    if (clMap.ecms.size() > 0)
     {
-
-        for (i = 0; i < num_ecm; i++)
+        for (const auto &ecm : clMap.ecms)
         {
-            if ((size = ecm_ptr[i].size) > 0)
+            if ((size = ecm.size) > 0)
             {
-                x = ecm_ptr[i].x;
-                y = ecm_ptr[i].y;
+                x = ecm.x;
+                y = ecm.y;
                 if (wrap(&x, &y))
                     Gui_paint_ecm(x, y, size);
             }
         }
-        RELEASE(ecm_ptr, num_ecm, max_ecm);
+        clMap.ecms.clear();
     }
 }
 
@@ -477,34 +470,33 @@ static void Paint_all_ships(void)
 {
     int i, x, y;
 
-    if (num_ship > 0)
+    if (clMap.ships.size() > 0)
     {
-
-        for (i = 0; i < num_ship; i++)
+        for (const auto &ship : clMap.ships)
         {
-            x = ship_ptr[i].x;
-            y = ship_ptr[i].y;
+            x = ship.x;
+            y = ship.y;
             if (!wrap(&x, &y))
                 continue;
 
             /*
              * ship in the center? (svenska-hack)
              */
-            if (abs(X(x) - ext_view_width / 2) <= 1 && abs(Y(y) - ext_view_height / 2) <= 1 && Other_by_id(ship_ptr[i].id) != NULL)
+            if (abs(X(x) - ext_view_width / 2) <= 1 && abs(Y(y) - ext_view_height / 2) <= 1 && Other_by_id(ship.id) != NULL)
             {
-                eyesId = ship_ptr[i].id;
+                eyesId = ship.id;
                 eyes = Other_by_id(eyesId);
                 if (eyes != NULL)
                     eyeTeam = eyes->team;
             }
 
             Gui_paint_ship(x, y,
-                           ship_ptr[i].dir, ship_ptr[i].id,
-                           ship_ptr[i].cloak, ship_ptr[i].phased,
-                           ship_ptr[i].shield,
-                           ship_ptr[i].deflector, ship_ptr[i].eshield);
+                           ship.dir, ship.id,
+                           ship.cloak, ship.phased,
+                           ship.shield,
+                           ship.deflector, ship.eshield);
         }
-        RELEASE(ship_ptr, num_ship, max_ship);
+        clMap.ships.clear();
     }
 }
 
