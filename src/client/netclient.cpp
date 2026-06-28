@@ -1947,7 +1947,10 @@ int Receive_fastshot(void)
     /*
      * Teamshots are in range DEBRIS_TYPES to DEBRIS_TYPES*2-1 in fastshot.
      */
-    r = Handle_fastshot(type, (uint8_t *)rbuf.ptr, n);
+    if (type < DEBRIS_TYPES)
+        r = Handle_fastshot(type, (uint8_t *)rbuf.ptr, n);
+    else
+        r = Handle_teamshot(type - DEBRIS_TYPES, (uint8_t *)rbuf.ptr, n);
     rbuf.ptr += n * 2;
 
     return (r == -1) ? -1 : 1;
