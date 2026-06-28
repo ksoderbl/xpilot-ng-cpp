@@ -103,6 +103,7 @@ void Paint_vdecor(void)
             Gui_paint_decor(vdecor.x, vdecor.y,
                             vdecor.xi, vdecor.yi,
                             vdecor.type, last, more_y);
+            i++;
         }
         clMap.vdecors.clear();
     }
