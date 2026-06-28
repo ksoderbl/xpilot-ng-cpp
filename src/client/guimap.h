@@ -54,6 +54,6 @@ void Gui_paint_setup_treasure(int x, int y, int team, bool own);
 void Gui_paint_walls(int x, int y, int type);
 void Gui_paint_filled_slice(int bl, int tl, int tr, int br, int y);
 
-void Gui_paint_polygon(int i, int xoff, int yoff);
+void Gui_paint_polygon(const xp_polygon_t &polygon, int i, int xoff, int yoff);
 
 void Store_guimap_options(void);

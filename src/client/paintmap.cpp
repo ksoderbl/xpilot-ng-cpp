@@ -88,15 +88,18 @@ void Paint_vbase(void)
 
 void Paint_vdecor(void)
 {
-    int i;
-    bool last, more_y;
+    int i = 0;
+    bool last, more_y = false;
 
     if (clMap.vdecors.size() > 0)
     {
         for (const auto &vdecor : clMap.vdecors)
         {
             last = (i + 1 == clMap.vdecors.size());
-            more_y = (vdecor.yi != clMap.vdecors[i + 1].yi);
+            // warn("i = %d, last = %d", i, last);
+            // Commented this out because it accesses vdecor beyond the last element.
+            // more_y = (vdecor_ptr[i].yi != vdecor_ptr[i + 1].yi); <- old code with C array
+            // more_y = (vdecor.yi != clMap.vdecors[i + 1].yi);
             Gui_paint_decor(vdecor.x, vdecor.y,
                             vdecor.xi, vdecor.yi,
                             vdecor.type, last, more_y);
@@ -166,20 +169,21 @@ static void Compute_bounds(ipos_t *min, ipos_t *max, const irec_t *b)
 
 void Paint_objects(void)
 {
-    int i, xoff, yoff;
+    int i = 0, xoff, yoff;
     ipos_t min, max;
 
-    for (i = 0; i < num_polygons; i++)
+    for (const auto &polygon : clMap.polygons)
     {
-        Compute_bounds(&min, &max, &polygons[i].bounds);
+        Compute_bounds(&min, &max, &polygon.bounds);
 
         for (xoff = min.x; xoff <= max.x; xoff++)
         {
             for (yoff = min.y; yoff <= max.y; yoff++)
             {
-                Gui_paint_polygon(i, xoff, yoff);
+                Gui_paint_polygon(polygon, i, xoff, yoff);
             }
         }
+        i++;
     }
 
     for (const auto &fs : clMap.fuels)

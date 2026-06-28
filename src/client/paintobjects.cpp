@@ -188,34 +188,34 @@ static void Paint_mines(void)
     }
 }
 
+static inline int Debris_color(int color)
+{
+    return ((num_spark_colors > 4) ? ((((color & 1) << 2) | (color >> 1))) : (color));
+}
+
 static void Paint_debris(int x_areas, int y_areas, int areas, int max_)
 {
     int color, i, j, x, y;
 
-#if 0
-/* before "sparkColors" option: */
-#define DEBRIS_COLOR(color) \
-    ((num_spark_colors > 4) ? (5 + (((color & 1) << 2) | (color >> 1))) : ((num_spark_colors >= 3) ? (5 + color) : (color)))
-#else
-/* adjusted for "sparkColors" option: */
-#define DEBRIS_COLOR(color) \
-    ((num_spark_colors > 4) ? ((((color & 1) << 2) | (color >> 1))) : (color))
-#endif
-
-    for (i = 0; i < max_; i++)
+    for (int i = 0; i < max_; i++)
     {
-        if (num_debris[i] > 0)
+        auto &debrisList = clMap.debrisTypes[i];
+
+        if (debrisList.empty())
+            continue;
+
+        const int x = BASE_X(i);
+        const int y = BASE_Y(i);
+        const int color = Debris_color(COLOR(i));
+
+        for (const debris_t &debris : debrisList)
         {
-            x = BASE_X(i);
-            y = BASE_Y(i);
-            color = COLOR(i);
-            color = DEBRIS_COLOR(color);
-            for (j = 0; j < num_debris[i]; j++)
-                Gui_paint_spark(color,
-                                x + debris_ptr[i][j].x,
-                                y - debris_ptr[i][j].y);
-            RELEASE(debris_ptr[i], num_debris[i], max_debris[i]);
+            Gui_paint_spark(color,
+                            x + debris.x,
+                            y - debris.y);
         }
+
+        debrisList.clear();
     }
 }
 
@@ -341,43 +341,45 @@ static void Paint_lasers(void)
 
 static void Paint_fastshots(int i, int x_areas, int y_areas, int areas)
 {
-    int x, y, j, color;
+    auto &fastshotList = clMap.fastshotTypes[i];
 
-    if (num_fastshot[i] > 0)
+    if (fastshotList.empty())
+        return;
+
+    const int x = BASE_X(i);
+    const int y = BASE_Y(i);
+    int color = COLOR(i);
+
+    if (color != WHITE && color != BLUE)
+        color = WHITE;
+
+    for (const fastshot_t &fastshot : fastshotList)
     {
-        x = BASE_X(i);
-        y = BASE_Y(i);
-        color = COLOR(i);
-        if (color != WHITE && color != BLUE)
-            color = WHITE;
-        for (j = 0; j < num_fastshot[i]; j++)
-            Gui_paint_fastshot(color,
-                               x + fastshot_ptr[i][j].x,
-                               y - fastshot_ptr[i][j].y);
-        RELEASE(fastshot_ptr[i], num_fastshot[i], max_fastshot[i]);
+        Gui_paint_fastshot(color,
+                           x + fastshot.x,
+                           y - fastshot.y);
     }
+
+    fastshotList.clear();
 }
 
-static void Paint_teamshots(int i, int t_, int x_areas, int y_areas, int areas)
+static void Paint_teamshots(int i, int x_areas, int y_areas, int areas)
 {
-    int x, y, j /*, color */;
+    auto &teamshotList = clMap.teamshotTypes[i];
 
-    (void)areas;
-    /*
-     * Teamshots are in range DEBRIS_TYPES to DEBRIS_TYPES*2-1 in fastshot.
-     */
-    /* IFWINDOWS( Trace("t_=%d\n", t_) );*/
-    if (num_fastshot[t_] > 0)
+    if (teamshotList.empty())
+        return;
+
+    const int x = BASE_X(i);
+    const int y = BASE_Y(i);
+
+    for (const teamshot_t &teamshot : teamshotList)
     {
-
-        x = BASE_X(i);
-        y = BASE_Y(i);
-        /*color = COLOR(i);*/
-        for (j = 0; j < num_fastshot[t_]; j++)
-            Gui_paint_teamshot(x + fastshot_ptr[t_][j].x,
-                               y - fastshot_ptr[t_][j].y);
-        RELEASE(fastshot_ptr[t_], num_fastshot[t_], max_fastshot[t_]);
+        Gui_paint_teamshot(x + teamshot.x,
+                           y - teamshot.y);
     }
+
+    teamshotList.clear();
 }
 
 void Paint_shots(void)
@@ -402,9 +404,8 @@ void Paint_shots(void)
 
     for (i = 0; i < max_; i++)
     {
-        t_ = i + DEBRIS_TYPES;
         Paint_fastshots(i, x_areas, y_areas, areas);
-        Paint_teamshots(i, t_, x_areas, y_areas, areas);
+        Paint_teamshots(i, x_areas, y_areas, areas);
     }
 
     Paint_missiles();

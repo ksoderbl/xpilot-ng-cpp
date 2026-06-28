@@ -712,6 +712,7 @@ int Handle_ship(int x, int y, int id, int dir, int shield, int cloak,
 int Handle_mine(int x, int y, int teammine, int id);
 int Handle_item(int x, int y, int type);
 int Handle_fastshot(int type, uint8_t *p, int n);
+int Handle_teamshot(int type, uint8_t *p, int n);
 int Handle_debris(int type, uint8_t *p, int n);
 int Handle_wreckage(int x, int y, int wrecktype, int size, int rotation);
 int Handle_asteroid(int x, int y, int type, int size, int rotation);
@@ -786,11 +787,6 @@ extern void xpilotShutdown(void);
  * mapdata.c
  */
 extern int Mapdata_setup(const char *);
-
-/*
- * metaclient.c
- */
-extern int metaclient(int, char **);
 
 /*
  * paintdata.c

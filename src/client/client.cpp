@@ -23,6 +23,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <array>
+#include <vector>
+#include <cstring>
+#include <new>
+
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -183,77 +188,6 @@ int clientPortEnd = 0;   /* Last one (these are for firewalls) */
 
 int lose_item;        /* index for dropping owned item */
 int lose_item_active; /* one of the lose keys is pressed */
-
-// static double teamscores[MAX_TEAMS];
-// static cannontime_t *cannons = NULL;
-// static int num_cannons = 0;
-// static target_t *targets = NULL;
-// static int num_targets = 0;
-
-// // TODO: put all these in std::vectors
-// fuelstation_t *fuels = NULL;
-// int num_fuels = 0;
-// homebase_t *bases = NULL;
-// int num_bases = 0;
-// checkpoint_t *checks = NULL;
-// int num_checks = 0;
-// xp_polygon_t *polygons = NULL;
-// int num_polygons = 0;
-// edge_style_t *edge_styles = NULL;
-// int num_edge_styles = 0;
-// polygon_style_t *polygon_styles = NULL;
-// int num_polygon_styles = 0;
-
-// score_object_t score_objects[MAX_SCORE_OBJECTS];
-// int score_object = 0;
-// other_t *Others = NULL;
-// int num_others = 0, max_others = 0;
-// refuel_t *refuel_ptr;
-// int num_refuel, max_refuel;
-// connector_t *connector_ptr;
-// int num_connector, max_connector;
-// laser_t *laser_ptr;
-// int num_laser, max_laser;
-// missile_t *missile_ptr;
-// int num_missile, max_missile;
-// ball_t *ball_ptr;
-// int num_ball, max_ball;
-// ship_t *ship_ptr;
-// int num_ship, max_ship;
-// mine_t *mine_ptr;
-// int num_mine, max_mine;
-// itemtype_t *itemtype_ptr;
-// int num_itemtype, max_itemtype;
-// ecm_t *ecm_ptr;
-// int num_ecm, max_ecm;
-// trans_t *trans_ptr;
-// int num_trans, max_trans;
-// paused_t *paused_ptr;
-// int num_paused, max_paused;
-// appearing_t *appearing_ptr;
-// int num_appearing, max_appearing;
-// radar_t *radar_ptr;
-// int num_radar, max_radar;
-// vcannon_t *vcannon_ptr;
-// int num_vcannon, max_vcannon;
-// vfuel_t *vfuel_ptr;
-// int num_vfuel, max_vfuel;
-// vbase_t *vbase_ptr;
-// int num_vbase, max_vbase;
-// debris_t *debris_ptr[DEBRIS_TYPES];
-// int num_debris[DEBRIS_TYPES],
-// 	max_debris[DEBRIS_TYPES];
-// debris_t *fastshot_ptr[DEBRIS_TYPES * 2];
-// int num_fastshot[DEBRIS_TYPES * 2],
-// 	max_fastshot[DEBRIS_TYPES * 2];
-// vdecor_t *vdecor_ptr;
-// int num_vdecor, max_vdecor;
-// wreckage_t *wreckage_ptr;
-// int num_wreckage, max_wreckage;
-// asteroid_t *asteroid_ptr;
-// int num_asteroids, max_asteroids;
-// wormhole_t *wormhole_ptr;
-// int num_wormholes, max_wormholes;
 
 int num_playing_teams = 0;
 long time_left = -1;
@@ -941,19 +875,20 @@ static int init_polymap(void)
 
     parse_styles(&ptr);
 
-    num_polygons = get_ushort(&ptr);
-    polygons = XMALLOC(xp_polygon_t, num_polygons);
-    if (polygons == NULL)
-    {
-        error("no memory for polygons");
-        exit(1);
-    }
+    int num_polygons = get_ushort(&ptr);
+    // polygons = XMALLOC(xp_polygon_t, num_polygons);
+    // if (polygons == NULL)
+    // {
+    //     error("no memory for polygons");
+    //     exit(1);
+    // }
+    warn("init_polymap: num_polygons: %d", num_polygons);
+    clMap.polygons.resize(num_polygons);
 
-    for (i = 0; i < num_polygons; i++)
+    for (auto &poly : clMap.polygons)
     {
-        poly = &polygons[i];
-        poly->style = *ptr++ & 0xff;
-        current_estyle = polygon_styles[poly->style].def_edge_style;
+        poly.style = *ptr++ & 0xff;
+        current_estyle = polygon_styles[poly.style].def_edge_style;
         dx = 0;
         dy = 0;
         ecount = get_ushort(&ptr);
@@ -1021,13 +956,13 @@ static int init_polymap(void)
             if (styles)
                 styles[j] = current_estyle;
         }
-        poly->points = points;
-        poly->edge_styles = styles;
-        poly->num_points = pc;
-        poly->bounds.x = min.x;
-        poly->bounds.y = min.y;
-        poly->bounds.w = max.x - min.x;
-        poly->bounds.h = max.y - min.y;
+        poly.points = points;
+        poly.edge_styles = styles;
+        poly.num_points = pc;
+        poly.bounds.x = min.x;
+        poly.bounds.y = min.y;
+        poly.bounds.w = max.x - min.x;
+        poly.bounds.h = max.y - min.y;
     }
     int num_bases = *ptr++ & 0xff;
     for (i = 0; i < num_bases; i++)
@@ -1449,12 +1384,7 @@ int Handle_score(int id, double score, int life, int mychar, int alliance)
 
 int Handle_team_score(int team, double score)
 {
-    if (teamscores[team] != score)
-    {
-        teamscores[team] = score;
-        scoresChanged = true;
-    }
-
+    warn("Handle_team_score: team: %d, score: %f", team, score);
     return 0;
 }
 
@@ -1543,8 +1473,10 @@ int Handle_start(long server_loops)
     clMap.vfuels.clear();
     clMap.vbases.clear();
     clMap.vdecors.clear();
-    for (i = 0; i < DEBRIS_TYPES; i++)
-        num_debris[i] = 0;
+    // for (i = 0; i < DEBRIS_TYPES; i++)
+    //     num_debris[i] = 0;
+    for (auto &debrisList : clMap.debrisTypes)
+        debrisList.clear();
 
     damaged = 0;
     destruct = 0;
@@ -1869,54 +1801,95 @@ int Handle_item(int x, int y, int type)
     return 0;
 }
 
-#define STORE_DEBRIS(typ_e, _p, _n)                               \
-    if (_n > max_)                                                \
-    {                                                             \
-        if (max_ == 0)                                            \
-        {                                                         \
-            ptr_ = (debris_t *)malloc(n * sizeof(*ptr_));         \
-        }                                                         \
-        else                                                      \
-        {                                                         \
-            ptr_ = (debris_t *)realloc(ptr_, _n * sizeof(*ptr_)); \
-        }                                                         \
-        if (ptr_ == NULL)                                         \
-        {                                                         \
-            error("No memory for debris");                        \
-            num_ = max_ = 0;                                      \
-            return -1;                                            \
-        }                                                         \
-        max_ = _n;                                                \
-    }                                                             \
-    else if (_n <= 0)                                             \
-    {                                                             \
-        printf("debris %d < 0\n", _n);                            \
-        return 0;                                                 \
-    }                                                             \
-    num_ = _n;                                                    \
-    memcpy(ptr_, _p, _n * sizeof(*ptr_));                         \
+template <typename ShotT, std::size_t N>
+static int Handle_shot_vector(std::array<std::vector<ShotT>, N> &shotTypes,
+                              int type,
+                              uint8_t *p,
+                              int n,
+                              const char *name)
+{
+    if (type < 0 || type >= static_cast<int>(N))
+    {
+        error("Invalid %s type %d", name, type);
+        return -1;
+    }
+
+    auto &shotList = shotTypes[static_cast<std::size_t>(type)];
+
+    if (n <= 0)
+    {
+        if (n < 0)
+            printf("%s %d < 0\n", name, n);
+
+        shotList.clear();
+        return 0;
+    }
+
+    try
+    {
+        shotList.resize(static_cast<std::size_t>(n));
+    }
+    catch (const std::bad_alloc &)
+    {
+        error("No memory for %s", name);
+        shotList.clear();
+        return -1;
+    }
+
+    std::memcpy(shotList.data(),
+                p,
+                static_cast<std::size_t>(n) * sizeof(ShotT));
+
     return 0;
+}
 
 int Handle_fastshot(int type, uint8_t *p, int n)
 {
-#define num_ (num_fastshot[type])
-#define max_ (max_fastshot[type])
-#define ptr_ (fastshot_ptr[type])
-    STORE_DEBRIS(type, p, n);
-#undef num_
-#undef max_
-#undef ptr_
+    // warn("Handle_fastshot: type %d, n %d", type, n);
+    return Handle_shot_vector(clMap.fastshotTypes, type, p, n, "fastshot");
+}
+
+int Handle_teamshot(int type, uint8_t *p, int n)
+{
+    // warn("Handle_teamshot: type %d, n %d", type, n);
+    return Handle_shot_vector(clMap.teamshotTypes, type, p, n, "teamshot");
 }
 
 int Handle_debris(int type, uint8_t *p, int n)
 {
-#define num_ (num_debris[type])
-#define max_ (max_debris[type])
-#define ptr_ (debris_ptr[type])
-    STORE_DEBRIS(type, p, n);
-#undef num_
-#undef max_
-#undef ptr_
+    // warn("Handle_debris: type %d, n %d", type, n);
+
+    if (type < 0 || type >= static_cast<int>(DEBRIS_TYPES))
+    {
+        error("Invalid debris type %d", type);
+        return -1;
+    }
+
+    if (n <= 0)
+    {
+        if (n < 0)
+            printf("debris %d < 0\n", n);
+
+        clMap.debrisTypes[type].clear();
+        return 0;
+    }
+
+    auto &debrisList = clMap.debrisTypes[type];
+
+    try
+    {
+        debrisList.resize(static_cast<std::size_t>(n));
+    }
+    catch (const std::bad_alloc &)
+    {
+        error("No memory for debris");
+        debrisList.clear();
+        return -1;
+    }
+
+    std::memcpy(debrisList.data(), p, static_cast<std::size_t>(n) * sizeof(debris_t));
+
+    return 0;
 }
 
 int Handle_wreckage(int x, int y, int wrecktype, int size, int rotation)
@@ -1959,7 +1932,12 @@ int Handle_polystyle(int polyind, int newstyle)
 {
     xp_polygon_t *poly;
 
-    poly = &polygons[polyind];
+    if (polyind < 0 || polyind > clMap.polygons.size())
+    {
+        return -1;
+    }
+
+    poly = &clMap.polygons[polyind];
     poly->style = newstyle;
     /*warn("polygon %d style set to %d", polyind, newstyle);*/
     UpdateRadar = true;

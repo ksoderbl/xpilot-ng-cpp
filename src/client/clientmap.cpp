@@ -25,28 +25,16 @@
 
 #include "clientmap.h"
 
-#include <cstddef>
-
 ClientMap clMap;
 
-double teamscores[MAX_TEAMS];
-
-checkpoint_t *checks = NULL;
+checkpoint_t *checks = nullptr;
 int num_checks = 0;
-xp_polygon_t *polygons = NULL;
-int num_polygons = 0;
-edge_style_t *edge_styles = NULL;
+edge_style_t *edge_styles = nullptr;
 int num_edge_styles = 0;
-polygon_style_t *polygon_styles = NULL;
+polygon_style_t *polygon_styles = nullptr;
 int num_polygon_styles = 0;
 
 score_object_t score_objects[MAX_SCORE_OBJECTS];
 int score_object = 0;
-other_t *Others = NULL;
+other_t *Others = nullptr;
 int num_others = 0, max_others = 0;
-debris_t *debris_ptr[DEBRIS_TYPES];
-int num_debris[DEBRIS_TYPES],
-    max_debris[DEBRIS_TYPES];
-debris_t *fastshot_ptr[DEBRIS_TYPES * 2];
-int num_fastshot[DEBRIS_TYPES * 2],
-    max_fastshot[DEBRIS_TYPES * 2];

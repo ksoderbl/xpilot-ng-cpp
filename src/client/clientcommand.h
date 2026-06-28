@@ -23,10 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CLIENTCOMMAND_H
-#define CLIENTCOMMAND_H 1
+#pragma once
 
 void executeCommand(const char *talk_str);
 void crippleTalk(char *msg);
-
-#endif

@@ -26,6 +26,7 @@
 #pragma once
 
 #include <vector>
+#include <array>
 
 #include "const.h"
 #include "shipshape.h"
@@ -224,6 +225,16 @@ typedef struct
 
 typedef struct
 {
+    uint8_t x, y;
+} fastshot_t;
+
+typedef struct
+{
+    uint8_t x, y;
+} teamshot_t;
+
+typedef struct
+{
     short x, y, xi, yi, type;
 } vdecor_t;
 
@@ -261,8 +272,6 @@ typedef struct
 
 /* mapdata accessible to outside world */
 
-extern double teamscores[MAX_TEAMS];
-
 class ClientMap
 {
 public:
@@ -291,14 +300,21 @@ public:
     std::vector<wreckage_t> wreckages;
     std::vector<asteroid_t> asteroids;
     std::vector<wormhole_t> wormholes;
+
+    // array with DEBRIS_TYPE number of vectors containing debris_t
+    std::array<std::vector<debris_t>, DEBRIS_TYPES> debrisTypes;
+    std::array<std::vector<fastshot_t>, DEBRIS_TYPES> fastshotTypes;
+    std::array<std::vector<teamshot_t>, DEBRIS_TYPES> teamshotTypes;
+
+    std::vector<xp_polygon_t> polygons;
 };
 
 extern ClientMap clMap;
 
 extern checkpoint_t *checks;
 extern int num_checks;
-extern xp_polygon_t *polygons;
-extern int num_polygons, max_polygons;
+// extern xp_polygon_t *polygons;
+// extern int num_polygons, max_polygons;
 extern edge_style_t *edge_styles;
 extern int num_edge_styles, max_edge_styles;
 extern polygon_style_t *polygon_styles;
@@ -340,12 +356,12 @@ extern int num_others, max_others;
 // extern int num_vfuel, max_vfuel;
 // extern vbase_t *vbase_ptr;
 // extern int num_vbase, max_vbase;
-extern debris_t *debris_ptr[DEBRIS_TYPES];
-extern int num_debris[DEBRIS_TYPES],
-    max_debris[DEBRIS_TYPES];
-extern debris_t *fastshot_ptr[DEBRIS_TYPES * 2];
-extern int num_fastshot[DEBRIS_TYPES * 2],
-    max_fastshot[DEBRIS_TYPES * 2];
+// extern debris_t *debris_ptr[DEBRIS_TYPES];
+// extern int num_debris[DEBRIS_TYPES],
+//     max_debris[DEBRIS_TYPES];
+// extern debris_t *fastshot_ptr[DEBRIS_TYPES * 2];
+// extern int num_fastshot[DEBRIS_TYPES * 2],
+//     max_fastshot[DEBRIS_TYPES * 2];
 // extern vdecor_t *vdecor_ptr;
 // extern int num_vdecor, max_vdecor;
 // extern wreckage_t *wreckage_ptr;

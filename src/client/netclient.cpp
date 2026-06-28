@@ -1944,6 +1944,9 @@ int Receive_fastshot(void)
     n = (*rbuf.ptr++ & 0xFF);
     if (rbuf.ptr - rbuf.buf + (n * 2) > rbuf.len)
         return 0;
+    /*
+     * Teamshots are in range DEBRIS_TYPES to DEBRIS_TYPES*2-1 in fastshot.
+     */
     r = Handle_fastshot(type, (uint8_t *)rbuf.ptr, n);
     rbuf.ptr += n * 2;
 
