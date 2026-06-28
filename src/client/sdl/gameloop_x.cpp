@@ -26,17 +26,25 @@
 
 #include <SDL2/SDL.h>
 
+#ifdef HAVE_X11
 #include <X11/Xlib.h>
+#include <SDL2/SDL_syswm.h>
+#endif
+
+#include "xperror.h"
+
+#include "client.h"
+#include "netclient.h"
 
 extern int Process_event(SDL_Event *evt);
 
 static int Poll_input(void)
 {
-	SDL_Event evt;
-	while (SDL_PollEvent(&evt))
-		if (Process_event(&evt) == 0)
-			return 1;
-	return 0;
+    SDL_Event evt;
+    while (SDL_PollEvent(&evt))
+        if (Process_event(&evt) == 0)
+            return 1;
+    return 0;
 }
 
 /*
@@ -46,108 +54,146 @@ static int Poll_input(void)
  */
 void Game_loop(void)
 {
-	fd_set rfds, tfds;
-	int max, n, netfd, result, clientfd;
-	struct timeval tv;
-	SDL_SysWMinfo info;
+    fd_set rfds, tfds;
+    int max, n, netfd, result;
 
-	SDL_VERSION(&info.version);
-	if (!SDL_GetWMInfo(&info))
-	{
-		error("SDL_GetWMInfo not supported");
-		return;
-	}
+#ifdef HAVE_X11
+    int clientfd;
+    struct timeval tv;
+    SDL_SysWMinfo info;
 
-	if ((result = Net_input()) == -1)
-	{
-		error("Bad server input");
-		return;
-	}
-	if (Poll_input())
-		return;
+    SDL_VERSION(&info.version);
 
-	if (Net_flush() == -1)
-		return;
+    /* SDL2: SDL_GetWMInfo() -> SDL_GetWindowWMInfo(window, &info)
+     * We need an SDL_Window* for this. Use the globally created window.
+     */
+    extern SDL_Window *gWindow;
 
-	if ((clientfd = ConnectionNumber(info.info.x11.display)) == -1)
-	{
-		error("Bad client filedescriptor");
-		return;
-	}
-	if ((netfd = Net_fd()) == -1)
-	{
-		error("Bad socket filedescriptor");
-		return;
-	}
-	Net_key_change();
-	FD_ZERO(&rfds);
-	FD_SET(clientfd, &rfds);
-	FD_SET(netfd, &rfds);
-	max = (clientfd > netfd) ? clientfd : netfd;
-	for (tfds = rfds;; rfds = tfds)
-	{
+    if (!gWindow)
+    {
+        error("No SDL window available for WM info");
+        return;
+    }
 
-		tv.tv_sec = 1;
-		tv.tv_usec = 0;
+    if (SDL_GetWindowWMInfo(gWindow, &info) != SDL_TRUE)
+    {
+        error("SDL_GetWindowWMInfo not supported: %s", SDL_GetError());
+        return;
+    }
+#endif
 
-		if (maxMouseTurnsPS > 0)
-		{
-			int t = Client_check_pointer_move_interval();
+    if ((result = Net_input()) == -1)
+    {
+        error("Bad server input");
+        return;
+    }
+    if (Poll_input())
+        return;
 
-			assert(t > 0);
-			tv.tv_sec = t / 1000000;
-			tv.tv_usec = t % 1000000;
-		}
+    if (Net_flush() == -1)
+        return;
 
-		if ((n = select(max + 1, &rfds, NULL, NULL, &tv)) == -1)
-		{
-			if (errno == EINTR)
-				continue;
-			error("Select failed");
-			return;
-		}
+#ifdef HAVE_X11
+    if ((clientfd = ConnectionNumber(info.info.x11.display)) == -1)
+    {
+        error("Bad client filedescriptor");
+        return;
+    }
+#endif
 
-		if (n == 0)
-		{
-			if (maxMouseTurnsPS > 0 &&
-				cumulativeMouseMovement != 0)
-				continue;
+    if ((netfd = Net_fd()) == -1)
+    {
+        error("Bad socket filedescriptor");
+        return;
+    }
 
-			if (result <= 1)
-			{
-				warn("No response from server");
-				continue;
-			}
-		}
-		if (FD_ISSET(clientfd, &rfds))
-		{
-			if (Poll_input())
-				return;
-			if (Net_flush() == -1)
-			{
-				error("Bad net flush after input");
-				return;
-			}
-		}
-		if (FD_ISSET(netfd, &rfds) || result > 1)
-		{
-			if ((result = Net_input()) == -1)
-			{
-				warn("Bad net input.  Have a nice day!");
-				return;
-			}
-			if (result > 0)
-			{
-				if (Poll_input())
-					return;
-				if (Net_flush() == -1)
-				{
-					error("Bad net flush");
-					return;
-				}
-				if (Poll_input())
-					return;
-			}
-		}
-	}
+    Net_key_change();
+
+    FD_ZERO(&rfds);
+
+#ifdef HAVE_X11
+    FD_SET(clientfd, &rfds);
+#endif
+    FD_SET(netfd, &rfds);
+
+#ifdef HAVE_X11
+    max = (clientfd > netfd) ? clientfd : netfd;
+#else
+    max = netfd;
+#endif
+
+    for (tfds = rfds;; rfds = tfds)
+    {
+        struct timeval tv_local;
+        tv_local.tv_sec = 1;
+        tv_local.tv_usec = 0;
+
+        if (maxMouseTurnsPS > 0)
+        {
+            int t = Client_check_pointer_move_interval();
+
+            assert(t > 0);
+            tv_local.tv_sec = t / 1000000;
+            tv_local.tv_usec = t % 1000000;
+        }
+
+        if ((n = select(max + 1, &rfds, NULL, NULL, &tv_local)) == -1)
+        {
+            if (errno == EINTR)
+                continue;
+            error("Select failed");
+            return;
+        }
+
+        if (n == 0)
+        {
+            if (maxMouseTurnsPS > 0 &&
+                cumulativeMouseMovement != 0)
+                continue;
+
+            if (result <= 1)
+            {
+                warn("No response from server");
+                continue;
+            }
+        }
+
+#ifdef HAVE_X11
+        if (FD_ISSET(clientfd, &rfds))
+        {
+            if (Poll_input())
+                return;
+            if (Net_flush() == -1)
+            {
+                error("Bad net flush after input");
+                return;
+            }
+        }
+#else
+        /* Non-X11 build: still poll SDL events regularly */
+        if (Poll_input())
+            return;
+#endif
+
+        if (FD_ISSET(netfd, &rfds) || result > 1)
+        {
+            if ((result = Net_input()) == -1)
+            {
+                warn("Bad net input.  Have a nice day!");
+                return;
+            }
+            if (result > 0)
+            {
+                if (Poll_input())
+                    return;
+                if (Net_flush() == -1)
+                {
+                    error("Bad net flush");
+                    return;
+                }
+                if (Poll_input())
+                    return;
+            }
+        }
+    }
 }

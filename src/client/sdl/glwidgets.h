@@ -18,14 +18,17 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef GLWIDGETS_H
-#define GLWIDGETS_H
+#pragma once
+
+#include <SDL2/SDL.h>
 
 #include "sdlkeys.h"
 #include "text.h"
 
+#include "option.h"
+
 /****************************************************/
-/* BEGIN: Main GLWidget stuff	    	    	    */
+/* BEGIN: Main GLWidget stuff                        */
 /****************************************************/
 /* Basically the init function will set default width, height in bounds
  * Then the caller should reshape and position the widget defaults to 0,0
@@ -95,13 +98,13 @@ extern GLWidget *clicktarget[NUM_MOUSE_BUTTONS];
 extern GLWidget *hovertarget;
 
 /* puts text into the copy buffer */
-void load_textscrap(char *text);
+void load_textscrap(const std::string &text);
 /****************************************************/
-/* END: Main GLWidget stuff 	    	    	    */
+/* END: Main GLWidget stuff                         */
 /****************************************************/
 
 /****************************************************/
-/* widget-specific stuff is below   	    	    */
+/* widget-specific stuff is below                   */
 /****************************************************/
 
 /***********************/
@@ -556,5 +559,3 @@ GLWidget *Init_LabelButtonWidget(const char *text,
 /**************************/
 /* End: LabelButtonWidget */
 /**************************/
-
-#endif

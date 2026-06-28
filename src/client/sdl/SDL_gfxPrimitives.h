@@ -9,6 +9,8 @@
 #ifndef _SDL_gfxPrimitives_h
 #define _SDL_gfxPrimitives_h
 
+#include <SDL2/SDL.h>
+
 #ifndef M_PI
 #define M_PI 3.141592654
 #endif

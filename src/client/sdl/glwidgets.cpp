@@ -18,14 +18,24 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "const.h"
+#include "rules.h"
+
+#include "netclient.h"
+#include "paint.h"
+
 #include "sdlpaint.h"
 #include "images.h"
 #include "text.h"
 #include "glwidgets.h"
-#include "scrap.h"
 
 /****************************************************/
-/* BEGIN: Main GLWidget stuff	    	    	    */
+/* BEGIN: Main GLWidget stuff                        */
 /****************************************************/
 
 static void option_callback(void *opt, const char *value);
@@ -38,7 +48,7 @@ static GLWidget *scraptarget = NULL;
 
 GLWidget *Init_EmptyBaseGLWidget(void)
 {
-    GLWidget *tmp = XMALLOC(GLWidget, 1);
+    GLWidget *tmp = new GLWidget();
     if (!tmp)
         return NULL;
     tmp->WIDGET = -1;
@@ -81,7 +91,7 @@ static void clear_eventTarget(GLWidget *widget)
         scraptarget = NULL;
 }
 
-/* only supposed to take care of mallocs done on behalf of the
+/* only supposed to take care of deletes done on behalf of the
  * appropriate Init_<foo> function
  */
 static void Close_WidgetTree(GLWidget **widget)
@@ -99,9 +109,7 @@ static void Close_WidgetTree(GLWidget **widget)
 
     clear_eventTarget(*widget);
 
-    if ((*widget)->wid_info)
-        free((*widget)->wid_info);
-    free(*widget);
+    delete *widget;
     *widget = NULL;
 }
 
@@ -129,7 +137,7 @@ void Close_Widget(GLWidget **widget)
 
     tmp = *widget;
     *widget = (*widget)->next;
-    free(tmp);
+    delete tmp;
 }
 
 /* IMPORTANT: compound widgets need to edit this function */
@@ -180,7 +188,7 @@ static void hover_optionWidget(int over, Uint16 x, Uint16 y, void *data)
 
         if ((help = Option_get_help(opt)))
         {
-            if (!(hoverWidget = Init_ListWidget(x, y, &nullRGBA, &nullRGBA, &nullRGBA, DOWN, LEFT, VERTICAL, false)))
+            if (!(hoverWidget = Init_ListWidget(x, y, &nullRGBA, &nullRGBA, &nullRGBA, LW_DOWN, LW_LEFT, VERTICAL, false)))
             {
                 error("hover_optionWidget: Failed to create ListWidget\n");
                 return;
@@ -491,26 +499,34 @@ GLWidget *FindGLWidget(GLWidget *list, Uint16 x, Uint16 y)
     return FindGLWidgeti(list, x, y);
 }
 
-void load_textscrap(char *text)
+void load_textscrap(const std::string &text)
 {
     char *cp;
     int i;
 
-    if (!text)
+    if (text.empty())
         return;
 
     scraptarget = NULL;
-    scrap = realloc(scrap, strlen(text) + 1);
-    strcpy(scrap, text);
-    for (cp = scrap, i = 0; i < (int)strlen(scrap); ++cp, ++i)
+    scrap = (char *)realloc(scrap, text.size() + 1);
+    if (!scrap)
+    {
+        error("load_textscrap: out of memory");
+        return;
+    }
+
+    strcpy(scrap, text.c_str());
+    for (cp = scrap, i = 0; i < (int)text.size(); ++cp, ++i)
     {
         if (*cp == '\n')
             *cp = '\r';
     }
-    put_scrap(TextScrap('T', 'E', 'X', 'T'), strlen(scrap), scrap);
+
+    if (SDL_SetClipboardText(scrap) != 0)
+        error("SDL_SetClipboardText failed: %s", SDL_GetError());
 }
 /****************************************************/
-/* END: Main GLWidget stuff 	    	    	    */
+/* END: Main GLWidget stuff                         */
 /****************************************************/
 
 /**********************/
@@ -629,10 +645,10 @@ GLWidget *Init_ArrowWidget(ArrowWidget_dir_t direction, int width, int height,
         error("Failed to malloc in Init_ArrowWidget");
         return NULL;
     }
-    tmp->wid_info = malloc(sizeof(ArrowWidget));
+    tmp->wid_info = new ArrowWidget();
     if (!(tmp->wid_info))
     {
-        free(tmp);
+        delete tmp;
         error("Failed to malloc in Init_ArrowWidget");
         return NULL;
     }
@@ -731,10 +747,10 @@ GLWidget *Init_ButtonWidget(Uint32 *normal_color, Uint32 *pressed_color, Uint8 d
         error("Failed to malloc in Init_ButtonWidget");
         return NULL;
     }
-    tmp->wid_info = malloc(sizeof(ButtonWidget));
+    tmp->wid_info = new ButtonWidget();
     if (!(tmp->wid_info))
     {
-        free(tmp);
+        delete tmp;
         error("Failed to malloc in Init_ButtonWidget");
         return NULL;
     }
@@ -844,10 +860,10 @@ GLWidget *Init_SlideWidget(bool locked,
         error("Failed to malloc in Init_SlideWidget");
         return NULL;
     }
-    tmp->wid_info = malloc(sizeof(SlideWidget));
+    tmp->wid_info = new SlideWidget();
     if (!(tmp->wid_info))
     {
-        free(tmp);
+        delete tmp;
         error("Failed to malloc in Init_SlideWidget");
         return NULL;
     }
@@ -870,7 +886,6 @@ GLWidget *Init_SlideWidget(bool locked,
 
     return tmp;
 }
-
 /********************/
 /* End: SlideWidget*/
 /********************/
@@ -893,6 +908,9 @@ static void Close_ScrollbarWidget(GLWidget *widget)
         error("Wrong widget type for Close_ScrollbarWidget [%i]", widget->WIDGET);
         return;
     }
+
+    delete (ScrollbarWidget *)widget->wid_info;
+    widget->wid_info = NULL;
 }
 
 static void SetBounds_ScrollbarWidget(GLWidget *widget, SDL_Rect *b)
@@ -959,7 +977,8 @@ static void motion_ScrollbarWidget(Sint16 xrel, Sint16 yrel, Uint16 x, Uint16 y,
     GLWidget *tmp;
     ScrollbarWidget *wid_info;
     GLWidget *slide;
-    Sint16 *coord1, coord2 = 0, min, max, size, move;
+    int *coord1, coord2 = 0;
+    Sint16 min, max, size, move;
     GLfloat oldpos;
 
     if (!data)
@@ -1060,10 +1079,10 @@ GLWidget *Init_ScrollbarWidget(bool locked, GLfloat pos, GLfloat size, ScrollWid
         error("Failed to malloc in Init_ScrollbarWidget");
         return NULL;
     }
-    tmp->wid_info = malloc(sizeof(ScrollbarWidget));
+    tmp->wid_info = new ScrollbarWidget();
     if (!(tmp->wid_info))
     {
-        free(tmp);
+        delete tmp;
         error("Failed to malloc in Init_ScrollbarWidget");
         return NULL;
     }
@@ -1084,15 +1103,15 @@ GLWidget *Init_ScrollbarWidget(bool locked, GLfloat pos, GLfloat size, ScrollWid
     wid_info->poschangedata = poschangedata;
     wid_info->slide = Init_SlideWidget(locked, motion_ScrollbarWidget, tmp, release_ScrollbarWidget, tmp);
 
-    if (!(((ScrollbarWidget *)tmp->wid_info)->slide))
+    if (!(wid_info->slide))
     {
         error("Failed to make a SlideWidget for Init_ScrollbarWidget");
-        free(tmp->wid_info);
-        free(tmp);
+        delete wid_info;
+        delete tmp;
         return NULL;
     }
 
-    AppendGLWidgetList(&(tmp->children), ((ScrollbarWidget *)tmp->wid_info)->slide);
+    AppendGLWidgetList(&(tmp->children), wid_info->slide);
     return tmp;
 }
 /*************************/
@@ -1116,7 +1135,7 @@ static void button_LabelWidget(Uint8 button, Uint8 state, Uint16 x, Uint16 y, vo
     {
         if (button == 1)
         {
-            if ((tmp->tex).text)
+            if (!(tmp->tex).text.empty())
             {
                 load_textscrap((tmp->tex).text);
                 scraptarget = (GLWidget *)data;
@@ -1134,7 +1153,8 @@ static void Close_LabelWidget(GLWidget *widget)
         error("Wrong widget type for Close_LabelWidget [%i]", widget->WIDGET);
         return;
     }
-    free_string_texture(&(((LabelWidget *)widget->wid_info)->tex));
+    delete (LabelWidget *)widget->wid_info;
+    widget->wid_info = NULL;
 }
 
 bool LabelWidget_SetColor(GLWidget *widget, Uint32 *fgcolor, Uint32 *bgcolor)
@@ -1232,26 +1252,26 @@ GLWidget *Init_LabelWidget(const char *text, Uint32 *fgcolor, Uint32 *bgcolor, i
         error("Failed to malloc in Init_LabelWidget");
         return NULL;
     }
-    tmp->wid_info = malloc(sizeof(LabelWidget));
+    tmp->wid_info = new LabelWidget();
     if (!(tmp->wid_info))
     {
-        free(tmp);
+        delete tmp;
         error("Failed to malloc in Init_LabelWidget");
         return NULL;
     }
     wid_info = (LabelWidget *)tmp->wid_info;
 
-    if (!render_text(&gamefont, text, &(((LabelWidget *)tmp->wid_info)->tex)))
+    if (!render_text(&gamefont, text, &(wid_info->tex)))
     {
-        free(tmp->wid_info);
-        free(tmp);
+        delete wid_info;
+        delete tmp;
         error("Failed to render text in Init_LabelWidget");
         return NULL;
     }
 
     tmp->WIDGET = LABELWIDGET;
-    tmp->bounds.w = (((LabelWidget *)tmp->wid_info)->tex).width;
-    tmp->bounds.h = (((LabelWidget *)tmp->wid_info)->tex).height;
+    tmp->bounds.w = wid_info->tex.width;
+    tmp->bounds.h = wid_info->tex.height;
     wid_info->fgcolor = fgcolor;
     wid_info->bgcolor = bgcolor;
     wid_info->align = align;
@@ -1339,7 +1359,7 @@ GLWidget *Init_LabeledRadiobuttonWidget(string_tex_t *ontex, string_tex_t *offte
     GLWidget *tmp;
     LabeledRadiobuttonWidget *wid_info;
 
-    if (!ontex || !(ontex->tex_list) || !offtex || !(offtex->tex_list))
+    if (!ontex || ontex->tex_list.empty() || !offtex || offtex->tex_list.empty())
     {
         error("texure(s) missing for Init_LabeledRadiobuttonWidget.");
         return NULL;
@@ -1350,10 +1370,10 @@ GLWidget *Init_LabeledRadiobuttonWidget(string_tex_t *ontex, string_tex_t *offte
         error("Failed to malloc in Init_LabeledRadiobuttonWidget");
         return NULL;
     }
-    tmp->wid_info = malloc(sizeof(LabeledRadiobuttonWidget));
+    tmp->wid_info = new LabeledRadiobuttonWidget();
     if (!(tmp->wid_info))
     {
-        free(tmp);
+        delete tmp;
         error("Failed to malloc in Init_LabeledRadiobuttonWidget");
         return NULL;
     }
@@ -1402,13 +1422,14 @@ static void Close_BoolChooserWidget(GLWidget *widget)
     --num_BoolChooserWidget;
     if (!num_BoolChooserWidget)
     {
-        free_string_texture(BoolChooserWidget_ontex);
-        free(BoolChooserWidget_ontex);
+        delete BoolChooserWidget_ontex;
         BoolChooserWidget_ontex = NULL;
-        free_string_texture(BoolChooserWidget_offtex);
-        free(BoolChooserWidget_offtex);
+        delete BoolChooserWidget_offtex;
         BoolChooserWidget_offtex = NULL;
     }
+
+    delete (BoolChooserWidget *)widget->wid_info;
+    widget->wid_info = NULL;
 }
 
 static void SetBounds_BoolChooserWidget(GLWidget *widget, SDL_Rect *b)
@@ -1533,36 +1554,41 @@ GLWidget *Init_BoolChooserWidget(const char *name, bool *value, Uint32 *fgcolor,
 
     if (!BoolChooserWidget_ontex)
     {
-        if ((BoolChooserWidget_ontex = XMALLOC(string_tex_t, 1)))
-        {
-            if (!(BoolChooserWidget_offtex = XMALLOC(string_tex_t, 1)))
-            {
-                XFREE(BoolChooserWidget_ontex);
-                error("Failed to malloc BoolChooserWidget_offtex in Init_BoolChooserWidget");
-                return NULL;
-            }
-        }
-        else
+        BoolChooserWidget_ontex = new string_tex_t();
+        if (!BoolChooserWidget_ontex)
         {
             error("Failed to malloc BoolChooserWidget_ontex in Init_BoolChooserWidget");
             return NULL;
         }
+
+        BoolChooserWidget_offtex = new string_tex_t();
+        if (!BoolChooserWidget_offtex)
+        {
+            delete BoolChooserWidget_ontex;
+            BoolChooserWidget_ontex = NULL;
+            error("Failed to malloc BoolChooserWidget_offtex in Init_BoolChooserWidget");
+            return NULL;
+        }
+
         if (render_text(&gamefont, "True", BoolChooserWidget_ontex))
         {
             if (!render_text(&gamefont, "False", BoolChooserWidget_offtex))
             {
                 error("Failed to render 'False' in Init_BoolChooserWidget");
-                free_string_texture(BoolChooserWidget_ontex);
-                XFREE(BoolChooserWidget_ontex);
-                XFREE(BoolChooserWidget_offtex);
+                delete BoolChooserWidget_ontex;
+                BoolChooserWidget_ontex = NULL;
+                delete BoolChooserWidget_offtex;
+                BoolChooserWidget_offtex = NULL;
                 return NULL;
             }
         }
         else
         {
             error("Failed to render 'True' in Init_BoolChooserWidget");
-            XFREE(BoolChooserWidget_ontex);
-            XFREE(BoolChooserWidget_offtex);
+            delete BoolChooserWidget_ontex;
+            BoolChooserWidget_ontex = NULL;
+            delete BoolChooserWidget_offtex;
+            BoolChooserWidget_offtex = NULL;
             return NULL;
         }
     }
@@ -1573,20 +1599,21 @@ GLWidget *Init_BoolChooserWidget(const char *name, bool *value, Uint32 *fgcolor,
         error("Failed to malloc tmp in Init_BoolChooserWidget");
         return NULL;
     }
-    tmp->wid_info = malloc(sizeof(BoolChooserWidget));
+    tmp->wid_info = new BoolChooserWidget();
     if (!(tmp->wid_info))
     {
-        free(tmp);
+        delete tmp;
         error("Failed to malloc tmp->wid_info in Init_BoolChooserWidget");
         return NULL;
     }
 
-    wid_info = (BoolChooserWidget *)(tmp->wid_info);
+    wid_info = (BoolChooserWidget *)tmp->wid_info;
 
     if (!(wid_info->name = Init_LabelWidget(name, fgcolor, &nullRGBA, LEFT, CENTER)))
     {
         error("Failed to make a LabelWidget for Init_BoolChooserWidget");
-        Close_Widget(&tmp);
+        delete wid_info;
+        delete tmp;
         return NULL;
     }
     AppendGLWidgetList(&(tmp->children), wid_info->name);
@@ -1644,7 +1671,8 @@ static void Close_IntChooserWidget(GLWidget *widget)
         return;
     }
 
-    free_string_texture(&(((IntChooserWidget *)widget->wid_info)->valuetex));
+    delete (IntChooserWidget *)widget->wid_info;
+    widget->wid_info = NULL;
 }
 
 static void SetBounds_IntChooserWidget(GLWidget *widget, SDL_Rect *b)
@@ -1851,10 +1879,10 @@ GLWidget *Init_IntChooserWidget(const char *name, int *value, int minval, int ma
         error("Failed to malloc in Init_IntChooserWidget");
         return NULL;
     }
-    tmp->wid_info = malloc(sizeof(IntChooserWidget));
+    tmp->wid_info = new IntChooserWidget();
     if (!(tmp->wid_info))
     {
-        free(tmp);
+        delete tmp;
         error("Failed to malloc in Init_IntChooserWidget");
         return NULL;
     }
@@ -1956,7 +1984,8 @@ static void Close_DoubleChooserWidget(GLWidget *widget)
         return;
     }
 
-    free_string_texture(&(((DoubleChooserWidget *)widget->wid_info)->valuetex));
+    delete (DoubleChooserWidget *)widget->wid_info;
+    widget->wid_info = NULL;
 }
 
 static void SetBounds_DoubleChooserWidget(GLWidget *widget, SDL_Rect *b)
@@ -2147,10 +2176,10 @@ GLWidget *Init_DoubleChooserWidget(const char *name, double *value, double minva
         error("Failed to malloc in Init_DoubleChooserWidget");
         return NULL;
     }
-    tmp->wid_info = XMALLOC(DoubleChooserWidget, 1);
+    tmp->wid_info = new DoubleChooserWidget();
     if (!(tmp->wid_info))
     {
-        free(tmp);
+        delete tmp;
         error("Failed to malloc in Init_DoubleChooserWidget");
         return NULL;
     }
@@ -3705,8 +3734,6 @@ extern int Console_isVisible(void);
 extern void Paste_String_to_Console(char *text);
 static void button_MainWidget(Uint8 button, Uint8 state, Uint16 x, Uint16 y, void *data)
 {
-    int scraplen;
-
     if (!data)
         return;
 
@@ -3720,11 +3747,21 @@ static void button_MainWidget(Uint8 button, Uint8 state, Uint16 x, Uint16 y, voi
         {
             if (Console_isVisible())
             {
+                char *clipboardText;
+
                 scraptarget = NULL;
-                get_scrap(TextScrap('T', 'E', 'X', 'T'), &scraplen, &scrap);
-                if (scraplen == 0)
+
+                if (!SDL_HasClipboardText())
                     return;
-                Paste_String_to_Console(scrap);
+
+                clipboardText = SDL_GetClipboardText();
+                if (!clipboardText)
+                    return;
+
+                if (clipboardText[0] != '\0')
+                    Paste_String_to_Console(clipboardText);
+
+                SDL_free(clipboardText);
             }
         }
     }
@@ -4475,11 +4512,12 @@ static void Close_ImageButtonWidget(GLWidget *widget)
         return;
     }
     info = (ImageButtonWidget *)widget->wid_info;
-    free_string_texture(&(info->tex));
     if (info->imageUp)
         glDeleteTextures(1, &(info->imageUp));
     if (info->imageDown)
         glDeleteTextures(1, &(info->imageDown));
+    delete info;
+    widget->wid_info = NULL;
 }
 
 static void Paint_ImageButtonWidget(GLWidget *widget)
@@ -4571,10 +4609,10 @@ GLWidget *Init_ImageButtonWidget(const char *text,
         error("Failed to malloc in Init_ImageButtonWidget");
         return NULL;
     }
-    info = XMALLOC(ImageButtonWidget, 1);
+    info = new ImageButtonWidget();
     if (!info)
     {
-        free(tmp);
+        delete tmp;
         error("Failed to malloc in Init_ImageButtonWidget");
         return NULL;
     }
@@ -4588,8 +4626,8 @@ GLWidget *Init_ImageButtonWidget(const char *text,
 
     if (!render_text(&gamefont, text, &(info->tex)))
     {
-        free(info);
-        free(tmp);
+        delete info;
+        delete tmp;
         error("Failed to render text in Init_ImageButtonWidget");
         return NULL;
     }

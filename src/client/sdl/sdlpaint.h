@@ -21,6 +21,8 @@
 #ifndef SDLPAINT_H
 #define SDLPAINT_H
 
+#include <SDL2/SDL.h>
+
 #define MAX_VERTICES 10000
 
 typedef unsigned int color_t;

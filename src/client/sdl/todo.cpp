@@ -18,6 +18,10 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <SDL2/SDL.h>
+
+#include "client.h"
+
 /* from talk.c */
 selection_t selection;
 int Startup_server_motd(void);

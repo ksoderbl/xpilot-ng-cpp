@@ -18,12 +18,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SDLKEYS_H
-#define SDLKEYS_H
+#pragma once
+
+#include <SDL2/SDL.h>
 
 #define NUM_MOUSE_BUTTONS 5
 
-SDLKey Get_key_by_name(const char *name);
-char *Get_name_by_key(SDLKey key);
-
-#endif
+SDL_Keycode Get_key_by_name(const char *name);
+char *Get_name_by_key(SDL_Keycode key);

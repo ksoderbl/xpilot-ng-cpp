@@ -1,7 +1,7 @@
 /*
  * XPilotNG/SDL, an SDL/OpenGL XPilot client.
  *
- * Copyright (C) 2003-2004 Darel Cullen
+ * Copyright (C) 2003-2004 Darel Cullen <darelcullen@users.sourceforge.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,9 +18,8 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SDLMETA_H
-#define SDLMETA_H
+#pragma once
+
+#include "connectparam.h"
 
 int Meta_window(Connect_param_t *conpar);
-
-#endif

@@ -19,6 +19,19 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
+#include <SDL2/SDL_surface.h> /* SDL2: SDL_CreateRGBSurfaceWithFormat */
+
+#include "bit.h"
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "rules.h"
+#include "clientsetup.h"
+
+#include "client.h"
+#include "netclient.h"
+
 #include "sdlpaint.h"
 #include "SDL_gfxPrimitives.h"
 #include "radar.h"
@@ -161,8 +174,9 @@ static void Radar_paint_world_blocks(GLWidget *radar, SDL_Surface *s)
 
             type = Setup->map_data[xi * Setup->y + yi];
 
-            if (type >= SETUP_TARGET && type < SETUP_TARGET + 10 && !Target_alive(xi, yi, &damage))
-                type = SETUP_SPACE;
+            // TODO: Enable when Target_alive uses double for damage.
+            // if (type >= SETUP_TARGET && type < SETUP_TARGET + 10 && !Target_alive(xi, yi, &damage))
+            //     type = SETUP_SPACE;
 
             color = bcolor[type];
             if (color & 0xffffff)
@@ -205,33 +219,31 @@ static void Radar_paint_world_polygons(GLWidget *radar, SDL_Surface *s)
         SDL_LockSurface(s);
     SDL_FillRect(s, NULL, RGBA(bgRadarColorValue));
 
-    for (i = 0; i < num_polygons; i++)
+    for (auto &polygon : clMap.polygons)
     {
-
-        if (BIT(polygon_styles[polygons[i].style].flags,
+        if (BIT(polygon_styles[polygon.style].flags,
                 STYLE_INVISIBLE_RADAR))
             continue;
-        Compute_bounds_radar(&min, &max, &polygons[i].bounds);
+        Compute_bounds_radar(&min, &max, &polygon.bounds);
 
         for (xoff = min.x; xoff <= max.x; xoff++)
         {
             for (yoff = min.y; yoff <= max.y; yoff++)
             {
-
-                int x = polygons[i].points[0].x + xoff * Setup->width;
-                int y = -polygons[i].points[0].y + (1 - yoff) * Setup->height;
+                int x = polygon.points[0].x + xoff * Setup->width;
+                int y = -polygon.points[0].y + (1 - yoff) * Setup->height;
                 vx[0] = (x * radar->bounds.w) / Setup->width;
                 vy[0] = (y * radar->bounds.h) / Setup->height;
 
-                for (j = 1; j < polygons[i].num_points; j++)
+                for (j = 1; j < polygon.num_points; j++)
                 {
-                    x += polygons[i].points[j].x;
-                    y -= polygons[i].points[j].y;
+                    x += polygon.points[j].x;
+                    y -= polygon.points[j].y;
                     vx[j] = (x * radar->bounds.w) / Setup->width;
                     vy[j] = (y * radar->bounds.h) / Setup->height;
                 }
 
-                color = polygon_styles[polygons[i].style].rgb;
+                color = polygon_styles[polygon.style].rgb;
                 filledPolygonRGBA(s, vx, vy, j,
                                   (color >> 16) & 0xff,
                                   (color >> 8) & 0xff,
@@ -252,15 +264,15 @@ static void Radar_paint_objects(GLWidget *radar)
 {
     int i, x, y, s;
 
-    for (i = 0; i < num_radar; i++)
+    for (const auto &radarObject : clMap.radarObjects)
     {
-        x = radar_ptr[i].x;
-        y = radar_ptr[i].y;
-        s = radar_ptr[i].size;
+        x = radarObject.x;
+        y = radarObject.y;
+        s = radarObject.size;
         to_screen(radar, &x, &y, RadarWidth, RadarHeight);
         x -= s / 2;
         y -= s / 2;
-        if (radar_ptr[i].type == RadarFriend)
+        if (radarObject.type == RadarFriend)
             glColor3ub(0, 0xff, 0);
         else
             glColor3ub(0xff, 0xff, 0xff);
@@ -272,8 +284,8 @@ static void Radar_paint_objects(GLWidget *radar)
         glEnd();
     }
 
-    if (num_radar)
-        RELEASE(radar_ptr, num_radar, max_radar);
+    if (clMap.radarObjects.size() > 0)
+        clMap.radarObjects.clear();
 }
 
 /*
@@ -396,15 +408,20 @@ static void Radar_init_texture(GLWidget *widget)
 static int Radar_init(GLWidget *widget)
 {
     radar_surface =
-        SDL_CreateRGBSurface(SDL_SWSURFACE | SDL_SRCALPHA,
-                             pow2_ceil(widget->bounds.w - 1),
-                             pow2_ceil(widget->bounds.h - 1), 32,
-                             RMASK, GMASK, BMASK, AMASK);
+        SDL_CreateRGBSurfaceWithFormat(0,
+                                       pow2_ceil(widget->bounds.w - 1),
+                                       pow2_ceil(widget->bounds.h - 1),
+                                       32,
+                                       SDL_PIXELFORMAT_RGBA32);
     if (!radar_surface)
     {
         error("Could not create radar surface: %s", SDL_GetError());
         return -1;
     }
+
+    /* SDL2: make sure blending behaves predictably if anything uses per-pixel alpha */
+    SDL_SetSurfaceBlendMode(radar_surface, SDL_BLENDMODE_BLEND);
+
     Radar_init_texture(widget);
     return 0;
 }

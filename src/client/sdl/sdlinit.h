@@ -21,6 +21,10 @@
 #ifndef SDLINIT_H
 #define SDLINIT_H
 
+#ifndef SDL_FULLSCREEN
+#define SDL_FULLSCREEN 0x00000001
+#endif
+
 int Init_window(void);
 int Resize_Window(int width, int height);
 

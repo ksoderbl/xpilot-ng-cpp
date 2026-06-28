@@ -18,8 +18,24 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <csignal>
+#include <ctime>
+
+#include <SDL2/SDL.h>
+
+#include "commonproto.h"
+
+#include "portability.h"
+#include "socklib.h"
+#include "xperror.h"
+
+#include "client.h"
+#include "netclient.h"
+#include "talk.h"
+
 #include "sdlinit.h"
 #include "sdlmeta.h"
+#include "xpclient_sdl.h"
 
 static void Main_shutdown(void)
 {
@@ -38,7 +54,7 @@ static void sigcatch(int signum)
 
 const char *Program_name(void)
 {
-    return "xpilot-ng-cpp-sdl";
+    return "xpilot-cpp-client-sdl";
 }
 
 int main(int argc, char *argv[])
@@ -65,7 +81,7 @@ int main(int argc, char *argv[])
     Parse_options(&argc, argv);
 
     /* CLIENTRANK */
-    Init_saved_scores();
+    // Init_saved_scores();
 
     if (sock_startup())
     {

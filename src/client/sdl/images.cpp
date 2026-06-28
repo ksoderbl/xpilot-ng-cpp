@@ -18,6 +18,16 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_opengl.h>
+
+#include "commonmacros.h"
+#include "commonproto.h"
+#include "const.h"
+
+#include "client.h"
+#include "gfx2d.h"
+
 #include "images.h"
 #include "sdlpaint.h"
 
