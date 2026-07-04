@@ -27,6 +27,7 @@
 
 #include <cstdlib>
 
+#include "xperror.h"
 #include "config.h"
 
 /*

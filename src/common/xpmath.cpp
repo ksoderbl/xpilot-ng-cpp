@@ -77,7 +77,7 @@ double findDir(double x, double y)
 
     if (angle < 0)
         angle++;
-    return angle * RES;
+    return angle * ANGLE_RESOLUTION;
 }
 
 double rfrac(void)

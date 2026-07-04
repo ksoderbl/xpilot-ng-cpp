@@ -157,8 +157,8 @@ void Laser_pulse_hits_player(player_t *pl, pulseobject_t *pulse)
 		pulse->pulse_dir = (int)(Wrap_cfindDir(pl->pos.cx - pulse->pos.cx,
 											   pl->pos.cy - pulse->pos.cy) *
 									 2 -
-								 RES / 2 - pulse->pulse_dir);
-		pulse->pulse_dir = MOD2(pulse->pulse_dir, RES);
+								 ANGLE_RESOLUTION / 2 - pulse->pulse_dir);
+		pulse->pulse_dir = MOD2(pulse->pulse_dir, ANGLE_RESOLUTION);
 
 		pulse->vel.x = options.pulseSpeed * tcos(pulse->pulse_dir);
 		pulse->vel.y = options.pulseSpeed * tsin(pulse->pulse_dir);

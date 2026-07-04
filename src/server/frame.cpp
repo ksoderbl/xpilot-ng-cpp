@@ -650,7 +650,7 @@ static void Frame_shots(connection_t *conn, player_t *pl)
 
 			/* check if either end of laser pulse is in view */
 			if (clpos_inview(&cv, pos))
-				ldir = MOD2(pulse->pulse_dir + RES / 2, RES);
+				ldir = MOD2(pulse->pulse_dir + ANGLE_RESOLUTION / 2, ANGLE_RESOLUTION);
 			else
 			{
 				pos.cx = (click_t)(pos.cx - tcos(pulse->pulse_dir) * pulse->pulse_len * CLICK);

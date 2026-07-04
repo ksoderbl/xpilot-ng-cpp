@@ -370,15 +370,8 @@ int sock_open_tcp_connected_non_blocking(sock_t *sock, char *host, int port)
     if (connect(sock->fd, (struct sockaddr *)&dest,
                 sizeof(struct sockaddr_in)) < 0)
     {
-
-#ifndef _WINDOWS
         if (errno != EINPROGRESS)
         {
-#else
-        if (WSAGetLastError() != 10035)
-        {
-#endif
-
             sock_set_error(sock, errno, SOCK_CALL_CONNECT, __LINE__);
             sock_close(sock);
             return SOCK_IS_ERROR;
@@ -536,7 +529,7 @@ int sock_receive_any(sock_t *sock, char *buf, int len)
     return count;
 }
 
-int sock_send_dest(sock_t *sock, char *host, int port, char *buf, int len)
+int sock_send_dest(sock_t *sock, const char *host, int port, char *buf, int len)
 {
     struct sockaddr_in dest;
     struct hostent *hp;

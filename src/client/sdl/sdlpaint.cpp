@@ -47,7 +47,7 @@
 #include "commonmacros.h"
 #include "commonproto.h"
 #include "xperror.h"
-#include "xpmemory.h"
+
 #include "rules.h"
 #include "clientsetup.h"
 #include "version.h"

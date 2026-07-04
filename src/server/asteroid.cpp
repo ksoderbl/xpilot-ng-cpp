@@ -150,7 +150,7 @@ void Break_asteroid(wireobject_t *asteroid)
 					  mass,
 					  GRAVITY,
 					  10,
-					  0, RES - 1,
+					  0, ANGLE_RESOLUTION - 1,
 					  5.0, 10.0,
 					  3.0, 10.0);
 		Make_debris(asteroid->pos,
@@ -163,7 +163,7 @@ void Break_asteroid(wireobject_t *asteroid)
 					RED,
 					8,
 					(int)(20 + 30 * rfrac()),
-					0, RES - 1,
+					0, ANGLE_RESOLUTION - 1,
 					5.0, 10.0,
 					3.0, 10.0);
 	}
@@ -175,15 +175,15 @@ void Break_asteroid(wireobject_t *asteroid)
 		dir = findDir(asteroid->vel.x, asteroid->vel.y);
 		mass3 = asteroid->mass * ASTEROID_DUST_FACT;
 		mass = ASTEROID_MASS(asteroid->wire_size - 1);
-		dir1 = MOD2((int)(dir - ASTEROID_DELTA_DIR / 4 - (rfrac() * ASTEROID_DELTA_DIR / 4)), RES);
-		dir2 = MOD2((int)(dir + ASTEROID_DELTA_DIR / 4 + (rfrac() * ASTEROID_DELTA_DIR / 4)), RES);
+		dir1 = MOD2((int)(dir - ASTEROID_DELTA_DIR / 4 - (rfrac() * ASTEROID_DELTA_DIR / 4)), ANGLE_RESOLUTION);
+		dir2 = MOD2((int)(dir + ASTEROID_DELTA_DIR / 4 + (rfrac() * ASTEROID_DELTA_DIR / 4)), ANGLE_RESOLUTION);
 		speed1 = (speed * (1 - ASTEROID_DUST_FACT)) / tcos(ABS((int)dir - dir1));
 		speed2 = (speed * (1 - ASTEROID_DUST_FACT)) / tcos(ABS(dir2 - (int)dir));
 		velx1 = tcos(dir1) * speed1;
 		vely1 = tsin(dir1) * speed1;
 		velx2 = tcos(dir2) * speed2;
 		vely2 = tsin(dir2) * speed2;
-		split_dir = MOD2((int)dir - RES / 4, RES);
+		split_dir = MOD2((int)dir - ANGLE_RESOLUTION / 4, ANGLE_RESOLUTION);
 		radius = ASTEROID_RADIUS(asteroid->wire_size - 1);
 		pos1.cx = (click_t)(asteroid->pos.cx + tcos(split_dir) * radius);
 		pos1.cy = (click_t)(asteroid->pos.cy + tsin(split_dir) * radius);
@@ -201,7 +201,7 @@ void Break_asteroid(wireobject_t *asteroid)
 					  mass3 / 2,
 					  GRAVITY,
 					  10,
-					  0, RES - 1,
+					  0, ANGLE_RESOLUTION - 1,
 					  5.0, 10.0,
 					  3.0, 10.0);
 		Make_debris(asteroid->pos,
@@ -214,7 +214,7 @@ void Break_asteroid(wireobject_t *asteroid)
 					RED,
 					8,
 					(int)(20 + 30 * rfrac()),
-					0, RES - 1,
+					0, ANGLE_RESOLUTION - 1,
 					5.0, 10.0,
 					3.0, 10.0);
 	}
@@ -229,7 +229,7 @@ void Break_asteroid(wireobject_t *asteroid)
 		for (i = 0; i < nitems; i++)
 		{
 			item = Choose_random_item();
-			item_dir = (int)(rfrac() * RES);
+			item_dir = (int)(rfrac() * ANGLE_RESOLUTION);
 			item_speed = rfrac() * 10;
 			vel.x = asteroid->vel.x + item_speed * tcos(item_dir);
 			vel.y = asteroid->vel.y + item_speed * tsin(item_dir);
@@ -303,7 +303,7 @@ static void Make_asteroid(clpos_t pos, int size, int dir, double speed)
 	asteroid->mass = ASTEROID_MASS(size);
 	asteroid->life = ASTEROID_LIFE;
 	asteroid->wire_turnspeed = 0.02 + rfrac() * 0.05;
-	asteroid->wire_rotation = (int)(rfrac() * RES);
+	asteroid->wire_rotation = (int)(rfrac() * ANGLE_RESOLUTION);
 	asteroid->wire_size = size;
 	asteroid->wire_type = (uint8_t)(rfrac() * 256);
 	radius = ASTEROID_RADIUS(size) / CLICK;
@@ -349,7 +349,7 @@ static void Place_asteroid(void)
 
 		if (con)
 		{
-			dir = (int)(rfrac() * RES);
+			dir = (int)(rfrac() * ANGLE_RESOLUTION);
 			dist = (int)(rfrac() * ((options.asteroidConcentratorRadius * BLOCK_CLICKS) + 1));
 			pos.cx = (click_t)(con->pos.cx + dist * tcos(dir));
 			pos.cy = (click_t)(con->pos.cy + dist * tsin(dir));
@@ -381,7 +381,7 @@ static void Place_asteroid(void)
 	if (okay)
 		Make_asteroid(pos,
 					  (int)(1 + rfrac() * ASTEROID_MAX_SIZE),
-					  (int)(rfrac() * RES),
+					  (int)(rfrac() * ANGLE_RESOLUTION),
 					  (double)ASTEROID_START_SPEED);
 }
 
@@ -393,7 +393,7 @@ static void Asteroid_move(wireobject_t *wireobj)
 static void Asteroid_rotate(wireobject_t *wireobj)
 {
 	wireobj->wire_rotation =
-		(wireobj->wire_rotation + (int)(wireobj->wire_turnspeed * timeStep * RES)) % RES;
+		(wireobj->wire_rotation + (int)(wireobj->wire_turnspeed * timeStep * ANGLE_RESOLUTION)) % ANGLE_RESOLUTION;
 }
 
 /*

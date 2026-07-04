@@ -28,7 +28,7 @@
 
 #include "commonproto.h"
 #include "xperror.h"
-// #include "xpmemory.h"
+//
 
 void *xp_safe_malloc(size_t size)
 {

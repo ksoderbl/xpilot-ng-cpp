@@ -63,11 +63,11 @@
 #define PATH_MAX 1023
 #endif
 
-#define RES 128
+#define ANGLE_RESOLUTION 128
 
 #define BLOCK_SZ 35
 
-#define TABLE_SIZE RES
+#define TABLE_SIZE ANGLE_RESOLUTION
 
 extern double tbl_sin[];
 extern double tbl_cos[];

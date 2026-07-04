@@ -27,9 +27,10 @@
 #include "commonmacros.h"
 #include "commonproto.h"
 #include "rules.h"
-#include "clientsetup.h"
+#include "xperror.h"
 
 #include "client.h"
+#include "clientsetup.h"
 #include "netclient.h"
 
 #include "sdlpaint.h"

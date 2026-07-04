@@ -35,7 +35,6 @@
 #include "commonmacros.h"
 #include "commonproto.h"
 #include "xperror.h"
-#include "xpmemory.h"
 
 #include "paint.h"
 

@@ -250,7 +250,7 @@ void Place_general_mine(int id, int team, int status,
 		Object_position_init_clpos(OBJ_PTR(mine), pos);
 		if (minis > 1)
 		{
-			int space = RES / minis, dir;
+			int space = ANGLE_RESOLUTION / minis, dir;
 			double spread = (double)(Mods_get(mods, ModsSpread) + 1);
 
 			/*
@@ -260,9 +260,9 @@ void Place_general_mine(int id, int team, int status,
 			 *	X2: o S	o	X3:   S		X4:   S
 			 *			    o   o	    o   o
 			 */
-			dir = (i * space) + space / 2 + (minis - 2) * (RES / 2) + (pl ? pl->dir : 0);
+			dir = (i * space) + space / 2 + (minis - 2) * (ANGLE_RESOLUTION / 2) + (pl ? pl->dir : 0);
 			dir += (int)((rfrac() - 0.5) * space * 0.5);
-			dir = MOD2(dir, RES);
+			dir = MOD2(dir, ANGLE_RESOLUTION);
 			mv.x = MINI_MINE_SPREAD_SPEED * tcos(dir) / spread;
 			mv.y = MINI_MINE_SPREAD_SPEED * tsin(dir) / spread;
 			/*
@@ -1008,8 +1008,8 @@ void Fire_general_shot(int id, int team,
 		case OBJ_TORPEDO:
 			torp = TORP_PTR(shot);
 
-			angle *= (MINI_TORPEDO_SPREAD_ANGLE / 360.0) * RES;
-			ldir = MOD2(dir + (int)angle, RES);
+			angle *= (MINI_TORPEDO_SPREAD_ANGLE / 360.0) * ANGLE_RESOLUTION;
+			ldir = MOD2(dir + (int)angle, ANGLE_RESOLUTION);
 			mv.x = MINI_TORPEDO_SPREAD_SPEED * tcos(ldir) / spread;
 			mv.y = MINI_TORPEDO_SPREAD_SPEED * tsin(ldir) / spread;
 			/*
@@ -1025,8 +1025,8 @@ void Fire_general_shot(int id, int team,
 			break;
 
 		default:
-			angle *= (MINI_MISSILE_SPREAD_ANGLE / 360.0) * RES / spread;
-			ldir = MOD2(dir + (int)angle, RES);
+			angle *= (MINI_MISSILE_SPREAD_ANGLE / 360.0) * ANGLE_RESOLUTION / spread;
+			ldir = MOD2(dir + (int)angle, ANGLE_RESOLUTION);
 			mv.x = mv.y = shot->acc.x = shot->acc.y = 0;
 			break;
 		}
@@ -1128,19 +1128,19 @@ void Fire_normal_shots(player_t *pl)
 	{
 		if (pl->ship->num_l_gun > 0)
 		{
-			Fire_left_shot(pl, OBJ_SHOT, MOD2(pl->dir + (1 + i) * shot_angle, RES), i % pl->ship->num_l_gun);
+			Fire_left_shot(pl, OBJ_SHOT, MOD2(pl->dir + (1 + i) * shot_angle, ANGLE_RESOLUTION), i % pl->ship->num_l_gun);
 		}
 		else
 		{
-			Fire_main_shot(pl, OBJ_SHOT, MOD2(pl->dir + (1 + i) * shot_angle, RES));
+			Fire_main_shot(pl, OBJ_SHOT, MOD2(pl->dir + (1 + i) * shot_angle, ANGLE_RESOLUTION));
 		}
 		if (pl->ship->num_r_gun > 0)
 		{
-			Fire_right_shot(pl, OBJ_SHOT, MOD2(pl->dir - (1 + i) * shot_angle, RES), i % pl->ship->num_r_gun);
+			Fire_right_shot(pl, OBJ_SHOT, MOD2(pl->dir - (1 + i) * shot_angle, ANGLE_RESOLUTION), i % pl->ship->num_r_gun);
 		}
 		else
 		{
-			Fire_main_shot(pl, OBJ_SHOT, MOD2(pl->dir - (1 + i) * shot_angle, RES));
+			Fire_main_shot(pl, OBJ_SHOT, MOD2(pl->dir - (1 + i) * shot_angle, ANGLE_RESOLUTION));
 		}
 	}
 	for (i = 0; i < pl->item[ITEM_REARSHOT]; i++)
@@ -1149,26 +1149,26 @@ void Fire_normal_shots(player_t *pl)
 		{
 			if (pl->ship->num_l_rgun > 0)
 			{
-				Fire_left_rshot(pl, OBJ_SHOT, MOD2(pl->dir + RES / 2 + ((pl->item[ITEM_REARSHOT] - 1 - 2 * i) * shot_angle) / 2, RES), (i - (pl->item[ITEM_REARSHOT] + 1) / 2) % pl->ship->num_l_rgun);
+				Fire_left_rshot(pl, OBJ_SHOT, MOD2(pl->dir + ANGLE_RESOLUTION / 2 + ((pl->item[ITEM_REARSHOT] - 1 - 2 * i) * shot_angle) / 2, ANGLE_RESOLUTION), (i - (pl->item[ITEM_REARSHOT] + 1) / 2) % pl->ship->num_l_rgun);
 			}
 			else
 			{
-				Fire_shot(pl, OBJ_SHOT, MOD2(pl->dir + RES / 2 + ((pl->item[ITEM_REARSHOT] - 1 - 2 * i) * shot_angle) / 2, RES));
+				Fire_shot(pl, OBJ_SHOT, MOD2(pl->dir + ANGLE_RESOLUTION / 2 + ((pl->item[ITEM_REARSHOT] - 1 - 2 * i) * shot_angle) / 2, ANGLE_RESOLUTION));
 			}
 		}
 		if ((pl->item[ITEM_REARSHOT] - 1 - 2 * i) > 0)
 		{
 			if (pl->ship->num_r_rgun > 0)
 			{
-				Fire_right_rshot(pl, OBJ_SHOT, MOD2(pl->dir + RES / 2 + ((pl->item[ITEM_REARSHOT] - 1 - 2 * i) * shot_angle) / 2, RES), (pl->item[ITEM_REARSHOT] / 2 - i - 1) % pl->ship->num_r_rgun);
+				Fire_right_rshot(pl, OBJ_SHOT, MOD2(pl->dir + ANGLE_RESOLUTION / 2 + ((pl->item[ITEM_REARSHOT] - 1 - 2 * i) * shot_angle) / 2, ANGLE_RESOLUTION), (pl->item[ITEM_REARSHOT] / 2 - i - 1) % pl->ship->num_r_rgun);
 			}
 			else
 			{
-				Fire_shot(pl, OBJ_SHOT, MOD2(pl->dir + RES / 2 + ((pl->item[ITEM_REARSHOT] - 1 - 2 * i) * shot_angle) / 2, RES));
+				Fire_shot(pl, OBJ_SHOT, MOD2(pl->dir + ANGLE_RESOLUTION / 2 + ((pl->item[ITEM_REARSHOT] - 1 - 2 * i) * shot_angle) / 2, ANGLE_RESOLUTION));
 			}
 		}
 		if ((pl->item[ITEM_REARSHOT] - 1 - 2 * i) == 0)
-			Fire_shot(pl, OBJ_SHOT, MOD2(pl->dir + RES / 2 + ((pl->item[ITEM_REARSHOT] - 1 - 2 * i) * shot_angle) / 2, RES));
+			Fire_shot(pl, OBJ_SHOT, MOD2(pl->dir + ANGLE_RESOLUTION / 2 + ((pl->item[ITEM_REARSHOT] - 1 - 2 * i) * shot_angle) / 2, ANGLE_RESOLUTION));
 	}
 }
 
@@ -1246,7 +1246,7 @@ void Delete_shot(int ind)
 						RED,
 						8,
 						(int)(10 + 10 * rfrac()),
-						0, RES - 1,
+						0, ANGLE_RESOLUTION - 1,
 						10.0, 50.0,
 						10.0, 54.0);
 		}
@@ -1351,7 +1351,7 @@ void Delete_shot(int ind)
 					color,
 					6,
 					num_debris,
-					0, RES - 1,
+					0, ANGLE_RESOLUTION - 1,
 					20 * speed_modv, (intensity >> 2) * speed_modv,
 					min_life, max_life);
 		break;
@@ -1453,7 +1453,7 @@ void Delete_shot(int ind)
 		}
 		else if (addHeat)
 			Fire_general_shot(NO_ID, TEAM_NOT_SET, shot->pos,
-							  OBJ_HEAT_SHOT, (int)(rfrac() * RES),
+							  OBJ_HEAT_SHOT, (int)(rfrac() * ANGLE_RESOLUTION),
 							  mods, NO_ID);
 	}
 	else if (addBall)
@@ -1751,7 +1751,7 @@ void Update_missile(missileobject_t *missile)
 	y_dif += pl->vel.y * (range / shot_speed);
 	a = Wrap_cfindDir(pl->pos.cx + PIXEL_TO_CLICK(x_dif) - missile->pos.cx,
 					  pl->pos.cy + PIXEL_TO_CLICK(y_dif) - missile->pos.cy);
-	theta = MOD2((int)(a + 0.5), RES);
+	theta = MOD2((int)(a + 0.5), ANGLE_RESOLUTION);
 
 	{
 		double x, y, vx, vy;
@@ -1819,7 +1819,7 @@ void Update_missile(missileobject_t *missile)
 			}
 		}
 
-		i = ((int)(missile->missile_dir * 8 / RES) & 7) + 8;
+		i = ((int)(missile->missile_dir * 8 / ANGLE_RESOLUTION) & 7) + 8;
 		sbpos = Clpos_to_blkpos(missile->pos);
 		xi = sbpos.bx;
 		yi = sbpos.by;
@@ -1875,7 +1875,7 @@ void Update_missile(missileobject_t *missile)
 			a = Wrap_findDir(
 				(yi + sur[i].dy) * BLOCK_SZ - (CLICK_TO_PIXEL(missile->pos.cy) + 2 * missile->vel.y),
 				(xi + sur[i].dx) * BLOCK_SZ - (CLICK_TO_PIXEL(missile->pos.cx) - 2 * missile->vel.x));
-			theta = MOD2((int)(a + 0.5), RES);
+			theta = MOD2((int)(a + 0.5), ANGLE_RESOLUTION);
 #ifdef SHOT_EXTRA_SLOWDOWN
 			if (!foundw && range > (SHOT_LOOK_AH - i) * BLOCK_SZ)
 			{
@@ -1888,12 +1888,12 @@ void Update_missile(missileobject_t *missile)
 	angle = theta;
 
 	if (angle < 0)
-		angle += RES;
-	angle %= RES;
+		angle += ANGLE_RESOLUTION;
+	angle %= ANGLE_RESOLUTION;
 
 	if (angle < missile->missile_dir)
-		angle += RES;
-	angle = angle - missile->missile_dir - RES / 2;
+		angle += ANGLE_RESOLUTION;
+	angle = angle - missile->missile_dir - ANGLE_RESOLUTION / 2;
 
 	if (angle < 0)
 		missile->missile_dir += (uint8_t)(((-angle < missile->missile_turnspeed)
@@ -1904,7 +1904,7 @@ void Update_missile(missileobject_t *missile)
 											   ? angle
 											   : missile->missile_turnspeed));
 
-	missile->missile_dir = MOD2(missile->missile_dir, RES); /* NOTE!!!! */
+	missile->missile_dir = MOD2(missile->missile_dir, ANGLE_RESOLUTION); /* NOTE!!!! */
 
 	if (shot_speed < missile->missile_max_speed)
 		shot_speed += acc;

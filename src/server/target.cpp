@@ -186,7 +186,7 @@ void Object_hits_target(object_t *obj, target_t *targ, double player_cost)
 				RED,
 				6,
 				(int)(75 + 75 * rfrac()),
-				0, RES - 1,
+				0, ANGLE_RESOLUTION - 1,
 				20.0, 70.0,
 				10.0, 100.0);
 
