@@ -1,5 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
+ * XPilot, a multiplayer gravity war game.
  *
  * Copyright (C) 1991-2001 by
  *
@@ -1004,11 +1004,7 @@ static void Xpilotrc_create_line(char *buf, size_t size,
 
 static void Xpilotrc_write_line(FILE *fp, const char *buf)
 {
-#ifndef _WINDOWS
 	const char *endline = "\n";
-#else
-	const char *endline = "\r\n"; /* CR LF */
-#endif
 	/*warn("writing line \"%s\"", buf);*/
 
 	fprintf(fp, "%s%s", buf, endline);
@@ -1248,7 +1244,6 @@ const char *Get_keyResourceString(keys_t key)
 	return NULL;
 }
 
-#ifndef _WINDOWS
 void Xpilotrc_get_filename(char *path, size_t size)
 {
 	const char *home = getenv("HOME");
@@ -1266,9 +1261,3 @@ void Xpilotrc_get_filename(char *path, size_t size)
 	else
 		strlcpy(path, "", size);
 }
-#else
-void Xpilotrc_get_filename(char *path, size_t size)
-{
-	strlcpy(path, "xpilotrc.txt", size);
-}
-#endif /* _WINDOWS */

@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -23,8 +21,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef GUIOBJECTS_H
-#define GUIOBJECTS_H
+#pragma once
 
 void Gui_paint_item_object(int type, int x, int y);
 void Gui_paint_ball(int x, int y, int style);
@@ -68,8 +65,6 @@ void Gui_paint_ships_begin(void);
 void Gui_paint_ships_end(void);
 
 void Gui_paint_ship(int x, int y, int dir, int id, int cloak, int phased,
-					int shield, int deflector, int eshield);
+                    int shield, int deflector, int eshield);
 
 void Store_guiobject_options(void);
-
-#endif
