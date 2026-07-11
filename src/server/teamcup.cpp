@@ -1,5 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
+ * XPilot, a multiplayer gravity war game.
  *
  * Copyright (C) TODO
  *
@@ -22,6 +22,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 
 #include "commonmacros.h"
 #include "xperror.h"
@@ -30,7 +31,6 @@
 #include "player.h"
 #include "score.h"
 #include "server.h"
-#include <cstring>
 
 static char teamcup_score_file_name[1024];
 static FILE *teamcup_score_file = NULL;

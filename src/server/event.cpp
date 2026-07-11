@@ -165,7 +165,12 @@ int Player_lock_closest(player_t *pl, bool next)
     {
         player_t *pl_i = Player_by_index(i);
 
-        if (pl_i == lock_pl || !Player_is_active(pl_i) || !Player_lock_allowed(pl, pl_i) || Player_owns_tank(pl, pl_i) || Players_are_teammates(pl, pl_i) || Players_are_allies(pl, pl_i))
+        if (pl_i == lock_pl ||
+            !Player_is_active(pl_i) ||
+            !Player_lock_allowed(pl, pl_i) ||
+            Player_owns_tank(pl, pl_i) ||
+            Players_are_teammates(pl, pl_i) ||
+            Players_are_allies(pl, pl_i))
             continue;
 
         l = Wrap_length(pl_i->pos.cx - pl->pos.cx,

@@ -1,5 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
+ * XPilot, a multiplayer gravity war game.
  *
  * Copyright (C) TODO
  *
