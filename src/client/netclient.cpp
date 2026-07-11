@@ -91,9 +91,7 @@ pointer_move_t pointer_moves[MAX_POINTER_MOVES];
 int pointer_move_next;
 long last_keyboard_ack;
 bool dirPrediction;
-#ifdef _WINDOWS
-int received_self = FALSE;
-#endif
+
 /*
  * Local variables.
  */
@@ -555,9 +553,7 @@ int Net_init(char *server, int port)
 
     assert(server != NULL);
 
-#ifndef _WINDOWS
     signal(SIGPIPE, SIG_IGN);
-#endif
 
     server_display.view_width = 0;
     server_display.view_height = 0;
@@ -1702,9 +1698,6 @@ int Receive_self(void)
                 currentTank, (double)sFuelSum, (double)sFuelMax, rbuf.len,
                 (int)sStat);
 
-#ifdef _WINDOWS
-    received_self = TRUE;
-#endif
     return 1;
 }
 

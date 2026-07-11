@@ -29,6 +29,7 @@
 #endif
 
 #include "client.h"
+#include "messages.h"
 #include "netclient.h"
 #include "paint.h"
 
@@ -119,7 +120,6 @@ void Toggle_radar_and_scorelist(void)
     return;
 }
 
-#ifndef _WINDOWS
 void Toggle_fullscreen(void)
 {
     static int initial_w = -1, initial_h = -1;
@@ -163,12 +163,6 @@ void Toggle_fullscreen(void)
     Resize_Window(initial_w, initial_h);
     Add_message("Failed to change video mode. [*Client reply*]");
 }
-#else
-void Toggle_fullscreen(void)
-{
-    Add_message("Changing mode does not work in Windows. [*Client reply*]");
-}
-#endif
 
 int Process_event(SDL_Event *evt)
 {

@@ -127,7 +127,7 @@ static void sample_free(sample_t *sample)
     if (sample)
     {
 /* alDeleteBuffers hangs on linux sometimes */
-#ifdef _WINDOWS
+#if 0
         if (sample->buffer)
             alDeleteBuffers(1, &sample->buffer);
 #endif
@@ -269,7 +269,7 @@ void audioDeviceFree(void *priv)
 void audioDeviceClose()
 {
     alDeleteSources(MAX_SOUNDS, source);
-#ifdef _WINDOWS /* alutExit hangs on linux sometimes */
+#if 0 /* alutExit hangs on linux sometimes */
     alutExit();
 #endif
 }

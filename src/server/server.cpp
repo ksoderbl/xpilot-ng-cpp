@@ -93,8 +93,6 @@ bool mute_baseless = false;
 time_t gameOverTime = 0;
 time_t serverStartTime = 0;
 
-#if !defined(_WINDOWS)
-
 /* The terminating signal, or zero if no signal. */
 static volatile int termsig = 0;
 
@@ -103,8 +101,6 @@ static void Handle_signal(int sig_no)
     termsig = sig_no;
     stop_sched();
 }
-
-#endif /* !defined(_WINDOWS) */
 
 int main(int argc, char **argv)
 {
@@ -211,7 +207,6 @@ int main(int argc, char **argv)
     if (Setup_net_server() == -1)
         End_game();
 
-#ifndef _WINDOWS
     if (options.NoQuit)
         signal(SIGHUP, SIG_IGN);
     else
@@ -222,7 +217,6 @@ int main(int argc, char **argv)
 #ifdef IGNORE_FPE
     signal(SIGFPE, SIG_IGN);
 #endif
-#endif /* _WINDOWS */
 
     /*
      * Set the time the server started
@@ -242,13 +236,7 @@ int main(int argc, char **argv)
     else
         timer_tick_rate = FPS;
 
-#ifdef _WINDOWS
-    /* Windows returns here, we let the worker thread call sched() */
-    install_timer_tick(ServerThreadTimerProc, timer_tick_rate);
-#else
     install_timer_tick(Main_loop, timer_tick_rate);
-
-#endif
 #endif
 
     sched();
@@ -367,10 +355,8 @@ void End_game(void)
     player_t *pl;
     char msg[MSG_LEN];
 
-#if !defined(_WINDOWS)
     if (termsig != 0)
         warn("Terminating on signal %d", termsig);
-#endif
 
     record = rrecord;
     playback = rplayback; /* Could be called from signal handler */
@@ -426,13 +412,11 @@ void End_game(void)
 
     sock_cleanup();
 
-#if !defined(_WINDOWS)
     if (termsig != 0)
     {
         signal(termsig, SIG_DFL);
         raise(termsig);
     }
-#endif
 
     exit(0);
 }

@@ -23,8 +23,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SCHED_H
-#define SCHED_H
+#pragma once
 
 void block_timer(void);
 void allow_timer(void);
@@ -40,14 +39,8 @@ void install_timer_tick(void (*func)(void), int freq);
 
 #else /* SELECT_SCHED */
 
-#ifndef _WINDOWS
 void install_timer_tick(void (*func)(void), int freq);
-#else
-extern void install_timer_tick(void(__stdcall *func)(void *, unsigned int, unsigned int, unsigned long), int freq);
-#endif
 void install_timeout(void (*func)(void *), int offset, void *arg);
 void remove_timeout(void (*func)(void *), void *arg);
 
 #endif /* SELECT_SCHED */
-
-#endif

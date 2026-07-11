@@ -113,11 +113,7 @@ static inline double SHOT_MULT(object_t *obj)
     return 1.0;
 }
 
-#ifndef _WINDOWS
 #define APPNAME "xpilot-ng-cpp-server"
-#else
-#define APPNAME "XPilotNGServer"
-#endif
 
 /*
  * Prototypes for cell.c

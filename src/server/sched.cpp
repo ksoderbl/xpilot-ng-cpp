@@ -62,14 +62,12 @@ static fd_set input_mask;
 int max_fd, min_fd;
 static int input_inited = false;
 
-#if !defined(_WINDOWS)
 static volatile bool sched_running = false;
 
 void stop_sched(void)
 {
     sched_running = false;
 }
-#endif
 
 static void io_dummy(int fd, void *arg)
 {
@@ -93,11 +91,7 @@ void install_input(void (*func)(int, void *), int fd, void *arg)
     {
         input_inited = true;
         FD_ZERO(&input_mask);
-#ifndef _WINDOWS
         min_fd = fd;
-#else
-        min_fd = 0;
-#endif
         max_fd = fd;
         for (i = 0; i < NELEM(input_handlers); i++)
         {
@@ -371,7 +365,6 @@ static int ticks_till_second;
  */
 static void sig_ok(int signum, int flag)
 {
-#if !defined(_WINDOWS)
     sigset_t sigset;
 
     sigemptyset(&sigset);
@@ -381,7 +374,6 @@ static void sig_ok(int signum, int flag)
         error("sigprocmask(%d,%d)", signum, flag);
         exit(1);
     }
-#endif
 }
 
 /*
@@ -390,9 +382,7 @@ static void sig_ok(int signum, int flag)
  */
 void block_timer(void)
 {
-#ifndef _WINDOWS
     sig_ok(SIGALRM, 0);
-#endif
 }
 
 /*
@@ -401,9 +391,7 @@ void block_timer(void)
  */
 void allow_timer(void)
 {
-#ifndef _WINDOWS
     sig_ok(SIGALRM, 1);
-#endif
 }
 
 /*
@@ -433,8 +421,6 @@ static void catch_timer(int signum)
  */
 static void setup_timer(void)
 {
-#ifndef _WINDOWS
-
     struct itimerval itv;
     struct sigaction act;
 
@@ -477,14 +463,7 @@ static void setup_timer(void)
     timers_used = timer_ticks;
     time(&current_time);
     ticks_till_second = timer_freq;
-#else
-/*
-    UINT cr = SetTimer(NULL, 0, 1000/timer_freq, timer_handler);
-    UINT cr = SetTimer(NULL, 0, 20, (TIMERPROC)ServerThreadTimerProc);
-    if (!cr)
-    error("Can't create timer");
-*/
-#endif
+
     /*
      * Allow the real-time timer to generate SIGALRM signals.
      */
@@ -494,7 +473,6 @@ static void setup_timer(void)
 /*
  * Configure timer tick callback.
  */
-#ifndef _WINDOWS
 void install_timer_tick(void (*func)(void), int freq)
 {
     if (func != NULL) /* NULL to change freq, keep same handler */
@@ -502,18 +480,6 @@ void install_timer_tick(void (*func)(void), int freq)
     timer_freq = freq;
     setup_timer();
 }
-#else
-
-typedef void(__stdcall *windows_timer_t)(void *, unsigned int, unsigned int, unsigned long);
-
-void install_timer_tick(windows_timer_t func, int freq)
-{
-    if (func != NULL)
-        timer_handler = (TIMERPROC)func;
-    timer_freq = freq;
-    setup_timer();
-}
-#endif
 
 /*
  * Linked list of timeout callbacks.

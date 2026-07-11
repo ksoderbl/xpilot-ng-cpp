@@ -116,12 +116,7 @@
  * a command that will unpack the given .gz file to stdout (for use in popen).
  * CONF_ZCAT_EXT should define the proper compressed file extension.
  */
-#ifndef _WINDOWS
 #define CONF_COMPRESSED_MAPS
-#else
-/* Couldn't find a popen(), also compress and gzip don't exist. */
-#undef CONF_COMPRESSED_MAPS
-#endif
 #define CONF_ZCAT_EXT ".gz"
 #define CONF_ZCAT_FORMAT "gzip -d -c < %s"
 

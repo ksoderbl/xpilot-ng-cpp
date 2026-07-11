@@ -1,4 +1,4 @@
-xpilot-cpp-server \
+xpilot-ng-cpp-server \
 -fps 12 \
 +reporttometaserver \
 -robotTeam 4 \

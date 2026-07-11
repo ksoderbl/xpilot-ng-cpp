@@ -95,9 +95,6 @@ static int sock_set_error(sock_t *sock, int err, sock_call_t call, int line)
 {
     DEB(printf("set error %d, %d, %d.  \"%s\"\n",
                err, call, line, strerror(err)));
-#ifdef _WINDOWS
-    DEB(printf("WSAGetLastError: %d\n", WSAGetLastError()));
-#endif
     sock->error.error = err;
     sock->error.call = call;
     sock->error.line = line;
@@ -159,25 +156,11 @@ static void sock_free_lastaddr(sock_t *sock)
 
 int sock_startup()
 {
-#ifdef _WINDOWS
-
-    WORD wVersionRequested;
-    WSADATA wsaData;
-
-    /* I have no idea which version of winsock supports
-     * the required socket stuff. */
-    wVersionRequested = MAKEWORD(1, 0);
-    if (WSAStartup(wVersionRequested, &wsaData))
-        return -1;
-#endif
     return 0; /* socket initialization only needed for windows */
 }
 
 void sock_cleanup(void)
 {
-#ifdef _WINDOWS
-    WSACleanup();
-#endif
 }
 
 int sock_init(sock_t *sock)
@@ -249,23 +232,12 @@ int sock_open_tcp(sock_t *sock)
 
 int sock_set_non_blocking(sock_t *sock, int flag)
 {
-    /*
-     * There are some problems on some particular systems (suns) with
-     * getting sockets to be non-blocking.  Just try all possible ways
-     * until one of them succeeds.  Please keep us informed by e-mail
-     * to xpilot@xpilot.org.
-     */
-
 #ifndef USE_FCNTL_O_NONBLOCK
 #ifndef USE_FCNTL_O_NDELAY
 #ifndef USE_FCNTL_FNDELAY
 #ifndef USE_IOCTL_FIONBIO
 
-#if defined(_SEQUENT_) || defined(__svr4__) || defined(SVR4)
-#define USE_FCNTL_O_NDELAY
-#elif defined(__sun__) && defined(FNDELAY)
-#define USE_FCNTL_FNDELAY
-#elif defined(FIONBIO)
+#if defined(FIONBIO)
 #define USE_IOCTL_FIONBIO
 #elif defined(FNDELAY)
 #define USE_FCNTL_FNDELAY
@@ -521,8 +493,7 @@ int sock_receive_any(sock_t *sock, char *buf, int len)
     if (sock_alloc_lastaddr(sock) == SOCK_IS_ERROR)
         return SOCK_IS_ERROR;
     addrlen = sizeof(struct sockaddr_in);
-    count = recvfrom(sock->fd, buf, len, 0,
-                     (struct sockaddr *)(sock->lastaddr), &addrlen);
+    count = recvfrom(sock->fd, buf, len, 0, (struct sockaddr *)(sock->lastaddr), &addrlen);
     if (count < 0)
         sock_set_error(sock, errno, SOCK_CALL_IO, __LINE__);
 
@@ -543,14 +514,12 @@ int sock_send_dest(sock_t *sock, const char *host, int port, char *buf, int len)
     {
         errno = 0;
         if ((hp = sock_get_host_by_name(host)) == NULL)
-            return sock_set_error(sock, errno, SOCK_CALL_GETHOSTBYNAME,
-                                  __LINE__);
+            return sock_set_error(sock, errno, SOCK_CALL_GETHOSTBYNAME, __LINE__);
 
         dest.sin_addr.s_addr = ((struct in_addr *)(hp->h_addr_list[0]))->s_addr;
     }
 
-    count = sendto(sock->fd, buf, len, 0,
-                   (struct sockaddr *)&dest, sizeof(dest));
+    count = sendto(sock->fd, buf, len, 0, (struct sockaddr *)&dest, sizeof(dest));
     if (count < 0)
         sock_set_error(sock, errno, SOCK_CALL_IO, __LINE__);
 
@@ -590,11 +559,9 @@ void sock_get_local_hostname(char *name, unsigned size,
 {
     struct hostent *he = NULL;
     struct hostent *xpilot_he = NULL;
-#ifndef _WINDOWS
     int xpilot_len;
     char *dot;
     char xpilot_hostname[SOCK_HOSTNAME_LENGTH];
-#endif
     static const char xpilot[] = "xpilot";
 
     gethostname(name, size);
@@ -644,8 +611,6 @@ void sock_get_local_hostname(char *name, unsigned size,
     if (search_domain_for_xpilot != 1)
         return;
 
-#ifndef _WINDOWS /* the lookup of xpilot can take FOREVER! zzzz...  */
-
     /* if name starts with "xpilot" then we're done. */
     xpilot_len = strlen(xpilot);
     if (!strncmp(name, xpilot, xpilot_len))
@@ -673,8 +638,6 @@ void sock_get_local_hostname(char *name, unsigned size,
     }
     if (xpilot_he != NULL)
         strlcpy(name, xpilot_hostname, size);
-
-#endif
 }
 
 int sock_get_port(sock_t *sock)
@@ -789,8 +752,6 @@ static void sock_catch_alarm(int signum)
 
 static struct hostent *sock_get_host_by_name(const char *name)
 {
-#ifndef _WINDOWS
-
     struct hostent *hp;
 
     if (setjmp(env))
@@ -809,43 +770,10 @@ static struct hostent *sock_get_host_by_name(const char *name)
     signal(SIGALRM, SIG_DFL);
 
     return hp;
-
-#else
-
-    /*
-     * If you aren't connected to the net, then gethostbyname()
-     * can take many minutes to time out.  WSACancelBlockingCall()
-     * doesn't affect it.
-     *
-
-    static char     chp[MAXGETHOSTSTRUCT+1];
-    struct hostent* hp = (struct hostent*)&chp;
-    HANDLE h;
-    MSG msg;
-    int i;
-
-    h = WSAAsyncGetHostByName(notifyWnd, WM_GETHOSTNAME, name,
-        chp, MAXGETHOSTSTRUCT);
-
-    for(i = 0; i < SOCK_GETHOST_TIMEOUT; i++) {
-        if (PeekMessage(&msg, NULL, WM_GETHOSTNAME,
-            WM_GETHOSTNAME, PM_REMOVE))
-            return (WSAGETASYNCERROR(msg.lParam)) ? NULL : hp;
-        Sleep(1000);
-    }
-    WSACancelAsyncRequest(h);
-    return NULL;
-    */
-    return gethostbyname(name);
-
-#endif
 }
 
-static struct hostent *sock_get_host_by_addr(const char *addr,
-                                             int len, int type)
+static struct hostent *sock_get_host_by_addr(const char *addr, int len, int type)
 {
-#ifndef _WINDOWS
-
     struct hostent *hp;
 
     if (setjmp(env))
@@ -864,14 +792,4 @@ static struct hostent *sock_get_host_by_addr(const char *addr,
     signal(SIGALRM, SIG_DFL);
 
     return hp;
-
-#else
-
-    struct hostent *hp;
-
-    hp = gethostbyaddr(addr, len, type);
-
-    return hp;
-
-#endif
 }
