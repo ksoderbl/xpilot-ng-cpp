@@ -32,22 +32,22 @@
  * Note that the correction needed shouldn't ever be bigger than one mapsize.
  */
 #define WRAP_XBLOCK(x_)                 \
-	(BIT(World.rules->mode, WRAP_PLAY)  \
-		 ? ((x_) < 0                    \
-				? (x_) + World.x        \
-				: ((x_) >= World.x      \
-					   ? (x_) - World.x \
-					   : (x_)))         \
-		 : (x_))
+    (BIT(World.rules->mode, WRAP_PLAY)  \
+         ? ((x_) < 0                    \
+                ? (x_) + World.x        \
+                : ((x_) >= World.x      \
+                       ? (x_) - World.x \
+                       : (x_)))         \
+         : (x_))
 
 #define WRAP_YBLOCK(y_)                 \
-	(BIT(World.rules->mode, WRAP_PLAY)  \
-		 ? ((y_) < 0                    \
-				? (y_) + World.y        \
-				: ((y_) >= World.y      \
-					   ? (y_) - World.y \
-					   : (y_)))         \
-		 : (y_))
+    (BIT(World.rules->mode, WRAP_PLAY)  \
+         ? ((y_) < 0                    \
+                ? (y_) + World.y        \
+                : ((y_) >= World.y      \
+                       ? (y_) - World.y \
+                       : (y_)))         \
+         : (y_))
 
 /*
  * Two macros for edge wrap of differences in position.
@@ -55,25 +55,25 @@
  * half the map size then it is wrapped.
  */
 #define WRAP_DX(dx)                          \
-	(BIT(World.rules->mode, WRAP_PLAY)       \
-		 ? ((dx) < -(World.width >> 1)       \
-				? (dx) + World.width         \
-				: ((dx) > (World.width >> 1) \
-					   ? (dx) - World.width  \
-					   : (dx)))              \
-		 : (dx))
+    (BIT(World.rules->mode, WRAP_PLAY)       \
+         ? ((dx) < -(World.width >> 1)       \
+                ? (dx) + World.width         \
+                : ((dx) > (World.width >> 1) \
+                       ? (dx) - World.width  \
+                       : (dx)))              \
+         : (dx))
 
 #define WRAP_DY(dy)                           \
-	(BIT(World.rules->mode, WRAP_PLAY)        \
-		 ? ((dy) < -(World.height >> 1)       \
-				? (dy) + World.height         \
-				: ((dy) > (World.height >> 1) \
-					   ? (dy) - World.height  \
-					   : (dy)))               \
-		 : (dy))
+    (BIT(World.rules->mode, WRAP_PLAY)        \
+         ? ((dy) < -(World.height >> 1)       \
+                ? (dy) + World.height         \
+                : ((dy) > (World.height >> 1) \
+                       ? (dy) - World.height  \
+                       : (dy)))               \
+         : (dy))
 
 #define PSEUDO_TEAM(pl1, pl2) \
-	((pl1)->pseudo_team == (pl2)->pseudo_team)
+    ((pl1)->pseudo_team == (pl2)->pseudo_team)
 
 /*
  * Used when we want to pass an index which is not in use.
@@ -130,11 +130,11 @@
 #define MAX_AFTERBURNER ((1 << LG2_MAX_AFTERBURNER) - 1)
 /*#define AFTER_BURN_SPARKS(s,n)  (((s)*(n))>>LG2_MAX_AFTERBURNER)*/
 #define AFTER_BURN_POWER_FACTOR(n) \
-	(options.afterburnerPowerMult * (1.0 + (n) * ((ALT_SPARK_MASS_FACT - 1.0) / (MAX_AFTERBURNER + 1.0))))
+    (options.afterburnerPowerMult * (1.0 + (n) * ((ALT_SPARK_MASS_FACT - 1.0) / (MAX_AFTERBURNER + 1.0))))
 #define AFTER_BURN_POWER(p, n) \
-	((p) * AFTER_BURN_POWER_FACTOR(n))
+    ((p) * AFTER_BURN_POWER_FACTOR(n))
 #define AFTER_BURN_FUEL(f, n) \
-	(((f) * ((MAX_AFTERBURNER + 1) + (n) * (ALT_FUEL_FACT - 1))) / (MAX_AFTERBURNER + 1.0))
+    (((f) * ((MAX_AFTERBURNER + 1) + (n) * (ALT_FUEL_FACT - 1))) / (MAX_AFTERBURNER + 1.0))
 
 #define THRUST_MASS 0.7
 #define ARMOR_MASS (options.shipMass / 14)
@@ -171,7 +171,7 @@
 #define CONFUSED_TIME 3
 #define TORPEDO_SPEED_TIME (2 * 12)
 #define TORPEDO_ACC ((18.0 * SMART_SHOT_MAX_SPEED) / \
-					 (12 * TORPEDO_SPEED_TIME))
+                     (12 * TORPEDO_SPEED_TIME))
 #define TORPEDO_RANGE (MINE_RANGE * 0.45)
 
 #define NUKE_SPEED_TIME (2 * 12)
@@ -204,10 +204,10 @@
 #define TRACTOR_MAX_RANGE(items) (200 + (items) * 50)
 #define TRACTOR_MAX_FORCE(items) (-40 + (items) * -20)
 #define TRACTOR_PERCENT(dist, maxdist) \
-	(1.0 - (0.5 * (dist) / (maxdist)))
+    (1.0 - (0.5 * (dist) / (maxdist)))
 #define TRACTOR_COST(percent) (-1.5 * (percent))
 #define TRACTOR_FORCE(tr_pr, percent, maxforce) \
-	((percent) * (maxforce) * ((tr_pr) ? -1 : 1))
+    ((percent) * (maxforce) * ((tr_pr) ? -1 : 1))
 
 #define WARN_TIME (2 * 12)
 #define EMERGENCY_SHIELD_TIME (4 * 12)

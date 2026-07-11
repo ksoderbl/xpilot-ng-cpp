@@ -7,7 +7,7 @@
  *      Ken Ronny Schouten
  *      Bert Gijsbers
  *      Dick Balaska
- *  	Guido Koopman        <guido@xpilot.org>
+ *      Guido Koopman
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
