@@ -324,7 +324,7 @@ typedef struct
 //     short x, y;
 // } wormhole_t;
 
-// /*#define SCORE_OBJECT_COUNT	100*/
+// /*#define SCORE_OBJECT_COUNT    100*/
 // typedef struct
 // {
 //     double score,
@@ -390,7 +390,7 @@ typedef struct
 {
     char txt[MSG_LEN];
     size_t len;
-    /*short		pixelLen;*/
+    /*short        pixelLen;*/
     double lifeTime;
     msg_bms_t bmsinfo;
 } message_t;

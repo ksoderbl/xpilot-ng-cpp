@@ -40,138 +40,137 @@ static void Disable_emulate3buttons(bool disable, void *display);
  */
 static void Disable_emulate3buttons(bool disable, void *display)
 {
-
-	/* according to reports XF86MiscGetMouseSettings crashes the client on more
-	   recent Xorg servers - so I'm disabling the whole function for now.
-	   Will test myself whenever I upgrade to xorg8 myself KHS  */
-	return;
+    /* according to reports XF86MiscGetMouseSettings crashes the client on more
+       recent Xorg servers - so I'm disabling the whole function for now.
+       Will test myself whenever I upgrade to xorg8 myself KHS  */
+    return;
 
 #ifdef HAVE_XF86MISC
 #if 1
-	/* kps - Lets not try to disable emulate3buttons. Some users have buggy
-	 * XF86 implementations which can't enable the disabled emulation
-	 * when the client quits.
-	 */
+    /* kps - Lets not try to disable emulate3buttons. Some users have buggy
+     * XF86 implementations which can't enable the disabled emulation
+     * when the client quits.
+     */
 
-	XF86MiscMouseSettings m;
-	Status status;
+    XF86MiscMouseSettings m;
+    Status status;
 
-	if (!disable)
-		return;
+    if (!disable)
+        return;
 
-	status = XF86MiscGetMouseSettings((Display *)display, &m);
-	if (status != 1)
-	{
-		warn("Failed to retrieve mouse settings from X server.");
-		return;
-	}
+    status = XF86MiscGetMouseSettings((Display *)display, &m);
+    if (status != 1)
+    {
+        warn("Failed to retrieve mouse settings from X server.");
+        return;
+    }
 
-	if (m.emulate3buttons)
-	{
-		warn("*** Emulate3Buttons is enabled.");
-		warn("*** This may cause lost and/or laggy mouse button events.");
-		warn("*** More info at: http://xpilot.sourceforge.net/faq.html");
-		return;
-	}
+    if (m.emulate3buttons)
+    {
+        warn("*** Emulate3Buttons is enabled.");
+        warn("*** This may cause lost and/or laggy mouse button events.");
+        warn("*** More info at: http://xpilot.sourceforge.net/faq.html");
+        return;
+    }
 #else
-	/*#define XF86DEBUG*/
-	static bool first_run = true;
-	static bool working = true;
-	static bool already_warned = false;
-	static int orig_timeout;
-	XF86MiscMouseSettings m;
-	Status status;
+    /*#define XF86DEBUG*/
+    static bool first_run = true;
+    static bool working = true;
+    static bool already_warned = false;
+    static int orig_timeout;
+    XF86MiscMouseSettings m;
+    Status status;
 
-	if (!working)
-		return;
+    if (!working)
+        return;
 
-	status = XF86MiscGetMouseSettings((Display *)display, &m);
-	if (status != 1)
-	{
-		warn("Failed to retrieve mouse settings from X server.");
-		working = false;
-		return;
-	}
-
-#ifdef XF86DEBUG
-	warn("--- 1st get ---");
-	warn("status          : %d", status);
-	warn("path to device  : %s", m.device);
-	warn("type            : %d", m.type);
-	warn("baudrate        : %d", m.baudrate);
-	warn("samplerate      : %d", m.samplerate);
-	warn("resolution      : %d", m.resolution);
-	warn("buttons         : %d", m.buttons);
-	warn("emulate3buttons : %d", m.emulate3buttons);
-	warn("emulate3timeout : %d", m.emulate3timeout);
-	warn("chordmiddle     : %d", m.chordmiddle);
-	warn("flags           : 0x%x", m.flags);
-#endif
-
-	if (first_run)
-	{
-		if (m.emulate3buttons)
-		{
-			warn("*** Warning: Emulate3Buttons is enabled.");
-			orig_timeout = m.emulate3timeout;
-		}
-		else
-		{
-			working = false; /* Emulate3Buttons disabled from the start, so function is turned inactive */
-			return;
-		}
-	}
-
-	m.emulate3buttons = !disable;
-	m.emulate3timeout = disable ? 0 : orig_timeout;
+    status = XF86MiscGetMouseSettings((Display *)display, &m);
+    if (status != 1)
+    {
+        warn("Failed to retrieve mouse settings from X server.");
+        working = false;
+        return;
+    }
 
 #ifdef XF86DEBUG
-	warn("--- set ---");
-	warn("wanted 3buttons : %d", m.emulate3buttons);
-	warn("wanted timeout  : %d", m.emulate3timeout);
+    warn("--- 1st get ---");
+    warn("status          : %d", status);
+    warn("path to device  : %s", m.device);
+    warn("type            : %d", m.type);
+    warn("baudrate        : %d", m.baudrate);
+    warn("samplerate      : %d", m.samplerate);
+    warn("resolution      : %d", m.resolution);
+    warn("buttons         : %d", m.buttons);
+    warn("emulate3buttons : %d", m.emulate3buttons);
+    warn("emulate3timeout : %d", m.emulate3timeout);
+    warn("chordmiddle     : %d", m.chordmiddle);
+    warn("flags           : 0x%x", m.flags);
 #endif
 
-	status = XF86MiscSetMouseSettings((Display *)display, &m);
-	if (status != 1)
-	{
-		warn("*** Warning: Failed to set X server mouse settings. Fix your X configuration, please.");
-		working = false;
-		return;
-	}
+    if (first_run)
+    {
+        if (m.emulate3buttons)
+        {
+            warn("*** Warning: Emulate3Buttons is enabled.");
+            orig_timeout = m.emulate3timeout;
+        }
+        else
+        {
+            working = false; /* Emulate3Buttons disabled from the start, so function is turned inactive */
+            return;
+        }
+    }
+
+    m.emulate3buttons = !disable;
+    m.emulate3timeout = disable ? 0 : orig_timeout;
 
 #ifdef XF86DEBUG
-	warn("status          : %d", status);
+    warn("--- set ---");
+    warn("wanted 3buttons : %d", m.emulate3buttons);
+    warn("wanted timeout  : %d", m.emulate3timeout);
 #endif
 
-	XF86MiscGetMouseSettings((Display *)display, &m);
+    status = XF86MiscSetMouseSettings((Display *)display, &m);
+    if (status != 1)
+    {
+        warn("*** Warning: Failed to set X server mouse settings. Fix your X configuration, please.");
+        working = false;
+        return;
+    }
 
 #ifdef XF86DEBUG
-	warn("--- 2nd get ---");
-	warn("status          : %d", status);
-	warn("path to device  : %s", m.device);
-	warn("type            : %d", m.type);
-	warn("baudrate        : %d", m.baudrate);
-	warn("samplerate      : %d", m.samplerate);
-	warn("resolution      : %d", m.resolution);
-	warn("buttons         : %d", m.buttons);
-	warn("emulate3buttons : %d", m.emulate3buttons);
-	warn("emulate3timeout : %d", m.emulate3timeout);
-	warn("chordmiddle     : %d", m.chordmiddle);
-	warn("flags           : 0x%x", m.flags);
+    warn("status          : %d", status);
 #endif
 
-	if (m.emulate3buttons != (!disable) && !already_warned)
-	{
-		warn("*** Warning: Failed to disable Emulate3Buttons. Just setting timeout to 0.");
-		already_warned = true;
-		if (m.emulate3timeout != (disable ? 0 : orig_timeout))
-		{
-			warn("*** Warning: Can't set timeout. Giving up...");
-			working = false;
-		}
-	}
+    XF86MiscGetMouseSettings((Display *)display, &m);
 
-	first_run = false;
+#ifdef XF86DEBUG
+    warn("--- 2nd get ---");
+    warn("status          : %d", status);
+    warn("path to device  : %s", m.device);
+    warn("type            : %d", m.type);
+    warn("baudrate        : %d", m.baudrate);
+    warn("samplerate      : %d", m.samplerate);
+    warn("resolution      : %d", m.resolution);
+    warn("buttons         : %d", m.buttons);
+    warn("emulate3buttons : %d", m.emulate3buttons);
+    warn("emulate3timeout : %d", m.emulate3timeout);
+    warn("chordmiddle     : %d", m.chordmiddle);
+    warn("flags           : 0x%x", m.flags);
+#endif
+
+    if (m.emulate3buttons != (!disable) && !already_warned)
+    {
+        warn("*** Warning: Failed to disable Emulate3Buttons. Just setting timeout to 0.");
+        already_warned = true;
+        if (m.emulate3timeout != (disable ? 0 : orig_timeout))
+        {
+            warn("*** Warning: Can't set timeout. Giving up...");
+            working = false;
+        }
+    }
+
+    first_run = false;
 
 #endif
 #endif

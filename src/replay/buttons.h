@@ -13,7 +13,7 @@
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERC_HANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
@@ -21,16 +21,15 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef BUTTONS_H
-#define BUTTONS_H
+#pragma once
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
 union button_image
 {
-	const char *string;
-	Pixmap icon;
+    const char *string;
+    Pixmap icon;
 };
 
 typedef struct button *Button;
@@ -38,7 +37,7 @@ typedef struct button *Button;
 #define BUTTON_PRESSED 1  /* Button is currently pressed in */
 #define BUTTON_RELEASE 2  /* Button pops out when mouse button released */
 #define BUTTON_DISABLED 4 /* Button is disabled */
-#define BUTTON_TEXT 8	  /* Button has text on, rather than bitmap */
+#define BUTTON_TEXT 8     /* Button has text on, rather than bitmap */
 
 /*
  * If a button is marked as BUTTON_RELEASE then callback action is taken when
@@ -46,11 +45,11 @@ typedef struct button *Button;
  */
 
 void SetGlobalButtonAttributes(unsigned long, unsigned long,
-							   unsigned long, unsigned long);
+                               unsigned long, unsigned long);
 
 Button CreateButton(Display *, Window, int, int, unsigned int, unsigned int,
-					union button_image, unsigned int, unsigned int,
-					unsigned long, void (*)(void *), void *, int, int);
+                    union button_image, unsigned int, unsigned int,
+                    unsigned long, void (*)(void *), void *, int, int);
 int CheckButtonEvent(XEvent *);
 void RedrawButton(Button);
 void EnableButton(Button);
@@ -60,5 +59,3 @@ void NonreleaseableButton(Button);
 void ChangeButtonGroup(Button, int);
 void MoveButton(Button, int, int);
 void GetButtonSize(Button, unsigned *, unsigned *);
-
-#endif

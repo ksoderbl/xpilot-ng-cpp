@@ -45,9 +45,9 @@
 **
 **
 ** Adapted for XPilot by Bert Gijsbers:
-**	Changes for ANSI C.
-**	Indentation.
-**	No typedefs in external interface.
+**    Changes for ANSI C.
+**    Indentation.
+**    No typedefs in external interface.
 */
 
 #include "randommt.h"

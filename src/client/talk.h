@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -23,8 +21,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef TALK_H
-#define TALK_H
+#pragma once
 
 #define TALK_FAST_NR_OF_MSGS 20 /* talk macros */
 #define TALK_FAST_MSG_SIZE 400
@@ -39,5 +36,3 @@ extern void Store_talk_macro_options(void);
 
 /* store message in history, when it is sent? */
 extern bool save_talk_str;
-
-#endif

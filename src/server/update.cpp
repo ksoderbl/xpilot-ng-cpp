@@ -633,7 +633,7 @@ static void Ecm_update(void)
     int i;
 
     // if (Num_ecms() > 0)
-    // 	warn("Ecm_Update: ecms: %d", Num_ecms());
+    //     warn("Ecm_Update: ecms: %d", Num_ecms());
 
     for (i = 0; i < Num_ecms(); i++)
     {
@@ -649,8 +649,8 @@ static void Ecm_update(void)
                     pl->ecmcount--;
             }
 #if 0
-	    	--world->NumEcms;
-	    	world->ecms[i] = world->ecms[world->NumEcms];
+            --world->NumEcms;
+            world->ecms[i] = world->ecms[world->NumEcms];
 #else
             world->ecms.erase(world->ecms.begin() + i);
 #endif
@@ -673,9 +673,9 @@ static void Transporter_update(void)
         if ((trans->count -= timeStep) <= 0)
         {
 #if 0
-			--world->NumTransporters;
-			world->transporters[i]
-			= world->transporters[world->NumTransporters];
+            --world->NumTransporters;
+            world->transporters[i]
+            = world->transporters[world->NumTransporters];
 #else
             world->transporters.erase(world->transporters.begin() + i);
 #endif

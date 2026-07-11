@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -25,8 +23,12 @@
 
 #pragma once
 
+/* need sock_t */
 #include "socklib.h"
 
+/*
+ * datagram.cpp
+ */
 int create_dgram_addr_socket(sock_t *sock, char *dotaddr, int port);
 int create_dgram_socket(sock_t *sock, int port);
 void close_dgram_socket(sock_t *sock);

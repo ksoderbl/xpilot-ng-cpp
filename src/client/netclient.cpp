@@ -1125,8 +1125,8 @@ static void Net_lag_measurement(long key_ack)
         {
             keyboard_acktime[i] = last_loops - 1;
 #if 0
-	    printf("A;%d;%ld;%ld ",
-		   i, keyboard_change[i], keyboard_acktime[i]);
+        printf("A;%d;%ld;%ld ",
+           i, keyboard_change[i], keyboard_acktime[i]);
 #endif
             break;
         }
@@ -1134,7 +1134,7 @@ static void Net_lag_measurement(long key_ack)
 
 #if 0
     if (i == KEYBOARD_STORE)
-	printf("N ");
+    printf("N ");
 #endif
 
     num = 0;
@@ -1312,10 +1312,10 @@ int Net_input(void)
         }
         if ((i == receive_window_size - 1 && i > 0)
 #if 0
-	    || drawPending
-	    || (ThreadedDraw &&
-		!WaitForSingleObject(dinfo.eventNotDrawing, 0)
-		== WAIT_OBJECT_0)
+        || drawPending
+        || (ThreadedDraw &&
+        !WaitForSingleObject(dinfo.eventNotDrawing, 0)
+        == WAIT_OBJECT_0)
 #endif
         )
         {
@@ -2758,10 +2758,10 @@ int Send_pointer_move(int movement)
     t = s + u * 1e-6;
 
     if (tv.tv_sec != old_tv.tv_sec) {
-	warn("Send_pointer_moves = %d", num);
-	num = 1;
+    warn("Send_pointer_moves = %d", num);
+    num = 1;
     } else
-	num ++;
+    num ++;
 
     /*warn("%d %.2f: %d", num, t - oldt, movement);*/
 

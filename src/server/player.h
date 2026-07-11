@@ -618,8 +618,8 @@ static inline bool Player_has_emergency_thrust(player_t *pl)
 {
 #if 0
     if (pl->item[ITEM_EMERGENCY_THRUST] > 0
-	|| pl->emergency_thrust_left > 0.0)
-	return true;
+    || pl->emergency_thrust_left > 0.0)
+    return true;
     return false;
 #else
     if (BIT(pl->have, HAS_EMERGENCY_THRUST))
@@ -639,8 +639,8 @@ static inline bool Player_has_phasing_device(player_t *pl)
 {
 #if 0
     if (pl->item[ITEM_PHASING] > 0
-	|| pl->phasing_left > 0.0)
-	return true;
+    || pl->phasing_left > 0.0)
+    return true;
 #else
     if (BIT(pl->have, HAS_PHASING_DEVICE))
         return true;

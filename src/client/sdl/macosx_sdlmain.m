@@ -11,7 +11,7 @@
 #import <unistd.h>
 
 /* Use this flag to determine whether we use SDLMain.nib or not */
-#define		SDL_USE_NIB_FILE	0
+#define        SDL_USE_NIB_FILE    0
 
 
 static int    gArgc;
@@ -127,9 +127,9 @@ void setupAppleMenu(void)
 /* Create a window menu */
 void setupWindowMenu(void)
 {
-    NSMenu		*windowMenu;
-    NSMenuItem	*windowMenuItem;
-    NSMenuItem	*menuItem;
+    NSMenu        *windowMenu;
+    NSMenuItem    *windowMenuItem;
+    NSMenuItem    *menuItem;
 
 
     windowMenu = [[NSMenu alloc] initWithTitle:@"Window"];
@@ -155,8 +155,8 @@ void setupWindowMenu(void)
 /* Replacement for NSApplicationMain */
 void CustomApplicationMain (argc, argv)
 {
-    NSAutoreleasePool	*pool = [[NSAutoreleasePool alloc] init];
-    SDLMain				*sdlMain;
+    NSAutoreleasePool    *pool = [[NSAutoreleasePool alloc] init];
+    SDLMain                *sdlMain;
 
     /* Ensure the application object is initialised */
     [SDLApplication sharedApplication];
@@ -257,10 +257,10 @@ int main (int argc, char **argv)
     /* This is passed if we are launched by double-clicking */
     if ( argc >= 2 && strncmp (argv[1], "-psn", 4) == 0 ) {
         gArgc = 1;
-	gFinderLaunch = YES;
+    gFinderLaunch = YES;
     } else {
         gArgc = argc;
-	gFinderLaunch = NO;
+    gFinderLaunch = NO;
     }
     gArgv = (char**) malloc (sizeof(*gArgv) * (gArgc+1));
     assert (gArgv != NULL);

@@ -355,7 +355,7 @@ static void Robot_set_pointing_direction(player_t *pl, double direction)
 /* void Obj_pos_set(object *obj, int cx, int cy); */
 
 /* void Obj_pos_set(object *obj, int cx, int cy){ */
-/*     struct _objposition		*pos = (struct _objposition *)&obj->pos; */
+/*     struct _objposition        *pos = (struct _objposition *)&obj->pos; */
 
 /*     pos->cx = cx; */
 /*     pos->x = CLICK_TO_PIXEL(cx); */
@@ -610,7 +610,7 @@ bool Robot_evade_shot(player_t *pl)
             pl->pos.cy))
     {
         direction_evade1 += ANGLE_RESOLUTION;
-        //	printf("Wall!\n");
+        //    printf("Wall!\n");
     }
 
     // printf("direction old: %.2f\n",direction_evade1);
@@ -685,9 +685,9 @@ double Robot_ram_object(player_t *pl, object_t *object)
     /*       double tmp_y = (int)(y + vely * time); */
 
     /*       double tmp_length= */
-    /* 	abs(LENGTH(tmp_x,tmp_y)- 0.5 * (CLICK * pl->power / pl->mass) * sqr(time)); */
+    /*     abs(LENGTH(tmp_x,tmp_y)- 0.5 * (CLICK * pl->power / pl->mass) * sqr(time)); */
     /*       if(tmp_length < 3000) */
-    /* 	printf("time %.2f  length %.2f\n",time,tmp_length); */
+    /*     printf("time %.2f  length %.2f\n",time,tmp_length); */
     /*     } */
 
     time = 1;
@@ -729,9 +729,9 @@ double Robot_ram_object(player_t *pl, object_t *object)
         int tmp_x = (int)(x + velx * time);
         int tmp_y = (int)(y + vely * time);
 
-        //	if( abs(delta_time)< 0.001* abs(time))
+        //    if( abs(delta_time)< 0.001* abs(time))
         if (abs(function) < 10)
-            //	if(abs(LENGTH(tmp_x,tmp_y)- 0.5 * (CLICK * pl->power/pl->mass) * sqr(time)) < 10 )
+            //    if(abs(LENGTH(tmp_x,tmp_y)- 0.5 * (CLICK * pl->power/pl->mass) * sqr(time)) < 10 )
             break;
     }
 
@@ -778,9 +778,9 @@ double Robot_ram_object(player_t *pl, object_t *object)
      * something is wrong - better use the vector of current LOS (line of sight)
      */
     //    if(sqr_c > sqr(x+x_tgo)+sqr(y+y_tgo)){
-    //	x_tgo=x;
-    //	y_tgo=y;
-    //	}
+    //    x_tgo=x;
+    //    y_tgo=y;
+    //    }
 
     direction = (Wrap_cfindDir(x_tgo, y_tgo));
 
@@ -1323,7 +1323,7 @@ static void Robot_suibot_round_tick(void)
     Max_enemy_distance = world->hypotenuse;
     if (world->hypotenuse > Visibility_distance)
         Max_enemy_distance = world->hypotenuse;
-    /*	min_enemy_distance
+    /*    min_enemy_distance
             + (((world->hypotenuse - min_enemy_distance)
             * (NUM_IDS - NumRobots)) / NUM_IDS);*/
 }

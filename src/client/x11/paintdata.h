@@ -34,14 +34,14 @@ extern int Rectangle_add(int color, int x, int y, int width, int height);
 extern void Arc_start(void);
 extern void Arc_end(void);
 extern int Arc_add(int color,
-				   int x, int y,
-				   int width, int height,
-				   int angle1, int angle2);
+                   int x, int y,
+                   int width, int height,
+                   int angle1, int angle2);
 extern int Arc_add_rgb(unsigned long color, /* Used if fullColor is on. */
-					   int fallback_color,	/* Used if fullColor is off. */
-					   int x, int y,
-					   int width, int height,
-					   int angle1, int angle2);
+                       int fallback_color,  /* Used if fullColor is off. */
+                       int x, int y,
+                       int width, int height,
+                       int angle1, int angle2);
 extern void Segment_start(void);
 extern void Segment_end(void);
 extern int Segment_add(int color, int x1, int y1, int x2, int y2);
