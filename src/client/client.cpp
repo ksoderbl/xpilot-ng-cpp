@@ -54,6 +54,7 @@
 #include "netclient.h"
 #include "paint.h"
 #include "talk.h"
+#include "messages.h"
 
 client_data_t clData = {
     0,

@@ -45,7 +45,7 @@
 #include "client.h"
 #include "configure.h"
 #include "gfx2d.h"
-// #include "messages.h"
+#include "messages.h"
 #include "netclient.h"
 #include "paint.h"
 #include "option.h"

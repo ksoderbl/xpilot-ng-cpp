@@ -45,7 +45,7 @@
 #include "xperror.h"
 
 #include "client.h"
-// #include "messages.h"
+#include "messages.h"
 #include "netclient.h"
 #include "paint.h"
 

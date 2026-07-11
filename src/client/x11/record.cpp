@@ -43,15 +43,17 @@
 
 #include "commonmacros.h"
 #include "const.h"
-
-#include "option.h"
-#include "paint.h"
-#include "netclient.h"
-
 #include "xpconfig.h"
 #include "xperror.h"
-#include "xpaint.h"
+
 #include "clientsetup.h"
+#include "messages.h"
+#include "netclient.h"
+#include "option.h"
+#include "paint.h"
+
+#include "xpaint.h"
+
 #include "record.h"
 #include "recordfmt.h"
 #include "xinit.h"

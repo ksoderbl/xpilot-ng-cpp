@@ -40,7 +40,7 @@
 #include "xperror.h"
 #include "const.h"
 #include "version.h"
-// #include "messages.h"
+#include "messages.h"
 
 #include "client.h"
 #include "option.h"

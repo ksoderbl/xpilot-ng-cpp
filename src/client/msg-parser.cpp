@@ -20,9 +20,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#if 0
+#include "msg-parser.h"
+
 #include <assert.h>
 #include <cstdio>
+#include <cstdlib>
 #include <cstring>
 
 #include "bit.h"
@@ -34,7 +36,25 @@
 #include "rules.h"
 #include "setup.h"
 #include "types.h"
-// #include "frame.h"
+#include "clientmap.h"
+#include "clientrank.h"
+#include "clientsetup.h"
+#include "messages.h"
+
+static bool ball_shout = false;
+static bool need_cover = false;
+
+bool roundend = false;
+static int killratio_kills = 0;
+static int killratio_deaths = 0;
+static int killratio_totalkills = 0;
+static int killratio_totaldeaths = 0;
+static int ballstats_cashes = 0;
+static int ballstats_replaces = 0;
+static int ballstats_teamcashes = 0;
+static int ballstats_lostballs = 0;
+bool played_this_round = false;
+static int rounds_played = 0;
 
 /*
  * Little less ugly message scan hack by Samaseon (kps)
@@ -51,7 +71,7 @@
  */
 
 /* if you want debug messages, use the upper one */
-/* #define DP(x) x */
+/*#define DP(x) x*/
 #define DP(x)
 
 static const char *shottypes[] = {
@@ -86,8 +106,7 @@ const char *client_or_server[] = {
     "*Server reply*",
 };
 
-/* parser for messages */
-bool Msg_match_fmt(const char *msg, const char *fmt, msgnames_t *mn)
+static bool Msg_match_fmt(const char *msg, const char *fmt, msgnames_t *mn)
 {
     const char *fp;
     int i;
@@ -114,22 +133,11 @@ bool Msg_match_fmt(const char *msg, const char *fmt, msgnames_t *mn)
 
     switch (*(fp + 1))
     {
-        const char *nick;
+        char *nick;
     case 'n': /* nick */
         for (i = 0; i < num_others; i++)
         {
             nick = Others[i].nick_name;
-            len = strlen(nick);
-            if ((strncmp(msg, nick, len) == 0) && Msg_match_fmt(msg + len, fmt, mn))
-            {
-                strncpy(mn->nick_name[mn->index++], nick, len + 1);
-                return true;
-            }
-        }
-        /* The client or server software "sent" the message? */
-        for (i = 0; i < NELEM(client_or_server); i++)
-        {
-            nick = client_or_server[i];
             len = strlen(nick);
             if ((strncmp(msg, nick, len) == 0) && Msg_match_fmt(msg + len, fmt, mn))
             {
@@ -221,7 +229,7 @@ bool Want_scan(void)
  * A total reset is most often done when a new match is starting.
  * If we see a total reset message we clear the statistics.
  */
-bool Msg_scan_for_total_reset(const char *message)
+static bool Msg_scan_for_total_reset(const char *message)
 {
     static char total_reset[] = "Total reset";
 
@@ -243,7 +251,7 @@ bool Msg_scan_for_total_reset(const char *message)
     return false;
 }
 
-bool Msg_scan_for_replace_treasure(const char *message)
+static bool Msg_scan_for_replace_treasure(const char *message)
 {
     msgnames_t mn;
 
@@ -281,7 +289,7 @@ bool Msg_scan_for_replace_treasure(const char *message)
     return false;
 }
 
-bool Msg_scan_for_ball_destruction(const char *message)
+static bool Msg_scan_for_ball_destruction(const char *message)
 {
     msgnames_t mn;
 
@@ -311,10 +319,8 @@ bool Msg_scan_for_ball_destruction(const char *message)
 }
 
 /* Needed by base warning hack */
-void Msg_scan_death(int id)
+static void Msg_scan_death(int id)
 {
-    // warn("Msg_scan_death: id: %d", id);
-
     int i;
     other_t *other;
 
@@ -325,22 +331,15 @@ void Msg_scan_death(int id)
     if (!other)
         return;
 
-    // warn("Msg_scan_death: other: %p", other);
-    // warn("Msg_scan_death: other->nick_name: %s", other->nick_name);
-    // warn("Msg_scan_death: other->life: %d", other->life);
-
     /* don't do base warning for players who lost their last life */
     if (BIT(Setup->mode, LIMITED_LIVES) && other->life == 0)
         return;
 
     for (auto &base : clMap.bases)
     {
-        // warn("Msg_scan_death: i=%d, id=%d, bases[i].id=%d", i, id, bases[i].id);
         if (base.id == id)
         {
-            // warn("Msg_scan_death: i=%d, end_loops=%ld", i, end_loops);
             base.appeartime = (long)(end_loops + 3 * clientFPS);
-            // warn("Msg_scan_death: i=%d, bases[i].appeartime=%ld", i, bases[i].appeartime);
             break;
         }
     }
@@ -389,7 +388,7 @@ void Msg_scan_game_msg(const char *message)
 
     if (!self)
     {
-        // warn("Variable 'self' is NULL!");
+        warn("Variable 'self' is NULL!");
         return;
     }
 
@@ -547,32 +546,31 @@ void Msg_scan_game_msg(const char *message)
     if (i_am_victim || i_am_victim2)
         killratio_deaths++;
 
-    // TODO
-    // if (instruments.clientRanker)
-    // {
-    //     /*static char tauntstr[MAX_CHARS];
-    //       int kills, deaths; */
+    if (instruments.clientRanker)
+    {
+        /*static char tauntstr[MAX_CHARS];
+          int kills, deaths; */
 
-    //     /* handle case where there is a victim and a killer */
-    //     if (killer != NULL && victim != NULL)
-    //     {
-    //         if (i_am_killer && !i_am_victim)
-    //         {
-    //             Add_rank_Death(victim);
-    //             /*if (BIT(instruments, TAUNT)) {
-    //               kills = Get_kills(victim);
-    //               deaths = Get_deaths(victim);
-    //               if (deaths > kills) {
-    //               sprintf(tauntstr, "%s: %i-%i HEHEHEHE\0",
-    //               victim, deaths, kills);
-    //               Net_talk(tauntstr);
-    //               }
-    //               } */
-    //         }
-    //         if (!i_am_killer && i_am_victim)
-    //             Add_rank_Kill(killer);
-    //     }
-    // }
+        /* handle case where there is a victim and a killer */
+        if (killer != NULL && victim != NULL)
+        {
+            if (i_am_killer && !i_am_victim)
+            {
+                Add_rank_Death(victim);
+                /*if (BIT(instruments, TAUNT)) {
+                  kills = Get_kills(victim);
+                  deaths = Get_deaths(victim);
+                  if (deaths > kills) {
+                  sprintf(tauntstr, "%s: %i-%i HEHEHEHE\0",
+                  victim, deaths, kills);
+                  Net_talk(tauntstr);
+                  }
+                  } */
+            }
+            if (!i_am_killer && i_am_victim)
+                Add_rank_Kill(killer);
+        }
+    }
 }
 
 /*
@@ -664,4 +662,213 @@ void Partition_talk_message(char *message,
         }
     }
 }
-#endif
+
+static void Roundend(void)
+{
+    int i;
+
+    roundend = false;
+    Bms_set_state(BmsNone);
+}
+
+void Add_roundend_messages(other_t **order)
+{
+    static char hackbuf[MSG_LEN];
+    static char hackbuf2[MSG_LEN];
+    static char kdratio[16];
+    static char killsperround[16];
+    char *s;
+    int i;
+    other_t *other;
+
+    Roundend();
+
+    if (killratio_totalkills == 0)
+        sprintf(kdratio, "0");
+    else if (killratio_totaldeaths == 0)
+        sprintf(kdratio, "infinite");
+    else
+        sprintf(kdratio, "%.2f",
+                (double)killratio_totalkills / killratio_totaldeaths);
+
+    if (rounds_played == 0)
+        sprintf(killsperround, "0");
+    else
+        sprintf(killsperround, "%.2f",
+                (double)killratio_totalkills / rounds_played);
+
+    sprintf(hackbuf, "Kill ratio - Round: %d/%d Total: %d/%d (%s) "
+                     "Rounds played: %d  Avg.kills/round: %s",
+            killratio_kills, killratio_deaths,
+            killratio_totalkills, killratio_totaldeaths, kdratio,
+            rounds_played, killsperround);
+
+    killratio_kills = 0;
+    killratio_deaths = 0;
+    Add_message(hackbuf);
+
+    sprintf(hackbuf, "Ballstats - Cash/Repl/Team/Lost: %d/%d/%d/%d",
+            ballstats_cashes, ballstats_replaces,
+            ballstats_teamcashes, ballstats_lostballs);
+    Add_message(hackbuf);
+
+    s = hackbuf;
+    s += sprintf(s, "Points - ");
+    /*
+     * Scores are nice to see e.g. in cup recordings.
+     */
+    for (i = 0; i < num_others; i++)
+    {
+        other = order[i];
+        if (other->mychar == 'P')
+            continue;
+
+        if (Using_score_decimals())
+        {
+            sprintf(hackbuf2, "%s: %.*f ", other->nick_name,
+                    showScoreDecimals, other->score);
+            if ((s - hackbuf) + strlen(hackbuf2) > MSG_LEN)
+            {
+                Add_message(hackbuf);
+                s = hackbuf;
+            }
+            s += sprintf(s, "%s", hackbuf2);
+        }
+        else
+        {
+            double score = other->score;
+            int sc = (int)(score >= 0.0 ? score + 0.5 : score - 0.5);
+            sprintf(hackbuf2, "%s: %d ", other->nick_name, sc);
+            if ((s - hackbuf) + strlen(hackbuf2) > MSG_LEN)
+            {
+                Add_message(hackbuf);
+                s = hackbuf;
+            }
+            s += sprintf(s, "%s", hackbuf2);
+        }
+    }
+    Add_message(hackbuf);
+}
+
+/* Mara's ball message scan */
+msg_bms_t Msg_do_bms(const char *message)
+{
+    static char ball_text1[] = "BALL";
+    static char ball_text2[] = "Ball";
+    static char ball_text3[] = "VAKK";
+    static char ball_text4[] = "B A L L";
+    static char ball_text5[] = "ball";
+    static char safe_text1[] = "SAFE";
+    static char safe_text2[] = "Safe";
+    static char safe_text3[] = "safe";
+    static char safe_text4[] = "S A F E";
+    static char cover_text1[] = "COVER";
+    static char cover_text2[] = "Cover";
+    static char cover_text3[] = "cover";
+    static char cover_text4[] = "INCOMING";
+    static char cover_text5[] = "Incoming";
+    static char cover_text6[] = "incoming";
+    static char pop_text1[] = "POP";
+    static char pop_text2[] = "Pop";
+    static char pop_text3[] = "pop";
+
+    /*check safe b4 ball */
+    if (strstr(message, safe_text1) ||
+        strstr(message, safe_text2) ||
+        strstr(message, safe_text3) ||
+        strstr(message, safe_text4))
+    {
+        return BmsSafe;
+    }
+
+    if (strstr(message, cover_text1) ||
+        strstr(message, cover_text2) ||
+        strstr(message, cover_text3) ||
+        strstr(message, cover_text4) ||
+        strstr(message, cover_text5) ||
+        strstr(message, cover_text6))
+    {
+        return BmsCover;
+    }
+
+    if (strstr(message, pop_text1) ||
+        strstr(message, pop_text2) ||
+        strstr(message, pop_text3))
+    {
+        return BmsPop;
+    }
+
+    if (strstr(message, ball_text1) ||
+        strstr(message, ball_text2) ||
+        strstr(message, ball_text3) ||
+        strstr(message, ball_text4) ||
+        strstr(message, ball_text5))
+    {
+        return BmsBall;
+    }
+
+    return BmsNone;
+}
+
+/*
+ * Clear bms info for all messages of the specified type.
+ */
+static void Bms_clear(msg_bms_t type)
+{
+    int i;
+
+    for (i = 0; i < maxMessages && TalkMsg[i]->len > 0; i++)
+        if (TalkMsg[i]->bmsinfo == type)
+            TalkMsg[i]->bmsinfo = BmsNone;
+}
+
+bool Bms_test_state(msg_bms_t bms)
+{
+    switch (bms)
+    {
+    case BmsBall:
+        return ball_shout;
+    case BmsCover:
+        return need_cover;
+    case BmsSafe:
+        return !ball_shout;
+    case BmsPop:
+        return !need_cover;
+    default:
+        dumpcore("Bms_test_state(): invalid message type");
+        return 0;
+    }
+}
+
+void Bms_set_state(msg_bms_t bms)
+{
+    switch (bms)
+    {
+    case BmsBall:
+        ball_shout = true;
+        Bms_clear(BmsSafe);
+        break;
+    case BmsSafe:
+        ball_shout = false;
+        Bms_clear(BmsBall);
+        break;
+    case BmsCover:
+        need_cover = true;
+        Bms_clear(BmsPop);
+        break;
+    case BmsPop:
+        need_cover = false;
+        Bms_clear(BmsCover);
+        break;
+    case BmsNone:
+        ball_shout = false;
+        need_cover = false;
+        Bms_clear(BmsBall);
+        Bms_clear(BmsSafe);
+        Bms_clear(BmsCover);
+        Bms_clear(BmsPop);
+        break;
+    default:
+        dumpcore("Bms_set_state(): invalid message type");
+    }
+}

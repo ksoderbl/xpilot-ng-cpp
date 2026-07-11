@@ -35,6 +35,7 @@
 #include "types.h"
 #include "clientmap.h"
 #include "other.h"
+#include "msg-parser.h"
 
 typedef struct
 {
@@ -149,16 +150,6 @@ typedef struct
     /* when a message 'jumps' from talk window to the player messages: */
     bool keep_emphasizing;
 } selection_t;
-
-/* typedefs begin */
-typedef enum
-{
-    BmsNone = 0,
-    BmsBall,
-    BmsSafe,
-    BmsCover,
-    BmsPop
-} msg_bms_t;
 
 typedef struct
 {
@@ -345,23 +336,6 @@ bool Key_press(keys_t key);
 bool Key_release(keys_t key);
 void Set_auto_shield(bool on);
 void Set_toggle_shield(bool on);
-
-/*
- * messages.c
- */
-bool Bms_test_state(msg_bms_t bms);
-void Bms_set_state(msg_bms_t bms);
-int Alloc_msgs(void);
-void Free_msgs(void);
-int Alloc_history(void);
-void Free_selectionAndHistory(void);
-void Add_message(const char *message);
-void Add_newbie_message(const char *message);
-extern void Add_alert_message(const char *message, double timeout);
-extern void Clear_alert_messages(void);
-void Add_pending_messages(void);
-void Add_roundend_messages(other_t **order);
-void Print_messages_to_stdout(void);
 
 /*
  * client.c
