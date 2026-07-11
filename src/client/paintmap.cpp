@@ -537,12 +537,18 @@ void Paint_world(void)
                     Gui_paint_walls(x, y, type);
 
                     if ((type & BLUE_FUEL) == BLUE_FUEL)
-                        Handle_vfuel(x, y, Fuel_by_pos(xi, yi));
+                    {
+                        double fuel = Fuel_by_pos(xi, yi);
+                        Handle_vfuel(x, y, fuel);
+                    }
                 }
                 else
                 {
                     if ((type & BLUE_FUEL) == BLUE_FUEL)
-                        Handle_vfuel(x, y, Fuel_by_pos(xi, yi));
+                    {
+                        double fuel = Fuel_by_pos(xi, yi);
+                        Handle_vfuel(x, y, fuel);
+                    }
                     else if (type & BLUE_OPEN)
                     {
                         if (type & BLUE_BELOW)

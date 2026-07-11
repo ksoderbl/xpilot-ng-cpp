@@ -129,8 +129,6 @@ void Paint_ships(void);
 void Paint_radar(void);
 void Paint_sliding_radar(void);
 void Paint_world_radar(void);
-void Radar_show_target(int x, int y);
-void Radar_hide_target(int x, int y);
 void Paint_vcannon(void);
 void Paint_vfuel(void);
 void Paint_vbase(void);

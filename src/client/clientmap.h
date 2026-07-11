@@ -345,6 +345,29 @@ extern int num_polygon_styles, max_polygon_styles;
 // extern wormhole_t *wormhole_ptr;
 // extern int num_wormholes, max_wormholes;
 
+double Fuel_by_pos(int x, int y);
+int Target_alive(int x, int y, double *damage);
+int Target_by_index(int ind, int *xp, int *yp, int *dead_time, double *damage);
+int Handle_fuel(int ind, double fuel);
+int Cannon_dead_time_by_pos(int x, int y, int *dot);
+int Handle_cannon(int ind, int dead_time);
+int Handle_target(int num, int dead_time, double damage);
+int Base_info_by_pos(int x, int y, int *id, int *team);
+int Handle_base(int id, int ind);
+int Check_pos_by_index(int ind, int *xp, int *yp);
+int Check_index_by_pos(int x, int y);
+homebase_t *Homebase_by_id(int id);
+int Handle_leave(int id);
+int Handle_player(int id, int team, int mychar,
+                  char *nick_name, char *user_name, char *host_name,
+                  char *shape, int myself);
+int Handle_team(int id, int pl_team);
+int Handle_score(int id, double score, int life, int mychar, int alliance);
+int Handle_score_object(double score, int x, int y, char *msg);
+int Handle_team_score(int team, double score);
+int Handle_timing(int id, int check, int round, long loops);
+int Handle_seek(int programmer_id, int robot_id, int sought_id);
+
 int Handle_start(long server_loops);
 int Handle_end(long server_loops);
 int Handle_self(int x, int y, int vx, int vy, int newHeading,
@@ -389,3 +412,13 @@ int Handle_vcannon(int x, int y, int type);
 int Handle_vfuel(int x, int y, double fuel);
 int Handle_vbase(int x, int y, int xi, int yi, int type);
 int Handle_vdecor(int x, int y, int xi, int yi, int type);
+int Handle_message(char *msg);
+int Handle_eyes(int id);
+int Handle_time_left(long sec);
+void Map_dots(void);
+void Map_restore(int startx, int starty, int width, int height);
+void Map_blue(int startx, int starty, int width, int height);
+bool Using_score_decimals(void);
+
+int Map_init(void);
+int Map_cleanup(void);
