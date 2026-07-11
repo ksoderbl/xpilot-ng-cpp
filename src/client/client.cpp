@@ -105,10 +105,9 @@ other_t *eyes = nullptr; /* Player we get frame updates for */
 bool snooping;           /* are we snooping on someone else? */
 int eyeTeam = TEAM_NOT_SET;
 
-other_t *self = nullptr; /* player info */
-short selfVisible;       /* Are we alive and playing? */
-short damaged;           /* Damaged by ECM */
-short destruct;          /* If self destructing */
+short selfVisible; /* Are we alive and playing? */
+short damaged;     /* Damaged by ECM */
+short destruct;    /* If self destructing */
 short shutdown_delay;
 short shutdown_count;
 short thrusttime;
@@ -1157,99 +1156,6 @@ homebase_t *Homebase_by_id(int id)
         }
     }
     return nullptr;
-}
-
-other_t *Other_by_id(int id)
-{
-    int i;
-
-    if (id != -1)
-    {
-        for (i = 0; i < num_others; i++)
-        {
-            if (Others[i].id == id)
-                return &Others[i];
-        }
-    }
-    return nullptr;
-}
-
-other_t *Other_by_name(const char *name, bool show_error_msg)
-{
-    int i;
-    other_t *found_other = nullptr, *other;
-    size_t len;
-
-    if (name == nullptr || (len = strlen(name)) == 0)
-        goto match_none;
-
-    /* Look for an exact match on player nickname. */
-    for (i = 0; i < num_others; i++)
-    {
-        other = &Others[i];
-        if (!strcasecmp(other->nick_name, name))
-            return other;
-    }
-
-    /* Look if 'name' matches beginning of only one nick. */
-    for (i = 0; i < num_others; i++)
-    {
-        other = &Others[i];
-
-        if (!strncasecmp(other->nick_name, name, len))
-        {
-            if (found_other)
-                goto match_several;
-            found_other = other;
-            continue;
-        }
-    }
-    if (found_other)
-        return found_other;
-
-    /*
-     * Check what players' name 'name' is a substring of (case insensitively).
-     */
-    for (i = 0; i < num_others; i++)
-    {
-        int j;
-        other = &Others[i];
-
-        for (j = 0; j < 1 + (int)strlen(other->nick_name) - (int)len; j++)
-        {
-            if (!strncasecmp(other->nick_name + j, name, len))
-            {
-                if (found_other)
-                    goto match_several;
-                found_other = other;
-                break;
-            }
-        }
-    }
-    if (found_other)
-        return found_other;
-
-match_none:
-{
-    if (show_error_msg)
-        Add_message("Name does not match any player. [*Client reply*]");
-    return nullptr;
-}
-match_several:
-{
-    if (show_error_msg)
-        Add_message("Name matches several players. [*Client reply*]");
-    return nullptr;
-}
-}
-
-shipshape_t *Ship_by_id(int id)
-{
-    other_t *other;
-
-    if ((other = Other_by_id(id)) == nullptr)
-        return Parse_shape_str(nullptr);
-    return other->ship;
 }
 
 int Handle_leave(int id)

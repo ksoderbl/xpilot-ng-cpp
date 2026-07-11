@@ -34,6 +34,7 @@
 #include "option.h"
 #include "types.h"
 #include "clientmap.h"
+#include "other.h"
 
 typedef struct
 {
@@ -111,233 +112,6 @@ typedef struct
 #define MSG_FLASH_TIME 105.0 /* Old messages have life time less \
                 than this */
 #define MAX_POINTER_BUTTONS 5
-
-// typedef struct
-// {
-//     double score;
-//     short id;
-//     uint16_t team;
-//     short check;
-//     short round;
-//     long timing_loops;
-//     short timing;
-//     short life;
-//     short mychar;
-//     short alliance;
-//     short name_width;         /* In pixels */
-//     short name_len;           /* In bytes */
-//     short max_chars_in_names; /* name_width was calculated
-//                      for this value of maxCharsInNames */
-//     short ignorelevel;
-//     shipshape_t *ship;
-//     char nick_name[MAX_CHARS];
-//     char user_name[MAX_CHARS];
-//     char host_name[MAX_CHARS];
-//     char id_string[MAX_CHARS];
-// } other_t;
-
-// typedef struct
-// {
-//     int pos;       /* Block index */
-//     double fuel;   /* Amount of fuel available */
-//     irec_t bounds; /* Location on map */
-// } fuelstation_t;
-
-// typedef struct
-// {
-//     int pos;         /* Block index */
-//     short id;        /* Id of owner or -1 */
-//     uint16_t team;   /* Team this base belongs to */
-//     irec_t bounds;   /* Location on map */
-//     int type;        /* orientation */
-//     long appeartime; /* For base warning */
-// } homebase_t;
-
-// typedef struct
-// {
-//     int pos;         /* Block index */
-//     short dead_time, /* Frames inactive */
-//         dot;         /* Draw dot if inactive */
-// } cannontime_t;
-
-// typedef struct
-// {
-//     int pos;         /* Block index */
-//     short dead_time; /* Frames inactive */
-//     double damage;   /* Damage to target */
-// } target_t;
-
-// typedef struct
-// {
-//     int pos;       /* Block index */
-//     irec_t bounds; /* Location on map */
-// } checkpoint_t;
-
-// typedef struct
-// {
-//     int width;           /* Line width, -1 means no line */
-//     unsigned long color; /* Line color */
-//     int rgb;             /* RGB values corresponding to color */
-//     int style;           /* 0=LineSolid, 1=LineOnOffDash, 2=LineDoubleDash */
-// } edge_style_t;
-
-// typedef struct
-// {
-//     unsigned long color; /* The color if drawn in filled mode */
-//     int rgb;             /* RGB values corresponding to color */
-//     int texture;         /* The texture if drawn in texture mode */
-//     int flags;           /* Flags about this style (see draw.h) */
-//     int def_edge_style;  /* The default style for edges */
-// } polygon_style_t;
-
-// typedef struct
-// {
-//     ipos_t *points;   /* points[0] is absolute, rest are relative */
-//     int num_points;   /* number of points */
-//     irec_t bounds;    /* bounding box for the polygon */
-//     int *edge_styles; /* optional array of indexes to edge_styles */
-//     int style;        /* index to polygon_styles array */
-// } xp_polygon_t;
-
-// /*
-//  * Types for dynamic game data
-//  */
-
-// typedef struct
-// {
-//     short x0, y0, x1, y1;
-// } refuel_t;
-
-// typedef struct
-// {
-//     short x0, y0, x1, y1;
-//     uint8_t tractor;
-// } connector_t;
-
-// typedef struct
-// {
-//     uint8_t color, dir;
-//     short x, y, len;
-// } laser_t;
-
-// typedef struct
-// {
-//     short x, y, dir;
-//     uint8_t len;
-// } missile_t;
-
-// typedef struct
-// {
-//     short x, y, id;
-//     uint8_t style;
-// } ball_t;
-
-// typedef struct
-// {
-//     short x, y, id, dir;
-//     uint8_t shield, cloak, eshield;
-//     uint8_t phased, deflector;
-// } ship_t;
-
-// typedef struct
-// {
-//     short x, y, teammine, id;
-// } mine_t;
-
-// typedef struct
-// {
-//     short x, y, type;
-// } itemtype_t;
-
-// typedef struct
-// {
-//     short x, y, size;
-// } ecm_t;
-
-// typedef struct
-// {
-//     short x1, y1, x2, y2;
-// } trans_t;
-
-// typedef struct
-// {
-//     short x, y, count;
-// } paused_t;
-
-// typedef struct
-// {
-//     short x, y, id, count;
-// } appearing_t;
-
-// typedef enum
-// {
-//     RadarEnemy,
-//     RadarFriend
-// } radar_type_t;
-
-// typedef struct
-// {
-//     short x, y, size;
-//     radar_type_t type;
-// } radar_t;
-
-// typedef struct
-// {
-//     short x, y, type;
-// } vcannon_t;
-
-// typedef struct
-// {
-//     short x, y;
-//     double fuel;
-// } vfuel_t;
-
-// typedef struct
-// {
-//     short x, y, xi, yi, type;
-// } vbase_t;
-
-// typedef struct
-// {
-//     uint8_t x, y;
-// } debris_t;
-
-// typedef struct
-// {
-//     short x, y, xi, yi, type;
-// } vdecor_t;
-
-// typedef struct
-// {
-//     short x, y;
-//     uint8_t wrecktype, size, rotation;
-// } wreckage_t;
-
-// typedef struct
-// {
-//     short x, y;
-//     uint8_t type, size, rotation;
-// } asteroid_t;
-
-// typedef struct
-// {
-//     short x, y;
-// } wormhole_t;
-
-// /*#define SCORE_OBJECT_COUNT    100*/
-// typedef struct
-// {
-//     double score,
-//         life_time;
-//     int x,
-//         y,
-//         hud_msg_len,
-//         hud_msg_width,
-//         msg_width,
-//         msg_len;
-//     char msg[10],
-//         hud_msg[MAX_CHARS + 10];
-// } score_object_t;
 
 /*
  * is a selection pending (in progress), done, drawn emphasized?
@@ -440,7 +214,6 @@ extern other_t *eyes; /* Player we get frame updates for */
 extern bool snooping; /* are we snooping on someone else? */
 extern int eyeTeam;   /* Team of player we get updates for */
 
-extern other_t *self;     /* Player info */
 extern short selfVisible; /* Are we alive and playing? */
 extern short damaged;     /* Damaged by ECM */
 extern short destruct;    /* If self destructing */
@@ -671,9 +444,6 @@ int Handle_base(int id, int ind);
 int Check_pos_by_index(int ind, int *xp, int *yp);
 int Check_index_by_pos(int x, int y);
 homebase_t *Homebase_by_id(int id);
-other_t *Other_by_id(int id);
-other_t *Other_by_name(const char *name, bool show_error_msg);
-shipshape_t *Ship_by_id(int id);
 int Handle_leave(int id);
 int Handle_player(int id, int team, int mychar,
                   char *nick_name, char *user_name, char *host_name,

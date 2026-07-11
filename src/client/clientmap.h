@@ -35,30 +35,6 @@
 
 typedef struct
 {
-    double score;
-    short id;
-    uint16_t team;
-    short check;
-    short round;
-    long timing_loops;
-    short timing;
-    short life;
-    short mychar;
-    short alliance;
-    short name_width;         /* In pixels */
-    short name_len;           /* In bytes */
-    short max_chars_in_names; /* name_width was calculated
-                     for this value of maxCharsInNames */
-    short ignorelevel;
-    shipshape_t *ship;
-    char nick_name[MAX_CHARS];
-    char user_name[MAX_CHARS];
-    char host_name[MAX_CHARS];
-    char id_string[MAX_CHARS];
-} other_t;
-
-typedef struct
-{
     int pos;       /* Block index */
     double fuel;   /* Amount of fuel available */
     irec_t bounds; /* Location on map */
@@ -322,8 +298,6 @@ extern int num_polygon_styles, max_polygon_styles;
 
 /* dynamic global game data */
 
-extern other_t *Others;
-extern int num_others, max_others;
 // extern refuel_t *refuel_ptr;
 // extern int num_refuel, max_refuel;
 // extern connector_t *connector_ptr;

@@ -36,5 +36,3 @@ int num_polygon_styles = 0;
 
 score_object_t score_objects[MAX_SCORE_OBJECTS];
 int score_object = 0;
-other_t *Others = nullptr;
-int num_others = 0, max_others = 0;
