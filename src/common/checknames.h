@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -23,8 +21,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CHECKNAMES_H
-#define CHECKNAMES_H
+#pragma once
 
 #define NAME_OK 1
 #define NAME_ERROR 0
@@ -39,5 +36,3 @@ int Check_host_name(char *name);
 void Fix_host_name(char *name);
 int Check_disp_name(char *name);
 void Fix_disp_name(char *name);
-
-#endif

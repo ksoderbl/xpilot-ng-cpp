@@ -1499,7 +1499,12 @@ int Client_power(void)
 {
     int i;
 
-    if (Send_power(power) == -1 || Send_power_s(power_s) == -1 || Send_turnspeed(turnspeed) == -1 || Send_turnspeed_s(turnspeed_s) == -1 || Send_turnresistance(turnresistance) == -1 || Send_turnresistance_s(turnresistance_s) == -1)
+    if (Send_power(power) == -1 ||
+        Send_power_s(power_s) == -1 ||
+        Send_turnspeed(turnspeed) == -1 ||
+        Send_turnspeed_s(turnspeed_s) == -1 ||
+        Send_turnresistance(turnresistance) == -1 ||
+        Send_turnresistance_s(turnresistance_s) == -1)
         return -1;
 
     if (Check_view_dimensions() == -1)

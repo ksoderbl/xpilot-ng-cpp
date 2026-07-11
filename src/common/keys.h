@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -23,8 +21,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef KEYS_H
-#define KEYS_H
+#pragma once
 
 /*
  * The following enum type defines the possible actions as a result of
@@ -163,5 +160,3 @@ typedef enum
     NUM_CLIENT_KEYS /* The number of keys really used by the client. */
 #endif
 } keys_t;
-
-#endif

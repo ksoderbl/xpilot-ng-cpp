@@ -160,18 +160,6 @@ extern double tbl_cos[];
 #define RED 3
 
 /*
- * Windows deals in Pens, not Colors.  So each pen has to have all of its
- * attributes defined.
- */
-#if defined(_WINDOWS) && !defined(PENS_OF_PLENTY)
-#define CLOAKCOLOROFS 15  /* colors 16 and 17 are dashed white/blue */
-#define MISSILECOLOR 18   /* wide white pen */
-#define LASERCOLOR 19     /* wide red pen */
-#define LASERTEAMCOLOR 20 /* wide blue pen */
-#define FUNKCOLORS 6      /* 6 funky colors here (15-20) */
-#endif
-
-/*
  * The minimum and maximum playing window sizes supported by the server.
  */
 #define MIN_VIEW_SIZE 384
