@@ -70,6 +70,9 @@
 #include "teamcup.h"
 #include "srecord.h"
 
+#include "target.h"
+#include "walls2.h"
+
 /*
  * Global variables
  */
@@ -165,7 +168,7 @@ int main(int argc, char **argv)
     Alloc_shots(MAX_TOTAL_SHOTS);
     Alloc_cells();
 
-    Move_init();
+    Move_init2();
     Robot_init();
     Treasure_init();
     Hitmasks_init();

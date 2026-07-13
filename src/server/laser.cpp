@@ -53,6 +53,7 @@
 #include "objpos.h"
 #include "robot.h"
 #include "cannon.h"
+#include "walls2.h"
 
 void Fire_laser(player_t *pl)
 {

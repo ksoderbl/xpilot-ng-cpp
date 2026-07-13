@@ -48,6 +48,7 @@
 // #include "polygon.h"
 #include "server.h"
 #include "wormhole.h"
+#include "walls2.h"
 
 static int Compress_map(uint8_t *map, size_t size);
 

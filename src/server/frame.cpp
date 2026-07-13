@@ -61,6 +61,7 @@
 #include "robot.h"
 #include "srecord.h"
 #include "teamcup.h"
+#include "polygon.h"
 
 #define MAX_SHUFFLE_INDEX 65535
 

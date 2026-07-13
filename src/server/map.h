@@ -460,6 +460,11 @@ static inline int Num_wormholes()
     return world->wormholes.size();
 }
 
+static inline int Num_checks()
+{
+    return world->NumChecks;
+}
+
 // by_index functions
 static asteroid_concentrator_t *AsteroidConc_by_index(int i)
 {

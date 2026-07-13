@@ -24,16 +24,15 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CANNON_H
-#define CANNON_H
+#pragma once
 
-#ifndef MAP_H
 #include "map.h"
-#endif
+#include "option.h"
+#include "player.h"
+#include "polygon.h"
+#include "serverconst.h"
 
-#ifndef WALLS_H
-#include "walls2.h"
-#endif
+// #include "walls2.h"
 
 extern long CANNON_USE_ITEM;
 
@@ -94,7 +93,7 @@ void Cannon_add_item(cannon_t *cannon, int type, int amount);
 void Cannon_throw_items(cannon_t *cannon);
 void Cannon_check_defense(cannon_t *cannon);
 void Cannon_check_fire(cannon_t *cannon);
-void Object_hits_cannon(object_t *obj, cannon_t *c);
+void Object_hits_cannon2(object_t *obj, cannon_t *c);
 void Cannon_dies(cannon_t *cannon, player_t *pl);
 hitmask_t Cannon_hitmask(cannon_t *cannon);
 void Cannon_set_hitmask(int group, cannon_t *cannon);
@@ -147,5 +146,3 @@ static inline cannon_t *Cannon_by_id(int id)
     ind = id - MIN_CANNON_ID;
     return Cannon_by_index(ind);
 }
-
-#endif

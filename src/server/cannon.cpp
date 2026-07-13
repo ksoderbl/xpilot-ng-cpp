@@ -54,6 +54,8 @@
 // #include "polygon.h"
 #include "map.h"
 
+#include "move.h"
+
 static int Cannon_select_weapon(cannon_t *cannon);
 static void Cannon_aim(cannon_t *cannon, int weapon,
                        player_t **pl_p, int *dir);
@@ -779,7 +781,7 @@ static void Cannon_fire(cannon_t *c, int weapon, player_t *pl, int dir)
     }
 }
 
-void Object_hits_cannon(object_t *obj, cannon_t *c)
+void Object_hits_cannon2(object_t *obj, cannon_t *c)
 {
     if (obj->type == OBJ_ITEM)
     {
@@ -907,7 +909,6 @@ void World_remove_cannon(cannon_t *cannon)
     P_set_hitmask(cannon->group, Cannon_hitmask(cannon));
 }
 
-extern struct move_parameters mp;
 /*
  * This function is called when something would hit a cannon.
  *

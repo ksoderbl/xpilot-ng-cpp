@@ -99,7 +99,7 @@ void Target_update(void)
     }
 }
 
-void Object_hits_target(object_t *obj, target_t *targ, double player_cost)
+void Object_hits_target2(object_t *obj, target_t *targ, double player_cost)
 {
     int j;
     player_t *kp;

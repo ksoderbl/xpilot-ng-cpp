@@ -52,6 +52,7 @@
 #include "xperror.h"
 #include "commonproto.h"
 #include "robot.h"
+#include "walls2.h"
 
 static void Item_update_flags(player_t *pl)
 {

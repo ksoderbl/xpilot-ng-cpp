@@ -56,7 +56,7 @@
 #include "object.h"
 #include "objpos.h"
 #include "saudio.h"
-// #include "walls1.h"
+#include "walls2.h"
 
 // #define SERVER
 // #include "xpconfig.h"
@@ -387,7 +387,7 @@ static void Place_asteroid(void)
 
 static void Asteroid_move(wireobject_t *wireobj)
 {
-    Move_object(OBJ_PTR(wireobj));
+    Move_object2(OBJ_PTR(wireobj));
 }
 
 static void Asteroid_rotate(wireobject_t *wireobj)

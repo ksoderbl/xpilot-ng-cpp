@@ -33,6 +33,7 @@
 #include "server.h"
 #include "map.h"
 // #include "polygon.h"
+#include "target.h"
 
 /* polygon map format related stuff */
 int num_edges, max_edges;

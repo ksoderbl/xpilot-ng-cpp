@@ -36,7 +36,6 @@
 #include <cerrno>
 
 #include "option.h"
-
 #include "server.h"
 
 #define SERVER
@@ -49,6 +48,10 @@
 #include "checknames.h"
 #include "tuner.h"
 #include "sched.h"
+
+#include "target.h"
+#include "move.h"
+#include "walls2.h"
 
 double friction;
 double coriolisCosine, coriolisSine; /* cos and sin of cor. angle */
@@ -579,7 +582,7 @@ static option_desc opts[] = {
      "false",
      &options.shotsWallBounce,
      valBool,
-     Move_init,
+     Move_init2,
      "Do shots bounce off walls?\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"ballsWallBounce",
@@ -587,7 +590,7 @@ static option_desc opts[] = {
      "true",
      &options.ballsWallBounce,
      valBool,
-     Move_init,
+     Move_init2,
      "Do balls bounce off walls?\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"ballCollisionDetaches",
@@ -619,7 +622,7 @@ static option_desc opts[] = {
      "false",
      &options.minesWallBounce,
      valBool,
-     Move_init,
+     Move_init2,
      "Do mines bounce off walls?\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"itemsWallBounce",
@@ -627,7 +630,7 @@ static option_desc opts[] = {
      "true",
      &options.itemsWallBounce,
      valBool,
-     Move_init,
+     Move_init2,
      "Do items bounce off walls?\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"missilesWallBounce",
@@ -635,7 +638,7 @@ static option_desc opts[] = {
      "false",
      &options.missilesWallBounce,
      valBool,
-     Move_init,
+     Move_init2,
      "Do missiles bounce off walls?\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"sparksWallBounce",
@@ -643,7 +646,7 @@ static option_desc opts[] = {
      "true",
      &options.sparksWallBounce,
      valBool,
-     Move_init,
+     Move_init2,
      "Do thrust spark particles bounce off walls to give reactive \n"
      "thrust?\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
@@ -652,7 +655,7 @@ static option_desc opts[] = {
      "false",
      &options.debrisWallBounce,
      valBool,
-     Move_init,
+     Move_init2,
      "Do explosion debris particles bounce off walls?\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"asteroidsWallBounce",
@@ -660,7 +663,7 @@ static option_desc opts[] = {
      "true",
      &options.asteroidsWallBounce,
      valBool,
-     Move_init,
+     Move_init2,
      "Do asteroids bounce off walls?\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"pulsesWallBounce",
@@ -668,7 +671,7 @@ static option_desc opts[] = {
      "false",
      &options.pulsesWallBounce,
      valBool,
-     Move_init,
+     Move_init2,
      "Do laser pulses bounce off walls?\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"cloakedExhaust",
@@ -684,7 +687,7 @@ static option_desc opts[] = {
      "40.0",
      &options.maxObjectWallBounceSpeed,
      valReal,
-     Move_init,
+     Move_init2,
      "The maximum allowed speed for objects to bounce off walls.\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"maxSparkWallBounceSpeed",
@@ -692,7 +695,7 @@ static option_desc opts[] = {
      "80.0", /* was "40.0" */
      &options.maxSparkWallBounceSpeed,
      valReal,
-     Move_init,
+     Move_init2,
      "The maximum allowed speed for sparks to bounce off walls.\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"maxShieldedWallBounceSpeed",
@@ -700,7 +703,7 @@ static option_desc opts[] = {
      "100.0",
      &options.maxShieldedWallBounceSpeed,
      valReal,
-     Move_init,
+     Move_init2,
      "The max allowed speed for a shielded player to bounce off walls.\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"maxUnshieldedWallBounceSpeed",
@@ -708,7 +711,7 @@ static option_desc opts[] = {
      "90.0",
      &options.maxUnshieldedWallBounceSpeed,
      valReal,
-     Move_init,
+     Move_init2,
      "Max allowed speed for an unshielded player to bounce off walls.\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"playerWallBounceType",
@@ -740,7 +743,7 @@ static option_desc opts[] = {
      "0.5",
      &options.playerWallBounceBrakeFactor,
      valReal,
-     Move_init,
+     Move_init2,
      "Factor to slow down ship in direction perpendicular to the wall\n"
      "when a wall is hit (0 to 1).\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
@@ -749,7 +752,7 @@ static option_desc opts[] = {
      "0.7",
      &options.playerBallBounceBrakeFactor,
      valReal,
-     Move_init,
+     Move_init2,
      "Elastic or inelastic properties of the player-ball collision\n"
      "1 means fully elastic, 0 fully inelastic.\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
@@ -758,7 +761,7 @@ static option_desc opts[] = {
      "0.5",
      &options.playerWallFriction,
      valReal,
-     Move_init,
+     Move_init2,
      "Player-wall friction (0 to 1).\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"objectWallBounceBrakeFactor",
@@ -766,7 +769,7 @@ static option_desc opts[] = {
      "0.95",
      &options.objectWallBounceBrakeFactor,
      valReal,
-     Move_init,
+     Move_init2,
      "Factor to slow down objects when they hit the wall (0 to 1).\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"objectWallBounceLifeFactor",
@@ -774,7 +777,7 @@ static option_desc opts[] = {
      "0.80",
      &options.objectWallBounceLifeFactor,
      valReal,
-     Move_init,
+     Move_init2,
      "Factor to reduce the life of objects after bouncing (0 to 1).\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"afterburnerPowerMult",
@@ -790,7 +793,7 @@ static option_desc opts[] = {
      "0.0",
      &options.wallBounceDestroyItemProb,
      valReal,
-     Move_init,
+     Move_init2,
      "The probability for each item a player owns to get destroyed\n"
      "when the player bounces against a wall.\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
@@ -985,7 +988,7 @@ static option_desc opts[] = {
      "false",
      &options.cannonsPickupItems,
      valBool,
-     Move_init,
+     Move_init2,
      "Do cannons pick up items?\n",
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"cannonFlak",

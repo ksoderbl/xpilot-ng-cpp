@@ -43,8 +43,7 @@
 
 #include "option.h"
 
-/* need hitmask_t */
-#include "walls2.h"
+#include "polygon.h"
 
 typedef struct
 {
@@ -140,25 +139,6 @@ int CountDefensiveItems(player_t *pl);
 int peek_ID(void);
 int request_ID(void);
 void release_ID(int id);
-
-/*
- * Prototypes for walls.c
- */
-void Groups_init(void);
-void Walls_init(void);
-void Treasure_init(void);
-void Move_init(void);
-void Move_object(object_t *obj);
-void Move_player(player_t *pl);
-void Turn_player(player_t *pl, bool push);
-int is_inside(int x, int y, hitmask_t hitmask, const object_t *obj);
-int shape_is_inside(int cx, int cy, hitmask_t hitmask, const object_t *obj,
-                    shape_t *s, int dir);
-int Polys_to_client(uint8_t **);
-void Ball_line_init(void);
-void Player_crash(player_t *pl, int crashtype, int mapobj_ind, int pt);
-void Object_crash(object_t *obj, int crashtype, int mapobj_ind);
-void Move_point(const move_t *move, struct collans *answer);
 
 /*
  * Prototypes for event.c
@@ -517,21 +497,10 @@ void Transfer_tag(player_t *oldtag_pl, player_t *newtag_pl);
 void Check_tag(void);
 
 /*
- * Prototypes for target.c
- */
-void Target_update(void);
-void Object_hits_target(object_t *obj, target_t *targ, double player_cost);
-hitmask_t Target_hitmask(target_t *targ);
-void Target_set_hitmask(int group, target_t *targ);
-void Target_init(void);
-void World_restore_target(target_t *targ);
-void World_remove_target(target_t *targ);
-
-/*
  * Prototypes for treasure.c
  */
 void Make_treasure_ball(treasure_t *t);
-void Ball_hits_goal(ballobject_t *ball, group_t *groupptr);
+void Ball_hits_goal2(ballobject_t *ball, group_t *groupptr);
 void Ball_is_replaced(ballobject_t *ball);
 void Ball_is_destroyed(ballobject_t *ball);
 bool Balltarget_hitfunc(group_t *groupptr, const move_t *move);
@@ -544,7 +513,7 @@ void Player_warp(player_t *pl);
 void Player_finish_warp(player_t *pl);
 void Object_warp(object_t *obj);
 void Object_finish_warp(object_t *obj);
-void Object_hits_wormhole(object_t *obj, int ind);
+void Object_hits_wormhole2(object_t *obj, int ind);
 hitmask_t Wormhole_hitmask(wormhole_t *wormhole);
 bool Wormhole_hitfunc(group_t *groupptr, const move_t *move);
 bool Verify_wormhole_consistency(void);

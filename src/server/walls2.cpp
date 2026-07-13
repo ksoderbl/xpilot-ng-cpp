@@ -25,6 +25,8 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include "walls2.h"
+
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
@@ -44,7 +46,6 @@
 #include "score.h"
 #include "saudio.h"
 #include "item.h"
-#include "walls2.h"
 #include "click.h"
 #include "object.h"
 #include "robot.h"
@@ -53,8 +54,9 @@
 #include "srecord.h"
 #include "rank.h"
 #include "objpos.h"
+#include "target.h"
+#include "move.h"
 
-struct move_parameters mp;
 static char msg[MSG_LEN];
 
 /* polygon map related stuff */
@@ -153,46 +155,7 @@ static inline bool can_hit(group_t *gp, const move_t *move)
     return gp->hitfunc(gp, move);
 }
 
-void Move_init(void)
-{
-    LIMIT(options.maxObjectWallBounceSpeed, 0, world->hypotenuse);
-    LIMIT(options.maxShieldedWallBounceSpeed, 0, world->hypotenuse);
-    LIMIT(options.maxUnshieldedWallBounceSpeed, 0, world->hypotenuse);
-
-    LIMIT(options.playerWallBounceBrakeFactor, 0, 1);
-    LIMIT(options.playerWallFriction, 0, FLT_MAX);
-    LIMIT(options.objectWallBounceBrakeFactor, 0, 1);
-    LIMIT(options.objectWallBounceLifeFactor, 0, 1);
-
-    mp.obj_bounce_mask = 0;
-    if (options.sparksWallBounce)
-        SET_BIT(mp.obj_bounce_mask, OBJ_SPARK_BIT);
-    if (options.debrisWallBounce)
-        SET_BIT(mp.obj_bounce_mask, OBJ_DEBRIS_BIT);
-    if (options.shotsWallBounce)
-        SET_BIT(mp.obj_bounce_mask, OBJ_SHOT_BIT | OBJ_CANNON_SHOT_BIT);
-    if (options.itemsWallBounce)
-        SET_BIT(mp.obj_bounce_mask, OBJ_ITEM_BIT);
-    if (options.missilesWallBounce)
-        SET_BIT(mp.obj_bounce_mask,
-                OBJ_SMART_SHOT_BIT | OBJ_TORPEDO_BIT | OBJ_HEAT_SHOT_BIT);
-    if (options.minesWallBounce)
-        SET_BIT(mp.obj_bounce_mask, OBJ_MINE_BIT);
-    if (options.ballsWallBounce)
-        SET_BIT(mp.obj_bounce_mask, OBJ_BALL_BIT);
-    if (options.asteroidsWallBounce)
-        SET_BIT(mp.obj_bounce_mask, OBJ_ASTEROID_BIT);
-    if (options.pulsesWallBounce)
-        SET_BIT(mp.obj_bounce_mask, OBJ_PULSE_BIT);
-
-    mp.obj_cannon_mask = (KILLING_SHOTS) | OBJ_MINE_BIT | OBJ_SHOT_BIT | OBJ_PULSE_BIT | OBJ_SMART_SHOT_BIT | OBJ_TORPEDO_BIT | OBJ_HEAT_SHOT_BIT | OBJ_ASTEROID_BIT;
-    if (options.cannonsPickupItems)
-        mp.obj_cannon_mask |= OBJ_ITEM_BIT;
-    mp.obj_target_mask = mp.obj_cannon_mask | OBJ_BALL_BIT | OBJ_SPARK_BIT;
-    mp.obj_treasure_mask = mp.obj_bounce_mask | OBJ_BALL_BIT | OBJ_PULSE_BIT;
-}
-
-void Object_crash(object_t *obj, int crashtype, int mapobj_ind)
+void Object_crash2(object_t *obj, int crashtype, int mapobj_ind)
 {
     switch (crashtype)
     {
@@ -201,7 +164,7 @@ void Object_crash(object_t *obj, int crashtype, int mapobj_ind)
         break;
 
     case CrashWormHole:
-        Object_hits_wormhole(obj, mapobj_ind);
+        Object_hits_wormhole2(obj, mapobj_ind);
         break;
 
     case CrashTreasure:
@@ -215,7 +178,7 @@ void Object_crash(object_t *obj, int crashtype, int mapobj_ind)
 
     case CrashTarget:
         obj->life = 0;
-        Object_hits_target(obj, Target_by_index(mapobj_ind), -1.0);
+        Object_hits_target2(obj, Target_by_index(mapobj_ind), -1.0);
         break;
 
     case CrashWall:
@@ -229,7 +192,7 @@ void Object_crash(object_t *obj, int crashtype, int mapobj_ind)
 
     case CrashCannon:
         obj->life = 0;
-        Object_hits_cannon(obj, Cannon_by_index(mapobj_ind));
+        Object_hits_cannon2(obj, Cannon_by_index(mapobj_ind));
         break;
 
     case CrashUnknown:
@@ -238,7 +201,7 @@ void Object_crash(object_t *obj, int crashtype, int mapobj_ind)
     }
 }
 
-void Player_crash(player_t *pl, int crashtype, int mapobj_ind, int pt)
+void Player_crash2(player_t *pl, int crashtype, int mapobj_ind, int pt)
 {
     const char *howfmt = NULL;
     const char *hudmsg = NULL;
@@ -254,7 +217,7 @@ void Player_crash(player_t *pl, int crashtype, int mapobj_ind, int pt)
         break;
 
     case CrashWormHole:
-        Object_hits_wormhole(OBJ_PTR(pl), mapobj_ind);
+        Object_hits_wormhole2(OBJ_PTR(pl), mapobj_ind);
         break;
 
     case CrashWall:
@@ -285,7 +248,7 @@ void Player_crash(player_t *pl, int crashtype, int mapobj_ind, int pt)
         howfmt = "%s smashed%s against a target";
         hudmsg = "[Target]";
         sound_play_sensors(pl->pos, PLAYER_HIT_WALL_SOUND);
-        Object_hits_target(OBJ_PTR(pl), Target_by_index(mapobj_ind), -1.0);
+        Object_hits_target2(OBJ_PTR(pl), Target_by_index(mapobj_ind), -1.0);
         break;
 
     case CrashTreasure:
@@ -522,7 +485,7 @@ static int Bounce_object(object_t *obj, move_t *move, int line, int point)
     if (type == TREASURE)
     {
         if (obj->type == OBJ_BALL)
-            Ball_hits_goal(BALL_PTR(obj), groupptr_by_id(group));
+            Ball_hits_goal2(BALL_PTR(obj), groupptr_by_id(group));
         obj->life = 0;
         return 0;
     }
@@ -530,19 +493,19 @@ static int Bounce_object(object_t *obj, move_t *move, int line, int point)
     if (type == TARGET)
     {
         obj->life = 0;
-        Object_hits_target(obj, Target_by_index(mapobj_ind), -1.0);
+        Object_hits_target2(obj, Target_by_index(mapobj_ind), -1.0);
         return 0;
     }
 
     if (type == CANNON)
     {
-        Object_crash(obj, CrashCannon, mapobj_ind);
+        Object_crash2(obj, CrashCannon, mapobj_ind);
         return 0;
     }
 
     if (type == WORMHOLE)
     {
-        Object_crash(obj, CrashWormHole, mapobj_ind);
+        Object_crash2(obj, CrashWormHole, mapobj_ind);
         return 0;
     }
 
@@ -624,7 +587,7 @@ static int Bounce_object(object_t *obj, move_t *move, int line, int point)
     return 1;
 }
 
-static void Bounce_player(player_t *pl, move_t *move, int line, int point)
+static void Bounce_player2(player_t *pl, move_t *move, int line, int point)
 {
     double c, s;   /* cosine and sine of 2 times line angle */
     double cl, sl; /* cosine and sine of line angle */
@@ -646,19 +609,19 @@ static void Bounce_player(player_t *pl, move_t *move, int line, int point)
     mapobj_ind = groups[group].mapobj_ind;
     if (type == TREASURE && options.treasureCollisionKills)
     {
-        Player_crash(pl, CrashTreasure, NO_IND, 1);
+        Player_crash2(pl, CrashTreasure, NO_IND, 1);
         return;
     }
 
     if (type == WORMHOLE)
     {
-        Player_crash(pl, CrashWormHole, mapobj_ind, 1);
+        Player_crash2(pl, CrashWormHole, mapobj_ind, 1);
         return;
     }
 
     if (type == CANNON)
     {
-        Player_crash(pl, CrashCannon, mapobj_ind, 1);
+        Player_crash2(pl, CrashCannon, mapobj_ind, 1);
         if (Player_is_killed(pl))
             return;
         /* The player may bounce from the cannon if both have shields up. */
@@ -688,9 +651,9 @@ static void Bounce_player(player_t *pl, move_t *move, int line, int point)
         if (speed > max_speed)
         {
             if (type == TARGET)
-                Player_crash(pl, CrashTarget, mapobj_ind, 1);
+                Player_crash2(pl, CrashTarget, mapobj_ind, 1);
             else
-                Player_crash(pl, CrashWallSpeed, NO_IND, 1);
+                Player_crash2(pl, CrashWallSpeed, NO_IND, 1);
             return;
         }
 
@@ -700,9 +663,9 @@ static void Bounce_player(player_t *pl, move_t *move, int line, int point)
         sound_play_sensors(pl->pos, PLAYER_BOUNCED_SOUND);
 
         if (cost && type == TARGET)
-            Object_hits_target(OBJ_PTR(pl),
-                               Target_by_index(mapobj_ind),
-                               cost / 4.0);
+            Object_hits_target2(OBJ_PTR(pl),
+                                Target_by_index(mapobj_ind),
+                                cost / 4.0);
     }
 
     /*
@@ -1734,8 +1697,8 @@ int Polys_to_client(uint8_t **start)
         STORE2(fs->pos.cx >> CLICK_SHIFT);
         STORE2(fs->pos.cy >> CLICK_SHIFT);
     }
-    STORE1(world->NumChecks);
-    for (i = 0; i < world->NumChecks; i++)
+    STORE1(Num_checks());
+    for (i = 0; i < Num_checks(); i++)
     {
         STORE2(world->checks[i].pos.cx >> CLICK_SHIFT);
         STORE2(world->checks[i].pos.cy >> CLICK_SHIFT);
@@ -2790,7 +2753,7 @@ static void Move_ball(object_t *obj)
     return;
 }
 
-void Move_object(object_t *obj)
+void Move_object2(object_t *obj)
 {
     int t;
     move_t mv;
@@ -2875,7 +2838,7 @@ void Move_object(object_t *obj)
 
 bool in_move_player = false;
 
-void Move_player(player_t *pl)
+void Move_player2(player_t *pl)
 {
     clpos_t pos;
     move_t mv;
@@ -2974,7 +2937,7 @@ void Move_player(player_t *pl)
             {
                 if (SIDE(pl->vel.x, pl->vel.y, ans.line) < 0)
                 {
-                    Bounce_player(pl, &mv, ans.line, ans.point);
+                    Bounce_player2(pl, &mv, ans.line, ans.point);
                     if (Player_is_killed(pl))
                         break;
                 }
@@ -2983,7 +2946,7 @@ void Move_player(player_t *pl)
                 {
                     if (SIDE(pl->vel.x, pl->vel.y, ans.line) < 0)
                     {
-                        Bounce_player(pl, &mv, ans.line, ans.point);
+                        Bounce_player2(pl, &mv, ans.line, ans.point);
                         if (Player_is_killed(pl))
                             break;
                     }
@@ -3017,7 +2980,7 @@ void Move_player(player_t *pl)
     return;
 }
 
-void Turn_player(player_t *pl, bool push)
+void Turn_player2(player_t *pl, bool push)
 {
     int new_dir = MOD2((int)(pl->float_dir + 0.5), ANGLE_RESOLUTION);
     int next_dir, sign, group;
@@ -3206,9 +3169,9 @@ void Turn_player(player_t *pl, bool push)
                 move.delta.cx = 0;
                 move.delta.cy = 0;
                 if (ans.line != -1)
-                    Bounce_player(pl, &move, ans.line, 0);
+                    Bounce_player2(pl, &move, ans.line, 0);
                 else
-                    Bounce_player(pl, &move, ans.point, 0);
+                    Bounce_player2(pl, &move, ans.point, 0);
             }
 
             velot = velon * options.playerWallFriction * ((-pdc) * cl + (-pds) * sl);
@@ -3221,7 +3184,7 @@ void Turn_player(player_t *pl, bool push)
             y = pl->vel.y;
             pl->vel.x = velon * cln + options.turnGrip * velot * cl;
             pl->vel.y = velon * sln + options.turnGrip * velot * sl;
-            Move_player(pl);
+            Move_player2(pl);
             pl->vel.x = x + options.turnPushPersistence * pl->vel.x;
             pl->vel.y = y + options.turnPushPersistence * pl->vel.y;
 

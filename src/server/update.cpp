@@ -51,9 +51,10 @@
 #include "cannon.h"
 #include "asteroid.h"
 #include "netserver.h"
-// #include "walls1.h"
 #include "robot.h"
 #include "rank.h"
+#include "move.h"
+#include "walls2.h"
 
 int roundtime = -1;               /* time left this round */
 static double time_to_tick = 1.0; /* game time till next tick */
@@ -162,7 +163,7 @@ void Phasing(player_t *pl, bool on)
                                      OBJ_PTR(pl), (shape_t *)pl->ship,
                                      pl->dir)) != NO_GROUP)
             /* kps - check for crashes against targets etc ??? */
-            Player_crash(pl, CrashWall, NO_IND, 0);
+            Player_crash2(pl, CrashWall, NO_IND, 0);
     }
 }
 
@@ -624,7 +625,7 @@ static void Misc_object_update(void)
         update_object_speed(obj);
 
         if (!(obj->type == OBJ_ASTEROID))
-            Move_object(obj);
+            Move_object2(obj);
     }
 }
 
@@ -739,7 +740,7 @@ static void Players_turn(void)
         if (!pl->turnresistance)
             pl->turnvel = 0;
 
-        Turn_player(pl, true);
+        Turn_player2(pl, true);
     }
 }
 
@@ -1035,7 +1036,7 @@ static void Update_players(void)
             {
                 /* Player didn't recover yet. */
                 Transport_to_home(pl);
-                Move_player(pl);
+                Move_player2(pl);
                 continue;
             }
         }
@@ -1143,7 +1144,7 @@ static void Update_players(void)
         if (options.legacyMode)
         {
             update_object_speed(OBJ_PTR(pl));
-            Move_player(pl);
+            Move_player2(pl);
         }
         else
         {
@@ -1164,7 +1165,7 @@ static void Update_players(void)
             {
                 pl->vel.x += options.constantSpeed * pl->acc.x;
                 pl->vel.y += options.constantSpeed * pl->acc.y;
-                Move_player(pl);
+                Move_player2(pl);
                 /* Bounces aren't really compatible with constant speed.
                  * I guess this behaviour is as good as any.
                  * Doesn't work right with stuff like friction. */
@@ -1175,7 +1176,7 @@ static void Update_players(void)
                 }
             }
             else
-                Move_player(pl);
+                Move_player2(pl);
             pl->vel.x += acc.x;
             pl->vel.y += acc.y;
         }
@@ -1347,7 +1348,7 @@ void Update_objects(void)
         if (pl->wanted_float_dir != pl->float_dir)
         {
             Player_set_float_dir(pl, pl->wanted_float_dir);
-            Turn_player(pl, false);
+            Turn_player2(pl, false);
         }
     }
 
@@ -1359,7 +1360,7 @@ void Update_objects(void)
         if (pl->wanted_float_dir != pl->float_dir)
         {
             Player_set_float_dir(pl, pl->wanted_float_dir);
-            Turn_player(pl, false);
+            Turn_player2(pl, false);
         }
     }
 

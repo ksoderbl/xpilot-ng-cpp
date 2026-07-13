@@ -141,6 +141,7 @@
 #include "rank.h"
 #include "srecord.h"
 #include "recwrap.h"
+#include "walls2.h"
 
 static int Init_setup(void);
 static int Handle_listening(connection_t *connp);

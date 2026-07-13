@@ -63,6 +63,8 @@
 #include "robot.h"
 #include "rank.h"
 
+#include "walls2.h"
+
 /* new acd functions */
 /* doubles because the multiplies might overflow ints */
 static bool in_range_acd(double dx, double dy, double dvx, double dvy,
@@ -389,7 +391,7 @@ static void PlayerCollision(void)
                                                 &ball_wire, 0);
                         if (group != NO_GROUP)
                         {
-                            Ball_hits_goal(ball, groupptr_by_id(group));
+                            Ball_hits_goal2(ball, groupptr_by_id(group));
                             ball->life = 0.0;
                         }
                     }
@@ -728,8 +730,8 @@ static void Player_collides_with_ball(player_t *pl, ballobject_t *ball)
             /* cannot do this hack after a wallbounce */
             pl->pos = pl->prevpos;
             ball->pos = ball->prevpos;
-            Move_player(pl);
-            Move_object(OBJ_PTR(ball));
+            Move_player2(pl);
+            Move_object2(OBJ_PTR(ball));
         }
         /* KHS </evil hack> */
         ball->fuse = timeStep;

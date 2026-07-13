@@ -23,9 +23,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include "move.h"
 #include "object.h"
 #include "objpos.h"
 #include "server.h"
+#include "walls2.h"
 
 void Object_position_set_clpos(object_t *obj, clpos_t pos)
 {
@@ -41,9 +43,9 @@ void Object_position_set_clpos(object_t *obj, clpos_t pos)
         else
         {
             if (obj->type == OBJ_PLAYER)
-                Player_crash((player_t *)obj, CrashUnknown, NO_IND, 1);
+                Player_crash2((player_t *)obj, CrashUnknown, NO_IND, 1);
             else
-                Object_crash(obj, CrashUnknown, NO_IND);
+                Object_crash2(obj, CrashUnknown, NO_IND);
             return;
         }
     }

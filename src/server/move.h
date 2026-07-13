@@ -86,23 +86,6 @@ typedef struct
     player_t *pl;
 } move_info_t;
 
-// typedef struct
-// {
-//     const move_info_t *mip;
-//     move_crash_t crash;
-//     move_bounce_t bounce;
-//     clpos_t pos;
-//     vector_t vel;
-//     clvec_t todo;
-//     clvec_t done;
-//     int dir;
-//     int cannon;
-//     int wormhole;
-//     int target;
-//     // int treasure;
-//     treasure_t *treasure_ptr;
-// } move_state_t;
-
 typedef struct
 {
     const move_info_t *mip;
@@ -135,3 +118,5 @@ struct move_parameters
 };
 
 extern struct move_parameters mp;
+
+void Move_init2(void);

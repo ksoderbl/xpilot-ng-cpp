@@ -52,6 +52,8 @@
 #include "robot.h"
 #include "objpos.h"
 
+#include "target.h"
+
 bool updateScores = true;
 
 int playerArrayNumber;
