@@ -1,6 +1,6 @@
 xpilot-ng-cpp-server \
--fps 50 \
+-fps 12 \
 +reporttometaserver \
 -robotTeam 4 \
 -maxRobots 4 \
--map /usr/local/share/xpilot-cpp/maps/tc.xp
+-map /usr/local/share/xpilot-ng-cpp/maps/tc.xp

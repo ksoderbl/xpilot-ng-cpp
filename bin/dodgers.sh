@@ -1,4 +1,4 @@
 xpilot-ng-cpp-server \
--fps 50 \
+-fps 12 \
 +reporttometaserver \
--map /usr/local/share/xpilot-cpp/maps/dodgers4.xp
+-map /usr/local/share/xpilot-ng-cpp/maps/dodgers4.xp
