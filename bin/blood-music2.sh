@@ -4,4 +4,4 @@ xpilot-ng-cpp-server \
 -robotTeam 4 \
 -maxRobots 12 \
 +restrictRobots \
--map /usr/local/share/xpilot-ng-cpp/maps/4.5.5/blood-music2.xp
+-map /usr/local/share/xpilot-ng-cpp/maps/blood-music2.xp
