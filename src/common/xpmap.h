@@ -1,7 +1,10 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
- * Copyright (C) 2005 Kristian Söderblom
+ *      Bjørn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +21,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef XPMAP_H
-#define XPMAP_H
+#pragma once
 
 #define XPMAP_SPACE ' '
 #define XPMAP_SPACE_ALT '.'
@@ -93,5 +95,3 @@
 #define XPMAP_CHECK_23 'X'
 #define XPMAP_CHECK_24 'Y'
 #define XPMAP_CHECK_25 'Z'
-
-#endif

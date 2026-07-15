@@ -63,9 +63,3 @@ int strcasecmp(const char *str1, const char *str2);
 #ifndef HAVE_STRNCASECMP
 int strncasecmp(const char *str1, const char *str2, size_t n);
 #endif
-
-/* xpmemory.cpp */
-void *xp_safe_malloc(size_t size);
-void *xp_safe_realloc(void *oldptr, size_t size);
-void *xp_safe_calloc(size_t nmemb, size_t size);
-void xp_safe_free(void *p);

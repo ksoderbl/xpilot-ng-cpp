@@ -166,8 +166,8 @@ int Bitmap_create(Drawable d, int img)
     {
         if (pix->scalable)
         {
-            pix->width = UWINSCALE(pix->picture.width);
-            pix->height = UWINSCALE(pix->picture.height);
+            pix->width = WINSCALE(pix->picture.width);
+            pix->height = WINSCALE(pix->picture.height);
         }
 
         if (Bitmap_create_begin(d, pix, j) == -1)

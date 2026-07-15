@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -23,13 +21,8 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef WORMHOLE_H
-#define WORMHOLE_H
+#pragma once
 
-#ifndef CLICK_H
 #include "click.h"
-#endif
 
 #define WORMHOLE_RADIUS ((BLOCK_CLICKS / 2) - 1)
-
-#endif

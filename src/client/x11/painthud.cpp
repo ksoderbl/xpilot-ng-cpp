@@ -130,7 +130,7 @@ static void Paint_meter(int xoff, int y, const char *title, int val, int max,
         SET_FG(colors[color].pixel);
         rd.drawRectangle(dpy, drawPixmap, gameGC,
                          WINSCALE(x), WINSCALE(y),
-                         UWINSCALE(meterWidth), UWINSCALE(meterHeight));
+                         WINSCALE(meterWidth), WINSCALE(meterHeight));
 
         /* Paint scale levels(?) */
         Segment_add(color, x, y - 4, x, y + meterHeight + 4);
@@ -384,7 +384,7 @@ static void Paint_lock(int hud_pos_x, int hud_pos_y)
                 y = (int)(hud_pos_y - MIN_HUD_SIZE * 0.6 * tsin(lock_dir) - size * 0.5),
                 rd.fillArc(dpy, drawPixmap, gameGC,
                            WINSCALE(x), WINSCALE(y),
-                           UWINSCALE(size), UWINSCALE(size), 0, 64 * 360);
+                           WINSCALE(size), WINSCALE(size), 0, 64 * 360);
             }
         }
     }
@@ -794,15 +794,15 @@ void Paint_HUD(void)
         rd.drawRectangle(dpy, drawPixmap, gameGC,
                          WINSCALE(hud_pos_x + hudSize - HUD_OFFSET + FUEL_GAUGE_OFFSET) - 1,
                          WINSCALE(hud_pos_y - hudSize + HUD_OFFSET + FUEL_GAUGE_OFFSET) - 1,
-                         UWINSCALE(HUD_OFFSET - (2 * FUEL_GAUGE_OFFSET)) + 3,
-                         UWINSCALE(HUD_FUEL_GAUGE_SIZE) + 3);
+                         WINSCALE(HUD_OFFSET - (2 * FUEL_GAUGE_OFFSET)) + 3,
+                         WINSCALE(HUD_FUEL_GAUGE_SIZE) + 3);
 
         size = (int)((HUD_FUEL_GAUGE_SIZE * fuelSum) / fuelMax);
         rd.fillRectangle(dpy, drawPixmap, gameGC,
                          WINSCALE(hud_pos_x + hudSize - HUD_OFFSET + FUEL_GAUGE_OFFSET) + 1,
                          WINSCALE(hud_pos_y - hudSize + HUD_OFFSET + FUEL_GAUGE_OFFSET + HUD_FUEL_GAUGE_SIZE - size) + 1,
-                         UWINSCALE(HUD_OFFSET - (2 * FUEL_GAUGE_OFFSET)),
-                         UWINSCALE(size));
+                         WINSCALE(HUD_OFFSET - (2 * FUEL_GAUGE_OFFSET)),
+                         WINSCALE(size));
     }
 }
 

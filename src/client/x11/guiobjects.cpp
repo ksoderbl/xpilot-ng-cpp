@@ -306,7 +306,7 @@ void Gui_paint_mine(int x, int y, int teammine, char *name)
             SET_FG(colors[BLUE].pixel);
             rd.fillRectangle(dpy, drawPixmap, gameGC,
                              WINSCALE(x - 7), WINSCALE(y - 2),
-                             UWINSCALE(15), UWINSCALE(5));
+                             WINSCALE(15), WINSCALE(5));
         }
 
         SET_FG(colors[WHITE].pixel);
@@ -440,7 +440,7 @@ void Gui_paint_fastshot(int color, int x, int y)
                 SET_FG(colors[color].pixel);
                 rd.fillArc(dpy, drawPixmap, gameGC,
                            WINSCALE(x - z), WINSCALE(y - z),
-                           UWINSCALE(shotSize), UWINSCALE(shotSize),
+                           WINSCALE(shotSize), WINSCALE(shotSize),
                            0, 64 * 360);
             }
             else
@@ -481,7 +481,7 @@ void Gui_paint_teamshot(int x, int y)
                 SET_FG(colors[color].pixel);
                 rd.fillArc(dpy, drawPixmap, gameGC,
                            WINSCALE(x - z), WINSCALE(y - z),
-                           UWINSCALE(teamShotSize), UWINSCALE(teamShotSize),
+                           WINSCALE(teamShotSize), WINSCALE(teamShotSize),
                            0, 64 * 360);
             }
             else
@@ -567,16 +567,16 @@ void Gui_paint_paused(int x, int y, int count)
         y0 = Y(y + half_pause_size);
         rd.fillRectangle(dpy, drawPixmap, gameGC,
                          WINSCALE(x0), WINSCALE(y0),
-                         UWINSCALE(2 * half_pause_size + 1),
-                         UWINSCALE(2 * half_pause_size + 1));
+                         WINSCALE(2 * half_pause_size + 1),
+                         WINSCALE(2 * half_pause_size + 1));
         if (count <= 0 || loopsSlow % 10 >= 5)
         {
             SET_FG(colors[WHITE].pixel);
             rd.drawRectangle(dpy, drawPixmap, gameGC,
                              WINSCALE(x0 - 1),
                              WINSCALE(y0 - 1),
-                             UWINSCALE(2 * (half_pause_size + 1)),
-                             UWINSCALE(2 * (half_pause_size + 1)));
+                             WINSCALE(2 * (half_pause_size + 1)),
+                             WINSCALE(2 * (half_pause_size + 1)));
             rd.drawString(dpy, drawPixmap, gameGC,
                           WINSCALE(X(x)) - pauseCharWidth / 2,
                           WINSCALE(Y(y - 1)) + gameFont->ascent / 2,
@@ -611,8 +611,8 @@ void Gui_paint_appearing(int x, int y, int id, int count)
     rd.fillRectangle(dpy, drawPixmap, gameGC,
                      SCALEX(x - (int)hsize),
                      SCALEY(y - (int)hsize + (int)(count / 180. * hsize + 1)),
-                     UWINSCALE(2 * hsize + 1),
-                     UWINSCALE((unsigned)(count / 180. * hsize + 1)));
+                     WINSCALE(2 * hsize + 1),
+                     WINSCALE((unsigned)(count / 180. * hsize + 1)));
 }
 
 void Gui_paint_ecm(int x, int y, int size)

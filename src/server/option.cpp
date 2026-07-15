@@ -38,6 +38,7 @@
 
 #include "commonmacros.h"
 #include "commonproto.h"
+#include "xpmemory.h"
 
 #include "server.h"
 
@@ -383,7 +384,7 @@ static void Option_change_node(
                 break;
 
             case OPT_PASSWORD:
-                /* never modify if set by options.password file. */
+                /* never modify if set by password file. */
                 break;
 
             case OPT_INIT:
@@ -415,7 +416,7 @@ static void Option_change_node(
                 break;
 
             case OPT_PASSWORD:
-                /* never modify if set by options.password file. */
+                /* never modify if set by password file. */
                 break;
 
             case OPT_INIT:
@@ -435,12 +436,12 @@ static void Option_change_node(
                 break;
 
             case OPT_DEFAULTS:
-                /* options.password file always wins over defaults. */
+                /* password file always wins over defaults. */
                 set_ok = true;
                 break;
 
             case OPT_MAP:
-                /* options.password file always wins over map. */
+                /* password file always wins over map. */
                 set_ok = true;
                 break;
 
@@ -792,7 +793,7 @@ static void Option_parse_node(hash_node *np)
         value = desc->defaultValue;
         if (value == NULL)
         {
-            /* no value at all.  (options.mapData or options.serverHost.) */
+            /* no value at all.  (mapData or serverHost.) */
             assert(desc->type == valString);
             return;
         }
