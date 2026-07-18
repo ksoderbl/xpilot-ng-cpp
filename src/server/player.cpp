@@ -53,6 +53,7 @@
 #include "objpos.h"
 
 #include "target.h"
+#include "treasure.h"
 
 bool updateScores = true;
 

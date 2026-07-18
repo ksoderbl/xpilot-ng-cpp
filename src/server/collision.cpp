@@ -64,6 +64,7 @@
 #include "rank.h"
 
 #include "walls2.h"
+#include "treasure.h"
 
 /* new acd functions */
 /* doubles because the multiplies might overflow ints */

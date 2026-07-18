@@ -55,6 +55,7 @@
 #include "rank.h"
 #include "move.h"
 #include "walls2.h"
+#include "wormhole.h"
 
 int roundtime = -1;               /* time left this round */
 static double time_to_tick = 1.0; /* game time till next tick */

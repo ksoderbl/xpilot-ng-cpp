@@ -51,6 +51,7 @@
 #include "rank.h"
 #include "objpos.h"
 #include "walls2.h"
+#include "treasure.h"
 
 #define MISSILE_POWER_SPEED_FACT 0.25
 #define MISSILE_POWER_TURNSPEED_FACT 0.75

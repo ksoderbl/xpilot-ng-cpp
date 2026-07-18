@@ -48,6 +48,7 @@
 #include "bit.h"
 #include "netserver.h"
 #include "modifiers.h"
+#include "wormhole.h"
 
 bool team_dead(int team)
 {

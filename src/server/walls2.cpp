@@ -55,6 +55,8 @@
 #include "rank.h"
 #include "objpos.h"
 #include "target.h"
+#include "treasure.h"
+#include "wormhole.h"
 #include "move.h"
 
 static char msg[MSG_LEN];

@@ -55,6 +55,7 @@
 #include "portability.h"
 #include "object.h"
 #include "walls2.h"
+#include "wormhole.h"
 
 #define ROB_LOOK_AH 2
 

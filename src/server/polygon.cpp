@@ -21,6 +21,8 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include "polygon.h"
+
 #include <cassert>
 #include <climits>
 #include <cstring>
@@ -32,8 +34,9 @@
 #include "cannon.h"
 #include "server.h"
 #include "map.h"
-// #include "polygon.h"
 #include "target.h"
+#include "treasure.h"
+#include "wormhole.h"
 
 /* polygon map format related stuff */
 int num_edges, max_edges;

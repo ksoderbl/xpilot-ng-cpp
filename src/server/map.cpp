@@ -37,6 +37,7 @@
 #include <sys/stat.h>
 #include <sys/file.h>
 
+#include "bit.h"
 #include "commonmacros.h"
 #include "commonproto.h"
 
@@ -49,8 +50,8 @@
 #include "serverconst.h"
 
 #include "map.h"
-#include "bit.h"
 #include "xperror.h"
+#include "wormhole.h"
 
 /*
  * Globals.

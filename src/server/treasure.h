@@ -23,19 +23,14 @@
 
 #pragma once
 
-#include "click.h"
+// TODO: Define treasure_t or Treasure here
+#include "map.h"
 #include "object.h"
-#include "player.h"
 #include "polygon.h"
 
-#define WORMHOLE_RADIUS ((BLOCK_CLICKS / 2) - 1)
-
-bool Initiate_hyperjump(player_t *pl);
-void Player_warp(player_t *pl);
-void Player_finish_warp(player_t *pl);
-void Object_warp(object_t *obj);
-void Object_finish_warp(object_t *obj);
-void Object_hits_wormhole2(object_t *obj, int ind);
-hitmask_t Wormhole_hitmask(wormhole_t *wormhole);
-bool Wormhole_hitfunc(group_t *groupptr, const move_t *move);
-bool Verify_wormhole_consistency(void);
+void Treasure_init(void);
+void Make_treasure_ball(treasure_t *t);
+void Ball_hits_goal2(ballobject_t *ball, group_t *groupptr);
+void Ball_is_replaced(ballobject_t *ball);
+void Ball_is_destroyed(ballobject_t *ball);
+bool Balltarget_hitfunc(group_t *groupptr, const move_t *move);
