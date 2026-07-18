@@ -160,7 +160,7 @@ int main(int argc, char **argv)
 
     Asteroid_line_init();
     Wormhole_line_init();
-    Walls_init();
+    Walls_init2();
 
     /* Allocate memory for players, shots and messages */
     Alloc_players(Num_bases() + MAX_PSEUDO_PLAYERS + MAX_SPECTATORS);

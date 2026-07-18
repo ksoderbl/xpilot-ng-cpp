@@ -2501,7 +2501,7 @@ static void Corner_init(void)
 #undef DISIZE
 }
 
-void Ball_line_init(void)
+void Ball_line_init2(void)
 {
     int i;
     static clpos_t coords[MAX_SHIP_PTS];
@@ -2576,7 +2576,7 @@ static void Poly_to_lines(void)
     return;
 }
 
-void Walls_init(void)
+void Walls_init2(void)
 {
     double x, y, l2;
     int i;
@@ -2596,7 +2596,7 @@ void Walls_init(void)
      * sides of a moving polygon shape. */
     Corner_init();
 
-    Ball_line_init();
+    Ball_line_init2();
 
     /* Initialize the data structures used when determining whether a given
      * arbitrary point on the map is inside something. */

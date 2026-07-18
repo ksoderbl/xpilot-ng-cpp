@@ -84,7 +84,7 @@ void Target_update(void)
         else if (targ->damage == TARGET_DAMAGE)
             continue;
 
-        targ->damage += TARGET_REPAIR_PER_FRAME * timeStep;
+        targ->damage += TARGET_REPAIR_PER_TICK * timeStep;
         if (targ->damage >= TARGET_DAMAGE)
             targ->damage = TARGET_DAMAGE;
         else if (targ->last_change + TARGET_UPDATE_DELAY < frame_loops)

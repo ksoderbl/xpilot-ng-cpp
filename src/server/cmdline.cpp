@@ -1349,7 +1349,7 @@ static option_desc opts[] = {
      "10.0",
      &options.ballRadius,
      valReal,
-     Ball_line_init,
+     Ball_line_init2,
      "What radius, measured in pixels, the treasure balls have on\n"
      "the server. In traditional XPilot, the ball was treated as a\n"
      "point (radius = 0), but visually appeared on the client with\n"
