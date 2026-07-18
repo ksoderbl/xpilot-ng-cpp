@@ -197,13 +197,13 @@ void Create_blockmap_from_polygons(void)
     /*
      * Create blocks out of polygons.
      */
-    for (blk.by = 0; blk.by < world->y; blk.by++)
-        for (blk.bx = 0; blk.bx < world->x; blk.bx++)
+    for (blk.by = 0; blk.by < World.y; blk.by++)
+        for (blk.bx = 0; blk.bx < World.x; blk.bx++)
             World_set_block(blk, SPACE);
 
-    for (blk.by = 0; blk.by < world->bheight_floor; blk.by++)
+    for (blk.by = 0; blk.by < World.bheight_floor; blk.by++)
     {
-        for (blk.bx = 0; blk.bx < world->bwidth_floor; blk.bx++)
+        for (blk.bx = 0; blk.bx < World.bwidth_floor; blk.bx++)
         {
             int num_inside = 0;
             bool r_inside = false, u_inside = false;
@@ -302,9 +302,9 @@ void Create_blockmap_from_polygons(void)
     }
 
     /* find balltargets */
-    for (blk.by = 0; blk.by < world->bheight_floor; blk.by++)
+    for (blk.by = 0; blk.by < World.bheight_floor; blk.by++)
     {
-        for (blk.bx = 0; blk.bx < world->bwidth_floor; blk.bx++)
+        for (blk.bx = 0; blk.bx < World.bwidth_floor; blk.bx++)
         {
             int group;
             group_t *gp;
@@ -366,9 +366,9 @@ void Create_blockmap_from_polygons(void)
              * important type. We need to put this base somewhere else.
              * Let's just line up excess bases close to the origin of the map.
              */
-            for (blk.by = 0; blk.by < world->y; blk.by++)
+            for (blk.by = 0; blk.by < World.y; blk.by++)
             {
-                for (blk.bx = 0; blk.bx < world->x; blk.bx++)
+                for (blk.bx = 0; blk.bx < World.x; blk.bx++)
                 {
                     type = World_get_block(blk);
                     /*
@@ -409,7 +409,7 @@ setup_t *Xpmap_init_setup(void)
     size_t size, numblocks;
     setup_t *setup;
 
-    numblocks = world->x * world->y;
+    numblocks = World.x * World.y;
     if ((mapdata = XMALLOC(uint8_t, numblocks)) == NULL)
     {
         error("No memory for mapdata");
@@ -418,11 +418,11 @@ setup_t *Xpmap_init_setup(void)
     memset(mapdata, SETUP_SPACE, numblocks);
     mapptr = mapdata;
     errno = 0;
-    for (x = 0; x < world->x; x++)
+    for (x = 0; x < World.x; x++)
     {
-        for (y = 0; y < world->y; y++, mapptr++)
+        for (y = 0; y < World.y; y++, mapptr++)
         {
-            type = world->block[x][y];
+            type = World.block[x][y];
             switch (type)
             {
             case ACWISE_GRAV:
@@ -660,7 +660,7 @@ setup_t *Xpmap_init_setup(void)
                 break;
 
             case CHECK:
-                for (i = 0; i < world->NumChecks; i++)
+                for (i = 0; i < World.NumChecks; i++)
                 {
                     check_t *check = Check_by_index(i);
                     blkpos_t bpos = Clpos_to_blkpos(check->pos);
@@ -670,7 +670,7 @@ setup_t *Xpmap_init_setup(void)
                     *mapptr = SETUP_CHECK + i;
                     break;
                 }
-                if (i >= world->NumChecks)
+                if (i >= World.NumChecks)
                 {
                     warn("Bad checkpoint at (%d,%d).", x, y);
                     *mapptr = SETUP_SPACE;
@@ -723,12 +723,12 @@ setup_t *Xpmap_init_setup(void)
     setup->setup_size = ((char *)&setup->map_data[0] - (char *)setup) + size;
     setup->map_data_len = size;
     setup->map_order = type;
-    setup->lives = world->rules->lives;
-    setup->mode = world->rules->mode;
-    setup->x = world->x;
-    setup->y = world->y;
-    strlcpy(setup->name, world->name, sizeof(setup->name));
-    strlcpy(setup->author, world->author, sizeof(setup->author));
+    setup->lives = World.rules->lives;
+    setup->mode = World.rules->mode;
+    setup->x = World.x;
+    setup->y = World.y;
+    strlcpy(setup->name, World.name, sizeof(setup->name));
+    strlcpy(setup->author, World.author, sizeof(setup->author));
 
     return setup;
 }
@@ -736,12 +736,12 @@ setup_t *Xpmap_init_setup(void)
 /*
  * Grok block based map data.
  *
- * Create world->block using options.mapData.
+ * Create World.block using options.mapData.
  * Free options.mapData.
  */
 void Xpmap_grok_map_data(void)
 {
-    int x = -1, y = world->y - 1, c;
+    int x = -1, y = World.y - 1, c;
     char *s = options.mapData;
     blkpos_t blk;
 
@@ -756,9 +756,9 @@ void Xpmap_grok_map_data(void)
 
         x++;
 
-        if (options.extraBorder && (x == 0 || x == world->x - 1 || y == 0 || y == world->y - 1))
+        if (options.extraBorder && (x == 0 || x == World.x - 1 || y == 0 || y == World.y - 1))
         {
-            if (x >= world->x)
+            if (x >= World.x)
             {
                 x = -1;
                 y--;
@@ -773,10 +773,10 @@ void Xpmap_grok_map_data(void)
             c = *s;
             if (c == '\0' || c == EOF)
             {
-                if (x < world->x)
+                if (x < World.x)
                 {
                     /* not enough map data on this line */
-                    Xpmap_missing_error(world->y - y);
+                    Xpmap_missing_error(World.y - y);
                     c = XPMAP_SPACE;
                 }
                 else
@@ -784,23 +784,23 @@ void Xpmap_grok_map_data(void)
             }
             else
             {
-                if (c == '\n' && x < world->x)
+                if (c == '\n' && x < World.x)
                 {
                     /* not enough map data on this line */
-                    Xpmap_missing_error(world->y - y);
+                    Xpmap_missing_error(World.y - y);
                     c = XPMAP_SPACE;
                 }
                 else
                     s++;
             }
         }
-        if (x >= world->x || c == '\n')
+        if (x >= World.x || c == '\n')
         {
             y--;
             x = -1;
             if (c != '\n')
             { /* Get rest of line */
-                Xpmap_extra_error(world->y - y);
+                Xpmap_extra_error(World.y - y);
                 while (c != '\n' && c != EOF)
                     c = *s++;
             }
@@ -891,7 +891,7 @@ static void Xpmap_place_target(blkpos_t blk)
 
 static void Xpmap_place_check(blkpos_t blk, int ind)
 {
-    if (!BIT(world->rules->mode, TIMING))
+    if (!BIT(World.rules->mode, TIMING))
     {
         World_set_block(blk, SPACE);
         return;
@@ -940,10 +940,10 @@ void Xpmap_tags_to_internal_data(void)
     int x, y;
     char c;
 
-    for (x = 0; x < world->x; x++)
+    for (x = 0; x < World.x; x++)
     {
 
-        for (y = 0; y < world->y; y++)
+        for (y = 0; y < World.y; y++)
         {
 
             blkpos_t blk;
@@ -951,7 +951,7 @@ void Xpmap_tags_to_internal_data(void)
             blk.bx = x;
             blk.by = y;
 
-            c = world->block[x][y];
+            c = World.block[x][y];
 
             switch (c)
             {
@@ -1120,7 +1120,7 @@ void Xpmap_find_map_object_teams(void)
     int i;
     clpos_t pos = {0, 0};
 
-    if (!BIT(world->rules->mode, TEAM_PLAY))
+    if (!BIT(World.rules->mode, TEAM_PLAY))
         return;
 
     /* This could return -1 */
@@ -1212,48 +1212,48 @@ void Xpmap_find_base_direction(void)
         y = CLICK_TO_BLOCK(base->pos.cy);
 
         /* First check upwards attractor */
-        if (y == world->y - 1 && world->block[x][0] == BASE_ATTRACTOR && BIT(world->rules->mode, WRAP_PLAY))
+        if (y == World.y - 1 && World.block[x][0] == BASE_ATTRACTOR && BIT(World.rules->mode, WRAP_PLAY))
         {
             if (att == -1 || dir == DIR_UP)
                 att = DIR_UP;
         }
-        if (y < world->y - 1 && world->block[x][y + 1] == BASE_ATTRACTOR)
+        if (y < World.y - 1 && World.block[x][y + 1] == BASE_ATTRACTOR)
         {
             if (att == -1 || dir == DIR_UP)
                 att = DIR_UP;
         }
 
         /* then downwards */
-        if (y == 0 && world->block[x][world->y - 1] == BASE_ATTRACTOR && BIT(world->rules->mode, WRAP_PLAY))
+        if (y == 0 && World.block[x][World.y - 1] == BASE_ATTRACTOR && BIT(World.rules->mode, WRAP_PLAY))
         {
             if (att == -1 || dir == DIR_DOWN)
                 att = DIR_DOWN;
         }
-        if (y > 0 && world->block[x][y - 1] == BASE_ATTRACTOR)
+        if (y > 0 && World.block[x][y - 1] == BASE_ATTRACTOR)
         {
             if (att == -1 || dir == DIR_DOWN)
                 att = DIR_DOWN;
         }
 
         /* then rightwards */
-        if (x == world->x - 1 && world->block[0][y] == BASE_ATTRACTOR && BIT(world->rules->mode, WRAP_PLAY))
+        if (x == World.x - 1 && World.block[0][y] == BASE_ATTRACTOR && BIT(World.rules->mode, WRAP_PLAY))
         {
             if (att == -1 || dir == DIR_RIGHT)
                 att = DIR_RIGHT;
         }
-        if (x < world->x - 1 && world->block[x + 1][y] == BASE_ATTRACTOR)
+        if (x < World.x - 1 && World.block[x + 1][y] == BASE_ATTRACTOR)
         {
             if (att == -1 || dir == DIR_RIGHT)
                 att = DIR_RIGHT;
         }
 
         /* then leftwards */
-        if (x == 0 && world->block[world->x - 1][y] == BASE_ATTRACTOR && BIT(world->rules->mode, WRAP_PLAY))
+        if (x == 0 && World.block[World.x - 1][y] == BASE_ATTRACTOR && BIT(World.rules->mode, WRAP_PLAY))
         {
             if (att == -1 || dir == DIR_LEFT)
                 att = DIR_LEFT;
         }
-        if (x > 0 && world->block[x - 1][y] == BASE_ATTRACTOR)
+        if (x > 0 && World.block[x - 1][y] == BASE_ATTRACTOR)
         {
             if (att == -1 || dir == DIR_LEFT)
                 att = DIR_LEFT;
@@ -1263,9 +1263,9 @@ void Xpmap_find_base_direction(void)
             dir = att;
         base->dir = dir;
     }
-    for (blk.bx = 0; blk.bx < world->x; blk.bx++)
+    for (blk.bx = 0; blk.bx < World.x; blk.bx++)
     {
-        for (blk.by = 0; blk.by < world->y; blk.by++)
+        for (blk.by = 0; blk.by < World.y; blk.by++)
         {
             if (World_get_block(blk) == BASE_ATTRACTOR)
                 World_set_block(blk, SPACE);
@@ -1601,11 +1601,11 @@ static void Xpmap_walls_to_polygons(void)
      * #, FUEL   = fuel block
      */
 
-    for (y = world->y - 1; y >= 0; y--)
+    for (y = World.y - 1; y >= 0; y--)
     {
-        for (x = 0; x < world->x; x++)
+        for (x = 0; x < World.x; x++)
         {
-            block = world->block[x][y];
+            block = World.block[x][y];
 
             if (!inside)
             {

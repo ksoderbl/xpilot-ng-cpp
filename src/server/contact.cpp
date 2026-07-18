@@ -128,7 +128,7 @@ static int Kick_robot_players(int team)
 
     if (team == TEAM_NOT_SET)
     {
-        if (BIT(world->rules->mode, TEAM_PLAY) && options.reserveRobotTeam)
+        if (BIT(World.rules->mode, TEAM_PLAY) && options.reserveRobotTeam)
         {
             /* kick robot with lowest score from any team but robot team */
             double low_score = FLT_MAX;
@@ -162,7 +162,7 @@ static int Kick_robot_players(int team)
     }
     else
     {
-        if (world->teams[team].NumRobots > 0)
+        if (World.teams[team].NumRobots > 0)
         {
             /* kick robot with lowest score from this team */
             double low_score = FLT_MAX;
@@ -796,14 +796,14 @@ void Queue_loop(void)
             {
 
                 /* find a team for this fellow. */
-                if (BIT(world->rules->mode, TEAM_PLAY))
+                if (BIT(World.rules->mode, TEAM_PLAY))
                 {
                     /* see if he has a reasonable suggestion. */
                     if (qp->team >= 0 && qp->team < MAX_TEAMS)
                     {
                         if (game_lock ||
                             (qp->team == options.robotTeam && options.reserveRobotTeam) ||
-                            (world->teams[qp->team].NumMembers >= world->teams[qp->team].NumBases &&
+                            (World.teams[qp->team].NumMembers >= World.teams[qp->team].NumBases &&
                              !Kick_robot_players(qp->team) &&
                              !Kick_paused_players(qp->team)))
                             qp->team = TEAM_NOT_SET;
@@ -813,7 +813,7 @@ void Queue_loop(void)
                         qp->team = Pick_team(PL_TYPE_HUMAN);
                         if (qp->team == TEAM_NOT_SET && !game_lock)
                         {
-                            if (NumRobots > world->teams[options.robotTeam].NumRobots)
+                            if (NumRobots > World.teams[options.robotTeam].NumRobots)
                             {
                                 Kick_robot_players(TEAM_NOT_SET);
                                 qp->team = Pick_team(PL_TYPE_HUMAN);

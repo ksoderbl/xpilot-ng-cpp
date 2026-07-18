@@ -281,7 +281,7 @@ void Race_compute_game_status(void)
      * In limited lives mode, wait for everyone to die, except
      * for the last player.
      */
-    if (BIT(world->rules->mode, LIMITED_LIVES))
+    if (BIT(World.rules->mode, LIMITED_LIVES))
     {
         if (num_alive_players > 1)
             return;
@@ -490,7 +490,7 @@ void Player_pass_checkpoint(player_t *pl)
 #endif
     }
 
-    if (++pl->check == world->NumChecks)
+    if (++pl->check == World.NumChecks)
         pl->check = 0;
     pl->last_check_dir = pl->dir;
 
@@ -499,7 +499,7 @@ void Player_pass_checkpoint(player_t *pl)
 
 void PlayerCheckpointCollision(player_t *pl)
 {
-    if (!BIT(world->rules->mode, TIMING))
+    if (!BIT(World.rules->mode, TIMING))
         return;
 
     if (Player_is_active(pl))

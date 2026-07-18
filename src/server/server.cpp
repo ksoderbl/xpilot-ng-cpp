@@ -110,9 +110,6 @@ int main(int argc, char **argv)
     int timer_tick_rate;
     char *addr;
 
-    /* world is a global now */
-    world = &World;
-
     if (sock_startup() < 0)
     {
         warn("Error initializing sockets\n");
@@ -457,7 +454,7 @@ int Pick_team(int pick_for_type)
 
     for (i = 0; i < MAX_TEAMS; i++)
     {
-        free_bases[i] = world->teams[i].NumBases - world->teams[i].NumMembers;
+        free_bases[i] = World.teams[i].NumBases - World.teams[i].NumMembers;
         playing[i] = 0;
         team_score[i] = 0;
         available_teams[i] = 0;
@@ -590,7 +587,7 @@ void Server_info(char *str, size_t max_size)
              VERSION,
              Describe_game_status(),
              FPS,
-             world->name, world->author, world->width, world->height,
+             World.name, World.author, World.width, World.height,
              NumPlayers, Num_bases());
 
     assert(strlen(str) < max_size);
@@ -662,7 +659,7 @@ void Log_game(const char *heading)
 
     snprintf(str, sizeof(str),
              "%-50.50s\t%10.10s@%-15.15s\tWorld: %-25.25s\t%10.10s\n",
-             timenow, Server.owner, Server.host, world->name, heading);
+             timenow, Server.owner, Server.host, World.name, heading);
 
     if ((fp = fopen(Conf_logfile(), "a")) == NULL)
     {
@@ -690,7 +687,7 @@ void Game_Over(void)
      */
     options.gameDuration = -1.0;
 
-    if (BIT(world->rules->mode, TEAM_PLAY))
+    if (BIT(World.rules->mode, TEAM_PLAY))
     {
         double teamscore[MAX_TEAMS];
 

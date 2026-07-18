@@ -1024,7 +1024,7 @@ static int Rank_item_value(player_t *pl, enum Item itemtype)
 
     if (itemtype == ITEM_AUTOPILOT)
         return ROBOT_IGNORE_ITEM; /* never useful for robots */
-    if (pl->item[itemtype] >= world->items[itemtype].limit)
+    if (pl->item[itemtype] >= World.items[itemtype].limit)
         return ROBOT_IGNORE_ITEM; /* already full */
     if ((IsDefensiveItem(itemtype) && CountDefensiveItems(pl) >= options.maxDefensiveItems) || (IsOffensiveItem(itemtype) && CountOffensiveItems(pl) >= options.maxOffensiveItems))
         return ROBOT_IGNORE_ITEM;
@@ -1032,14 +1032,14 @@ static int Rank_item_value(player_t *pl, enum Item itemtype)
     {
         if (pl->fuel.sum >= pl->fuel.max * 0.90)
             return ROBOT_IGNORE_ITEM; /* already (almost) full */
-        else if ((pl->fuel.sum < (BIT(world->rules->mode, TIMING))
+        else if ((pl->fuel.sum < (BIT(World.rules->mode, TIMING))
                       ? my_data->fuel_l1
                       : my_data->fuel_l2))
             return ROBOT_MUST_HAVE_ITEM; /* ahh fuel at last */
         else
             return ROBOT_HANDY_ITEM;
     }
-    if (BIT(world->rules->mode, TIMING))
+    if (BIT(World.rules->mode, TIMING))
     {
         switch (itemtype)
         {
@@ -1320,10 +1320,10 @@ static void Robot_suibot_round_tick(void)
         * (NUM_IDS - NumRobots)) / NUM_IDS);*/
 
     /* limit distance to allowable enemies. */
-    Max_enemy_distance = world->hypotenuse;
-    if (world->hypotenuse > Visibility_distance)
-        Max_enemy_distance = world->hypotenuse;
+    Max_enemy_distance = World.hypotenuse;
+    if (World.hypotenuse > Visibility_distance)
+        Max_enemy_distance = World.hypotenuse;
     /*    min_enemy_distance
-            + (((world->hypotenuse - min_enemy_distance)
+            + (((World.hypotenuse - min_enemy_distance)
             * (NUM_IDS - NumRobots)) / NUM_IDS);*/
 }

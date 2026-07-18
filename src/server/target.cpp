@@ -190,7 +190,7 @@ void Object_hits_target2(object_t *obj, target_t *targ, double player_cost)
                 20.0, 70.0,
                 10.0, 100.0);
 
-    if (BIT(world->rules->mode, TEAM_PLAY))
+    if (BIT(World.rules->mode, TEAM_PLAY))
     {
         for (j = 0; j < NumPlayers; j++)
         {

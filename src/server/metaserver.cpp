@@ -211,7 +211,7 @@ void Meta_update(bool change)
             continue;
 
         num_active_players++;
-        if (BIT(world->rules->mode, TEAM_PLAY))
+        if (BIT(World.rules->mode, TEAM_PLAY))
             active_per_team[pl->team]++;
     }
 
@@ -219,7 +219,7 @@ void Meta_update(bool change)
 
     /* calculate number of available homebases per team. */
     freebases[0] = '\0';
-    if (BIT(world->rules->mode, TEAM_PLAY))
+    if (BIT(World.rules->mode, TEAM_PLAY))
     {
         bool firstteam = true;
 
@@ -264,10 +264,10 @@ void Meta_update(bool change)
              "add queue %d\n"
              "add sound %s\n",
              Server.host, num_active_players,
-             META_VERSION, world->name, world->x, world->y, world->author,
+             META_VERSION, World.name, World.x, World.y, World.author,
              Num_bases(), FPS, options.contactPort,
-             game_mode, world->NumTeamBases, freebases,
-             BIT(world->rules->mode, TIMING) ? 1 : 0,
+             game_mode, World.NumTeamBases, freebases,
+             BIT(World.rules->mode, TIMING) ? 1 : 0,
              (long)(time(NULL) - serverStartTime),
              queue_length, options.sound ? "yes" : "no");
 
@@ -297,7 +297,7 @@ void Meta_update(bool change)
                  pl->username,
                  pl->hostname);
 
-        if (BIT(world->rules->mode, TEAM_PLAY))
+        if (BIT(World.rules->mode, TEAM_PLAY))
         {
             snprintf(tstr, sizeof(tstr), "{%d}", pl->team);
             strlcat(str, tstr, sizeof(str));

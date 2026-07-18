@@ -150,7 +150,7 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
     {
     case SCORE_CANNON_KILL:
         sc = Rate(Get_Score(killer), ((cannon_t *)extra)->score) * options.cannonKillScoreMult;
-        if (BIT(world->rules->mode, TEAM_PLAY) && killer->team == ((cannon_t *)extra)->team)
+        if (BIT(World.rules->mode, TEAM_PLAY) && killer->team == ((cannon_t *)extra)->team)
             sc = -sc;
         if (!options.zeroSumScoring)
             Score(killer, sc, ((cannon_t *)extra)->pos, "");
@@ -417,7 +417,7 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
         target_t *targ = (target_t *)extra;
         bool somebody = false;
 
-        if (BIT(world->rules->mode, TEAM_PLAY))
+        if (BIT(World.rules->mode, TEAM_PLAY))
         {
             for (j = 0; j < NumPlayers; j++)
             {
@@ -503,7 +503,7 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
         treasure_t *treasure = (treasure_t *)extra;
         bool somebody = false;
 
-        if (BIT(world->rules->mode, TEAM_PLAY))
+        if (BIT(World.rules->mode, TEAM_PLAY))
         {
             for (i = 0; i < NumPlayers; i++)
             {
@@ -535,8 +535,8 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
         }
 
         treasure->destroyed++;
-        world->teams[treasure->team].TreasuresLeft--;
-        world->teams[killer->team].TreasuresDestroyed++;
+        World.teams[treasure->team].TreasuresLeft--;
+        World.teams[killer->team].TreasuresDestroyed++;
 
         sc = 3 * Rate(win_score, lose_score);
         por = (sc * lose_team_members) / (2 * win_team_members + 1);

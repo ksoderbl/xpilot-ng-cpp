@@ -100,7 +100,7 @@ void Cannon_update(bool tick)
             {
                 int item = (int)(rfrac() * NUM_ITEMS);
                 /* this gives the cannon an item about once every minute */
-                if (world->items[item].cannonprob > 0 && options.cannonItemProbMult > 0 && (int)(rfrac() * (60 * 12)) < (options.cannonItemProbMult * world->items[item].cannonprob))
+                if (World.items[item].cannonprob > 0 && options.cannonItemProbMult > 0 && (int)(rfrac() * (60 * 12)) < (options.cannonItemProbMult * World.items[item].cannonprob))
                     Cannon_add_item(c, item, (item == ITEM_FUEL ? ENERGY_PACK_FUEL : 1));
             }
         }
@@ -157,17 +157,17 @@ void Cannon_add_item(cannon_t *c, int item_type, int amount)
     {
     case ITEM_TANK:
         c->item[ITEM_TANK] += amount;
-        LIMIT(c->item[ITEM_TANK], 0, world->items[ITEM_TANK].limit);
+        LIMIT(c->item[ITEM_TANK], 0, World.items[ITEM_TANK].limit);
     /* FALLTHROUGH */
     case ITEM_FUEL:
         c->item[ITEM_FUEL] += (int)(amount / ENERGY_PACK_FUEL + 0.5);
         LIMIT(c->item[ITEM_FUEL],
               0,
-              (int)(world->items[ITEM_FUEL].limit / ENERGY_PACK_FUEL + 0.5));
+              (int)(World.items[ITEM_FUEL].limit / ENERGY_PACK_FUEL + 0.5));
         break;
     default:
         c->item[item_type] += amount;
-        LIMIT(c->item[item_type], 0, world->items[item_type].limit);
+        LIMIT(c->item[item_type], 0, World.items[item_type].limit);
         break;
     }
 }
@@ -178,7 +178,7 @@ static inline int Cannon_get_initial_item(cannon_t *c, Item_t i)
 
     init_amount = c->initial_items[i];
     if (init_amount < 0)
-        init_amount = world->items[i].cannon_initial;
+        init_amount = World.items[i].cannon_initial;
 
     return init_amount;
 }
@@ -196,7 +196,7 @@ void Cannon_throw_items(cannon_t *c)
         c->item[i] -= Cannon_get_initial_item(c, (Item_t)i);
         while (c->item[i] > 0)
         {
-            int amount = world->items[i].max_per_pack - (int)(rfrac() * (1 + world->items[i].max_per_pack - world->items[i].min_per_pack));
+            int amount = World.items[i].max_per_pack - (int)(rfrac() * (1 + World.items[i].max_per_pack - World.items[i].min_per_pack));
             LIMIT(amount, 0, c->item[i]);
             if (rfrac() < (options.dropItemOnKillProb * CANNON_DROP_ITEM_PROB) && (item = ITEM_PTR(Object_allocate())) != NULL)
             {
@@ -220,7 +220,7 @@ void Cannon_throw_items(cannon_t *c)
                 item->item_count = amount;
                 item->pl_range = ITEM_SIZE / 2;
                 item->pl_radius = ITEM_SIZE / 2;
-                world->items[i].num++;
+                World.items[i].num++;
                 Cell_add_object(OBJ_PTR(item));
             }
             c->item[i] -= amount;
@@ -332,7 +332,7 @@ static int Cannon_in_danger(cannon_t *c)
             continue;
         if (BIT(shot->obj_status, FROMCANNON))
             continue;
-        if (BIT(world->rules->mode, TEAM_PLAY) && options.teamImmunity && shot->team == c->team)
+        if (BIT(World.rules->mode, TEAM_PLAY) && options.teamImmunity && shot->team == c->team)
             continue;
 
         npx = CLICK_TO_PIXEL(shot->pos.cx);
@@ -482,7 +482,7 @@ static void Cannon_aim(cannon_t *c, int weapon, player_t **pl_p, int *dir)
             continue;
 
         /* mode 3 also checks if a player is using a phasing device */
-        if (Player_is_paused(pl) || (BIT(world->rules->mode, TEAM_PLAY) && pl->team == c->team) || ((pl->forceVisible <= 0) && Player_is_cloaked(pl) && (int)(rfrac() * (pl->item[ITEM_CLOAK] + 1)) > (int)(rfrac() * (c->item[ITEM_SENSOR] + 1))) || (smartness > 2 && Player_is_phasing(pl)))
+        if (Player_is_paused(pl) || (BIT(World.rules->mode, TEAM_PLAY) && pl->team == c->team) || ((pl->forceVisible <= 0) && Player_is_cloaked(pl) && (int)(rfrac() * (pl->item[ITEM_CLOAK] + 1)) > (int)(rfrac() * (c->item[ITEM_SENSOR] + 1))) || (smartness > 2 && Player_is_phasing(pl)))
             continue;
 
         switch (smartness)
@@ -846,7 +846,7 @@ hitmask_t Cannon_hitmask(cannon_t *cannon)
 {
     if (cannon->dead_ticks > 0)
         return ALL_BITS;
-    if (BIT(world->rules->mode, TEAM_PLAY) && options.teamImmunity)
+    if (BIT(World.rules->mode, TEAM_PLAY) && options.teamImmunity)
         return HITMASK(cannon->team);
     return 0;
 }

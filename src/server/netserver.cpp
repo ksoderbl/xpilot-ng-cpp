@@ -275,12 +275,12 @@ static int Init_setup(void)
     free(mapdata);
     Setup->setup_size = ((char *)&Setup->map_data[0] - (char *)Setup) + size;
     Setup->map_data_len = size;
-    Setup->lives = world->rules->lives;
-    Setup->mode = world->rules->mode;
-    Setup->width = world->width;
-    Setup->height = world->height;
-    strlcpy(Setup->name, world->name, sizeof(Setup->name));
-    strlcpy(Setup->author, world->author, sizeof(Setup->author));
+    Setup->lives = World.rules->lives;
+    Setup->mode = World.rules->mode;
+    Setup->width = World.width;
+    Setup->height = World.height;
+    strlcpy(Setup->name, World.name, sizeof(Setup->name));
+    strlcpy(Setup->author, World.author, sizeof(Setup->author));
     strlcpy(Setup->data_url, options.dataURL, sizeof(Setup->data_url));
 
     return 0;
@@ -1090,16 +1090,16 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
     int i, conn_bit;
     const char sender[] = "[*Server notice*]";
 
-    if (BIT(world->rules->mode, TEAM_PLAY))
+    if (BIT(World.rules->mode, TEAM_PLAY))
     {
         if (connp->team < 0 || connp->team >= MAX_TEAMS || (options.reserveRobotTeam && (connp->team == options.robotTeam)))
             connp->team = TEAM_NOT_SET;
-        else if (world->teams[connp->team].NumBases <= 0)
+        else if (World.teams[connp->team].NumBases <= 0)
             connp->team = TEAM_NOT_SET;
         else
         {
             Check_team_members(connp->team);
-            if (world->teams[connp->team].NumMembers - world->teams[connp->team].NumRobots >= world->teams[connp->team].NumBases)
+            if (World.teams[connp->team].NumMembers - World.teams[connp->team].NumRobots >= World.teams[connp->team].NumBases)
                 connp->team = TEAM_NOT_SET;
         }
         if (connp->team == TEAM_NOT_SET)
@@ -1149,7 +1149,7 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
 
     if (pl->rectype < 2)
     {
-        if (BIT(world->rules->mode, TEAM_PLAY) && pl->team == TEAM_NOT_SET)
+        if (BIT(World.rules->mode, TEAM_PLAY) && pl->team == TEAM_NOT_SET)
         {
             Player_set_state(pl, PL_STATE_PAUSED);
             pl->home_base = NULL;
@@ -1255,14 +1255,14 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
     {
         if (NumPlayers == 1)
             Set_message_f("Welcome to \"%s\", made by %s.",
-                          world->name, world->author);
-        else if (BIT(world->rules->mode, TEAM_PLAY))
+                          World.name, World.author);
+        else if (BIT(World.rules->mode, TEAM_PLAY))
             Set_message_f("%s (%s, team %d) has entered \"%s\", made by %s.",
                           pl->name, pl->username, pl->team,
-                          world->name, world->author);
+                          World.name, World.author);
         else
             Set_message_f("%s (%s) has entered \"%s\", made by %s.",
-                          pl->name, pl->username, world->name, world->author);
+                          pl->name, pl->username, World.name, World.author);
     }
 
     if (options.greeting)
@@ -1357,11 +1357,11 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
 
     if (options.resetOnHuman > 0 && ((NumPlayers - NumPseudoPlayers - NumRobots) <= options.resetOnHuman))
     {
-        if (BIT(world->rules->mode, TIMING))
+        if (BIT(World.rules->mode, TIMING))
             Race_game_over();
-        else if (BIT(world->rules->mode, TEAM_PLAY))
+        else if (BIT(World.rules->mode, TEAM_PLAY))
             Team_game_over(-1, "");
-        else if (BIT(world->rules->mode, LIMITED_LIVES))
+        else if (BIT(World.rules->mode, LIMITED_LIVES))
             Individual_game_over(-1);
     }
 
@@ -1372,7 +1372,7 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
         else
             roundtime = -1;
         Set_message_f("Player entered. Delaying 0 seconds until next %s.",
-                      (BIT(world->rules->mode, TIMING) ? "race" : "round"));
+                      (BIT(World.rules->mode, TIMING) ? "race" : "round"));
     }
 
     return 0;
@@ -1819,7 +1819,7 @@ int Send_timing(connection_t *connp, int id, int check, int round)
         return 0;
     }
     if (is_polygon_map)
-        num_checks = world->NumChecks;
+        num_checks = World.NumChecks;
     return Packet_printf(&connp->c, "%c%hd%hu", PKT_TIMING,
                          id, round * num_checks + check);
 }

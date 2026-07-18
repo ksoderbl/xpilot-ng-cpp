@@ -134,7 +134,7 @@ int Choose_random_item(void)
     double item_prob_sum = 0;
 
     for (i = 0; i < NUM_ITEMS; i++)
-        item_prob_sum += world->items[i].prob;
+        item_prob_sum += World.items[i].prob;
 
     if (item_prob_sum > 0.0)
     {
@@ -142,7 +142,7 @@ int Choose_random_item(void)
 
         for (i = 0; i < NUM_ITEMS; i++)
         {
-            sum -= world->items[i].prob;
+            sum -= World.items[i].prob;
             if (sum <= 0)
                 break;
         }
@@ -177,7 +177,7 @@ void Place_item(player_t *pl, int item)
                 return;
             pl->item[item] -= num_lose;
             num_per_pack = (int)(num_lose * options.dropItemOnKillProb);
-            if (num_per_pack < world->items[item].min_per_pack)
+            if (num_per_pack < World.items[item].min_per_pack)
                 return;
         }
         else
@@ -185,10 +185,10 @@ void Place_item(player_t *pl, int item)
             num_lose = pl->item[item];
             if (num_lose <= 0)
                 return;
-            if (world->items[item].min_per_pack == world->items[item].max_per_pack)
-                num_per_pack = world->items[item].max_per_pack;
+            if (World.items[item].min_per_pack == World.items[item].max_per_pack)
+                num_per_pack = World.items[item].max_per_pack;
             else
-                num_per_pack = world->items[item].min_per_pack + (int)(rfrac() * (1 + world->items[item].max_per_pack - world->items[item].min_per_pack));
+                num_per_pack = World.items[item].min_per_pack + (int)(rfrac() * (1 + World.items[item].max_per_pack - World.items[item].min_per_pack));
             if (num_per_pack > num_lose)
                 num_per_pack = num_lose;
             else
@@ -198,10 +198,10 @@ void Place_item(player_t *pl, int item)
     }
     else
     {
-        if (world->items[item].min_per_pack == world->items[item].max_per_pack)
-            num_per_pack = world->items[item].max_per_pack;
+        if (World.items[item].min_per_pack == World.items[item].max_per_pack)
+            num_per_pack = World.items[item].max_per_pack;
         else
-            num_per_pack = world->items[item].min_per_pack + (int)(rfrac() * (1 + world->items[item].max_per_pack - world->items[item].min_per_pack));
+            num_per_pack = World.items[item].min_per_pack + (int)(rfrac() * (1 + World.items[item].max_per_pack - World.items[item].min_per_pack));
     }
 
     if (pl)
@@ -338,7 +338,7 @@ void Make_item(clpos_t pos, vector_t vel,
     if (!World_contains_clpos(pos))
         return;
 
-    if (world->items[type].num >= world->items[type].max)
+    if (World.items[type].num >= World.items[type].max)
         return;
 
     if ((item = ITEM_PTR(Object_allocate())) == NULL)
@@ -360,7 +360,7 @@ void Make_item(clpos_t pos, vector_t vel,
     item->pl_range = ITEM_SIZE / 2;
     item->pl_radius = ITEM_SIZE / 2;
 
-    world->items[type].num++;
+    World.items[type].num++;
     Cell_add_object(OBJ_PTR(item));
 }
 
@@ -693,7 +693,7 @@ void Do_general_transporter(int id, clpos_t pos,
         t.victim_id = victim->id;
         t.id = (pl ? pl->id : NO_ID);
         t.count = 5.0;
-        world->transporters.push_back(t);
+        World.transporters.push_back(t);
         sound_play_sensors(pos, TRANSPORTER_SUCCESS_SOUND);
     }
 
@@ -905,7 +905,7 @@ void Do_general_transporter(int id, clpos_t pos,
         break;
     }
 
-    LIMIT(pl->item[item], 0, world->items[item].limit);
+    LIMIT(pl->item[item], 0, World.items[item].limit);
 }
 
 void do_lose_item(player_t *pl)
@@ -941,7 +941,7 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
     mineobject_t *closest_mine = NULL;
     smartobject_t *smart;
     mineobject_t *mine;
-    double closest_mine_range = world->hypotenuse;
+    double closest_mine_range = World.hypotenuse;
     int i, j, ecm_ind;
     double range, perim, damage;
     player_t *p, *pl = Player_by_id(id);
@@ -951,7 +951,7 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
     t.pos = pos;
     t.id = (pl ? pl->id : NO_ID);
     t.size = ECM_DISTANCE;
-    world->ecms.push_back(t);
+    World.ecms.push_back(t);
     ecm_ind = Num_ecms();
     if (ecm_ind < 0)
         return;
@@ -1002,7 +1002,7 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
                         continue;
                 }
             }
-            else if ((pl && Team_immune(pl->id, owner_pl->id)) || (BIT(world->rules->mode, TEAM_PLAY) && team == shot->team))
+            else if ((pl && Team_immune(pl->id, owner_pl->id)) || (BIT(World.rules->mode, TEAM_PLAY) && team == shot->team))
                 continue;
         }
 
@@ -1017,7 +1017,7 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
             SET_BIT(smart->obj_status, CONFUSED);
             smart->smart_ecm_range = range;
             smart->smart_count = CONFUSED_TIME;
-            if (pl && BIT(pl->lock.tagged, LOCK_PLAYER) && (pl->lock.distance <= pl->sensor_range || !BIT(world->rules->mode, LIMITED_VISIBILITY)) && pl->visibility[GetInd(pl->lock.pl_id)].canSee)
+            if (pl && BIT(pl->lock.tagged, LOCK_PLAYER) && (pl->lock.distance <= pl->sensor_range || !BIT(World.rules->mode, LIMITED_VISIBILITY)) && pl->visibility[GetInd(pl->lock.pl_id)].canSee)
                 smart->smart_relock_id = pl->lock.pl_id;
             else
                 smart->smart_relock_id = Player_by_index((int)(rfrac() * NumPlayers))->id;
@@ -1088,13 +1088,13 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
     }
 
     /* in non-team mode cannons are immune to cannon ECMs */
-    if (BIT(world->rules->mode, TEAM_PLAY) || pl)
+    if (BIT(World.rules->mode, TEAM_PLAY) || pl)
     {
         for (i = 0; i < Num_cannons(); i++)
         {
             cannon_t *c = Cannon_by_index(i);
 
-            if (BIT(world->rules->mode, TEAM_PLAY) && c->team == team)
+            if (BIT(World.rules->mode, TEAM_PLAY) && c->team == team)
                 continue;
             range = Wrap_length(pos.cx - c->pos.cx,
                                 pos.cy - c->pos.cy) /
@@ -1119,7 +1119,7 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
          * Team members are always immune from ECM effects from other
          * team members.  Its too nasty otherwise.
          */
-        if (BIT(world->rules->mode, TEAM_PLAY) && p->team == team)
+        if (BIT(World.rules->mode, TEAM_PLAY) && p->team == team)
             continue;
 
         if (pl && Players_are_allies(pl, p))
@@ -1190,7 +1190,7 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
             }
             else
             {
-                if (BIT(pl->lock.tagged, LOCK_PLAYER) && (pl->lock.distance < pl->sensor_range || !BIT(world->rules->mode, LIMITED_VISIBILITY)) && pl->visibility[GetInd(pl->lock.pl_id)].canSee && pl->lock.pl_id != p->id
+                if (BIT(pl->lock.tagged, LOCK_PLAYER) && (pl->lock.distance < pl->sensor_range || !BIT(World.rules->mode, LIMITED_VISIBILITY)) && pl->visibility[GetInd(pl->lock.pl_id)].canSee && pl->lock.pl_id != p->id
                     /*&& !TEAM_IMMUNE(ind, GetInd(pl->lock.pl_id))*/)
                 {
 

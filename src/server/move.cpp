@@ -29,9 +29,9 @@ extern uint32_t KILLING_SHOTS;
 
 void Move_init2(void)
 {
-    LIMIT(options.maxObjectWallBounceSpeed, 0, world->hypotenuse);
-    LIMIT(options.maxShieldedWallBounceSpeed, 0, world->hypotenuse);
-    LIMIT(options.maxUnshieldedWallBounceSpeed, 0, world->hypotenuse);
+    LIMIT(options.maxObjectWallBounceSpeed, 0, World.hypotenuse);
+    LIMIT(options.maxShieldedWallBounceSpeed, 0, World.hypotenuse);
+    LIMIT(options.maxUnshieldedWallBounceSpeed, 0, World.hypotenuse);
 
     LIMIT(options.playerWallBounceBrakeFactor, 0, 1);
     LIMIT(options.playerWallFriction, 0, FLT_MAX);

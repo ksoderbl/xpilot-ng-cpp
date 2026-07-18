@@ -56,8 +56,7 @@
 /*
  * Globals.
  */
-world_t World,
-    *world;
+world_t World;
 bool is_polygon_map = false;
 
 static void Find_base_direction(void);
@@ -68,14 +67,14 @@ static void Check_map_object_counters(void)
 
     for (i = 0; i < MAX_TEAMS; i++)
     {
-        assert(world->teams[i].NumMembers == 0);
-        assert(world->teams[i].NumRobots == 0);
-        assert(world->teams[i].NumBases == 0);
-        assert(world->teams[i].NumTreasures == 0);
-        assert(world->teams[i].NumEmptyTreasures == 0);
-        assert(world->teams[i].TreasuresDestroyed == 0);
-        assert(world->teams[i].TreasuresLeft == 0);
-        assert(world->teams[i].SwapperId == NO_ID);
+        assert(World.teams[i].NumMembers == 0);
+        assert(World.teams[i].NumRobots == 0);
+        assert(World.teams[i].NumBases == 0);
+        assert(World.teams[i].NumTreasures == 0);
+        assert(World.teams[i].NumEmptyTreasures == 0);
+        assert(World.teams[i].TreasuresDestroyed == 0);
+        assert(World.teams[i].TreasuresLeft == 0);
+        assert(World.teams[i].SwapperId == NO_ID);
     }
 }
 
@@ -124,7 +123,7 @@ int World_place_cannon(clpos_t pos, int dir, int team)
         t.initial_items[i] = -1;
     t.shot_speed = -1;
     t.smartness = -1;
-    world->cannons.push_back(t);
+    World.cannons.push_back(t);
     cannon = Cannon_by_index(ind);
     assert(Cannon_by_id(t.id) == cannon);
 
@@ -141,7 +140,7 @@ int World_place_fuel(clpos_t pos, int team)
     t.conn_mask = ~0;
     t.last_change = frame_loops;
     t.team = team;
-    world->fuels.push_back(t);
+    World.fuels.push_back(t);
 
     return ind;
 }
@@ -171,14 +170,14 @@ int World_place_base(clpos_t pos, int dir, int team, int order)
     }
 
     t.dir = dir;
-    if (BIT(world->rules->mode, TEAM_PLAY))
+    if (BIT(World.rules->mode, TEAM_PLAY))
     {
         if (team < 0 || team >= MAX_TEAMS)
             team = 0;
         t.team = team;
-        world->teams[team].NumBases++;
-        if (world->teams[team].NumBases == 1)
-            world->NumTeamBases++;
+        World.teams[team].NumBases++;
+        if (World.teams[team].NumBases == 1)
+            World.NumTeamBases++;
     }
     else
         t.team = TEAM_NOT_SET;
@@ -186,7 +185,7 @@ int World_place_base(clpos_t pos, int dir, int team, int order)
 
     for (i = 0; i < NUM_ITEMS; i++)
         t.initial_items[i] = -1;
-    world->bases.push_back(t);
+    World.bases.push_back(t);
 
     return ind;
 }
@@ -205,10 +204,10 @@ int World_place_treasure(clpos_t pos, int team, bool empty,
     t.ball_style = ball_style;
     if (team != TEAM_NOT_SET)
     {
-        world->teams[team].NumTreasures++;
-        world->teams[team].TreasuresLeft++;
+        World.teams[team].NumTreasures++;
+        World.teams[team].TreasuresLeft++;
     }
-    world->treasures.push_back(t);
+    World.treasures.push_back(t);
 
     return ind;
 }
@@ -230,7 +229,7 @@ int World_place_target(clpos_t pos, int team)
     t.update_mask = 0;
     t.last_change = frame_loops;
     t.group = NO_GROUP;
-    world->targets.push_back(t);
+    World.targets.push_back(t);
 
     return ind;
 }
@@ -247,7 +246,7 @@ int World_place_wormhole(clpos_t pos, wormtype_t type)
     t.lastblock = SPACE;
     t.lastID = NO_ID;
     t.group = NO_GROUP;
-    world->wormholes.push_back(t);
+    World.wormholes.push_back(t);
 
     return ind;
 }
@@ -264,17 +263,17 @@ static void alloc_old_checks(void)
     t.pos = pos;
 
     for (i = 0; i < OLD_MAX_CHECKS; i++)
-        STORE(check_t, world->checks, world->NumChecks, world->MaxChecks, t);
+        STORE(check_t, World.checks, World.NumChecks, World.MaxChecks, t);
 
-    SHRINK(check_t, world->checks, world->NumChecks, world->MaxChecks);
-    world->NumChecks = 0;
+    SHRINK(check_t, World.checks, World.NumChecks, World.MaxChecks);
+    World.NumChecks = 0;
 }
 
 int World_place_check(clpos_t pos, int ind)
 {
     check_t t;
 
-    if (!BIT(world->rules->mode, TIMING))
+    if (!BIT(World.rules->mode, TIMING))
     {
         warn("Checkpoint on map with no timing.");
         return NO_IND;
@@ -294,14 +293,14 @@ int World_place_check(clpos_t pos, int ind)
     {
         check_t *check;
 
-        if (world->NumChecks == 0)
+        if (World.NumChecks == 0)
             alloc_old_checks();
 
         /*
          * kps hack - we can't use Check_by_index because it might return
-         * NULL since ind can here be >= world->NumChecks.
+         * NULL since ind can here be >= World.NumChecks.
          */
-        check = &world->checks[ind];
+        check = &World.checks[ind];
         if (World_contains_clpos(check->pos))
         {
             warn("Map contains too many '%c' checkpoints.", 'A' + ind);
@@ -309,13 +308,13 @@ int World_place_check(clpos_t pos, int ind)
         }
 
         check->pos = pos;
-        world->NumChecks++;
+        World.NumChecks++;
         return ind;
     }
 
-    ind = world->NumChecks;
+    ind = World.NumChecks;
     t.pos = pos;
-    STORE(check_t, world->checks, world->NumChecks, world->MaxChecks, t);
+    STORE(check_t, World.checks, World.NumChecks, World.MaxChecks, t);
     return ind;
 }
 
@@ -325,7 +324,7 @@ int World_place_item_concentrator(clpos_t pos)
     int ind = Num_itemConcs();
 
     t.pos = pos;
-    world->itemConcs.push_back(t);
+    World.itemConcs.push_back(t);
 
     return ind;
 }
@@ -336,7 +335,7 @@ int World_place_asteroid_concentrator(clpos_t pos)
     int ind = Num_asteroidConcs();
 
     t.pos = pos;
-    world->asteroidConcs.push_back(t);
+    World.asteroidConcs.push_back(t);
 
     return ind;
 }
@@ -349,7 +348,7 @@ int World_place_grav(clpos_t pos, double force, int type)
     t.pos = pos;
     t.force = force;
     t.type = type;
-    world->gravs.push_back(t);
+    World.gravs.push_back(t);
 
     return ind;
 }
@@ -362,7 +361,7 @@ int World_place_friction_area(clpos_t pos, double fric)
     t.pos = pos;
     t.friction_setting = fric;
     /*t.friction = ... ; handled in timing setup */
-    world->frictionAreas.push_back(t);
+    World.frictionAreas.push_back(t);
 
     return ind;
 }
@@ -396,7 +395,7 @@ int World_init(void)
 {
     int i;
 
-    memset(world, 0, sizeof(world_t));
+    memset(&World, 0, sizeof(world_t));
 
     for (i = 0; i < MAX_TEAMS; i++)
         Team_by_index(i)->SwapperId = NO_ID;
@@ -408,17 +407,17 @@ int World_init(void)
 
 void World_free(void)
 {
-    XFREE(world->block);
-    XFREE(world->gravity);
-    /*XFREE(world->gravs);*/
-    /*XFREE(world->bases);*/
-    /*XFREE(world->cannons);*/
-    XFREE(world->checks);
-    /*XFREE(world->fuels);*/
-    /*XFREE(world->wormholes);*/
-    /*XFREE(world->itemConcs);
-    XFREE(world->asteroidConcs);
-    XFREE(world->frictionAreas);*/
+    XFREE(World.block);
+    XFREE(World.gravity);
+    /*XFREE(World.gravs);*/
+    /*XFREE(World.bases);*/
+    /*XFREE(World.cannons);*/
+    XFREE(World.checks);
+    /*XFREE(World.fuels);*/
+    /*XFREE(World.wormholes);*/
+    /*XFREE(World.itemConcs);
+    XFREE(World.asteroidConcs);
+    XFREE(World.frictionAreas);*/
 }
 
 static bool World_alloc(void)
@@ -429,44 +428,44 @@ static bool World_alloc(void)
     vector_t *grav_line;
     vector_t **grav_pointer;
 
-    assert(world->block == NULL);
-    assert(world->gravity == NULL);
+    assert(World.block == NULL);
+    assert(World.gravity == NULL);
 
-    world->block = (uint8_t **)
-        malloc(sizeof(uint8_t *) * world->x + world->x * sizeof(uint8_t) * world->y);
-    world->gravity = (vector_t **)
-        malloc(sizeof(vector_t *) * world->x + world->x * sizeof(vector_t) * world->y);
+    World.block = (uint8_t **)
+        malloc(sizeof(uint8_t *) * World.x + World.x * sizeof(uint8_t) * World.y);
+    World.gravity = (vector_t **)
+        malloc(sizeof(vector_t *) * World.x + World.x * sizeof(vector_t) * World.y);
 
-    /*assert(world->gravs == NULL);*/
-    /*assert(world->bases == NULL);*/
-    /*assert(world->fuels == NULL);*/
-    /*assert(world->cannons == NULL);*/
-    assert(world->checks == NULL);
-    /*assert(world->wormholes == NULL);*/
-    /*assert(world->itemConcs == NULL);*/
-    /*assert(world->asteroidConcs == NULL);*/
+    /*assert(World.gravs == NULL);*/
+    /*assert(World.bases == NULL);*/
+    /*assert(World.fuels == NULL);*/
+    /*assert(World.cannons == NULL);*/
+    assert(World.checks == NULL);
+    /*assert(World.wormholes == NULL);*/
+    /*assert(World.itemConcs == NULL);*/
+    /*assert(World.asteroidConcs == NULL);*/
 
-    if (world->block == NULL || world->gravity == NULL)
+    if (World.block == NULL || World.gravity == NULL)
     {
         World_free();
         error("Couldn't allocate memory for map");
         return false;
     }
 
-    map_pointer = world->block;
-    map_line = (uint8_t *)((uint8_t **)map_pointer + world->x);
+    map_pointer = World.block;
+    map_line = (uint8_t *)((uint8_t **)map_pointer + World.x);
 
-    grav_pointer = world->gravity;
-    grav_line = (vector_t *)((vector_t **)grav_pointer + world->x);
+    grav_pointer = World.gravity;
+    grav_line = (vector_t *)((vector_t **)grav_pointer + World.x);
 
-    for (x = 0; x < world->x; x++)
+    for (x = 0; x < World.x; x++)
     {
         *map_pointer = map_line;
         map_pointer += 1;
-        map_line += world->y;
+        map_line += World.y;
         *grav_pointer = grav_line;
         grav_pointer += 1;
-        grav_line += world->y;
+        grav_line += World.y;
     }
 
     return true;
@@ -515,32 +514,32 @@ static bool Grok_map_size(void)
         return false;
 
     /* pixel sizes */
-    world->width = w;
-    world->height = h;
+    World.width = w;
+    World.height = h;
     if (!is_polygon_map && options.extraBorder)
     {
-        world->width += 2 * BLOCK_SZ;
-        world->height += 2 * BLOCK_SZ;
+        World.width += 2 * BLOCK_SZ;
+        World.height += 2 * BLOCK_SZ;
     }
-    world->hypotenuse = LENGTH(world->width, world->height);
+    World.hypotenuse = LENGTH(World.width, World.height);
 
     /* click sizes */
-    world->cwidth = world->width * CLICK;
-    world->cheight = world->height * CLICK;
+    World.cwidth = World.width * CLICK;
+    World.cheight = World.height * CLICK;
 
     /* block sizes */
-    world->x = (world->width - 1) / BLOCK_SZ + 1; /* !@# */
-    world->y = (world->height - 1) / BLOCK_SZ + 1;
-    world->diagonal = LENGTH(world->x, world->y);
-    world->bwidth_floor = world->width / BLOCK_SZ;
-    world->bheight_floor = world->height / BLOCK_SZ;
+    World.x = (World.width - 1) / BLOCK_SZ + 1; /* !@# */
+    World.y = (World.height - 1) / BLOCK_SZ + 1;
+    World.diagonal = LENGTH(World.x, World.y);
+    World.bwidth_floor = World.width / BLOCK_SZ;
+    World.bheight_floor = World.height / BLOCK_SZ;
 
     return true;
 }
 
 bool Grok_map_options(void)
 {
-    if (world->have_options)
+    if (World.have_options)
         return true;
 
     Check_map_object_counters();
@@ -548,9 +547,9 @@ bool Grok_map_options(void)
     if (!Grok_map_size())
         return false;
 
-    strlcpy(world->name, options.mapName, sizeof(world->name));
-    strlcpy(world->author, options.mapAuthor, sizeof(world->author));
-    strlcpy(world->dataURL, options.dataURL, sizeof(world->dataURL));
+    strlcpy(World.name, options.mapName, sizeof(World.name));
+    strlcpy(World.author, options.mapAuthor, sizeof(World.author));
+    strlcpy(World.dataURL, options.dataURL, sizeof(World.dataURL));
 
     if (!World_alloc())
         return false;
@@ -559,13 +558,13 @@ bool Grok_map_options(void)
     Set_world_items();
     Set_world_asteroids();
 
-    if (BIT(world->rules->mode, TEAM_PLAY | TIMING) == (TEAM_PLAY | TIMING))
+    if (BIT(World.rules->mode, TEAM_PLAY | TIMING) == (TEAM_PLAY | TIMING))
     {
         warn("Cannot teamplay while in race mode -- ignoring teamplay");
-        CLR_BIT(world->rules->mode, TEAM_PLAY);
+        CLR_BIT(World.rules->mode, TEAM_PLAY);
     }
 
-    world->have_options = true;
+    World.have_options = true;
 
     return true;
 }
@@ -585,11 +584,11 @@ bool Grok_map(void)
     if (!Verify_wormhole_consistency())
         return false;
 
-    if (BIT(world->rules->mode, TIMING) && world->NumChecks == 0)
+    if (BIT(World.rules->mode, TIMING) && World.NumChecks == 0)
     {
         warn("No checkpoints found while race mode (timing) was set.");
         warn("Turning off race mode.");
-        CLR_BIT(world->rules->mode, TIMING);
+        CLR_BIT(World.rules->mode, TIMING);
     }
 
     /* kps - what are these doing here ? */
@@ -604,8 +603,8 @@ bool Grok_map(void)
 
     printf("World....: %s\nBases....: %d\nMapsize..: %dx%d pixels\n"
            "Team play: %s\n",
-           world->name, Num_bases(), world->width, world->height,
-           BIT(world->rules->mode, TEAM_PLAY) ? "on" : "off");
+           World.name, Num_bases(), World.width, World.height,
+           BIT(World.rules->mode, TEAM_PLAY) ? "on" : "off");
 
     if (!is_polygon_map)
         Xpmap_blocks_to_polygons();

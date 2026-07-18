@@ -85,7 +85,7 @@ static bool Player_lock_allowed(player_t *pl, player_t *lock_pl)
         return true;
 
     /* if there is no team play then we can always lock on anyone. */
-    if (!BIT(world->rules->mode, TEAM_PLAY))
+    if (!BIT(World.rules->mode, TEAM_PLAY))
         return true;
 
     /* we can always lock on players from our own team. */
@@ -508,7 +508,7 @@ void Pause_player(player_t *pl, bool on)
     if (on && !Player_is_paused(pl))
     { /* Turn pause mode on */
         if (pl->team != TEAM_NOT_SET)
-            world->teams[pl->team].SwapperId = NO_ID;
+            World.teams[pl->team].SwapperId = NO_ID;
         /* Minimum pause time is 10 seconds at gamespeed 12. */
         pl->pause_count = 10 * 12;
         /* player might have paused when recovering */
@@ -519,7 +519,7 @@ void Pause_player(player_t *pl, bool on)
         if (options.baselessPausing)
         {
             if (pl->team != TEAM_NOT_SET)
-                world->teams[pl->team].NumMembers--;
+                World.teams[pl->team].NumMembers--;
             pl->pl_prev_team = pl->team;
             /* kps - probably broken if no team play */
             pl->team = 0;
@@ -574,8 +574,8 @@ void Pause_player(player_t *pl, bool on)
 
         for (i = 0; i < MAX_TEAMS; i++)
         {
-            if (world->teams[i].SwapperId == pl->id)
-                world->teams[i].SwapperId = NO_ID;
+            if (World.teams[i].SwapperId == pl->id)
+                World.teams[i].SwapperId = NO_ID;
         }
     }
     else if (!on && Player_is_paused(pl))
@@ -595,10 +595,10 @@ void Pause_player(player_t *pl, bool on)
             int team = pl->pl_prev_team;
 
             /* kps - code copied from Cmd_team() */
-            if (team > 0 && team < MAX_TEAMS && (world->teams[team].NumBases > world->teams[team].NumMembers))
+            if (team > 0 && team < MAX_TEAMS && (World.teams[team].NumBases > World.teams[team].NumMembers))
             {
                 pl->team = team;
-                world->teams[pl->team].NumMembers++;
+                World.teams[pl->team].NumMembers++;
                 Set_swapper_state(pl);
                 Pick_startpos(pl);
                 Send_info_about_player(pl);
@@ -613,7 +613,7 @@ void Pause_player(player_t *pl, bool on)
         }
 
         updateScores = true;
-        if (BIT(world->rules->mode, LIMITED_LIVES))
+        if (BIT(World.rules->mode, LIMITED_LIVES))
         {
             /* too late, wait for next round */
             Player_set_state(pl, PL_STATE_WAITING);

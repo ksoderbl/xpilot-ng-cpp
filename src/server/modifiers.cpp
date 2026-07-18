@@ -247,22 +247,22 @@ int Mods_set(modifiers_t *mods, modifier_t modifier, int val)
         allow = true;
     else if (modifier == ModsNuclear)
     {
-        if (BIT(world->rules->mode, ALLOW_NUKES))
+        if (BIT(World.rules->mode, ALLOW_NUKES))
             allow = true;
     }
     else if (modifier == ModsCluster)
     {
-        if (BIT(world->rules->mode, ALLOW_CLUSTERS))
+        if (BIT(World.rules->mode, ALLOW_CLUSTERS))
             allow = true;
     }
     else if (modifier == ModsLaser)
     {
-        if (BIT(world->rules->mode, ALLOW_LASER_MODIFIERS))
+        if (BIT(World.rules->mode, ALLOW_LASER_MODIFIERS))
             allow = true;
     }
     else
     {
-        if (BIT(world->rules->mode, ALLOW_MODIFIERS))
+        if (BIT(World.rules->mode, ALLOW_MODIFIERS))
             allow = true;
     }
 
@@ -397,13 +397,13 @@ void Mods_to_string(modifiers_t mods, char *modstr, size_t size)
 
 void Mods_filter(modifiers_t *mods)
 {
-    if (!BIT(world->rules->mode, ALLOW_NUKES))
+    if (!BIT(World.rules->mode, ALLOW_NUKES))
         Mods_set(mods, ModsNuclear, 0);
 
-    if (!BIT(world->rules->mode, ALLOW_CLUSTERS))
+    if (!BIT(World.rules->mode, ALLOW_CLUSTERS))
         Mods_set(mods, ModsCluster, 0);
 
-    if (!BIT(world->rules->mode, ALLOW_MODIFIERS))
+    if (!BIT(World.rules->mode, ALLOW_MODIFIERS))
     {
         Mods_set(mods, ModsImplosion, 0);
         Mods_set(mods, ModsVelocity, 0);
@@ -412,7 +412,7 @@ void Mods_filter(modifiers_t *mods)
         Mods_set(mods, ModsPower, 0);
     }
 
-    if (!BIT(world->rules->mode, ALLOW_LASER_MODIFIERS))
+    if (!BIT(World.rules->mode, ALLOW_LASER_MODIFIERS))
         Mods_set(mods, ModsLaser, 0);
 }
 

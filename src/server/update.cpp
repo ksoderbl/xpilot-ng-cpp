@@ -98,14 +98,14 @@ static void Transport_to_home(player_t *pl)
         return;
     }
 
-    if (BIT(world->rules->mode, TIMING) && pl->round)
+    if (BIT(World.rules->mode, TIMING) && pl->round)
     {
         int check;
 
         if (pl->check)
             check = pl->check - 1;
         else
-            check = world->NumChecks - 1;
+            check = World.NumChecks - 1;
         startpos = Check_by_index(check)->pos;
     }
     else
@@ -651,10 +651,10 @@ static void Ecm_update(void)
                     pl->ecmcount--;
             }
 #if 0
-            --world->NumEcms;
-            world->ecms[i] = world->ecms[world->NumEcms];
+            --World.NumEcms;
+            World.ecms[i] = World.ecms[World.NumEcms];
 #else
-            world->ecms.erase(world->ecms.begin() + i);
+            World.ecms.erase(World.ecms.begin() + i);
 #endif
             i--;
         }
@@ -675,11 +675,11 @@ static void Transporter_update(void)
         if ((trans->count -= timeStep) <= 0)
         {
 #if 0
-            --world->NumTransporters;
-            world->transporters[i]
-            = world->transporters[world->NumTransporters];
+            --World.NumTransporters;
+            World.transporters[i]
+            = World.transporters[World.NumTransporters];
 #else
-            world->transporters.erase(world->transporters.begin() + i);
+            World.transporters.erase(World.transporters.begin() + i);
 #endif
             i--;
         }
@@ -827,7 +827,7 @@ static void Do_refuel(player_t *pl)
 
     if ((Wrap_length(pl->pos.cx - fs->pos.cx,
                      pl->pos.cy - fs->pos.cy) > 90.0 * CLICK) ||
-        (pl->fuel.sum >= pl->fuel.max) || Player_is_phasing(pl) || (BIT(world->rules->mode, TEAM_PLAY) && options.teamFuel && fs->team != pl->team))
+        (pl->fuel.sum >= pl->fuel.max) || Player_is_phasing(pl) || (BIT(World.rules->mode, TEAM_PLAY) && options.teamFuel && fs->team != pl->team))
     {
         CLR_BIT(pl->used, USES_REFUEL);
     }
@@ -1024,7 +1024,7 @@ static void Update_players(void)
             {
                 /* Player has recovered (unless he is already dead). */
                 pl->recovery_count = 0;
-                if (BIT(world->rules->mode, LIMITED_LIVES))
+                if (BIT(World.rules->mode, LIMITED_LIVES))
                 {
                     if (!Player_is_dead(pl))
                         Player_set_state(pl, PL_STATE_ALIVE);
@@ -1324,7 +1324,7 @@ void Update_objects(void)
     if (tick)
     {
         for (i = 0; i < NUM_ITEMS; i++)
-            if (world->items[i].num < world->items[i].max && world->items[i].chance > 0 && (rfrac() * world->items[i].chance) < 1.0f)
+            if (World.items[i].num < World.items[i].max && World.items[i].chance > 0 && (rfrac() * World.items[i].chance) < 1.0f)
                 Place_item(NULL, i);
     }
 

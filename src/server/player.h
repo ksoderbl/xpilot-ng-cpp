@@ -563,7 +563,7 @@ static inline bool Player_owns_tank(player_t *pl, player_t *tank)
  */
 static inline bool Players_are_teammates(player_t *pl1, player_t *pl2)
 {
-    if (BIT(world->rules->mode, TEAM_PLAY) && pl1->team != TEAM_NOT_SET && pl1->team == pl2->team)
+    if (BIT(World.rules->mode, TEAM_PLAY) && pl1->team != TEAM_NOT_SET && pl1->team == pl2->team)
         return true;
     return false;
 }

@@ -725,7 +725,7 @@ static void Robot_create(void)
     robot->power = MAX_PLAYER_POWER;
     robot->power_s = MAX_PLAYER_POWER;
     robot->check = 0;
-    if (BIT(world->rules->mode, TEAM_PLAY))
+    if (BIT(World.rules->mode, TEAM_PLAY))
     {
         robot->team = Pick_team(PL_TYPE_ROBOT);
         teamp = Team_by_index(robot->team);
@@ -771,7 +771,7 @@ static void Robot_create(void)
         else
             roundtime = -1;
         Set_message_f("Player entered. Delaying 0 seconds until next %s.",
-                      (BIT(world->rules->mode, TIMING) ? "race" : "round"));
+                      (BIT(World.rules->mode, TIMING) ? "race" : "round"));
     }
 
     updateScores = true;
@@ -999,7 +999,7 @@ void Robot_update(bool tick)
 
     num_any_ships = NumPlayers + login_in_progress;
     num_playing_ships = num_any_ships - NumPseudoPlayers;
-    if ((num_playing_ships < options.maxRobots || NumRobots < options.minRobots) && (options.baselessPausing || num_playing_ships < Num_bases()) && num_any_ships < NUM_IDS && NumRobots < MAX_ROBOTS && !(BIT(world->rules->mode, TEAM_PLAY) && options.restrictRobots && world->teams[options.robotTeam].NumMembers >= world->teams[options.robotTeam].NumBases))
+    if ((num_playing_ships < options.maxRobots || NumRobots < options.minRobots) && (options.baselessPausing || num_playing_ships < Num_bases()) && num_any_ships < NUM_IDS && NumRobots < MAX_ROBOTS && !(BIT(World.rules->mode, TEAM_PLAY) && options.restrictRobots && World.teams[options.robotTeam].NumMembers >= World.teams[options.robotTeam].NumBases))
     {
 
         new_robot_delay += timeStep;

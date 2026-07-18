@@ -133,7 +133,7 @@ void tuner_worldlives(void)
 
     Set_world_rules();
 
-    if (BIT(world->rules->mode, LIMITED_LIVES))
+    if (BIT(World.rules->mode, LIMITED_LIVES))
     {
         Reset_all_players();
         if (options.gameDuration == -1)
@@ -214,7 +214,7 @@ void tuner_gameduration(void)
 
 void tuner_racelaps(void)
 {
-    if (BIT(world->rules->mode, TIMING))
+    if (BIT(World.rules->mode, TIMING))
     {
         Reset_all_players();
         if (options.gameDuration == -1)
@@ -224,10 +224,10 @@ void tuner_racelaps(void)
 
 void tuner_allowalliances(void)
 {
-    if (BIT(world->rules->mode, TEAM_PLAY))
-        CLR_BIT(world->rules->mode, ALLIANCES);
+    if (BIT(World.rules->mode, TEAM_PLAY))
+        CLR_BIT(World.rules->mode, ALLIANCES);
 
-    if (!BIT(world->rules->mode, ALLIANCES) && NumAlliances > 0)
+    if (!BIT(World.rules->mode, ALLIANCES) && NumAlliances > 0)
         Dissolve_all_alliances();
 }
 
