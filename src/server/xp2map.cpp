@@ -1,5 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
+ * XPilot, a multiplayer gravity war game.
  *
  * Copyright (C) 2000-2004 by
  *
@@ -567,7 +567,6 @@ static void tagend(void *data, const char *el)
         parsing_general_options = false;
         /* ok, got to the end of options */
         Options_parse();
-        /* kps - this can fail - fix */
         Grok_map_options();
     }
     return;

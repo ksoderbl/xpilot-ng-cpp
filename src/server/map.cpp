@@ -393,6 +393,8 @@ static void Filled_wire_init(void)
 
 int World_init(void)
 {
+    warn("World_init");
+
     int i;
 
     memset(&World, 0, sizeof(world_t));
@@ -571,6 +573,8 @@ bool Grok_map_options(void)
 
 bool Grok_map(void)
 {
+    warn("Grok_map: ========================== START");
+
     if (!Grok_map_options())
         return false;
 
