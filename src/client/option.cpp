@@ -45,22 +45,19 @@
 #include "client.h"
 #include "option.h"
 
-int num_options = 0;
-int max_options = 0;
-
-xp_option_t *options = NULL;
+std::vector<xp_option_t> optionsVector;
 
 xp_option_t *Find_option(const char *name)
 {
     int i;
 
-    for (i = 0; i < num_options; i++)
+    for (i = 0; i < optionsVector.size(); i++)
     {
-        if (!strcasecmp(name, options[i].name))
-            return &options[i];
+        if (!strcasecmp(name, optionsVector[i].name))
+            return &optionsVector[i];
     }
 
-    return NULL;
+    return nullptr;
 }
 
 static const char *Option_default_value_to_string(xp_option_t *opt)
@@ -140,7 +137,7 @@ void Usage(void)
            "Where options include:\n"
            "\n",
            Program_name());
-    for (i = 0; i < num_options; i++)
+    for (i = 0; i < optionsVector.size(); i++)
     {
         xp_option_t *opt = Option_by_index(i);
 
@@ -699,6 +696,10 @@ void Get_command(const char *args)
 
 /*
  * NOTE: Store option assumes the passed pointers will remain valid.
+ *
+ * TODO: Store option should just store the options in the array, but not call any
+ * of the setter functions, these should be called later in a specific order, because
+ * some settings might assume other code has been executed.
  */
 void Store_option(xp_option_t *opt)
 {
@@ -729,7 +730,9 @@ void Store_option(xp_option_t *opt)
 
     memcpy(&option, opt, sizeof(xp_option_t));
 
-    STORE(xp_option_t, options, num_options, max_options, option);
+    optionsVector.push_back(option);
+
+    // TODO set all the values later.
 
     opt = Find_option(opt->name);
     assert(opt);
@@ -1031,7 +1034,7 @@ int Xpilotrc_write(const char *path)
     }
 
     /* make sure all options are in the xpilotrc */
-    for (i = 0; i < num_options; i++)
+    for (i = 0; i < optionsVector.size(); i++)
     {
         xp_option_t *opt = Option_by_index(i);
         xp_option_origin_t origin;
@@ -1214,7 +1217,7 @@ const char *Get_keyHelpString(keys_t key)
     char *nl;
     static char buf[MAX_CHARS];
 
-    for (i = 0; i < num_options; i++)
+    for (i = 0; i < optionsVector.size(); i++)
     {
         xp_option_t *opt = Option_by_index(i);
 
@@ -1234,7 +1237,7 @@ const char *Get_keyResourceString(keys_t key)
 {
     int i;
 
-    for (i = 0; i < num_options; i++)
+    for (i = 0; i < optionsVector.size(); i++)
     {
         xp_option_t *opt = Option_by_index(i);
 

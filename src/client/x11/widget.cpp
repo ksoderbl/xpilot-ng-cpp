@@ -1668,7 +1668,7 @@ int Widget_add_pulldown_entry(int menu_desc, const char *str,
                                0, 0,
                                pull_width, pull_height,
                                0, dispDepth,
-                               InputOutput, visual,
+                               InputOutput, visualPtr,
                                mask, &sattr);
         pulldown_desc = Widget_form_window(window, NO_WIDGET,
                                            pull_width, pull_height);
@@ -2089,7 +2089,7 @@ int Widget_create_popup(int width, int height, int border,
                            x, y,
                            width, height,
                            border, dispDepth,
-                           InputOutput, visual,
+                           InputOutput, visualPtr,
                            mask, &sattr);
     popup_desc = Widget_form_window(window, NO_WIDGET,
                                     width, height);

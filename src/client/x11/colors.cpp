@@ -81,7 +81,7 @@ static const char *color_defaults[MAX_COLORS] = {
     XP_COLOR12, XP_COLOR13, XP_COLOR14, XP_COLOR15};
 
 char visualName[MAX_VISUAL_NAME];
-Visual *visual;
+Visual *visualPtr;
 unsigned dispDepth;
 bool colorSwitch;
 bool multibuffer;
@@ -187,7 +187,7 @@ static void Get_colormap(void)
 {
     printf("Creating a private colormap\n");
     colormap = XCreateColormap(dpy, DefaultRootWindow(dpy),
-                               visual, AllocNone);
+                               visualPtr, AllocNone);
 }
 
 /*
@@ -295,8 +295,8 @@ static void Choose_visual(void)
     }
     if (visual_class < 0 && visual_id < 0)
     {
-        visual = DefaultVisual(dpy, DefaultScreen(dpy));
-        if (visual->c_class == TrueColor || visual->c_class == DirectColor)
+        visualPtr = DefaultVisual(dpy, DefaultScreen(dpy));
+        if (visualPtr->c_class == TrueColor || visualPtr->c_class == DirectColor)
         {
             visual_class = PseudoColor;
             strcpy(visualName, "PseudoColor");
@@ -345,19 +345,19 @@ static void Choose_visual(void)
                 else if (cmap_size >= 256)
                     best_vinfo = &vinfo_ptr[i];
             }
-            visual = best_vinfo->visual;
+            visualPtr = best_vinfo->visual;
             visual_class = best_vinfo->c_class;
             dispDepth = best_vinfo->depth;
             XFree((void *)vinfo_ptr);
             printf("Using visual %s with depth %d and %d colors\n",
-                   Visual_class_name(visual->c_class), dispDepth,
-                   visual->map_entries);
+                   Visual_class_name(visualPtr->c_class), dispDepth,
+                   visualPtr->map_entries);
             Get_colormap();
         }
     }
     if (visual_class < 0)
     {
-        visual = DefaultVisual(dpy, DefaultScreen(dpy));
+        visualPtr = DefaultVisual(dpy, DefaultScreen(dpy));
         dispDepth = DefaultDepth(dpy, DefaultScreen(dpy));
         colormap = 0;
     }
@@ -420,7 +420,7 @@ static void Fill_colormap(void)
     cells_needed = (maxColors == 16)  ? 256
                    : (maxColors == 8) ? 64
                                       : 16;
-    max_fill = MAX(256, visual->map_entries) - cells_needed;
+    max_fill = MAX(256, visualPtr->map_entries) - cells_needed;
     if (max_fill <= 0)
         return;
 
@@ -469,24 +469,24 @@ int Colors_init(void)
     /*
      * Get misc. display info.
      */
-    if (visual->c_class == StaticColor ||
-        visual->c_class == TrueColor)
+    if (visualPtr->c_class == StaticColor ||
+        visualPtr->c_class == TrueColor)
         colorSwitch = false;
 
-    if (visual->map_entries < 16)
+    if (visualPtr->map_entries < 16)
         colorSwitch = false;
 
     if (colorSwitch)
     {
-        maxColors = (maxColors >= 16 && visual->map_entries >= 256) ? 16
-                    : (maxColors >= 8 && visual->map_entries >= 64) ? 8
-                                                                    : 4;
+        maxColors = (maxColors >= 16 && visualPtr->map_entries >= 256) ? 16
+                    : (maxColors >= 8 && visualPtr->map_entries >= 64) ? 8
+                                                                       : 4;
     }
     else
     {
-        maxColors = (maxColors >= 16 && visual->map_entries >= 16) ? 16
-                    : (maxColors >= 8 && visual->map_entries >= 8) ? 8
-                                                                   : 4;
+        maxColors = (maxColors >= 16 && visualPtr->map_entries >= 16) ? 16
+                    : (maxColors >= 8 && visualPtr->map_entries >= 8) ? 8
+                                                                      : 4;
     }
     num_planes = (maxColors == 16)  ? 4
                  : (maxColors == 8) ? 3
@@ -554,7 +554,7 @@ int Colors_init(void)
     {
         /* Can't setup double buffering */
         warn("Can't setup colors with visual %s and %d colormap entries",
-             Visual_class_name(visual->c_class), visual->map_entries);
+             Visual_class_name(visualPtr->c_class), visualPtr->map_entries);
         return -1;
     }
 
@@ -631,7 +631,7 @@ static int Colors_init_bitmap_colors(void)
 {
     int r = -1;
 
-    switch (visual->c_class)
+    switch (visualPtr->c_class)
     {
     case PseudoColor:
         r = Colors_init_color_cube();
@@ -652,7 +652,7 @@ static int Colors_init_bitmap_colors(void)
 
     default:
         warn("fullColor not implemented for visual \"%s\"",
-             Visual_class_name(visual->c_class));
+             Visual_class_name(visualPtr->c_class));
         fullColor = false;
         texturedObjects = false;
         break;
@@ -882,20 +882,20 @@ static int Colors_init_true_color(void)
 {
     int i, j, r, g, b;
 
-    if ((visual->red_mask == 0) ||
-        (visual->green_mask == 0) ||
-        (visual->blue_mask == 0) ||
-        ((visual->red_mask &
-          visual->green_mask &
-          visual->blue_mask) != 0))
+    if ((visualPtr->red_mask == 0) ||
+        (visualPtr->green_mask == 0) ||
+        (visualPtr->blue_mask == 0) ||
+        ((visualPtr->red_mask &
+          visualPtr->green_mask &
+          visualPtr->blue_mask) != 0))
     {
 
         printf("Your visual \"%s\" has weird characteristics:\n",
-               Visual_class_name(visual->c_class));
+               Visual_class_name(visualPtr->c_class));
         printf("\tred mask 0x%06lx, green mask 0x%06lx, blue mask 0x%06lx,\n",
-               visual->red_mask, visual->green_mask, visual->blue_mask);
+               visualPtr->red_mask, visualPtr->green_mask, visualPtr->blue_mask);
         printf("\toverlap mask 0x%06lx\n",
-               visual->red_mask & visual->green_mask & visual->blue_mask);
+               visualPtr->red_mask & visualPtr->green_mask & visualPtr->blue_mask);
         return -1;
     }
 
@@ -917,7 +917,7 @@ static int Colors_init_true_color(void)
     b = 7;
     for (i = 31; i >= 0; --i)
     {
-        if ((visual->red_mask & (1UL << i)) != 0)
+        if ((visualPtr->red_mask & (1UL << i)) != 0)
         {
             if (r >= 0)
             {
@@ -929,7 +929,7 @@ static int Colors_init_true_color(void)
                 r--;
             }
         }
-        if ((visual->green_mask & (1UL << i)) != 0)
+        if ((visualPtr->green_mask & (1UL << i)) != 0)
         {
             if (g >= 0)
             {
@@ -941,7 +941,7 @@ static int Colors_init_true_color(void)
                 g--;
             }
         }
-        if ((visual->blue_mask & (1UL << i)) != 0)
+        if ((visualPtr->blue_mask & (1UL << i)) != 0)
         {
             if (b >= 0)
             {

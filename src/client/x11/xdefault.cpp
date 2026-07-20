@@ -275,7 +275,7 @@ xp_option_t xdefault_options[] = {
 
     XP_STRING_OPTION(
         "geometry",
-        "1024x768",
+        "1280x1024",
         NULL, 0,
         Set_geometry, NULL, Get_geometry,
         XP_OPTFLAG_DEFAULT,
