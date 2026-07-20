@@ -6,6 +6,6 @@ if(XPILOT_BUILD_X11_CLIENT OR XPILOT_BUILD_SDL_CLIENT)
     add_subdirectory(client)
 endif()
 
-if(XPILOT_BUILD_REPLAY)
+if(XPILOT_BUILD_X11_REPLAY)
     add_subdirectory(replay)
 endif()

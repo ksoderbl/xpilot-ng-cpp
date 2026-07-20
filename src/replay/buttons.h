@@ -1,5 +1,5 @@
 /*
- * XP-Replay, playback an XPilot session.  Copyright (C) 1994-98 by
+ * XPilot-Replay, playback an XPilot session.  Copyright (C) 1994-98 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten

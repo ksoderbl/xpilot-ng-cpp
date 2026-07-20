@@ -1,5 +1,5 @@
 /*
- * XP-Replay, playback an XPilot session.  Copyright (C) 1994-98 by
+ * XPilot-Replay, playback an XPilot session.  Copyright (C) 1994-98 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -33,7 +33,30 @@
  * implied warranty.
  */
 
-#include "xp-replay.h"
+#include "xpilot-replay.h"
+
+#include <unistd.h>
+
+#include <cstdlib>
+#include <cstdio>
+#include <cstring>
+#include <csignal>
+#include <cerrno>
+#include <cmath>
+#include <ctime>
+#include <cstdarg>
+#include <sys/select.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/time.h>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+
+#include "commonmacros.h"
+#include "recordfile.h"
+#include "recordfmt.h"
+#include "item.h"
+#include "buttons.h"
 
 #include "items/itemRocketPack.xbm"
 #include "items/itemCloakingDevice.xbm"
@@ -2677,57 +2700,6 @@ static void SaveFramesPPM(struct xprc *rc)
         sprintf(buf, "Saving failed!\n");
         OverWriteMsg(rc, buf);
     }
-}
-
-static void RWriteByte(int i, FILE *fp)
-{
-    putc(i, fp);
-}
-
-static void RWriteShort(int i, FILE *fp)
-{
-    putc(i, fp);
-    i >>= 8;
-    putc(i, fp);
-}
-
-static void RWriteUShort(int i, FILE *fp)
-{
-    putc(i, fp);
-    i >>= 8;
-    putc(i, fp);
-}
-
-static void RWriteLong(int i, FILE *fp)
-{
-    putc(i, fp);
-    i >>= 8;
-    putc(i, fp);
-    i >>= 8;
-    putc(i, fp);
-    i >>= 8;
-    putc(i, fp);
-}
-
-static void RWriteULong(int i, FILE *fp)
-{
-    putc(i, fp);
-    i >>= 8;
-    putc(i, fp);
-    i >>= 8;
-    putc(i, fp);
-    i >>= 8;
-    putc(i, fp);
-}
-
-static void RWriteString(char *str, FILE *fp)
-{
-    int len = strlen(str);
-    int i;
-
-    RWriteUShort(len, fp);
-    for (i = 0; i < len; i++)
-        putc(str[i], fp);
 }
 
 static int pixel2index(struct xprc *rc, unsigned long pixel)

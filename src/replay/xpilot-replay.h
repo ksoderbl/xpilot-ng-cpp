@@ -1,5 +1,5 @@
 /*
- * XP-Replay, playback an XPilot session.  Copyright (C) 1994-98 by
+ * XPilot-Replay, playback an XPilot session.  Copyright (C) 1994-98 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -21,19 +21,9 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef XP_REPLAY_H
-#define XP_REPLAY_H
+#pragma once
 
-#ifdef HAVE_X11_XLIB_H
-#include <X11/Xlib.h>
-#endif
-#ifdef HAVE_X11_XUTIL_H
-#include <X11/Xutil.h>
-#endif
-
-#include "recordfmt.h"
-#include "item.h"
-#include "buttons.h"
+#include <cstdlib>
 
 #define BLACK 0
 #define WHITE 1
@@ -53,5 +43,3 @@ enum MemTypes
 };
 
 void *MyMalloc(size_t, enum MemTypes);
-
-#endif
