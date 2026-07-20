@@ -940,176 +940,176 @@ void Xpmap_tags_to_internal_data(void)
     int x, y;
     char c;
 
-    for (x = 0; x < World.x; x++)
     {
-
-        for (y = 0; y < World.y; y++)
+        for (x = 0; x < World.x; x++)
         {
-
-            blkpos_t blk;
-
-            blk.bx = x;
-            blk.by = y;
-
-            c = World.block[x][y];
-
-            switch (c)
+            for (y = 0; y < World.y; y++)
             {
-            case XPMAP_SPACE:
-            case XPMAP_SPACE_ALT:
-            default:
-                Xpmap_place_block(blk, SPACE);
-                break;
+                blkpos_t blk;
 
-            case XPMAP_FILLED:
-                Xpmap_place_block(blk, FILLED);
-                break;
-            case XPMAP_REC_LU:
-                Xpmap_place_block(blk, REC_LU);
-                break;
-            case XPMAP_REC_RU:
-                Xpmap_place_block(blk, REC_RU);
-                break;
-            case XPMAP_REC_LD:
-                Xpmap_place_block(blk, REC_LD);
-                break;
-            case XPMAP_REC_RD:
-                Xpmap_place_block(blk, REC_RD);
-                break;
+                blk.bx = x;
+                blk.by = y;
 
-            case XPMAP_CANNON_UP:
-                Xpmap_place_cannon(blk, DIR_UP);
-                break;
-            case XPMAP_CANNON_LEFT:
-                Xpmap_place_cannon(blk, DIR_LEFT);
-                break;
-            case XPMAP_CANNON_RIGHT:
-                Xpmap_place_cannon(blk, DIR_RIGHT);
-                break;
-            case XPMAP_CANNON_DOWN:
-                Xpmap_place_cannon(blk, DIR_DOWN);
-                break;
+                c = World.block[x][y];
 
-            case XPMAP_FUEL:
-                Xpmap_place_fuel(blk);
-                break;
-            case XPMAP_TREASURE:
-                Xpmap_place_treasure(blk, false);
-                break;
-            case XPMAP_EMPTY_TREASURE:
-                Xpmap_place_treasure(blk, true);
-                break;
-            case XPMAP_TARGET:
-                Xpmap_place_target(blk);
-                break;
-            case XPMAP_ITEM_CONCENTRATOR:
-                Xpmap_place_item_concentrator(blk);
-                break;
-            case XPMAP_ASTEROID_CONCENTRATOR:
-                Xpmap_place_asteroid_concentrator(blk);
-                break;
-            case XPMAP_BASE_ATTRACTOR:
-                Xpmap_place_block(blk, BASE_ATTRACTOR);
-                break;
-            case XPMAP_BASE:
-                Xpmap_place_base(blk, TEAM_NOT_SET);
-                break;
-            case XPMAP_BASE_TEAM_0:
-            case XPMAP_BASE_TEAM_1:
-            case XPMAP_BASE_TEAM_2:
-            case XPMAP_BASE_TEAM_3:
-            case XPMAP_BASE_TEAM_4:
-            case XPMAP_BASE_TEAM_5:
-            case XPMAP_BASE_TEAM_6:
-            case XPMAP_BASE_TEAM_7:
-            case XPMAP_BASE_TEAM_8:
-            case XPMAP_BASE_TEAM_9:
-                Xpmap_place_base(blk, (int)(c - XPMAP_BASE_TEAM_0));
-                break;
+                switch (c)
+                {
+                case XPMAP_SPACE:
+                case XPMAP_SPACE_ALT:
+                default:
+                    Xpmap_place_block(blk, SPACE);
+                    break;
 
-            case XPMAP_POS_GRAV:
-                Xpmap_place_grav(blk, -GRAVS_POWER, POS_GRAV);
-                break;
-            case XPMAP_NEG_GRAV:
-                Xpmap_place_grav(blk, GRAVS_POWER, NEG_GRAV);
-                break;
-            case XPMAP_CWISE_GRAV:
-                Xpmap_place_grav(blk, GRAVS_POWER, CWISE_GRAV);
-                break;
-            case XPMAP_ACWISE_GRAV:
-                Xpmap_place_grav(blk, -GRAVS_POWER, ACWISE_GRAV);
-                break;
-            case XPMAP_UP_GRAV:
-                Xpmap_place_grav(blk, GRAVS_POWER, UP_GRAV);
-                break;
-            case XPMAP_DOWN_GRAV:
-                Xpmap_place_grav(blk, -GRAVS_POWER, DOWN_GRAV);
-                break;
-            case XPMAP_RIGHT_GRAV:
-                Xpmap_place_grav(blk, GRAVS_POWER, RIGHT_GRAV);
-                break;
-            case XPMAP_LEFT_GRAV:
-                Xpmap_place_grav(blk, -GRAVS_POWER, LEFT_GRAV);
-                break;
+                case XPMAP_FILLED:
+                    Xpmap_place_block(blk, FILLED);
+                    break;
+                case XPMAP_REC_LU:
+                    Xpmap_place_block(blk, REC_LU);
+                    break;
+                case XPMAP_REC_RU:
+                    Xpmap_place_block(blk, REC_RU);
+                    break;
+                case XPMAP_REC_LD:
+                    Xpmap_place_block(blk, REC_LD);
+                    break;
+                case XPMAP_REC_RD:
+                    Xpmap_place_block(blk, REC_RD);
+                    break;
 
-            case XPMAP_WORMHOLE_NORMAL:
-                Xpmap_place_wormhole(blk, WORM_NORMAL);
-                break;
-            case XPMAP_WORMHOLE_IN:
-                Xpmap_place_wormhole(blk, WORM_IN);
-                break;
-            case XPMAP_WORMHOLE_OUT:
-                Xpmap_place_wormhole(blk, WORM_OUT);
-                break;
+                case XPMAP_CANNON_UP:
+                    Xpmap_place_cannon(blk, DIR_UP);
+                    break;
+                case XPMAP_CANNON_LEFT:
+                    Xpmap_place_cannon(blk, DIR_LEFT);
+                    break;
+                case XPMAP_CANNON_RIGHT:
+                    Xpmap_place_cannon(blk, DIR_RIGHT);
+                    break;
+                case XPMAP_CANNON_DOWN:
+                    Xpmap_place_cannon(blk, DIR_DOWN);
+                    break;
 
-            case XPMAP_CHECK_0:
-            case XPMAP_CHECK_1:
-            case XPMAP_CHECK_2:
-            case XPMAP_CHECK_3:
-            case XPMAP_CHECK_4:
-            case XPMAP_CHECK_5:
-            case XPMAP_CHECK_6:
-            case XPMAP_CHECK_7:
-            case XPMAP_CHECK_8:
-            case XPMAP_CHECK_9:
-            case XPMAP_CHECK_10:
-            case XPMAP_CHECK_11:
-            case XPMAP_CHECK_12:
-            case XPMAP_CHECK_13:
-            case XPMAP_CHECK_14:
-            case XPMAP_CHECK_15:
-            case XPMAP_CHECK_16:
-            case XPMAP_CHECK_17:
-            case XPMAP_CHECK_18:
-            case XPMAP_CHECK_19:
-            case XPMAP_CHECK_20:
-            case XPMAP_CHECK_21:
-            case XPMAP_CHECK_22:
-            case XPMAP_CHECK_23:
-            case XPMAP_CHECK_24:
-            case XPMAP_CHECK_25:
-                Xpmap_place_check(blk, (int)(c - XPMAP_CHECK_0));
-                break;
+                case XPMAP_FUEL:
+                    Xpmap_place_fuel(blk);
+                    break;
+                case XPMAP_TREASURE:
+                    Xpmap_place_treasure(blk, false);
+                    break;
+                case XPMAP_EMPTY_TREASURE:
+                    Xpmap_place_treasure(blk, true);
+                    break;
+                case XPMAP_TARGET:
+                    Xpmap_place_target(blk);
+                    break;
+                case XPMAP_ITEM_CONCENTRATOR:
+                    Xpmap_place_item_concentrator(blk);
+                    break;
+                case XPMAP_ASTEROID_CONCENTRATOR:
+                    Xpmap_place_asteroid_concentrator(blk);
+                    break;
+                case XPMAP_BASE_ATTRACTOR:
+                    Xpmap_place_block(blk, BASE_ATTRACTOR);
+                    break;
+                case XPMAP_BASE:
+                    Xpmap_place_base(blk, TEAM_NOT_SET);
+                    break;
+                case XPMAP_BASE_TEAM_0:
+                case XPMAP_BASE_TEAM_1:
+                case XPMAP_BASE_TEAM_2:
+                case XPMAP_BASE_TEAM_3:
+                case XPMAP_BASE_TEAM_4:
+                case XPMAP_BASE_TEAM_5:
+                case XPMAP_BASE_TEAM_6:
+                case XPMAP_BASE_TEAM_7:
+                case XPMAP_BASE_TEAM_8:
+                case XPMAP_BASE_TEAM_9:
+                    Xpmap_place_base(blk, (int)(c - XPMAP_BASE_TEAM_0));
+                    break;
 
-            case XPMAP_FRICTION_AREA:
-                Xpmap_place_friction_area(blk);
-                break;
+                case XPMAP_POS_GRAV:
+                    Xpmap_place_grav(blk, -GRAVS_POWER, POS_GRAV);
+                    break;
+                case XPMAP_NEG_GRAV:
+                    Xpmap_place_grav(blk, GRAVS_POWER, NEG_GRAV);
+                    break;
+                case XPMAP_CWISE_GRAV:
+                    Xpmap_place_grav(blk, GRAVS_POWER, CWISE_GRAV);
+                    break;
+                case XPMAP_ACWISE_GRAV:
+                    Xpmap_place_grav(blk, -GRAVS_POWER, ACWISE_GRAV);
+                    break;
+                case XPMAP_UP_GRAV:
+                    Xpmap_place_grav(blk, GRAVS_POWER, UP_GRAV);
+                    break;
+                case XPMAP_DOWN_GRAV:
+                    Xpmap_place_grav(blk, -GRAVS_POWER, DOWN_GRAV);
+                    break;
+                case XPMAP_RIGHT_GRAV:
+                    Xpmap_place_grav(blk, GRAVS_POWER, RIGHT_GRAV);
+                    break;
+                case XPMAP_LEFT_GRAV:
+                    Xpmap_place_grav(blk, -GRAVS_POWER, LEFT_GRAV);
+                    break;
 
-            case XPMAP_DECOR_FILLED:
-                Xpmap_place_block(blk, DECOR_FILLED);
-                break;
-            case XPMAP_DECOR_LU:
-                Xpmap_place_block(blk, DECOR_LU);
-                break;
-            case XPMAP_DECOR_RU:
-                Xpmap_place_block(blk, DECOR_RU);
-                break;
-            case XPMAP_DECOR_LD:
-                Xpmap_place_block(blk, DECOR_LD);
-                break;
-            case XPMAP_DECOR_RD:
-                Xpmap_place_block(blk, DECOR_RD);
-                break;
+                case XPMAP_WORMHOLE_NORMAL:
+                    Xpmap_place_wormhole(blk, WORM_NORMAL);
+                    break;
+                case XPMAP_WORMHOLE_IN:
+                    Xpmap_place_wormhole(blk, WORM_IN);
+                    break;
+                case XPMAP_WORMHOLE_OUT:
+                    Xpmap_place_wormhole(blk, WORM_OUT);
+                    break;
+
+                case XPMAP_CHECK_0:
+                case XPMAP_CHECK_1:
+                case XPMAP_CHECK_2:
+                case XPMAP_CHECK_3:
+                case XPMAP_CHECK_4:
+                case XPMAP_CHECK_5:
+                case XPMAP_CHECK_6:
+                case XPMAP_CHECK_7:
+                case XPMAP_CHECK_8:
+                case XPMAP_CHECK_9:
+                case XPMAP_CHECK_10:
+                case XPMAP_CHECK_11:
+                case XPMAP_CHECK_12:
+                case XPMAP_CHECK_13:
+                case XPMAP_CHECK_14:
+                case XPMAP_CHECK_15:
+                case XPMAP_CHECK_16:
+                case XPMAP_CHECK_17:
+                case XPMAP_CHECK_18:
+                case XPMAP_CHECK_19:
+                case XPMAP_CHECK_20:
+                case XPMAP_CHECK_21:
+                case XPMAP_CHECK_22:
+                case XPMAP_CHECK_23:
+                case XPMAP_CHECK_24:
+                case XPMAP_CHECK_25:
+                    Xpmap_place_check(blk, (int)(c - XPMAP_CHECK_0));
+                    break;
+
+                case XPMAP_FRICTION_AREA:
+                    Xpmap_place_friction_area(blk);
+                    break;
+
+                case XPMAP_DECOR_FILLED:
+                    Xpmap_place_block(blk, DECOR_FILLED);
+                    break;
+                case XPMAP_DECOR_LU:
+                    Xpmap_place_block(blk, DECOR_LU);
+                    break;
+                case XPMAP_DECOR_RU:
+                    Xpmap_place_block(blk, DECOR_RU);
+                    break;
+                case XPMAP_DECOR_LD:
+                    Xpmap_place_block(blk, DECOR_LD);
+                    break;
+                case XPMAP_DECOR_RD:
+                    Xpmap_place_block(blk, DECOR_RD);
+                    break;
+                }
             }
         }
     }

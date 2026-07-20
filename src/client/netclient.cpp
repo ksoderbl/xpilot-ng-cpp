@@ -899,6 +899,7 @@ int Net_start(void)
     Net_init_measurement();
     Net_init_lag_measurement();
     errno = 0;
+
     return 0;
 }
 
@@ -1324,14 +1325,7 @@ int Net_input(void)
                     oldest_frame = frame;
             }
         }
-        if ((i == receive_window_size - 1 && i > 0)
-#if 0
-        || drawPending
-        || (ThreadedDraw &&
-        !WaitForSingleObject(dinfo.eventNotDrawing, 0)
-        == WAIT_OBJECT_0)
-#endif
-        )
+        if (i == receive_window_size - 1 && i > 0)
         {
             /*
              * Drop oldest packet.
