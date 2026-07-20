@@ -106,7 +106,7 @@ static void Transport_to_home(player_t *pl)
         if (pl->check)
             check = pl->check - 1;
         else
-            check = World.NumChecks - 1;
+            check = Num_checks() - 1;
         startpos = Check_by_index(check)->pos;
     }
     else

@@ -791,6 +791,32 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
     connp->team = team;
     connp->version = version;
     Feature_init(connp);
+    if (FEATURE(connp, F_POLY))
+        printf("Have F_POLY\n");
+    if (FEATURE(connp, F_FLOATSCORE))
+        printf("Have F_FLOATSCORE\n");
+    if (FEATURE(connp, F_EXPLICITSELF))
+        printf("Have F_EXPLICITSELF\n");
+    if (FEATURE(connp, F_ASTEROID))
+        printf("Have F_ASTEROID\n");
+    if (FEATURE(connp, F_TEMPWORM))
+        printf("Have F_TEMPWORM\n");
+    if (FEATURE(connp, F_FASTRADAR))
+        printf("Have F_FASTRADAR\n");
+    if (FEATURE(connp, F_SEPARATEPHASING))
+        printf("Have F_SEPARATEPHASING\n");
+    if (FEATURE(connp, F_TEAMRADAR))
+        printf("Have F_TEAMRADAR\n");
+    if (FEATURE(connp, F_SHOW_APPEARING))
+        printf("Have F_SHOW_APPEARING\n");
+    if (FEATURE(connp, F_SENDTEAM))
+        printf("Have F_SENDTEAM\n");
+    if (FEATURE(connp, F_CUMULATIVETURN))
+        printf("Have F_CUMULATIVETURN\n");
+    if (FEATURE(connp, F_BALLSTYLE))
+        printf("Have F_BALLSTYLE\n");
+    if (FEATURE(connp, F_POLYSTYLE))
+        printf("Have F_POLYSTYLE\n");
     connp->start = main_loops;
     connp->magic = /*randomMT() +*/ my_port + sock.fd + team + main_loops;
     connp->id = NO_ID;
@@ -880,10 +906,12 @@ static int Handle_listening(connection_t *connp)
             return -1;
         }
     }
+
     printf("%s Welcome %s=%s@%s|%s (%s/%d)", showtime(),
            connp->nick, connp->user, connp->host, connp->dpy,
            connp->addr, connp->his_port);
     printf(" (version %04x)\n", connp->version);
+
     if (connp->r.ptr[0] != PKT_VERIFY)
     {
         Send_reply(connp, PKT_VERIFY, PKT_FAILURE);
@@ -1819,7 +1847,7 @@ int Send_timing(connection_t *connp, int id, int check, int round)
         return 0;
     }
     if (is_polygon_map)
-        num_checks = World.NumChecks;
+        num_checks = Num_checks();
     return Packet_printf(&connp->c, "%c%hd%hu", PKT_TIMING,
                          id, round * num_checks + check);
 }

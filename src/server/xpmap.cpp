@@ -660,7 +660,7 @@ setup_t *Xpmap_init_setup(void)
                 break;
 
             case CHECK:
-                for (i = 0; i < World.NumChecks; i++)
+                for (i = 0; i < Num_checks(); i++)
                 {
                     check_t *check = Check_by_index(i);
                     blkpos_t bpos = Clpos_to_blkpos(check->pos);
@@ -670,7 +670,7 @@ setup_t *Xpmap_init_setup(void)
                     *mapptr = SETUP_CHECK + i;
                     break;
                 }
-                if (i >= World.NumChecks)
+                if (i >= Num_checks())
                 {
                     warn("Bad checkpoint at (%d,%d).", x, y);
                     *mapptr = SETUP_SPACE;

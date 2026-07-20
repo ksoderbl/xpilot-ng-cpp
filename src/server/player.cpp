@@ -226,7 +226,7 @@ void Go_home(player_t *pl)
         if (pl->check)
             check = pl->check - 1;
         else
-            check = World.NumChecks - 1;
+            check = Num_checks() - 1;
         pos = Check_by_index(check)->pos;
         vx = (rfrac() - 0.5) * 0.1;
         vy = (rfrac() - 0.5) * 0.1;
@@ -719,7 +719,7 @@ void Update_score_table(void)
                 check = (pl->round == 0)
                             ? 0
                         : (pl->check == 0)
-                            ? (World.NumChecks - 1)
+                            ? (Num_checks() - 1)
                             : (pl->check - 1);
                 for (i = 0; i < NumPlayers; i++)
                 {

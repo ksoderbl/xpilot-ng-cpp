@@ -87,6 +87,7 @@ static inline int Get_nuclear_modifier(modifiers_t mods)
 
     return (n1 << 1) + n0;
 }
+
 static inline void Set_nuclear_modifier(modifiers_t *mods, int value)
 {
     LIMIT(value, 0, MODS_NUCLEAR_MAX);
@@ -104,6 +105,7 @@ static inline int Get_cluster_modifier(modifiers_t mods)
 {
     return (int)BIT(mods, MODS_C_BIT) ? 1 : 0;
 }
+
 static inline void Set_cluster_modifier(modifiers_t *mods, int value)
 {
     LIMIT(value, 0, 1);
@@ -117,6 +119,7 @@ static inline int Get_implosion_modifier(modifiers_t mods)
 {
     return (int)BIT(mods, MODS_I_BIT) ? 1 : 0;
 }
+
 static inline void Set_implosion_modifier(modifiers_t *mods, int value)
 {
     LIMIT(value, 0, 1);
@@ -135,6 +138,7 @@ static inline int Get_velocity_modifier(modifiers_t mods)
 
     return (v1 << 1) + v0;
 }
+
 static inline void Set_velocity_modifier(modifiers_t *mods, int value)
 {
     LIMIT(value, 0, MODS_VELOCITY_MAX);
@@ -157,6 +161,7 @@ static inline int Get_mini_modifier(modifiers_t mods)
 
     return (x1 << 1) + x0;
 }
+
 static inline void Set_mini_modifier(modifiers_t *mods, int value)
 {
     LIMIT(value, 0, MODS_MINI_MAX);
@@ -179,6 +184,7 @@ static inline int Get_spread_modifier(modifiers_t mods)
 
     return (z1 << 1) + z0;
 }
+
 static inline void Set_spread_modifier(modifiers_t *mods, int value)
 {
     LIMIT(value, 0, MODS_SPREAD_MAX);
@@ -201,6 +207,7 @@ static inline int Get_power_modifier(modifiers_t mods)
 
     return (b1 << 1) + b0;
 }
+
 static inline void Set_power_modifier(modifiers_t *mods, int value)
 {
     LIMIT(value, 0, MODS_POWER_MAX);
@@ -223,6 +230,7 @@ static inline int Get_laser_modifier(modifiers_t mods)
 
     return (lb << 1) + ls;
 }
+
 static inline void Set_laser_modifier(modifiers_t *mods, int value)
 {
     LIMIT(value, 0, MODS_LASER_MAX);
@@ -442,68 +450,70 @@ void Player_set_modbank(player_t *pl, int bank, const char *str)
 
     Mods_clear(&mods);
 
-    for (cp = str; *cp; cp++)
     {
-        switch (*cp)
+        for (cp = str; *cp; cp++)
         {
-        case 'F':
-        case 'f':
-            if (*(cp + 1) == 'N' || *(cp + 1) == 'n')
-                Mods_set(&mods, ModsNuclear,
-                         MODS_NUCLEAR | MODS_FULLNUCLEAR);
-            break;
-        case 'N':
-        case 'n':
-            if (Mods_get(mods, ModsNuclear) == 0)
-                Mods_set(&mods, ModsNuclear, MODS_NUCLEAR);
-            break;
-        case 'C':
-        case 'c':
-            Mods_set(&mods, ModsCluster, 1);
-            break;
-        case 'I':
-        case 'i':
-            Mods_set(&mods, ModsImplosion, 1);
-            break;
-        case 'V':
-        case 'v':
-            cp++;
-            velocity = str2num(&cp, 0, MODS_VELOCITY_MAX);
-            Mods_set(&mods, ModsVelocity, velocity);
-            cp--;
-            break;
-        case 'X':
-        case 'x':
-            cp++;
-            mini = str2num(&cp, 1, MODS_MINI_MAX + 1) - 1;
-            Mods_set(&mods, ModsMini, mini);
-            cp--;
-            break;
-        case 'Z':
-        case 'z':
-            cp++;
-            spread = str2num(&cp, 0, MODS_SPREAD_MAX);
-            Mods_set(&mods, ModsSpread, spread);
-            cp--;
-            break;
-        case 'B':
-        case 'b':
-            cp++;
-            power = str2num(&cp, 0, MODS_POWER_MAX);
-            Mods_set(&mods, ModsPower, power);
-            cp--;
-            break;
-        case 'L':
-        case 'l':
-            cp++;
-            if (*cp == 'S' || *cp == 's')
-                Mods_set(&mods, ModsLaser, MODS_LASER_STUN);
-            if (*cp == 'B' || *cp == 'b')
-                Mods_set(&mods, ModsLaser, MODS_LASER_BLIND);
-            break;
-        default:
-            /* Ignore unknown modifiers. */
-            break;
+            switch (*cp)
+            {
+            case 'F':
+            case 'f':
+                if (*(cp + 1) == 'N' || *(cp + 1) == 'n')
+                    Mods_set(&mods, ModsNuclear,
+                             MODS_NUCLEAR | MODS_FULLNUCLEAR);
+                break;
+            case 'N':
+            case 'n':
+                if (Mods_get(mods, ModsNuclear) == 0)
+                    Mods_set(&mods, ModsNuclear, MODS_NUCLEAR);
+                break;
+            case 'C':
+            case 'c':
+                Mods_set(&mods, ModsCluster, 1);
+                break;
+            case 'I':
+            case 'i':
+                Mods_set(&mods, ModsImplosion, 1);
+                break;
+            case 'V':
+            case 'v':
+                cp++;
+                velocity = str2num(&cp, 0, MODS_VELOCITY_MAX);
+                Mods_set(&mods, ModsVelocity, velocity);
+                cp--;
+                break;
+            case 'X':
+            case 'x':
+                cp++;
+                mini = str2num(&cp, 1, MODS_MINI_MAX + 1) - 1;
+                Mods_set(&mods, ModsMini, mini);
+                cp--;
+                break;
+            case 'Z':
+            case 'z':
+                cp++;
+                spread = str2num(&cp, 0, MODS_SPREAD_MAX);
+                Mods_set(&mods, ModsSpread, spread);
+                cp--;
+                break;
+            case 'B':
+            case 'b':
+                cp++;
+                power = str2num(&cp, 0, MODS_POWER_MAX);
+                Mods_set(&mods, ModsPower, power);
+                cp--;
+                break;
+            case 'L':
+            case 'l':
+                cp++;
+                if (*cp == 'S' || *cp == 's')
+                    Mods_set(&mods, ModsLaser, MODS_LASER_STUN);
+                if (*cp == 'B' || *cp == 'b')
+                    Mods_set(&mods, ModsLaser, MODS_LASER_BLIND);
+                break;
+            default:
+                /* Ignore unknown modifiers. */
+                break;
+            }
         }
     }
     pl->modbank[bank] = mods;

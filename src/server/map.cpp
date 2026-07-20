@@ -588,7 +588,7 @@ bool Grok_map(void)
     if (!Verify_wormhole_consistency())
         return false;
 
-    if (BIT(World.rules->mode, TIMING) && World.NumChecks == 0)
+    if (BIT(World.rules->mode, TIMING) && Num_checks() == 0)
     {
         warn("No checkpoints found while race mode (timing) was set.");
         warn("Turning off race mode.");
