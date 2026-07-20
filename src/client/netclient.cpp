@@ -238,6 +238,7 @@ static int Uncompress_map(void)
         }
         if ((cmp - p) % 2 == 0)
             *ump-- = *cmp--;
+
         while (p < cmp)
         {
             count = *cmp--;
@@ -249,6 +250,7 @@ static int Uncompress_map(void)
             *cmp &= ~SETUP_COMPRESSED;
             for (i = 0; i < count; i++)
                 *ump-- = *cmp;
+
             cmp--;
             if (ump < cmp)
             {
@@ -292,9 +294,11 @@ int Net_setup(void)
     {
         if (cbuf.ptr != cbuf.buf)
             Sockbuf_advance(&cbuf, cbuf.ptr - cbuf.buf);
+
         len = cbuf.len;
         if (len > todo)
             len = todo;
+
         if (len > 0)
         {
             if (done == 0)
@@ -365,7 +369,7 @@ int Net_setup(void)
             }
             else
             {
-                assert(len > 0);
+                assert(len > 0); // TODO: remove
                 memcpy(&ptr[done], cbuf.ptr, (size_t)len);
                 Sockbuf_advance(&cbuf, len + cbuf.ptr - cbuf.buf);
                 done += len;
@@ -376,6 +380,7 @@ int Net_setup(void)
         {
             if (rbuf.ptr != rbuf.buf)
                 Sockbuf_advance(&rbuf, rbuf.ptr - rbuf.buf);
+
             if (rbuf.len > 0)
             {
                 if (rbuf.ptr[0] != PKT_RELIABLE)
@@ -394,13 +399,16 @@ int Net_setup(void)
                 }
                 if (Receive_reliable() == -1)
                     return -1;
+
                 if (Sockbuf_flush(&wbuf) == -1)
                     return -1;
             }
             if (cbuf.ptr != cbuf.buf)
                 Sockbuf_advance(&cbuf, cbuf.ptr - cbuf.buf);
+
             if (cbuf.len > 0)
                 continue;
+
             for (retries = 0;; retries++)
             {
                 if (retries >= 10)
@@ -480,6 +488,7 @@ int Net_verify(char *user_name, char *nick_name, char *disp)
         sock_set_timeout(&rbuf.sock, 1, 0);
         if (sock_readable(&rbuf.sock) == 0)
             continue;
+
         Sockbuf_clear(&rbuf);
         if (Sockbuf_read(&rbuf) == -1)
         {
@@ -488,6 +497,7 @@ int Net_verify(char *user_name, char *nick_name, char *disp)
         }
         if (rbuf.len <= 0)
             continue;
+
         if (rbuf.ptr[0] != PKT_RELIABLE)
         {
             if (rbuf.ptr[0] == PKT_QUIT)
@@ -503,10 +513,13 @@ int Net_verify(char *user_name, char *nick_name, char *disp)
         }
         if (Receive_reliable() == -1)
             return -1;
+
         if (Sockbuf_flush(&wbuf) == -1)
             return -1;
+
         if (cbuf.len == 0)
             continue;
+
         if (Receive_reply(&type, &result) <= 0)
         {
             warn("Can't receive verify reply packet");
@@ -529,10 +542,12 @@ int Net_verify(char *user_name, char *nick_name, char *disp)
         }
         break;
     }
+
     if (retries > 1)
     {
         printf("Verified correctly\n");
     }
+
     return 0;
 }
 
@@ -544,6 +559,8 @@ int Net_verify(char *user_name, char *nick_name, char *disp)
  * 2) rbuf is used for receiving packets in (read/scanf).
  * 3) cbuf is used to copy the reliable data stream
  *    into from the raw and unreliable rbuf packets.
+ *
+ * server == NULL sets up for internal simulation
  */
 int Net_init(char *server, int port)
 {
@@ -551,7 +568,7 @@ int Net_init(char *server, int port)
     size_t size;
     sock_t sock;
 
-    assert(server != NULL);
+    // assert(server != NULL);
 
     signal(SIGPIPE, SIG_IGN);
 
@@ -588,7 +605,7 @@ int Net_init(char *server, int port)
         }
     }
 
-    if (sock_connect(&sock, server, port) == -1)
+    if (server && sock_connect(&sock, server, port) == -1)
     {
         error("Can't connect to server %s on port %d", server, port);
         sock_close(&sock);
@@ -672,7 +689,7 @@ void Net_cleanup(void)
             sock_get_error(&sock);
             sock_write(&sock, &ch, 1);
         }
-        micro_delay((unsigned)50 * 1000);
+        usleep((unsigned)50 * 1000);
     }
     if (Frames != NULL)
     {
@@ -696,7 +713,7 @@ void Net_cleanup(void)
             sock_get_error(&sock);
             sock_write(&sock, &ch, 1);
         }
-        micro_delay((unsigned)50 * 1000);
+        usleep((unsigned)50 * 1000);
         if (sock_write(&sock, &ch, 1) != 1)
         {
             sock_get_error(&sock);
@@ -792,6 +809,7 @@ int Net_start(void)
         }
         if (cbuf.ptr > cbuf.buf)
             Sockbuf_advance(&cbuf, cbuf.ptr - cbuf.buf);
+
         sock_set_timeout(&rbuf.sock, 2, 0);
         while (cbuf.len <= 0 && sock_readable(&rbuf.sock) != 0)
         {
@@ -1130,7 +1148,7 @@ static void Net_lag_measurement(long key_ack)
 
 #if 0
     if (i == KEYBOARD_STORE)
-    printf("N ");
+        printf("N ");
 #endif
 
     num = 0;
@@ -1788,6 +1806,7 @@ int Receive_ball(void)
                               &style)) <= 0)
             return n;
     }
+
     if ((n = Handle_ball(x, y, id, style)) == -1)
         return -1;
     return 1;
@@ -1805,6 +1824,7 @@ int Receive_ship(void)
                           &ch, &x, &y, &id,
                           &dir, &flags)) <= 0)
         return n;
+
     shield = ((flags & 1) != 0);
     cloak = ((flags & 2) != 0);
     eshield = ((flags & 4) != 0);
@@ -1937,6 +1957,7 @@ int Receive_fastshot(void)
     n = (*rbuf.ptr++ & 0xFF);
     if (rbuf.ptr - rbuf.buf + (n * 2) > rbuf.len)
         return 0;
+
     /*
      * Teamshots are in range DEBRIS_TYPES to DEBRIS_TYPES*2-1 in fastshot.
      */
@@ -1944,6 +1965,7 @@ int Receive_fastshot(void)
         r = Handle_fastshot(type, (uint8_t *)rbuf.ptr, n);
     else
         r = Handle_teamshot(type - DEBRIS_TYPES, (uint8_t *)rbuf.ptr, n);
+
     rbuf.ptr += n * 2;
 
     return (r == -1) ? -1 : 1;
@@ -2005,7 +2027,6 @@ int Receive_wormhole(void) /* since 4.5.0 */
 
     if ((n = Packet_scanf(&rbuf, "%c%hd%hd", &ch, &x, &y)) <= 0)
         return n;
-
     if ((n = Handle_wormhole(x, y)) == -1)
         return -1;
     return 1;
@@ -2292,9 +2313,7 @@ int Receive_team_score(void)
 
 int Receive_timing(void)
 {
-    int n,
-        check,
-        round;
+    int n, check, round;
     short id;
     uint16_t timing;
     uint8_t ch;
@@ -2342,15 +2361,13 @@ int Receive_cannon(void)
 int Receive_target(void)
 {
     int n;
-    uint16_t num,
-        dead_time,
-        damage;
+    uint16_t num, dead_time, damage_times_256;
     uint8_t ch;
 
     if ((n = Packet_scanf(&rbuf, "%c%hu%hu%hu", &ch,
-                          &num, &dead_time, &damage)) <= 0)
+                          &num, &dead_time, &damage_times_256)) <= 0)
         return n;
-    if ((n = Handle_target(num, dead_time, (double)damage / 256.0)) == -1)
+    if ((n = Handle_target(num, dead_time, (double)damage_times_256 / 256.0)) == -1)
         return -1;
     if (wbuf.len < MAX_MAP_ACK_LEN)
         Packet_printf(&wbuf, "%c%ld%hu", PKT_ACK_TARGET, last_loops, num);
@@ -2399,10 +2416,8 @@ int Receive_magic(void)
 int Receive_string(void)
 {
     int n;
-    uint8_t ch,
-        type;
-    uint16_t arg1,
-        arg2;
+    uint8_t ch, type;
+    uint16_t arg1, arg2;
 
     if ((n = Packet_scanf(&cbuf, "%c%c%hu%hu", &ch, &type, &arg1, &arg2)) <= 0)
         return n;
@@ -2444,8 +2459,7 @@ int Receive_reliable(void)
     int n;
     short len;
     uint8_t ch;
-    long rel,
-        rel_loops;
+    long rel, rel_loops;
 
     if ((n = Packet_scanf(&rbuf, "%c%hd%ld%ld",
                           &ch, &len, &rel, &rel_loops)) == -1)
@@ -2506,6 +2520,7 @@ int Receive_reliable(void)
     }
     if (cbuf.ptr > cbuf.buf)
         Sockbuf_advance(&cbuf, cbuf.ptr - cbuf.buf);
+
     if (Sockbuf_write(&cbuf, rbuf.ptr, len) != len)
     {
         warn("Can't copy reliable data to buffer");
@@ -2788,16 +2803,16 @@ int Send_pointer_move(int movement)
     return 0;
 }
 
-int Send_audio_request(int on)
+int Send_audio_request(bool on)
 {
 #ifdef DEBUG_SOUND
-    printf("Send_audio_request %d\n", on);
+    printf("Send_audio_request %d\n", on ? 1 : 0);
 #endif
 
 #ifndef SOUND
-    on = 0;
+    on = false;
 #endif
-    if (Packet_printf(&wbuf, "%c%c", PKT_REQUEST_AUDIO, (on != 0)) == -1)
+    if (Packet_printf(&wbuf, "%c%c", PKT_REQUEST_AUDIO, (on ? 1 : 0)) == -1)
         return -1;
     return 0;
 }

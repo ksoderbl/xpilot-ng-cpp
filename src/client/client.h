@@ -497,11 +497,6 @@ extern int Contact_servers(int count, char **servers,
                            Connect_param_t *conpar);
 
 /*
- * usleep.c
- */
-extern int micro_delay(unsigned usec);
-
-/*
  * welcome.c
  */
 extern int Welcome_screen(Connect_param_t *conpar);

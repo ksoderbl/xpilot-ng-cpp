@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -23,12 +21,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef DEFAULTS_H
-#define DEFAULTS_H
-
-#ifndef MAP_H
-#include "map.h"
-#endif
+#pragma once
 
 enum valType
 {
@@ -85,5 +78,3 @@ void Option_set_value(
     int override,
     optOrigin opt_origin);
 char *Option_get_value(const char *name, optOrigin *origin_ptr);
-
-#endif
