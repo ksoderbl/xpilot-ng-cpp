@@ -54,6 +54,7 @@
 #include "robot.h"
 #include "rank.h"
 #include "move.h"
+#include "walls.h"
 #include "walls2.h"
 #include "wormhole.h"
 
@@ -626,7 +627,7 @@ static void Misc_object_update(void)
         update_object_speed(obj);
 
         if (!(obj->type == OBJ_ASTEROID))
-            Move_object2(obj);
+            Move_object(obj);
     }
 }
 
@@ -741,7 +742,7 @@ static void Players_turn(void)
         if (!pl->turnresistance)
             pl->turnvel = 0;
 
-        Turn_player2(pl, true);
+        Turn_player(pl, true);
     }
 }
 
@@ -1037,7 +1038,7 @@ static void Update_players(void)
             {
                 /* Player didn't recover yet. */
                 Transport_to_home(pl);
-                Move_player2(pl);
+                Move_player(pl);
                 continue;
             }
         }
@@ -1145,7 +1146,7 @@ static void Update_players(void)
         if (options.legacyMode)
         {
             update_object_speed(OBJ_PTR(pl));
-            Move_player2(pl);
+            Move_player(pl);
         }
         else
         {
@@ -1166,7 +1167,7 @@ static void Update_players(void)
             {
                 pl->vel.x += options.constantSpeed * pl->acc.x;
                 pl->vel.y += options.constantSpeed * pl->acc.y;
-                Move_player2(pl);
+                Move_player(pl);
                 /* Bounces aren't really compatible with constant speed.
                  * I guess this behaviour is as good as any.
                  * Doesn't work right with stuff like friction. */
@@ -1177,7 +1178,7 @@ static void Update_players(void)
                 }
             }
             else
-                Move_player2(pl);
+                Move_player(pl);
             pl->vel.x += acc.x;
             pl->vel.y += acc.y;
         }
@@ -1349,7 +1350,7 @@ void Update_objects(void)
         if (pl->wanted_float_dir != pl->float_dir)
         {
             Player_set_float_dir(pl, pl->wanted_float_dir);
-            Turn_player2(pl, false);
+            Turn_player(pl, false);
         }
     }
 
@@ -1361,7 +1362,7 @@ void Update_objects(void)
         if (pl->wanted_float_dir != pl->float_dir)
         {
             Player_set_float_dir(pl, pl->wanted_float_dir);
-            Turn_player2(pl, false);
+            Turn_player(pl, false);
         }
     }
 
