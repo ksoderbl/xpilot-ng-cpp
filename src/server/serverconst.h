@@ -209,11 +209,11 @@
 #define TRACTOR_FORCE(tr_pr, percent, maxforce) \
     ((percent) * (maxforce) * ((tr_pr) ? -1 : 1))
 
-#define WARN_TIME (2 * 12)
-#define EMERGENCY_SHIELD_TIME (4 * 12)
-#define SHIELD_TIME (2 * 12)
-#define PHASING_TIME (4 * 12)
-#define EMERGENCY_THRUST_TIME (4 * 12)
+constexpr int WARN_TIME = (2 * 12);
+constexpr int EMERGENCY_SHIELD_TIME = (4 * 12);
+constexpr int SHIELD_TIME = (2 * 12);
+constexpr int PHASING_TIME = (4 * 12);
+constexpr int EMERGENCY_THRUST_TIME = (4 * 12);
 
 #define FUEL_MASS(f) ((f) * 0.005)
 #define START_STATION_FUEL MAX_STATION_FUEL

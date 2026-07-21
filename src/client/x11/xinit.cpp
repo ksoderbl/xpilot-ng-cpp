@@ -707,7 +707,7 @@ void Resize(Window w, unsigned width, unsigned height)
         draw_width = top_width;
     draw_height = top_height;
 
-    Check_view_dimensions();
+    Check_view_dimensions2();
     Net_flush();
     XResizeWindow(dpy, drawWindow, draw_width, draw_height);
     if (dbuf_state->type == PIXMAP_COPY)

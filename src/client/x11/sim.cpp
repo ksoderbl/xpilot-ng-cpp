@@ -1,0 +1,297 @@
+/*
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
+ *
+ *      Bjørn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, see
+ * <https://www.gnu.org/licenses/>.
+ */
+
+#include <cstdlib>
+#include <cstdio>
+#include <csignal>
+#include <cstring>
+#include <cerrno>
+#include <cmath>
+#include <ctime>
+#include <sys/types.h>
+
+#include <unistd.h>
+#include <sys/time.h>
+#include <X11/Xlib.h>
+
+#include "xpconfig.h"
+#include "commonproto.h"
+#include "const.h"
+#include "clientsetup.h"
+#include "xperror.h"
+#include "rules.h"
+#include "bit.h"
+#include "netclient.h"
+#include "clientpack.h"
+#include "client.h"
+#include "portability.h"
+
+#include "xevent.h"
+#include "xpaint.h"
+#include "xinit.h"
+
+typedef struct rpos_s
+{
+    double x, y;
+    double vx, vy;
+    double ax, ay;
+    int last_dir_change;
+} rpos_t;
+
+void Rpos_Update(rpos_t *rp, int loops)
+{
+    rp->x += rp->vx;
+    rp->y += rp->vy;
+    while (rp->x < 0)
+        rp->x += Setup->width;
+    while (rp->y < 0)
+        rp->y += Setup->height;
+    while (rp->x > Setup->width)
+        rp->x -= Setup->width;
+    while (rp->y > Setup->height)
+        rp->y -= Setup->height;
+    if ((loops - rp->last_dir_change) > 30 + rfrac() * 30)
+    {
+        rp->ax = rfrac();
+        rp->ay = rfrac();
+        rp->last_dir_change = loops;
+    }
+    rp->vx += (rfrac() - rp->ax) * 20;
+    rp->vy += (rfrac() - rp->ay) * 20;
+    rp->vx *= 0.65;
+    rp->vy *= 0.65;
+}
+
+/*
+ * This should be a nice random map generator and it should go in common
+ * and the server should use it.
+ */
+static int Random_map(void)
+{
+    int i;
+    uint8_t *data;
+    uint8_t typemap[] = {
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_SPACE,
+        SETUP_FILLED,
+        SETUP_FILLED,
+        SETUP_FILLED,
+        SETUP_DECOR_FILLED,
+        SETUP_DECOR_LU,
+        SETUP_REC_RU,
+        SETUP_REC_RD,
+        SETUP_CANNON_UP,
+        SETUP_TREASURE,
+    };
+
+    for (i = Setup->x * Setup->y, data = &Setup->map_data[0]; i-- > 0; ++data)
+    {
+        int type = (int)(rfrac() * sizeof(typemap));
+
+        *data = typemap[type];
+    }
+
+    return 0;
+}
+
+#include "simbloods.h"
+
+static void Fake_setup(void)
+{
+    const int x = 100, y = 100;
+
+    if ((Setup = (setup_t *)malloc(sizeof(setup_t) + x * y)) == NULL)
+    {
+        error("No memory for setup data");
+        return;
+    }
+    Setup->mode = WRAP_PLAY;
+    Setup->lives = 1;
+    Setup->x = x;
+    Setup->y = y;
+    Setup->width = x * BLOCK_SZ;
+    Setup->height = y * BLOCK_SZ;
+    Setup->frames_per_second = 12; /* unused? */
+    strlcpy(Setup->name, "Simulated Map", sizeof(Setup->name));
+    strlcpy(Setup->author, "Ben Jackson <ben@ben.com>",
+            sizeof(Setup->author));
+#if RANDOM_MAP
+    Random_map();
+#else
+    memcpy(&Setup->map_data[0], bloods_music, Setup->x * Setup->y);
+    Map_restore(0, 0, Setup->x, Setup->y);
+#endif
+}
+
+#define N_FAKE_SHIPS 8
+
+static rpos_t fake_ships[N_FAKE_SHIPS];
+
+static void Fake_others(void)
+{
+    char name[] = "Fake";
+    char fakename[15];
+    int i;
+
+    for (i = 0; i < N_FAKE_SHIPS; ++i)
+    {
+        if (i != 0)
+        {
+            int namelen;
+            char *p;
+
+            namelen = rfrac() * (sizeof(fakename) - 2) + 1;
+            p = fakename;
+            while (namelen--)
+            {
+                *p++ = 'a' + (int)(rfrac() * 26);
+            }
+            *p = '\0';
+        }
+        else
+        {
+            strlcpy(fakename, name, sizeof(fakename));
+        }
+
+        Handle_player(i, i > 3 ? 4 : 2, ' ', fakename,
+                      (char *)"fake", (char *)"fake.org", (char *)"", false);
+    }
+}
+
+static int Simulate_init(void)
+{
+    simulating = true;
+    Client_init((char *)"simulator", MY_VERSION);
+    Net_init(NULL, 0);
+    Fake_setup();
+    Fake_others();
+    Client_setup();
+    /* Net_start() */
+    Client_start();
+    return 0;
+}
+
+static int alarmed = 0;
+
+static void zot(int)
+{
+    alarmed = 1;
+}
+
+static void Simulate_frames(void)
+{
+    const int duration = 2;
+    uint8_t newitems[NUM_ITEMS];
+    int i, old_i;
+    int j;
+
+    Handle_message((char *)"Starting Test");
+    // Game_over_action(PLAYING);
+    Send_display1();
+
+    bzero(newitems, sizeof(newitems));
+    newitems[ITEM_AFTERBURNER] = 2;
+    newitems[ITEM_AUTOPILOT] = 1;
+
+    signal(SIGALRM, zot);
+
+    alarm(duration);
+    old_i = i = 0;
+    while (1)
+    {
+        if (alarmed)
+        {
+            char buf[80];
+            alarmed = 0;
+            sprintf(buf, "%d frames/sec", (i - old_i) / duration);
+            Handle_message(buf);
+            alarm(duration);
+            old_i = i;
+        }
+        Handle_start(i);
+        Send_display1();
+        Handle_self((int)fake_ships[0].x,
+                    (int)fake_ships[0].y,
+                    (int)fake_ships[0].vx,
+                    (int)fake_ships[0].vy,
+                    (int)findDir(fake_ships[0].vx, fake_ships[0].vy),
+                    0.0, 0.0, 0.0, 1, 0, 0, 0, 0,
+                    newitems, 0,
+                    1000,
+                    MAX_PLAYER_FUEL,
+                    1400,
+                    0);
+        for (j = 0; j < N_FAKE_SHIPS; ++j)
+        {
+            Handle_ship((int)fake_ships[j].x, (int)fake_ships[j].y, j, (int)findDir(fake_ships[j].vx, fake_ships[j].vy), 0, 0, 0, 0, 0);
+            Handle_radar((int)fake_ships[j].x, (int)fake_ships[j].y, 3);
+            Rpos_Update(&fake_ships[j], i);
+        }
+        Handle_end(i);
+        if (x_event(2) == -1)
+        {
+            xpilotShutdown();
+            return;
+        }
+        XSync(dpy, False);
+        ++i;
+    }
+}
+
+void Simulate(bool on)
+{
+    simulating = on;
+
+    if (on)
+    {
+        Simulate_init();
+        Simulate_frames();
+        exit(0);
+    }
+}

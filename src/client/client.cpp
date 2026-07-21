@@ -271,7 +271,7 @@ int Client_power(void)
         Send_turnresistance_s(turnresistance_s) == -1)
         return -1;
 
-    if (Check_view_dimensions() == -1)
+    if (Check_view_dimensions2() == -1)
         return -1;
 
     for (i = 0; i < NUM_MODBANKS; i++)

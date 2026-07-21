@@ -23,16 +23,12 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CONST_H
-#define CONST_H
+#pragma once
 
-#ifndef XPCONFIG_H
-#include "xpconfig.h"
-#endif
+#include <climits>
+#include <cmath>
 
-#ifndef TYPES_H
 #include "types.h"
-#endif
 
 /*
  * FLT_MAX is ANSI C standard, but some systems (BSD) use
@@ -56,11 +52,6 @@
 /* Not everyone has LINE_MAX either, *sigh* */
 #ifndef LINE_MAX
 #define LINE_MAX 2048
-#endif
-
-/* No comment. */
-#ifndef PATH_MAX
-#define PATH_MAX 1023
 #endif
 
 #define ANGLE_RESOLUTION 128
@@ -127,9 +118,11 @@ extern double tbl_cos[];
 #define MAX_PLAYER_TURNRESISTANCE 1.0
 #define MIN_PLAYER_TURNRESISTANCE 0.0
 
-#define MAX_STATION_FUEL 500.0
-#define TARGET_DAMAGE 250.0
-#define SELF_DESTRUCT_DELAY 150.0
+constexpr double MAX_PLAYER_FUEL = 2600.0;
+
+constexpr double MAX_STATION_FUEL = 500.0;
+constexpr double TARGET_DAMAGE = 250.0;
+constexpr double SELF_DESTRUCT_DELAY = 150.0;
 
 /*
  * Size (pixels) of radius for legal HIT!
@@ -164,7 +157,7 @@ extern double tbl_cos[];
  */
 #define MIN_VIEW_SIZE 384
 #define MAX_VIEW_SIZE 1024
-#define DEF_VIEW_SIZE 768
+#define DEF_VIEW_SIZE 1024
 
 /*
  * Spark rand limits.
@@ -182,5 +175,3 @@ extern double tbl_cos[];
 #define STYLE_TEXTURED (1U << 1)
 #define STYLE_INVISIBLE (1U << 2)
 #define STYLE_INVISIBLE_RADAR (1U << 3)
-
-#endif

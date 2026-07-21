@@ -475,6 +475,7 @@ static bool Quit_mode_key_press(keys_t key)
 
 bool Key_press(keys_t key)
 {
+    warn("Key_press");
     bool countchange;
     int keycount, i;
 
@@ -610,6 +611,7 @@ bool Key_press(keys_t key)
 
 bool Key_release(keys_t key)
 {
+    warn("Key_release");
     bool countchange;
     int keycount;
 
@@ -797,6 +799,7 @@ void Keyboard_button_pressed(xp_keysym_t ks)
     if (change)
         Net_key_change();
 }
+
 void Keyboard_button_released(xp_keysym_t ks)
 {
     bool change = false;

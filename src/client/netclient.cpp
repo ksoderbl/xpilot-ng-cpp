@@ -82,6 +82,7 @@ typedef struct
 /*
  * Exported variables.
  */
+bool simulating = false;
 setup_t *Setup = NULL;
 display_t server_display;
 int receive_window_size = 3;
@@ -2707,7 +2708,41 @@ int Send_talk(void)
     return 0;
 }
 
-int Send_display(int width, int height, int sparks, int spark_colors)
+int Send_display1(void)
+{
+    int width_wanted = draw_width;
+    int height_wanted = draw_height;
+
+    width_wanted = (int)(width_wanted * clData.scaleFactor + 0.5);
+    height_wanted = (int)(height_wanted * clData.scaleFactor + 0.5);
+
+    LIMIT(width_wanted, MIN_VIEW_SIZE, MAX_VIEW_SIZE);
+    LIMIT(height_wanted, MIN_VIEW_SIZE, MAX_VIEW_SIZE);
+
+    if (width_wanted == ext_view_width &&
+        height_wanted == ext_view_height &&
+        // debris_colors == num_spark_colors &&
+        spark_rand == old_spark_rand &&
+        last_loops != 0)
+        return 0;
+
+    if (simulating)
+    {
+        ext_view_width = width_wanted;
+        ext_view_height = height_wanted;
+        Check_view_dimensions1();
+    }
+    else if (Packet_printf(&wbuf, "%c%hd%hd%c%c", PKT_DISPLAY,
+                           width_wanted, height_wanted,
+                           num_spark_colors, spark_rand) == -1)
+        return -1;
+
+    old_spark_rand = spark_rand;
+
+    return 0;
+}
+
+int Send_display2(int width, int height, int sparks, int spark_colors)
 {
     int width_wanted = width;
     int height_wanted = height;

@@ -394,10 +394,13 @@ static struct button_init
 
 #define NUM_BUTTONS (sizeof(buttonInit) / sizeof(struct button_init))
 
-static enum playStates {
+typedef enum playStates
+{
     STATE_PLAYING,
     STATE_PAUSED
-} playState = STATE_PLAYING;
+} playStates_t;
+
+static playStates_t playState = STATE_PLAYING;
 
 static int currentSpeed = 0, frameStep = 0;
 
@@ -547,7 +550,7 @@ void *MyMalloc(size_t size, enum MemTypes mt)
 /*
  * Read one 8-bit byte from the recorded input stream.
  */
-static inline uint8_t RReadByte(FILE *fp)
+static uint8_t RReadByte(FILE *fp)
 {
     return (uint8_t)(getc(fp));
 }
@@ -555,7 +558,7 @@ static inline uint8_t RReadByte(FILE *fp)
 /*
  * Read one 16-bit unsigned word from the recorded input stream.
  */
-static inline uint16_t RReadUShort(FILE *fp)
+static uint16_t RReadUShort(FILE *fp)
 {
     uint16_t i;
 
@@ -568,7 +571,7 @@ static inline uint16_t RReadUShort(FILE *fp)
 /*
  * Read one 16-bit signed word from the recorded input stream.
  */
-static inline short RReadShort(FILE *fp)
+static short RReadShort(FILE *fp)
 {
     short i;
 
@@ -583,7 +586,7 @@ static inline short RReadShort(FILE *fp)
 /*
  * Read one 32-bit unsigned longword from the recorded input stream.
  */
-static inline unsigned long RReadULong(FILE *fp)
+static unsigned long RReadULong(FILE *fp)
 {
     unsigned long i;
 
@@ -598,7 +601,7 @@ static inline unsigned long RReadULong(FILE *fp)
 /*
  * Read one 32-bit signed longword from the recorded input stream.
  */
-static inline long RReadLong(FILE *fp)
+static long RReadLong(FILE *fp)
 {
     long i;
 
@@ -614,7 +617,7 @@ static inline long RReadLong(FILE *fp)
  * Read a pascal-type string from the recorded input stream
  * and convert it to a nul-byte terminated C-string.
  */
-static inline char *RReadString(FILE *fp)
+static char *RReadString(FILE *fp)
 {
     char *s;
     int i;
@@ -845,9 +848,7 @@ static struct rGC *RReadGCValues(struct xprc *rc)
             int i;
             gc.num_dashes = RReadByte(rc->fp);
             if (gc.num_dashes == 0)
-            {
                 gc.dash_list = NULL;
-            }
             else
             {
                 gc.dash_list = (char *)MyMalloc(gc.num_dashes, MEM_GC);
@@ -979,7 +980,6 @@ static void FreeShapes(struct shape *shp)
 
     while (shp)
     {
-
         nextshp = shp->next;
         shp->next = NULL;
 
@@ -1466,8 +1466,8 @@ static XFontStruct *loadQueryFont(const char *fontName, GC gc)
 
 static void allocViewColors(struct xprc *rc)
 {
-    XColor *cp, /**cp2,*/ myColor;
-    int i /*, j*/;
+    XColor *cp, myColor;
+    int i;
 
     rc->pixels = (unsigned long *)
         MyMalloc(2 * rc->maxColors * sizeof(*rc->pixels), MEM_MISC);
@@ -1475,24 +1475,6 @@ static void allocViewColors(struct xprc *rc)
     for (i = 0; i < rc->maxColors; i++)
     {
         cp = &rc->colors[i];
-        /*
-         * kps - don't try to do this "optimisation", it seems to break stuff
-         * for some recordings.
-         */
-#if 0
-    for (j = 0; j < i; j++) {
-        cp2 = &rc->colors[j];
-        if (cp->red == cp2->red &&
-        cp->green == cp2->green &&
-        cp->blue == cp2->blue) {
-        break;
-        }
-    }
-    if (j < i) {
-        rc->pixels[j] = rc->pixels[i];
-        continue;
-    }
-#endif
         if (cp->red < 0x0100 &&
             cp->green < 0x0100 &&
             cp->blue < 0x0100 &&
@@ -1519,9 +1501,7 @@ static void allocViewColors(struct xprc *rc)
                                 : WhitePixel(dpy, screen_num);
         }
         else if (i > 0 && myColor.pixel == BlackPixel(dpy, screen_num) && colormap == DefaultColormap(dpy, screen_num))
-        {
             rc->pixels[i] = WhitePixel(dpy, screen_num);
-        }
         else
             rc->pixels[i] = myColor.pixel;
     }
@@ -1755,7 +1735,7 @@ static void Init_wm_prop(Window win,
     XWMHints xwmh;
     XSizeHints xsh;
     char msg[256];
-    static char myClass[] = "XP-replay";
+    static char myClass[] = "XPilot-replay";
 
     xwmh.flags = InputHint | StateHint;
     xwmh.input = True;
@@ -2232,10 +2212,10 @@ static void redrawLabel(struct xui *ui, struct xprc *rc, struct label *lb)
     vw = XTextWidth(ui->smallFont, value_str, (int)strlen(value_str));
 #if 0
     XClearArea(dpy, ui->topmain,
-           lb->x, lb->y,
-           lw + 2,
-           ui->boldFont->ascent + ui->boldFont->descent,
-           False);
+               lb->x, lb->y,
+               lw + 2,
+               ui->boldFont->ascent + ui->boldFont->descent,
+               False);
 #endif
     XClearArea(dpy, ui->topmain,
                (int)(lb->x + lw + cw + 1), lb->y,
@@ -2864,44 +2844,27 @@ static void RWriteGC(struct xprc *rc, struct rGC *gcp, FILE *fp)
 
 static void WriteHeader(struct xprc *rc, FILE *fp)
 {
-    int i;
-
-    rewind(fp);
-
-    /* First write out magic 4 letter word */
-    putc('X', fp);
-    putc('P', fp);
-    putc('R', fp);
-    putc('C', fp);
-
-    /* Write which version of the XPilot Record Protocol this is. */
-    putc(RC_MAJORVERSION, fp);
-    putc('.', fp);
-    putc(RC_MINORVERSION, fp);
-    putc('\n', fp);
-
-    /* Write player's nick, login, host, server, FPS and the date. */
-    RWriteString(rc->nickname, fp);
-    RWriteString(rc->realname, fp);
-    RWriteString(rc->hostname, fp);
-    RWriteString(rc->servername, fp);
-    RWriteByte(rc->fps, fp);
-    RWriteString(rc->recorddate, fp);
-
-    /* Write info about graphics setup. */
-    putc(rc->maxColors, fp);
-    for (i = 0; i < rc->maxColors; i++)
+    struct XPRHeader hdr{};
+    hdr.nickname = std::string(rc->nickname);
+    hdr.realname = std::string(rc->realname);
+    hdr.hostname = std::string(rc->hostname);
+    hdr.servername = std::string(rc->servername);
+    hdr.fps = rc->fps;
+    hdr.recorddate = std::string(rc->recorddate);
+    for (int i = 0; i < rc->maxColors; i++)
     {
-        RWriteULong((int)rc->colors[i].pixel, fp);
-        RWriteUShort(rc->colors[i].red, fp);
-        RWriteUShort(rc->colors[i].green, fp);
-        RWriteUShort(rc->colors[i].blue, fp);
+        XPRColor color;
+        color.pixel = rc->colors[i].pixel;
+        color.red = rc->colors[i].red;
+        color.green = rc->colors[i].green;
+        color.blue = rc->colors[i].blue;
+        hdr.colors.push_back(color);
     }
-    RWriteString(rc->gameFontName, fp);
-    RWriteString(rc->msgFontName, fp);
-
-    RWriteUShort(rc->view_width, fp);
-    RWriteUShort(rc->view_height, fp);
+    hdr.gameFontName = std::string(rc->gameFontName);
+    hdr.msgFontName = std::string(rc->msgFontName);
+    hdr.view_width = rc->view_width;
+    hdr.view_height = rc->view_height;
+    RWriteHeader(hdr, fp);
 }
 
 static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
@@ -2910,7 +2873,7 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
     struct shape *sp;
     int i;
 
-    putc(RC_NEWFRAME, fp);
+    RWriteByte(RC_NEWFRAME, fp);
     RWriteUShort((int)f->width, fp);
     RWriteUShort((int)f->height, fp);
 
@@ -2921,7 +2884,7 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
         {
 
         case RC_DRAWARC:
-            putc(RC_DRAWARC, fp);
+            RWriteByte(RC_DRAWARC, fp);
             RWriteGC(rc, sp->gc, fp);
             RWriteShort(sp->shape.arc.x, fp);
             RWriteShort(sp->shape.arc.y, fp);
@@ -2932,7 +2895,7 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
             break;
 
         case RC_DRAWLINES:
-            putc(RC_DRAWLINES, fp);
+            RWriteByte(RC_DRAWLINES, fp);
             RWriteGC(rc, sp->gc, fp);
             RWriteUShort(sp->shape.lines.npoints, fp);
             for (i = 0; i < sp->shape.lines.npoints; i++)
@@ -2944,7 +2907,7 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
             break;
 
         case RC_DRAWLINE:
-            putc(RC_DRAWLINE, fp);
+            RWriteByte(RC_DRAWLINE, fp);
             RWriteGC(rc, sp->gc, fp);
             RWriteShort(sp->shape.line.x1, fp);
             RWriteShort(sp->shape.line.y1, fp);
@@ -2953,7 +2916,7 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
             break;
 
         case RC_DRAWRECTANGLE:
-            putc(RC_DRAWRECTANGLE, fp);
+            RWriteByte(RC_DRAWRECTANGLE, fp);
             RWriteGC(rc, sp->gc, fp);
             RWriteShort(sp->shape.rectangle.x, fp);
             RWriteShort(sp->shape.rectangle.y, fp);
@@ -2962,18 +2925,18 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
             break;
 
         case RC_DRAWSTRING:
-            putc(RC_DRAWSTRING, fp);
+            RWriteByte(RC_DRAWSTRING, fp);
             RWriteGC(rc, sp->gc, fp);
             RWriteShort(sp->shape.string.x, fp);
             RWriteShort(sp->shape.string.y, fp);
             RWriteByte(sp->shape.string.font, fp);
             RWriteUShort((int)sp->shape.string.length, fp);
             for (i = 0; i < (int)sp->shape.string.length; i++)
-                putc(sp->shape.string.string[i], fp);
+                RWriteByte(sp->shape.string.string[i], fp);
             break;
 
         case RC_FILLARC:
-            putc(RC_FILLARC, fp);
+            RWriteByte(RC_FILLARC, fp);
             RWriteGC(rc, sp->gc, fp);
             RWriteShort(sp->shape.arc.x, fp);
             RWriteShort(sp->shape.arc.y, fp);
@@ -2984,7 +2947,7 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
             break;
 
         case RC_FILLPOLYGON:
-            putc(RC_FILLPOLYGON, fp);
+            RWriteByte(RC_FILLPOLYGON, fp);
             RWriteGC(rc, sp->gc, fp);
             RWriteUShort(sp->shape.polygon.npoints, fp);
             for (i = 0; i < sp->shape.polygon.npoints; i++)
@@ -2997,7 +2960,7 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
             break;
 
         case RC_FILLRECTANGLE:
-            putc(RC_FILLRECTANGLE, fp);
+            RWriteByte(RC_FILLRECTANGLE, fp);
             RWriteGC(rc, sp->gc, fp);
             RWriteShort(sp->shape.rectangle.x, fp);
             RWriteShort(sp->shape.rectangle.y, fp);
@@ -3006,15 +2969,15 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
             break;
 
         case RC_PAINTITEMSYMBOL:
-            putc(RC_PAINTITEMSYMBOL, fp);
+            RWriteByte(RC_PAINTITEMSYMBOL, fp);
             RWriteGC(rc, sp->gc, fp);
-            putc(sp->shape.symbol.type, fp);
+            RWriteByte(sp->shape.symbol.type, fp);
             RWriteShort(sp->shape.symbol.x, fp);
             RWriteShort(sp->shape.symbol.y, fp);
             break;
 
         case RC_FILLRECTANGLES:
-            putc(RC_FILLRECTANGLES, fp);
+            RWriteByte(RC_FILLRECTANGLES, fp);
             RWriteGC(rc, sp->gc, fp);
             RWriteUShort(sp->shape.rectangles.nrectangles, fp);
             for (i = 0; i < sp->shape.rectangles.nrectangles; i++)
@@ -3027,7 +2990,7 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
             break;
 
         case RC_DRAWARCS:
-            putc(RC_DRAWARCS, fp);
+            RWriteByte(RC_DRAWARCS, fp);
             RWriteGC(rc, sp->gc, fp);
             RWriteUShort(sp->shape.arcs.narcs, fp);
             for (i = 0; i < sp->shape.arcs.narcs; i++)
@@ -3042,7 +3005,7 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
             break;
 
         case RC_DRAWSEGMENTS:
-            putc(RC_DRAWSEGMENTS, fp);
+            RWriteByte(RC_DRAWSEGMENTS, fp);
             RWriteGC(rc, sp->gc, fp);
             RWriteUShort(sp->shape.segments.nsegments, fp);
             for (i = 0; i < sp->shape.segments.nsegments; i++)
@@ -3055,7 +3018,7 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
             break;
 
         case RC_DAMAGED:
-            putc(RC_DAMAGED, fp);
+            RWriteByte(RC_DAMAGED, fp);
             RWriteGC(rc, sp->gc, fp);
             RWriteByte(sp->shape.damage.damaged, fp);
             break;
@@ -3065,7 +3028,7 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
         }
     }
 
-    putc(RC_ENDFRAME, fp);
+    RWriteByte(RC_ENDFRAME, fp);
 }
 
 static void SaveFramesXPR(struct xprc *rc)
@@ -3460,8 +3423,7 @@ static void TestInput(struct xprc *rc)
         {
             if (verbose)
             {
-                fprintf(stderr, "%s: \"%s\" is in compressed format, "
-                                "starting compress...\n",
+                fprintf(stderr, "%s: \"%s\" is in compressed format, starting compress...\n",
                         *Argv, rc->filename);
             }
             lseek(fd, 0L, SEEK_SET);

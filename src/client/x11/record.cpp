@@ -23,6 +23,8 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include "record.h"
+
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -37,11 +39,10 @@
 #include <X11/Xutil.h>
 #include <X11/Xos.h>
 
-#include "commonproto.h"
-
-// #include "recordfile.h"
+#include "recordfile.h"
 
 #include "commonmacros.h"
+#include "commonproto.h"
 #include "const.h"
 #include "xpconfig.h"
 #include "xperror.h"
@@ -54,7 +55,6 @@
 
 #include "xpaint.h"
 
-#include "record.h"
 #include "recordfmt.h"
 #include "xinit.h"
 
@@ -73,16 +73,16 @@
 /*
  * Functions and variables for recording
  */
-static char *record_filename = NULL; /* Name of recordfile. */
-static FILE *recordFP = NULL;        /* File handle for writing
-                                      * recording frames to. */
-bool recording = false;              /* Are we recording or not. */
-static bool record_start = false;    /* Should we start recording
-                                      * at the next frame. */
-static int record_frame_count = 0;   /* How many recorded frames. */
-static const char *record_dashes;    /* Which dash list to use. */
-static int record_num_dashes;        /* How big is dashes list. */
-static int record_dash_dirty = 0;    /* Has dashes list changed? */
+static char *record_filename = NULL;   /* Name of recordfile. */
+static FILE *recordFP = NULL;          /* File handle for writing
+                                        * recording frames to. */
+bool recording = false;                /* Are we recording or not. */
+static bool record_start = false;      /* Should we start recording
+                                        * at the next frame. */
+static int record_frame_count = 0;     /* How many recorded frames. */
+static const char *record_dashes;      /* Which dash list to use. */
+static int record_num_dashes;          /* How big is dashes list. */
+static bool record_dash_dirty = false; /* Has dashes list changed? */
 
 /*
  * Dummy functions for "recordable drawing" interface, when not recording.
@@ -96,90 +96,17 @@ static void Dummy_paintItemSymbol(int type, Drawable drawable,
 }
 
 /*
- * Miscellaneous recording functions.
- * These are only called when (recording).
- */
-static void RWriteByte(int value)
-{
-    putc(value, recordFP);
-}
-
-static void RWriteShort(int value)
-{
-    putc(value, recordFP);
-    value >>= 8;
-    putc(value, recordFP);
-}
-
-static void RWriteUShort(unsigned value)
-{
-    putc((int)value, recordFP);
-    value >>= 8;
-    putc((int)value, recordFP);
-}
-
-static void RWriteLong(int32_t value)
-{
-    putc((int)value, recordFP);
-    value >>= 8;
-    putc((int)value, recordFP);
-    value >>= 8;
-    putc((int)value, recordFP);
-    value >>= 8;
-    putc((int)value, recordFP);
-}
-
-static void RWriteULong(uint32_t value)
-{
-    putc((int)value, recordFP);
-    value >>= 8;
-    putc((int)value, recordFP);
-    value >>= 8;
-    putc((int)value, recordFP);
-    value >>= 8;
-    putc((int)value, recordFP);
-}
-
-static void RWriteString(char *str)
-{
-    size_t len = strlen(str);
-    int i;
-
-    RWriteUShort(len);
-    for (i = 0; i < (int)len; i++)
-        putc(str[i], recordFP);
-}
-
-/*
  * Output the XPilot Recording Header at the beginning
  * of the recording file.
  */
-static void RWriteHeader(void)
+static void WriteHeader(void)
 {
-    time_t t;
-    char buf[256];
-    char *ptr;
-    int i;
+    struct XPRHeader hdr{};
 
-    rewind(recordFP);
-
-    /* First write out magic 4 letter word */
-    putc('X', recordFP);
-    putc('P', recordFP);
-    putc('R', recordFP);
-    putc('C', recordFP);
-
-    /* Write which version of the XPilot Record Protocol this is. */
-    putc(RC_MAJORVERSION, recordFP);
-    putc('.', recordFP);
-    putc(RC_MINORVERSION, recordFP);
-    putc('\n', recordFP);
-
-    /* Write player's nick, login, host, server, FPS and the date. */
-    RWriteString(connectParam.nick_name);
-    RWriteString(connectParam.user_name);
-    RWriteString(connectParam.host_name);
-    RWriteString(servername);
+    hdr.nickname = std::string(connectParam.nick_name);
+    hdr.realname = std::string(connectParam.user_name);
+    hdr.hostname = std::string(connectParam.host_name);
+    hdr.servername = std::string(servername);
 
     /*
      * The client will try to determine an optimal recording FPS value,
@@ -195,33 +122,37 @@ static void RWriteHeader(void)
             fps = FPS;
         sprintf(tmpbuf, "Started recording at %d FPS. [*Client notice*]", fps);
         Add_message(tmpbuf);
-        RWriteByte(fps);
+        hdr.fps = fps;
     }
+
+    time_t t;
+    char buf[256];
+    char *ptr;
+    int i;
 
     time(&t);
     strlcpy(buf, ctime(&t), sizeof(buf));
     if ((ptr = strchr(buf, '\n')) != NULL)
         *ptr = '\0';
-    RWriteString(buf);
+
+    hdr.recorddate = std::string(buf);
 
     /* Write info about graphics setup. */
-    putc(maxColors, recordFP);
     for (i = 0; i < maxColors; i++)
     {
-        RWriteULong(colors[i].pixel);
-        RWriteUShort(colors[i].red);
-        RWriteUShort(colors[i].green);
-        RWriteUShort(colors[i].blue);
+        XPRColor color;
+        color.pixel = colors[i].pixel;
+        color.red = colors[i].red;
+        color.green = colors[i].green;
+        color.blue = colors[i].blue;
+        hdr.colors.push_back(color);
     }
-    RWriteString(gameFontName);
-    RWriteString(messageFontName);
+    hdr.gameFontName = std::string(gameFontName);
+    hdr.msgFontName = std::string(messageFontName);
+    hdr.view_width = draw_width;
+    hdr.view_height = draw_height;
 
-    RWriteUShort(draw_width);
-    RWriteUShort(draw_height);
-
-    record_dashes = dashes;
-    record_num_dashes = NUM_DASHES;
-    record_dash_dirty = true;
+    RWriteHeader(hdr, recordFP);
 }
 
 static int RGetPixelIndex(unsigned long pixel)
@@ -288,8 +219,8 @@ static void RWriteTile(Pixmap tile)
         if (lptr->tile == tile)
         {
             /* tile already sent before. */
-            RWriteByte(RC_TILE);
-            RWriteByte(lptr->tile_id);
+            RWriteByte(RC_TILE, recordFP);
+            RWriteByte(lptr->tile_id, recordFP);
             return;
         }
     }
@@ -299,8 +230,8 @@ static void RWriteTile(Pixmap tile)
     if (!(lptr = (tile_list_t *)malloc(sizeof(tile_list_t))))
     {
         error("Not enough memory");
-        RWriteByte(RC_TILE);
-        RWriteByte(0);
+        RWriteByte(RC_TILE, recordFP);
+        RWriteByte(0, recordFP);
         return;
     }
     lptr->next = list;
@@ -310,15 +241,15 @@ static void RWriteTile(Pixmap tile)
 
     if (!(img = Image_from_pixmap(tile)))
     {
-        RWriteByte(RC_TILE);
-        RWriteByte(0);
+        RWriteByte(RC_TILE, recordFP);
+        RWriteByte(0, recordFP);
         lptr->tile_id = 0;
         return;
     }
-    RWriteByte(RC_NEW_TILE);
-    RWriteByte(lptr->tile_id);
-    RWriteUShort((unsigned)img->width);
-    RWriteUShort((unsigned)img->height);
+    RWriteByte(RC_NEW_TILE, recordFP);
+    RWriteByte(lptr->tile_id, recordFP);
+    RWriteUShort(img->width, recordFP);
+    RWriteUShort(img->height, recordFP);
     for (y = 0; y < img->height; y++)
     {
         for (x = 0; x < img->width; x++)
@@ -329,7 +260,7 @@ static void RWriteTile(Pixmap tile)
                 if (pixel == colors[i].pixel)
                     break;
             }
-            RWriteByte(i);
+            RWriteByte(i, recordFP);
         }
     }
 
@@ -448,14 +379,14 @@ static void RWriteGC(GC gc, unsigned long req_mask)
 
         if (!write_mask && !record_dash_dirty)
         {
-            putc(RC_NOGC, recordFP);
+            RWriteByte(RC_NOGC, recordFP);
             return;
         }
 
         prev_mask |= write_mask;
     }
 
-    putc(RC_GC, recordFP);
+    RWriteByte(RC_GC, recordFP);
 
     gc_mask = 0;
     if (write_mask & GCForeground)
@@ -493,39 +424,39 @@ static void RWriteGC(GC gc, unsigned long req_mask)
             gc_mask |= RC_GC_TI;
     }
 
-    RWriteByte(gc_mask);
+    RWriteByte(gc_mask, recordFP);
     if (gc_mask & RC_GC_B2)
     {
-        RWriteByte(gc_mask >> 8);
+        RWriteByte(gc_mask >> 8, recordFP);
     }
 
     if (write_mask & GCForeground)
-        RWriteByte(RGetPixelIndex(values.foreground));
+        RWriteByte(RGetPixelIndex(values.foreground), recordFP);
     if (write_mask & GCBackground)
-        RWriteByte(RGetPixelIndex(values.background));
+        RWriteByte(RGetPixelIndex(values.background), recordFP);
     if (write_mask & GCLineWidth)
-        RWriteByte(values.line_width);
+        RWriteByte(values.line_width, recordFP);
     if (write_mask & GCLineStyle)
-        RWriteByte(values.line_style);
+        RWriteByte(values.line_style, recordFP);
     if (write_mask & GCDashOffset)
-        RWriteByte(values.dash_offset);
+        RWriteByte(values.dash_offset, recordFP);
     if (write_mask & GCFunction)
-        RWriteByte(values.function);
+        RWriteByte(values.function, recordFP);
     if (record_dash_dirty)
     {
         int i;
-        RWriteByte(record_num_dashes);
+        RWriteByte(record_num_dashes, recordFP);
         for (i = 0; i < record_num_dashes; i++)
-            RWriteByte(record_dashes[i]);
+            RWriteByte(record_dashes[i], recordFP);
     }
     if (write_mask & RTILEGC)
     {
         if (write_mask & GCFillStyle)
-            RWriteByte(values.fill_style);
+            RWriteByte(values.fill_style, recordFP);
         if (write_mask & GCTileStipXOrigin)
-            RWriteLong(values.ts_x_origin);
+            RWriteLong(values.ts_x_origin, recordFP);
         if (write_mask & GCTileStipYOrigin)
-            RWriteLong(values.ts_y_origin);
+            RWriteLong(values.ts_y_origin, recordFP);
         if (write_mask & GCTile)
             RWriteTile(values.tile);
     }
@@ -536,14 +467,19 @@ static void RNewFrame(void)
     static bool before = false;
 
     if (!before)
-        RWriteHeader();
+    {
+        WriteHeader();
+        record_dashes = dashes;
+        record_num_dashes = NUM_DASHES;
+        record_dash_dirty = true;
+    }
 
     before = true;
     recording = true;
 
-    putc(RC_NEWFRAME, recordFP);
-    RWriteUShort(draw_width);
-    RWriteUShort(draw_height);
+    RWriteByte(RC_NEWFRAME, recordFP);
+    RWriteUShort(draw_width, recordFP);
+    RWriteUShort(draw_height, recordFP);
 }
 
 static void REndFrame(void)
@@ -554,18 +490,18 @@ static void REndFrame(void)
 
         XGetGCValues(dpy, gameGC, GCForeground, &values);
 
-        RWriteByte(RC_DAMAGED);
+        RWriteByte(RC_DAMAGED, recordFP);
         if ((damaged & 1) != 0)
             XSetForeground(dpy, gameGC, colors[BLUE].pixel);
         else
             XSetForeground(dpy, gameGC, colors[BLACK].pixel);
         RWriteGC(gameGC, GCForeground | RTILEGC);
-        RWriteByte(damaged);
+        RWriteByte(damaged, recordFP);
 
         XSetForeground(dpy, gameGC, values.foreground);
     }
 
-    putc(RC_ENDFRAME, recordFP);
+    RWriteByte(RC_ENDFRAME, recordFP);
 
     fflush(recordFP);
 
@@ -582,14 +518,14 @@ static int RDrawArc(Display *display, Drawable drawable, GC gc,
     XDrawArc(display, drawable, gc, x, y, width, height, angle1, angle2);
     if (drawable == drawPixmap)
     {
-        putc(RC_DRAWARC, recordFP);
+        RWriteByte(RC_DRAWARC, recordFP);
         RWriteGC(gc, RSTROKEGC | RTILEGC);
-        RWriteShort(x);
-        RWriteShort(y);
-        RWriteByte((int)width);
-        RWriteByte((int)height);
-        RWriteShort(angle1);
-        RWriteShort(angle2);
+        RWriteShort(x, recordFP);
+        RWriteShort(y, recordFP);
+        RWriteByte(width, recordFP);
+        RWriteByte(height, recordFP);
+        RWriteShort(angle1, recordFP);
+        RWriteShort(angle2, recordFP);
     }
     return 0;
 }
@@ -603,15 +539,15 @@ static int RDrawLines(Display *display, Drawable drawable, GC gc,
         int i;
         XPoint *xp = points;
 
-        putc(RC_DRAWLINES, recordFP);
+        RWriteByte(RC_DRAWLINES, recordFP);
         RWriteGC(gc, RSTROKEGC | RTILEGC);
-        RWriteUShort((unsigned)npoints);
+        RWriteUShort(npoints, recordFP);
         for (i = 0; i < npoints; i++, xp++)
         {
-            RWriteShort(xp->x);
-            RWriteShort(xp->y);
+            RWriteShort(xp->x, recordFP);
+            RWriteShort(xp->y, recordFP);
         }
-        RWriteByte(mode);
+        RWriteByte(mode, recordFP);
     }
     return 0;
 }
@@ -622,12 +558,12 @@ static int RDrawLine(Display *display, Drawable drawable, GC gc,
     XDrawLine(display, drawable, gc, x1, y1, x2, y2);
     if (drawable == drawPixmap)
     {
-        putc(RC_DRAWLINE, recordFP);
+        RWriteByte(RC_DRAWLINE, recordFP);
         RWriteGC(gc, RSTROKEGC | RTILEGC);
-        RWriteShort(x1);
-        RWriteShort(y1);
-        RWriteShort(x2);
-        RWriteShort(y2);
+        RWriteShort(x1, recordFP);
+        RWriteShort(y1, recordFP);
+        RWriteShort(x2, recordFP);
+        RWriteShort(y2, recordFP);
     }
     return 0;
 }
@@ -639,12 +575,12 @@ static int RDrawRectangle(Display *display, Drawable drawable, GC gc,
     XDrawRectangle(display, drawable, gc, x, y, width, height);
     if (drawable == drawPixmap)
     {
-        putc(RC_DRAWRECTANGLE, recordFP);
+        RWriteByte(RC_DRAWRECTANGLE, recordFP);
         RWriteGC(gc, RSTROKEGC | RTILEGC);
-        RWriteShort(x);
-        RWriteShort(y);
-        RWriteByte((int)width);
-        RWriteByte((int)height);
+        RWriteShort(x, recordFP);
+        RWriteShort(y, recordFP);
+        RWriteByte(width, recordFP);
+        RWriteByte(height, recordFP);
     }
     return 0;
 }
@@ -659,15 +595,15 @@ static int RDrawString(Display *display, Drawable drawable, GC gc,
         int i;
         XGCValues values;
 
-        putc(RC_DRAWSTRING, recordFP);
+        RWriteByte(RC_DRAWSTRING, recordFP);
         RWriteGC(gc, GCForeground | RTILEGC);
-        RWriteShort(x);
-        RWriteShort(y);
+        RWriteShort(x, recordFP);
+        RWriteShort(y, recordFP);
         XGetGCValues(display, gc, GCFont, &values);
-        RWriteByte((values.font == messageFont->fid) ? 1 : 0);
-        RWriteUShort((unsigned)length);
+        RWriteByte((values.font == messageFont->fid) ? 1 : 0, recordFP);
+        RWriteUShort(length, recordFP);
         for (i = 0; i < length; i++)
-            putc(string[i], recordFP);
+            RWriteByte(string[i], recordFP);
     }
     return 0;
 }
@@ -680,14 +616,14 @@ static int RFillArc(Display *display, Drawable drawable, GC gc,
     XFillArc(display, drawable, gc, x, y, width, height, angle1, angle2);
     if (drawable == drawPixmap)
     {
-        putc(RC_FILLARC, recordFP);
+        RWriteByte(RC_FILLARC, recordFP);
         RWriteGC(gc, GCForeground | RTILEGC);
-        RWriteShort(x);
-        RWriteShort(y);
-        RWriteByte((int)width);
-        RWriteByte((int)height);
-        RWriteShort(angle1);
-        RWriteShort(angle2);
+        RWriteShort(x, recordFP);
+        RWriteShort(y, recordFP);
+        RWriteByte(width, recordFP);
+        RWriteByte(height, recordFP);
+        RWriteShort(angle1, recordFP);
+        RWriteShort(angle2, recordFP);
     }
     return 0;
 }
@@ -702,16 +638,16 @@ static int RFillPolygon(Display *display, Drawable drawable, GC gc,
         int i;
         XPoint *xp = points;
 
-        putc(RC_FILLPOLYGON, recordFP);
+        RWriteByte(RC_FILLPOLYGON, recordFP);
         RWriteGC(gc, GCForeground | RTILEGC);
-        RWriteUShort((unsigned)npoints);
+        RWriteUShort(npoints, recordFP);
         for (i = 0; i < npoints; i++, xp++)
         {
-            RWriteShort(xp->x);
-            RWriteShort(xp->y);
+            RWriteShort(xp->x, recordFP);
+            RWriteShort(xp->y, recordFP);
         }
-        RWriteByte(shape);
-        RWriteByte(mode);
+        RWriteByte(shape, recordFP);
+        RWriteByte(mode, recordFP);
     }
     return 0;
 }
@@ -721,11 +657,11 @@ static void RPaintItemSymbol(int type, Drawable drawable, GC mygc,
 {
     if (drawable == drawPixmap)
     {
-        putc(RC_PAINTITEMSYMBOL, recordFP);
+        RWriteByte(RC_PAINTITEMSYMBOL, recordFP);
         RWriteGC(gameGC, GCForeground | GCBackground);
-        putc(type, recordFP);
-        RWriteShort(x);
-        RWriteShort(y);
+        RWriteByte(type, recordFP);
+        RWriteShort(x, recordFP);
+        RWriteShort(y, recordFP);
     }
 }
 
@@ -736,12 +672,12 @@ static int RFillRectangle(Display *display, Drawable drawable, GC gc,
     XFillRectangle(display, drawable, gc, x, y, width, height);
     if (drawable == drawPixmap)
     {
-        putc(RC_FILLRECTANGLE, recordFP);
+        RWriteByte(RC_FILLRECTANGLE, recordFP);
         RWriteGC(gc, GCForeground | RTILEGC);
-        RWriteShort(x);
-        RWriteShort(y);
-        RWriteByte((int)width);
-        RWriteByte((int)height);
+        RWriteShort(x, recordFP);
+        RWriteShort(y, recordFP);
+        RWriteByte(width, recordFP);
+        RWriteByte(height, recordFP);
     }
     return 0;
 }
@@ -754,15 +690,15 @@ static int RFillRectangles(Display *display, Drawable drawable, GC gc,
     {
         int i;
 
-        putc(RC_FILLRECTANGLES, recordFP);
+        RWriteByte(RC_FILLRECTANGLES, recordFP);
         RWriteGC(gc, GCForeground | RTILEGC);
-        RWriteUShort((unsigned)nrectangles);
+        RWriteUShort(nrectangles, recordFP);
         for (i = 0; i < nrectangles; i++)
         {
-            RWriteShort(rectangles[i].x);
-            RWriteShort(rectangles[i].y);
-            RWriteByte(rectangles[i].width);
-            RWriteByte(rectangles[i].height);
+            RWriteShort(rectangles[i].x, recordFP);
+            RWriteShort(rectangles[i].y, recordFP);
+            RWriteByte(rectangles[i].width, recordFP);
+            RWriteByte(rectangles[i].height, recordFP);
         }
     }
     return 0;
@@ -776,17 +712,17 @@ static int RDrawArcs(Display *display, Drawable drawable, GC gc,
     {
         int i;
 
-        putc(RC_DRAWARCS, recordFP);
+        RWriteByte(RC_DRAWARCS, recordFP);
         RWriteGC(gc, RSTROKEGC | RTILEGC);
-        RWriteUShort((unsigned)narcs);
+        RWriteUShort(narcs, recordFP);
         for (i = 0; i < narcs; i++)
         {
-            RWriteShort(arcs[i].x);
-            RWriteShort(arcs[i].y);
-            RWriteByte(arcs[i].width);
-            RWriteByte(arcs[i].height);
-            RWriteShort(arcs[i].angle1);
-            RWriteShort(arcs[i].angle2);
+            RWriteShort(arcs[i].x, recordFP);
+            RWriteShort(arcs[i].y, recordFP);
+            RWriteByte(arcs[i].width, recordFP);
+            RWriteByte(arcs[i].height, recordFP);
+            RWriteShort(arcs[i].angle1, recordFP);
+            RWriteShort(arcs[i].angle2, recordFP);
         }
     }
     return 0;
@@ -800,15 +736,15 @@ static int RDrawSegments(Display *display, Drawable drawable, GC gc,
     {
         int i;
 
-        putc(RC_DRAWSEGMENTS, recordFP);
+        RWriteByte(RC_DRAWSEGMENTS, recordFP);
         RWriteGC(gc, RSTROKEGC | RTILEGC);
-        RWriteUShort((unsigned)nsegments);
+        RWriteUShort(nsegments, recordFP);
         for (i = 0; i < nsegments; i++)
         {
-            RWriteShort(segments[i].x1);
-            RWriteShort(segments[i].y1);
-            RWriteShort(segments[i].x2);
-            RWriteShort(segments[i].y2);
+            RWriteShort(segments[i].x1, recordFP);
+            RWriteShort(segments[i].y1, recordFP);
+            RWriteShort(segments[i].x2, recordFP);
+            RWriteShort(segments[i].y2, recordFP);
         }
     }
     return 0;
@@ -876,11 +812,12 @@ static struct recordable_drawing Rdrawing = {
     RSetDashes,
 };
 
-/*
- * Publicly accessible drawing routines.
- * This is either a copy of Xdrawing or of Rdrawing.
- */
-struct recordable_drawing rd;
+// Publicly accessible drawing routines.
+// This is either a copy of Xdrawing or of Rdrawing.
+//
+// This is initialized to Xdrawing, so we don't get a segmentation
+// fault if we never called Record_init.
+struct recordable_drawing rd = Xdrawing;
 
 /*
  * Return the number of bytes written sofar to
@@ -901,6 +838,8 @@ long Record_size(void)
  */
 void Record_toggle(void)
 {
+    warn("Record_toggle called!");
+
     if (record_filename != NULL && strlen(record_filename) > 0)
     {
         if (!record_start)
