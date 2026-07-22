@@ -55,6 +55,7 @@
 #include "commonmacros.h"
 #include "recordfile.h"
 #include "recordfmt.h"
+#include "version.h"
 #include "item.h"
 #include "buttons.h"
 
@@ -2874,12 +2875,11 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
     int i;
 
     RWriteByte(RC_NEWFRAME, fp);
-    RWriteUShort((int)f->width, fp);
-    RWriteUShort((int)f->height, fp);
+    RWriteUShort(f->width, fp);
+    RWriteUShort(f->height, fp);
 
     for (sp = f->shapes; sp != NULL; sp = sp->next)
     {
-
         switch (sp->type)
         {
 
@@ -2930,8 +2930,8 @@ static void WriteFrame(struct xprc *rc, struct frame *f, FILE *fp)
             RWriteShort(sp->shape.string.x, fp);
             RWriteShort(sp->shape.string.y, fp);
             RWriteByte(sp->shape.string.font, fp);
-            RWriteUShort((int)sp->shape.string.length, fp);
-            for (i = 0; i < (int)sp->shape.string.length; i++)
+            RWriteUShort(sp->shape.string.length, fp);
+            for (i = 0; i < sp->shape.string.length; i++)
                 RWriteByte(sp->shape.string.string[i], fp);
             break;
 
@@ -3168,7 +3168,7 @@ static void dox(struct xui *ui, struct xprc *rc)
             {
 
             case ClientMessage:
-                if (event.xclient.message_type == ProtocolAtom && (unsigned)event.xclient.data.l[0] == KillAtom)
+                if (event.xclient.message_type == ProtocolAtom && event.xclient.data.l[0] == KillAtom)
                     return;
                 break;
 
@@ -3422,10 +3422,8 @@ static void TestInput(struct xprc *rc)
         if (ch0 == 0x1F && ch1 == 0x9D)
         {
             if (verbose)
-            {
                 fprintf(stderr, "%s: \"%s\" is in compressed format, starting compress...\n",
                         *Argv, rc->filename);
-            }
             lseek(fd, 0L, SEEK_SET);
             if (rc->fp == stdin)
                 sprintf(buf, "compress -d");
@@ -3444,8 +3442,7 @@ static void TestInput(struct xprc *rc)
         if (ch0 == 0x1F && ch1 == 0x8B)
         {
             if (verbose)
-                fprintf(stderr,
-                        "%s: \"%s\" is in gzip format, starting gzip...\n",
+                fprintf(stderr, "%s: \"%s\" is in gzip format, starting gzip...\n",
                         *Argv, rc->filename);
             lseek(fd, 0L, SEEK_SET);
             if (rc->fp == stdin)
@@ -3621,10 +3618,8 @@ int main(int argc, char **argv)
                 usage();
             else if (argi < argc - 1)
             {
-                fprintf(stderr, "%s: Unknown option \"%s\"\n",
-                        Argv[0], argv[argi]);
-                fprintf(stderr, "\tType: \"%s -help\" for some help.\n",
-                        Argv[0]);
+                fprintf(stderr, "%s: Unknown option \"%s\"\n", Argv[0], argv[argi]);
+                fprintf(stderr, "\tType: \"%s -help\" for some help.\n", Argv[0]);
                 exit(2);
             }
             else
@@ -3633,6 +3628,7 @@ int main(int argc, char **argv)
     }
     if (argi != argc - 1)
         usage();
+
     filename = argv[argc - 1];
     if (!strcmp(filename, "-"))
         fp = stdin;
