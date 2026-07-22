@@ -1,14 +1,10 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
  *      Bert Gijsbers
  *      Dick Balaska
- *
- * Copyright (C) 2001 Uoti Urpala
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,7 +27,6 @@
 #include <cctype>
 #include <cerrno>
 #include <ctime>
-#include <cassert>
 #include <sys/types.h>
 
 #include <unistd.h>
@@ -106,12 +101,11 @@ static int Get_contact_message(sockbuf_t *sbuf,
     int server_version;
     unsigned magic;
     uint8_t reply_to, status;
-    int readable = 0;
+    bool readable = false;
 
     sock_set_timeout(&sbuf->sock, 2, 0);
     while (readable == false && sock_readable(&sbuf->sock) > 0)
     {
-
         Sockbuf_clear(sbuf);
         len = sock_receive_any(&sbuf->sock, sbuf->buf, sbuf->size);
         if (len <= 0)
@@ -228,15 +222,15 @@ static void Command_help(void)
            "N    -   Next server, skip this one.\n"
            "S    -   list Status.\n"
            "T    -   set Team.\n"
-           "Q    -   Quit.\n");
-    printf("K    -   Kick a player.                (only owner)\n"
+           "Q    -   Quit.\n"
+           "K    -   Kick a player.                (only owner)\n"
            "M    -   send a Message.               (only owner)\n"
            "L    -   Lock/unLock server access.    (only owner)\n"
            "D(*) -   shutDown/cancel shutDown.     (only owner)\n"
            "O    -   Modify a server option.       (only owner)\n"
            "V    -   View the server options.\n"
-           "J(&) or just Return enters the game.\n");
-    printf("(*) If you don't specify any delay, you will signal that\n"
+           "J(&) or just Return enters the game.\n"
+           "(*) If you don't specify any delay, you will signal that\n"
            "    the server should stop an ongoing shutdown.\n"
            "(&) You may specify a team number after the J.\n");
 }
@@ -265,7 +259,6 @@ static bool Process_commands(sockbuf_t *ibuf,
 
     for (;;)
     {
-
         max_replies = 1;
 
         /*
@@ -640,9 +633,7 @@ static bool Process_commands(sockbuf_t *ibuf,
                     if (Packet_scanf(ibuf, "%hu", &qpos) <= 0)
                         warn("Incomplete queue reply from server");
                     else
-                    {
                         printf("... queued at position %2d\n", qpos);
-                    }
                     /*
                      * Acknowledge each 10 seconds that we are still
                      * interested to be on the waiting queue.
@@ -804,7 +795,7 @@ int Contact_servers(int count, char **servers,
                     unsigned *server_versions,
                     Connect_param_t *conpar)
 {
-    int connected = false;
+    bool connected = false;
     const int max_retries = 2;
     int i, ret;
     int status;
@@ -835,17 +826,14 @@ int Contact_servers(int count, char **servers,
             Sockbuf_clear(&sbuf);
             Packet_printf(&sbuf, "%u%s%hu%c", MAGIC, conpar->user_name,
                           sock_get_port(&sbuf.sock), CONTACT_pack);
-            assert(sbuf.len >= 0);
-            if (Query_all(&sbuf.sock, conpar->contact_port,
-                          sbuf.buf, (size_t)sbuf.len) == -1)
+            if (Query_all(&sbuf.sock, conpar->contact_port, sbuf.buf, sbuf.len) == -1)
             {
                 error("Couldn't send contact requests");
                 exit(1);
             }
             if (retries == 0)
             {
-                printf("Searching for an XPilot "
-                       "server on the local net...\n");
+                printf("Searching for an XPilot server on the local net...\n");
             }
             else
             {
@@ -945,5 +933,5 @@ int Contact_servers(int count, char **servers,
     Sockbuf_cleanup(&sbuf);
     close_dgram_socket(&sock);
 
-    return connected ? true : false;
+    return connected;
 }

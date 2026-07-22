@@ -411,15 +411,7 @@ void World_free(void)
 {
     XFREE(World.block);
     XFREE(World.gravity);
-    /*XFREE(World.gravs);*/
-    /*XFREE(World.bases);*/
-    /*XFREE(World.cannons);*/
     XFREE(World.checks);
-    /*XFREE(World.fuels);*/
-    /*XFREE(World.wormholes);*/
-    /*XFREE(World.itemConcs);
-    XFREE(World.asteroidConcs);
-    XFREE(World.frictionAreas);*/
 }
 
 static bool World_alloc(void)
@@ -438,14 +430,7 @@ static bool World_alloc(void)
     World.gravity = (vector_t **)
         malloc(sizeof(vector_t *) * World.x + World.x * sizeof(vector_t) * World.y);
 
-    /*assert(World.gravs == NULL);*/
-    /*assert(World.bases == NULL);*/
-    /*assert(World.fuels == NULL);*/
-    /*assert(World.cannons == NULL);*/
     assert(World.checks == NULL);
-    /*assert(World.wormholes == NULL);*/
-    /*assert(World.itemConcs == NULL);*/
-    /*assert(World.asteroidConcs == NULL);*/
 
     if (World.block == NULL || World.gravity == NULL)
     {

@@ -1067,8 +1067,10 @@ static void handleKeyPress(GLWidget *meta, SDL_Keysym *keysym)
         /* F11 key was pressed
          * this toggles fullscreen mode
          */
+
         /* This segfaults */
         /* SDL_WM_ToggleFullScreen(MainSDLSurface); */
+
         break;
     case SDLK_UP:
         /* move the cursor up */
