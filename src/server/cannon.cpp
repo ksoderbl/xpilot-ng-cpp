@@ -642,7 +642,7 @@ static void Cannon_fire(cannon_t *c, int weapon, player_t *pl, int dir)
         default:
             if (options.allowSmartMissiles)
             {
-                Fire_general_shot(c->id, c->team, c->pos,
+                Fire_general_shot(c->id, c->team, true, c->pos,
                                   OBJ_SMART_SHOT, dir, mods, pl->id);
                 sound_play_sensors(c->pos, FIRE_SMART_SHOT_SOUND);
                 played = true;
@@ -652,7 +652,7 @@ static void Cannon_fire(cannon_t *c, int weapon, player_t *pl, int dir)
         case 1:
             if (options.allowHeatSeekers && Player_is_thrusting(pl))
             {
-                Fire_general_shot(c->id, c->team, c->pos,
+                Fire_general_shot(c->id, c->team, true, c->pos,
                                   OBJ_HEAT_SHOT, dir, mods, pl->id);
                 sound_play_sensors(c->pos, FIRE_HEAT_SHOT_SOUND);
                 played = true;
@@ -660,7 +660,7 @@ static void Cannon_fire(cannon_t *c, int weapon, player_t *pl, int dir)
             }
             /* FALLTHROUGH */
         case 0:
-            Fire_general_shot(c->id, c->team, c->pos,
+            Fire_general_shot(c->id, c->team, true, c->pos,
                               OBJ_TORPEDO, dir, mods, NO_ID);
             sound_play_sensors(c->pos, FIRE_TORPEDO_SOUND);
             played = true;
@@ -759,7 +759,7 @@ static void Cannon_fire(cannon_t *c, int weapon, player_t *pl, int dir)
         {
             int a_dir = dir + (4 - smartness) * (-c->item[ITEM_WIDEANGLE] + i);
             a_dir = MOD2(a_dir, ANGLE_RESOLUTION);
-            Fire_general_shot(c->id, c->team, c->pos,
+            Fire_general_shot(c->id, c->team, true, c->pos,
                               OBJ_CANNON_SHOT, a_dir, mods, NO_ID);
         }
         /* I'm not sure cannons should use rearshots.
@@ -769,7 +769,7 @@ static void Cannon_fire(cannon_t *c, int weapon, player_t *pl, int dir)
         {
             int a_dir = (int)(dir + (ANGLE_RESOLUTION / 2) + (4 - smartness) * (-((c->item[ITEM_REARSHOT] - 1) * 0.5) + i));
             a_dir = MOD2(a_dir, ANGLE_RESOLUTION);
-            Fire_general_shot(c->id, c->team, c->pos,
+            Fire_general_shot(c->id, c->team, true, c->pos,
                               OBJ_CANNON_SHOT, a_dir, mods, NO_ID);
         }
     }

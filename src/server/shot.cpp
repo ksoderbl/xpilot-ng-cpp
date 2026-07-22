@@ -424,7 +424,7 @@ void Fire_main_shot(player_t *pl, int type, int dir)
     pos.cx = pl->pos.cx + m_gun.cx;
     pos.cy = pl->pos.cy + m_gun.cy;
 
-    Fire_general_shot(pl->id, pl->team, pos, type,
+    Fire_general_shot(pl->id, pl->team, false, pos, type,
                       dir, pl->mods, NO_ID);
 }
 
@@ -433,7 +433,7 @@ void Fire_shot(player_t *pl, int type, int dir)
     if (!Player_can_fire_shot(pl))
         return;
 
-    Fire_general_shot(pl->id, pl->team, pl->pos, type,
+    Fire_general_shot(pl->id, pl->team, false, pl->pos, type,
                       dir, pl->mods, NO_ID);
 }
 
@@ -448,7 +448,7 @@ void Fire_left_shot(player_t *pl, int type, int dir, int gun)
     pos.cx = pl->pos.cx + l_gun.cx;
     pos.cy = pl->pos.cy + l_gun.cy;
 
-    Fire_general_shot(pl->id, pl->team, pos, type,
+    Fire_general_shot(pl->id, pl->team, false, pos, type,
                       dir, pl->mods, NO_ID);
 }
 
@@ -463,7 +463,7 @@ void Fire_right_shot(player_t *pl, int type, int dir, int gun)
     pos.cx = pl->pos.cx + r_gun.cx;
     pos.cy = pl->pos.cy + r_gun.cy;
 
-    Fire_general_shot(pl->id, pl->team, pos, type,
+    Fire_general_shot(pl->id, pl->team, false, pos, type,
                       dir, pl->mods, NO_ID);
 }
 
@@ -478,7 +478,7 @@ void Fire_left_rshot(player_t *pl, int type, int dir, int gun)
     pos.cx = pl->pos.cx + l_rgun.cx;
     pos.cy = pl->pos.cy + l_rgun.cy;
 
-    Fire_general_shot(pl->id, pl->team, pos, type,
+    Fire_general_shot(pl->id, pl->team, false, pos, type,
                       dir, pl->mods, NO_ID);
 }
 
@@ -493,11 +493,11 @@ void Fire_right_rshot(player_t *pl, int type, int dir, int gun)
     pos.cx = pl->pos.cx + r_rgun.cx;
     pos.cy = pl->pos.cy + r_rgun.cy;
 
-    Fire_general_shot(pl->id, pl->team, pos, type,
+    Fire_general_shot(pl->id, pl->team, false, pos, type,
                       dir, pl->mods, NO_ID);
 }
 
-void Fire_general_shot(int id, int team,
+void Fire_general_shot(int id, int team, bool cannon,
                        clpos_t pos, int type, int dir,
                        modifiers_t mods, int target_id)
 {
@@ -512,7 +512,7 @@ void Fire_general_shot(int id, int team,
     object_t *mini_objs[MODS_MINI_MAX + 1];
     torpobject_t *torp;
     player_t *pl = Player_by_id(id);
-    cannon_t *cannon = Cannon_by_id(id);
+    cannon_t *c = Cannon_by_id(id);
 
     if (NumObjs >= MAX_TOTAL_SHOTS)
         return;
@@ -522,11 +522,11 @@ void Fire_general_shot(int id, int team,
     if (!Mods_get(mods, ModsMini))
         Mods_set(&mods, ModsSpread, 0);
 
-    if (cannon)
+    if (c)
     {
         mass = CANNON_SHOT_MASS;
-        speed = Cannon_get_shot_speed(cannon);
-        life = Cannon_get_shot_life(cannon);
+        speed = Cannon_get_shot_speed(c);
+        life = Cannon_get_shot_life(c);
         SET_BIT(status, FROMCANNON);
     }
 
@@ -1455,7 +1455,7 @@ void Delete_shot(int ind)
                                shot->pos, zero_vel, mods);
         }
         else if (addHeat)
-            Fire_general_shot(NO_ID, TEAM_NOT_SET, shot->pos,
+            Fire_general_shot(NO_ID, TEAM_NOT_SET, true, shot->pos,
                               OBJ_HEAT_SHOT, (int)(rfrac() * ANGLE_RESOLUTION),
                               mods, NO_ID);
     }

@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -47,6 +45,9 @@
 /* Socklib Includes And Definitions */
 #include "socklib.h"
 
+#include "commonmacros.h"
+#include "commonproto.h"
+
 /* Debug macro */
 #ifdef DEBUG
 #define DEB(x) x
@@ -63,8 +64,7 @@
 static jmp_buf env;
 
 static struct hostent *sock_get_host_by_name(const char *name);
-static struct hostent *sock_get_host_by_addr(const char *addr,
-                                             int len, int type);
+static struct hostent *sock_get_host_by_addr(const char *addr, int len, int type);
 
 static void sock_flags_add(sock_t *sock, unsigned bits)
 {
@@ -93,8 +93,8 @@ static int sock_flags_test_any(sock_t *sock, unsigned bits)
 
 static int sock_set_error(sock_t *sock, int err, sock_call_t call, int line)
 {
-    DEB(printf("set error %d, %d, %d.  \"%s\"\n",
-               err, call, line, strerror(err)));
+    DEB(printf("set error %d, %d, %d.  \"%s\"\n", err, call, line, strerror(err)));
+
     sock->error.error = err;
     sock->error.call = call;
     sock->error.line = line;
@@ -126,11 +126,7 @@ static int sock_alloc_hostname(sock_t *sock)
 
 static void sock_free_hostname(sock_t *sock)
 {
-    if (sock->hostname)
-    {
-        free(sock->hostname);
-        sock->hostname = NULL;
-    }
+    XFREE(sock->hostname);
 }
 
 static int sock_alloc_lastaddr(sock_t *sock)
@@ -147,16 +143,12 @@ static int sock_alloc_lastaddr(sock_t *sock)
 
 static void sock_free_lastaddr(sock_t *sock)
 {
-    if (sock->lastaddr)
-    {
-        free(sock->lastaddr);
-        sock->lastaddr = NULL;
-    }
+    XFREE(sock->lastaddr);
 }
 
-int sock_startup()
+int sock_startup(void)
 {
-    return 0; /* socket initialization only needed for windows */
+    return 0;
 }
 
 void sock_cleanup(void)
@@ -339,8 +331,7 @@ int sock_open_tcp_connected_non_blocking(sock_t *sock, char *host, int port)
         dest.sin_addr.s_addr = ((struct in_addr *)(hp->h_addr_list[0]))->s_addr;
     }
 
-    if (connect(sock->fd, (struct sockaddr *)&dest,
-                sizeof(struct sockaddr_in)) < 0)
+    if (connect(sock->fd, (struct sockaddr *)&dest, sizeof(struct sockaddr_in)) < 0)
     {
         if (errno != EINPROGRESS)
         {
@@ -349,6 +340,7 @@ int sock_open_tcp_connected_non_blocking(sock_t *sock, char *host, int port)
             return SOCK_IS_ERROR;
         }
     }
+
     sock_flags_add(sock, SOCK_FLAG_CONNECT);
 
     return SOCK_IS_OK;
@@ -461,10 +453,8 @@ char *sock_get_last_name(sock_t *sock)
             str = inet_ntoa(lastaddr->sin_addr);
         else
             str = hp->h_name;
-
         if (sock_alloc_hostname(sock))
             return str;
-
         strlcpy(sock->hostname, str, SOCK_HOSTNAME_LENGTH);
         return sock->hostname;
     }
@@ -662,8 +652,7 @@ int sock_get_error(sock_t *sock)
     int err;
     socklen_t size = sizeof(err);
 
-    if (getsockopt(sock->fd, SOL_SOCKET, SO_ERROR,
-                   (void *)&err, &size) < 0)
+    if (getsockopt(sock->fd, SOL_SOCKET, SO_ERROR, (void *)&err, &size) < 0)
     {
         sock_set_error(sock, errno, SOCK_CALL_GETSOCKOPT, __LINE__);
         return SOCK_IS_ERROR;

@@ -476,7 +476,7 @@ void Detonate_items(player_t *pl)
             if (Mods_get(mods, ModsNuclear) && pl->item[ITEM_MISSILE] < options.nukeMinSmarts)
                 Mods_set(&mods, ModsNuclear, 0);
 
-            Fire_general_shot(owner_pl->id, pl->team, pl->pos,
+            Fire_general_shot(owner_pl->id, pl->team, false, pl->pos,
                               type, (int)(rfrac() * ANGLE_RESOLUTION), mods, NO_ID);
         }
     }
@@ -821,7 +821,7 @@ void Do_general_transporter(int id, clpos_t pos,
         break;
     case ITEM_FUEL:
     {
-        /* choose percantage between 10 and 50. */
+        /* choose percentage between 10 and 50. */
         double percent = 10.0 + 40.0 * rfrac();
         amount = victim->fuel.sum * percent / 100.0;
         sprintf(msg, "%s stole %.1f units (%.1f%%) of fuel from %s.",
