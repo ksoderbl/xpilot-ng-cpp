@@ -207,7 +207,7 @@ typedef struct player
     int shots;                             /* Number of active shots by player */
     int missile_rack;                      /* Next missile rack to be active */
 
-    int num_pulses; /* Number of laser pulses "flying". */
+    int num_pulses; /* Number of laser pulses active. */
 
     double emergency_thrust_left; /* how much emergency thrust left */
     double emergency_shield_left; /* how much emergency shield left */
