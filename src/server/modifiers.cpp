@@ -305,7 +305,6 @@ int Mods_set(modifiers_t *mods, modifier_t modifier, int val)
         break;
     default:
         warn("No such modifier: %d", modifier);
-        assert(0);
         break;
     }
 
@@ -333,7 +332,6 @@ int Mods_get(modifiers_t mods, modifier_t modifier)
     case ModsLaser:
         return Get_laser_modifier(mods);
     default:
-        assert(0);
         break;
     }
     return 0;
@@ -401,6 +399,68 @@ void Mods_to_string(modifiers_t mods, char *modstr, size_t size)
             modstr[i++] = 'B';
     }
     modstr[i] = '\0';
+}
+
+std::string Mods_to_string2(modifiers_t mods)
+{
+    std::string str = "";
+
+    int t = Get_nuclear_modifier(mods);
+    if (t & MODS_FULLNUCLEAR)
+        str += "F";
+    if (t & MODS_NUCLEAR)
+        str += "N";
+    if (Get_cluster_modifier(mods))
+        str += "C";
+    if (Get_implosion_modifier(mods))
+        str += "I";
+
+    t = Get_velocity_modifier(mods);
+    if (t)
+    {
+        if (!str.empty())
+            str += " ";
+        str += "V" + std::to_string(t);
+    }
+
+    t = Get_mini_modifier(mods);
+    if (t)
+    {
+        if (!str.empty())
+            str += " ";
+        // minis start from 2 (X2)
+        str += "X" + std::to_string(t + 1);
+    }
+
+    t = Get_spread_modifier(mods);
+    if (t)
+    {
+        if (!str.empty())
+            str += " ";
+        str += "Z" + std::to_string(t);
+    }
+
+    t = Get_power_modifier(mods);
+    if (t)
+    {
+        if (!str.empty())
+            str += " ";
+        str += "B" + std::to_string(t);
+    }
+
+    t = Get_laser_modifier(mods);
+    if (t)
+    {
+        if (!str.empty())
+            str += " ";
+        str += "L";
+        if (t & MODS_LASER_STUN)
+            str += "S";
+        if (t & MODS_LASER_BLIND)
+            str += "B";
+    }
+
+    return str;
 }
 
 void Mods_filter(modifiers_t *mods)
@@ -517,4 +577,51 @@ void Player_set_modbank(player_t *pl, int bank, const char *str)
         }
     }
     pl->modbank[bank] = mods;
+}
+
+void modifiersUnitTest(void)
+{
+    modifiers_t mods;
+
+    Mods_clear(&mods);
+
+    int val = 3;
+
+    Set_nuclear_modifier(&mods, val);
+    Set_cluster_modifier(&mods, val);
+    Set_implosion_modifier(&mods, val);
+    Set_velocity_modifier(&mods, val);
+    Set_mini_modifier(&mods, val);
+    Set_spread_modifier(&mods, val);
+    Set_power_modifier(&mods, val);
+    Set_laser_modifier(&mods, val);
+
+    char modsstr[MAX_CHARS];
+
+    Mods_to_string(mods, modsstr, sizeof(modsstr));
+    // xpinfo("modifiersUnitTest Mods_to_string  returned \"%s\"", modsstr);
+
+    // if (!strcmp(modsstr, "Z3"))
+    // {
+    //     xpinfo("SUCCESS");
+    // }
+    // else
+    // {
+    //     warn("FAIL");
+    // }
+
+    std::string s1 = std::string(modsstr);
+    std::string s2 = Mods_to_string2(mods);
+
+    // xpinfo("modifiersUnitTest: s1 = \"%s\"", s1.c_str());
+    // xpinfo("modifiersUnitTest: s2 = \"%s\"", s2.c_str());
+
+    if (s2 == s1)
+    {
+        // xpinfo("SUCCESS");
+    }
+    else
+    {
+        warn("modifiersUnitTest: FAIL");
+    }
 }

@@ -296,55 +296,6 @@ extern int num_edge_styles, max_edge_styles;
 extern polygon_style_t *polygon_styles;
 extern int num_polygon_styles, max_polygon_styles;
 
-/* dynamic global game data */
-
-// extern refuel_t *refuel_ptr;
-// extern int num_refuel, max_refuel;
-// extern connector_t *connector_ptr;
-// extern int num_connector, max_connector;
-// extern laser_t *laser_ptr;
-// extern int num_laser, max_laser;
-// extern missile_t *missile_ptr;
-// extern int num_missile, max_missile;
-// extern ball_t *ball_ptr;
-// extern int num_ball, max_ball;
-// extern ship_t *ship_ptr;
-// extern int num_ship, max_ship;
-// extern mine_t *mine_ptr;
-// extern int num_mine, max_mine;
-// extern itemtype_t *itemtype_ptr;
-// extern int num_itemtype, max_itemtype;
-// extern ecm_t *ecm_ptr;
-// extern int num_ecm, max_ecm;
-// extern trans_t *trans_ptr;
-// extern int num_trans, max_trans;
-// extern paused_t *paused_ptr;
-// extern int num_paused, max_paused;
-// extern appearing_t *appearing_ptr;
-// extern int num_appearing, max_appearing;
-// extern radar_t *radar_ptr;
-// extern int num_radar, max_radar;
-// extern vcannon_t *vcannon_ptr;
-// extern int num_vcannon, max_vcannon;
-// extern vfuel_t *vfuel_ptr;
-// extern int num_vfuel, max_vfuel;
-// extern vbase_t *vbase_ptr;
-// extern int num_vbase, max_vbase;
-// extern debris_t *debris_ptr[DEBRIS_TYPES];
-// extern int num_debris[DEBRIS_TYPES],
-//     max_debris[DEBRIS_TYPES];
-// extern debris_t *fastshot_ptr[DEBRIS_TYPES * 2];
-// extern int num_fastshot[DEBRIS_TYPES * 2],
-//     max_fastshot[DEBRIS_TYPES * 2];
-// extern vdecor_t *vdecor_ptr;
-// extern int num_vdecor, max_vdecor;
-// extern wreckage_t *wreckage_ptr;
-// extern int num_wreckage, max_wreckage;
-// extern asteroid_t *asteroid_ptr;
-// extern int num_asteroids, max_asteroids;
-// extern wormhole_t *wormhole_ptr;
-// extern int num_wormholes, max_wormholes;
-
 double Fuel_by_pos(int x, int y);
 int Target_alive(int x, int y, double *damage);
 int Target_by_index(int ind, int *xp, int *yp, int *dead_time, double *damage);

@@ -594,6 +594,7 @@ void Fire_general_shot(int id, int team,
             }
             else
                 used = options.nukeMinSmarts;
+
             mass = MISSILE_MASS * used * NUKE_MASS_MULT;
             pl_range = (type == OBJ_TORPEDO)
                            ? (int)NUKE_RANGE

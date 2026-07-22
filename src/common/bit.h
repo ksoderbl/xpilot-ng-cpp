@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -27,6 +25,8 @@
 
 #include <cstdint>
 
+typedef uint8_t bitv_t;
+
 #define SET_BIT(w, bit) ((w) |= (bit))
 #define CLR_BIT(w, bit) ((w) &= ~(bit))
 #define BIT(w, bit) ((w) & (bit))
@@ -38,5 +38,3 @@
 #define BITV_CLR(X, N) ((X)[(N) / BITV_SIZE] &= ~(1 << (N) % BITV_SIZE))
 #define BITV_ISSET(X, N) ((X)[(N) / BITV_SIZE] & (1 << (N) % BITV_SIZE))
 #define BITV_TOGGLE(X, N) ((X)[(N) / BITV_SIZE] ^= 1 << (N) % BITV_SIZE)
-
-typedef uint8_t bitv_t;
