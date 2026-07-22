@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -28,19 +26,19 @@
 #ifndef HAVE_STRLCPY
 /*
     NAME
-    strlcpy
+        strlcpy
     ARGS
-    char *dest
-    const char *src
-    size_t size
+        char *dest
+        const char *src
+        size_t size
     DESC
-    Copy src to dest.
-    Dest may hold at most size - 1 characters
-    and will always be NUL terminated,
-    except if size equals zero.
-    Return strlen(src).
-    There was not enough room in dest if the
-    return value is bigger or equal than size.
+        Copy src to dest.
+        Dest may hold at most size - 1 characters
+        and will always be NUL terminated,
+        except if size equals zero.
+        Return strlen(src).
+        There was not enough room in dest if the
+        return value is bigger or equal than size.
 */
 size_t strlcpy(char *dest, const char *src, size_t size)
 {
@@ -67,19 +65,19 @@ size_t strlcpy(char *dest, const char *src, size_t size)
 #ifndef HAVE_STRLCAT
 /*
     NAME
-    strlcat
+        strlcat
     ARGS
-    char *dest
-    const char *src
-    size_t size
+        char *dest
+        const char *src
+        size_t size
     DESC
-    Append src to dest.
-    Dest may hold at most size - 1 characters
-    and will always be NUL terminated,
-    except if size equals zero.
-    Return strlen(src) + strlen(dest).
-    There was not enough room in dest if the
-    return value is bigger or equal than size.
+        Append src to dest.
+        Dest may hold at most size - 1 characters
+        and will always be NUL terminated,
+        except if size equals zero.
+        Return strlen(src) + strlen(dest).
+        There was not enough room in dest if the
+        return value is bigger or equal than size.
 */
 size_t strlcat(char *dest, const char *src, size_t size)
 {

@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -48,6 +46,7 @@
  */
 #define CLIENT_RULES_MASK (WRAP_PLAY | TEAM_PLAY | TIMING | LIMITED_LIVES | \
                            ALLIANCES)
+
 /*
  * Old player status bits, currently only used in network protocol.
  * The bits that the client needs must fit into a byte,

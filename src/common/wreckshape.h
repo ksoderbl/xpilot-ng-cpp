@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -23,8 +21,7 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef WRECKSHAPE_H
-#define WRECKSHAPE_H
+#pragma once
 
 #include "types.h"
 
@@ -44,5 +41,3 @@
         {4, 9}, {4, 2}, {7, -2}, {7, -5}, {2, -8}, {-4, -7}
 
 extern position_t *wreckageShapes[NUM_WRECKAGE_SHAPES][NUM_WRECKAGE_POINTS];
-
-#endif

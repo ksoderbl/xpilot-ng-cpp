@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -77,11 +75,6 @@ typedef struct sock_s
     void *lastaddr;
     char *hostname;
 } sock_t;
-
-// #if !defined(select) && defined(__linux__)
-// #define select(N, R, W, E, T) select((N), \
-//                                      (fd_set *)(R), (fd_set *)(W), (fd_set *)(E), (T))
-// #endif
 
 int sock_startup(void);
 void sock_cleanup(void);

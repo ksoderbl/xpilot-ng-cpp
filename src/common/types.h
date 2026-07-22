@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -27,22 +25,23 @@
 
 #include <cstdint>
 
-// typedef signed char byte;
-
 typedef struct
 {
     float x, y;
 } vector_t;
 typedef vector_t position_t;
+
 typedef struct
 {
     int x, y;
 } ivec_t;
 typedef ivec_t ipos_t;
+
 typedef struct
 {
     int x, y, w, h;
 } irec_t;
+
 typedef struct
 {
     int bx, by;
