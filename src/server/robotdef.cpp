@@ -1036,7 +1036,6 @@ static bool Check_robot_target(player_t *pl, clpos_t item_pos, int new_mode)
         Thrust(pl, false);
     else if (item_dist < 3 * BLOCK_SZ && new_mode != RM_HARVEST)
     {
-
         if (pl->velocity < my_data->robot_normal_speed / 2)
             Thrust(pl, true);
         if (pl->velocity > my_data->robot_normal_speed)
@@ -1044,7 +1043,6 @@ static bool Check_robot_target(player_t *pl, clpos_t item_pos, int new_mode)
     }
     else if ((new_mode != RM_ATTACK && new_mode != RM_NAVIGATE) || item_dist < 8 * BLOCK_SZ || (new_mode == RM_NAVIGATE && delta_dir > 3 * ANGLE_RESOLUTION / 8 && delta_dir < 5 * ANGLE_RESOLUTION / 8))
     {
-
         if (pl->velocity < 2 * my_data->robot_normal_speed)
             Thrust(pl, true);
         if (pl->velocity > 3 * my_data->robot_normal_speed)
@@ -1052,7 +1050,6 @@ static bool Check_robot_target(player_t *pl, clpos_t item_pos, int new_mode)
     }
     else if (new_mode == RM_ATTACK || (new_mode == RM_NAVIGATE && (dist < 12 * BLOCK_SZ || (delta_dir > ANGLE_RESOLUTION / 8 && delta_dir < 7 * ANGLE_RESOLUTION / 8))))
     {
-
         if (pl->velocity < my_data->robot_attack_speed / 2)
             Thrust(pl, true);
         if (pl->velocity > my_data->robot_attack_speed)
@@ -1075,7 +1072,6 @@ static bool Check_robot_target(player_t *pl, clpos_t item_pos, int new_mode)
 
     if (new_mode == RM_ATTACK || (BIT(World.rules->mode, TIMING) && new_mode == RM_NAVIGATE))
     {
-
         if (pl->item[ITEM_ECM] > 0 && item_dist < ECM_DISTANCE / 4)
             Fire_ecm(pl);
         else if (pl->item[ITEM_TRANSPORTER] > 0 && item_dist < TRANSPORTER_DISTANCE && pl->fuel.sum > -ED_TRANSPORTER)
@@ -1263,7 +1259,12 @@ static bool Detect_ship(player_t *pl, player_t *ship)
     if (Player_is_thrusting(ship) && options.cloakedExhaust)
         return true;
 
-    if (BIT(ship->used, HAS_SHOT) || BIT(ship->used, HAS_LASER) || Player_is_refueling(ship) || Player_is_repairing(ship) || Player_uses_connector(ship) || Player_uses_tractor_beam(ship))
+    if (BIT(ship->used, HAS_SHOT) ||
+        BIT(ship->used, HAS_LASER) ||
+        Player_is_refueling(ship) ||
+        Player_is_repairing(ship) ||
+        Player_uses_connector(ship) ||
+        Player_uses_tractor_beam(ship))
         return true;
 
     if (BIT(ship->have, HAS_BALL))
@@ -1783,7 +1784,15 @@ static void Robot_default_play_check_objects(player_t *pl,
         }
 
         /* Find nearest missile/mine */
-        if (shot->type == OBJ_TORPEDO || shot->type == OBJ_SMART_SHOT || shot->type == OBJ_ASTEROID || shot->type == OBJ_HEAT_SHOT || shot->type == OBJ_BALL || shot->type == OBJ_CANNON_SHOT || (shot->type == OBJ_SHOT && !BIT(World.rules->mode, TIMING) && shot->id != pl->id && shot->id != NO_ID) || (shot->type == OBJ_MINE && shot->id != pl->id) || (shot->type == OBJ_WRECKAGE && !BIT(World.rules->mode, TIMING)))
+        if (shot->type == OBJ_TORPEDO ||
+            shot->type == OBJ_SMART_SHOT ||
+            shot->type == OBJ_ASTEROID ||
+            shot->type == OBJ_HEAT_SHOT ||
+            shot->type == OBJ_BALL ||
+            shot->type == OBJ_CANNON_SHOT ||
+            (shot->type == OBJ_SHOT && !BIT(World.rules->mode, TIMING) && shot->id != pl->id && shot->id != NO_ID) ||
+            (shot->type == OBJ_MINE && shot->id != pl->id) ||
+            (shot->type == OBJ_WRECKAGE && !BIT(World.rules->mode, TIMING)))
         {
             if (ABS(dx) < *mine_dist && ABS(dy) < *mine_dist && (distance = LENGTH(dx, dy)) < *mine_dist)
             {

@@ -355,7 +355,7 @@ void Make_item(clpos_t pos, vector_t vel,
     item->acc.x =
         item->acc.y = 0.0;
     item->mass = 10.0;
-    item->life = 1500 + rfrac() * 512;
+    item->obj_life = 1500 + rfrac() * 512;
     item->item_count = num_per_pack;
     item->pl_range = ITEM_SIZE / 2;
     item->pl_radius = ITEM_SIZE / 2;
@@ -573,7 +573,7 @@ void Do_deflector(player_t *pl)
     {
         obj = obj_list[i];
 
-        if (obj->life <= 0 || obj->mass == 0)
+        if (obj->obj_life <= 0 || obj->mass == 0)
             continue;
 
         if (obj->id == pl->id)
@@ -1055,7 +1055,7 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
              */
             if (range <= 0 || (int)(rfrac() * 100.0f) < ((int)(10 * (1 - range)) + 5))
             {
-                mine->life = 0;
+                mine->obj_life = 0;
                 break;
             }
             mine->mine_count = ((8 * (1 - range)) + 2) * 12;

@@ -117,7 +117,7 @@ struct cell_node
     vector_t vel;        /* speed in x,y */                                                        \
     vector_t acc;        /* acceleration in x,y */                                                 \
     float mass;          /* mass in unigrams */                                                    \
-    float life;          /* No of ticks left to live */                                            \
+    float obj_life;      /* No of ticks left to live */                                            \
     modifiers_t mods;    /* Modifiers to this object */                                            \
     uint8_t type;        /* one of OBJ_XXX */                                                      \
     uint8_t color;       /* Color of object */                                                     \

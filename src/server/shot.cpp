@@ -284,7 +284,7 @@ void Place_general_mine(int id, int team, int status,
         mine->vel.x += vel.x * MINE_SPEED_FACT;
         mine->vel.y += vel.y * MINE_SPEED_FACT;
         mine->mass = mass / minis;
-        mine->life = life / minis;
+        mine->obj_life = life / minis;
         mine->mods = mods;
         mine->pl_range = (int)(MINE_RANGE / minis);
         mine->pl_radius = MINE_RADIUS;
@@ -330,7 +330,7 @@ void Detonate_mines(player_t *pl)
         }
     }
     if (closest != -1)
-        Obj[closest]->life = 0;
+        Obj[closest]->obj_life = 0;
 
     return;
 }
@@ -925,7 +925,7 @@ void Fire_general_shot(int id, int team, bool cannon,
         if ((shot = Object_allocate()) == NULL)
             break;
 
-        shot->life = life / minis;
+        shot->obj_life = life / minis;
         shot->fuse = fuse;
         shot->mass = mass / minis;
         shot->type = type;
@@ -1383,15 +1383,15 @@ void Delete_shot(int ind)
         {
 
         case ITEM_MISSILE:
-            /* If -timeStep < item->life <= 0, then it died of old age. */
+            /* If -timeStep < item->obj_life <= 0, then it died of old age. */
             /* If it was picked up, then life was set to 0 and it is now
              * -timeStep after the substract in update.c. */
-            if (-timeStep < item->life && item->life <= 0)
+            if (-timeStep < item->obj_life && item->obj_life <= 0)
             {
                 if (item->color != WHITE)
                 {
                     item->color = WHITE;
-                    item->life = WARN_TIME;
+                    item->obj_life = WARN_TIME;
                     return;
                 }
                 if (rfrac() < options.rogueHeatProb)
@@ -1401,12 +1401,12 @@ void Delete_shot(int ind)
 
         case ITEM_MINE:
             /* See comment for ITEM_MISSILE above */
-            if (-timeStep < item->life && item->life <= 0)
+            if (-timeStep < item->obj_life && item->obj_life <= 0)
             {
                 if (item->color != WHITE)
                 {
                     item->color = WHITE;
-                    item->life = WARN_TIME;
+                    item->obj_life = WARN_TIME;
                     return;
                 }
                 if (rfrac() < options.rogueMineProb)
@@ -1429,7 +1429,7 @@ void Delete_shot(int ind)
     }
 
     Cell_remove_object(shot);
-    shot->life = 0;
+    shot->obj_life = 0;
     shot->type = 0;
     shot->mass = 0;
 

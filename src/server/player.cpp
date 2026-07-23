@@ -787,7 +787,7 @@ void Reset_all_players(void)
                 ballobject_t *ball = BALL_IND(j);
 
                 ball->id = NO_ID;
-                ball->life = 0;
+                ball->obj_life = 0;
                 /*
                  * why not -1 ???
                  * naive question, obviously yet another dirty hack
@@ -839,7 +839,7 @@ void Reset_all_players(void)
             if (BIT(OBJ_TYPEBIT(obj->type),
                     OBJ_SHOT_BIT | OBJ_MINE_BIT | OBJ_DEBRIS_BIT | OBJ_SPARK_BIT | OBJ_CANNON_SHOT_BIT | OBJ_TORPEDO_BIT | OBJ_SMART_SHOT_BIT | OBJ_HEAT_SHOT_BIT | OBJ_PULSE_BIT | OBJ_ITEM_BIT))
             {
-                obj->life = 0;
+                obj->obj_life = 0;
                 if (BIT(OBJ_TYPEBIT(obj->type),
                         OBJ_TORPEDO_BIT | OBJ_SMART_SHOT_BIT | OBJ_HEAT_SHOT_BIT | OBJ_CANNON_SHOT_BIT | OBJ_MINE_BIT))
                     /* Take care that no new explosions are made. */
@@ -1503,7 +1503,7 @@ void Delete_player(player_t *pl)
             {
                 if (!options.keepShots)
                 {
-                    obj->life = 0;
+                    obj->obj_life = 0;
                     if (BIT(OBJ_TYPEBIT(obj->type),
                             OBJ_CANNON_SHOT_BIT | OBJ_MINE_BIT | OBJ_SMART_SHOT_BIT | OBJ_HEAT_SHOT_BIT | OBJ_TORPEDO_BIT))
                         obj->mass = 0;
@@ -1524,7 +1524,7 @@ void Delete_player(player_t *pl)
                     mine->mine_owner = NO_ID;
                     if (!options.keepShots)
                     {
-                        obj->life = 0;
+                        obj->obj_life = 0;
                         obj->mass = 0;
                     }
                 }

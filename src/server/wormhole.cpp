@@ -177,7 +177,7 @@ static void Warp_balls(player_t *pl, clpos_t dest)
                 if (!World_contains_clpos(ballpos) || (shape_is_inside(ballpos.cx, ballpos.cy, hitmask,
                                                                        (object_t *)b, &ball_wire, 0) != NO_GROUP))
                 {
-                    b->life = 0.0;
+                    b->obj_life = 0.0;
                     continue;
                 }
                 Object_position_set_clpos(b, ballpos);

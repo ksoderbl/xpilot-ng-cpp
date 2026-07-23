@@ -530,9 +530,8 @@ void Tank_handle_detach(player_t *pl)
         if (pl_i->conn != NULL)
         {
             Send_player(pl_i->conn, tank->id);
-            Send_score(pl_i->conn, tank->id,
-                       tank->score, (int)tank->life,
-                       tank->mychar, tank->alliance);
+            Send_score(pl_i->conn, tank->id, tank->score,
+                       tank->pl_life, tank->mychar, tank->alliance);
         }
     }
 
@@ -542,7 +541,7 @@ void Tank_handle_detach(player_t *pl)
 
         Send_player(pl_i->conn, tank->id);
         Send_score(pl_i->conn, tank->id, tank->score,
-                   (int)tank->life, tank->mychar, tank->alliance);
+                   tank->pl_life, tank->mychar, tank->alliance);
     }
 }
 
@@ -628,7 +627,7 @@ void Make_debris(clpos_t pos,
             debris->mass = mass;
         debris->type = type;
         life = min_life + rfrac() * (max_life - min_life);
-        debris->life = life;
+        debris->obj_life = life;
         debris->fuse = 0;
         debris->pl_range = radius;
         debris->pl_radius = radius;
@@ -718,7 +717,7 @@ void Make_wreckage(clpos_t pos,
         /* Lifespan  */
         life = min_life + rfrac() * (max_life - min_life);
 
-        wreckage->life = life;
+        wreckage->obj_life = life;
         wreckage->fuse = 0;
 
         /* Wreckage type, rotation, and size */

@@ -301,7 +301,7 @@ static void Make_asteroid(clpos_t pos, int size, int dir, double speed)
     asteroid->vel.y = tsin(dir) * speed;
     asteroid->acc.x = asteroid->acc.y = 0;
     asteroid->mass = ASTEROID_MASS(size);
-    asteroid->life = ASTEROID_LIFE;
+    asteroid->obj_life = ASTEROID_LIFE;
     asteroid->wire_turnspeed = 0.02 + rfrac() * 0.05;
     asteroid->wire_rotation = (int)(rfrac() * ANGLE_RESOLUTION);
     asteroid->wire_size = size;
@@ -428,9 +428,9 @@ void Asteroid_update(void)
                  LI_FORWARD(iter))
             {
                 asteroid = (wireobject_t *)LI_DATA(iter);
-                if (asteroid->life > 0)
+                if (asteroid->obj_life > 0)
                 {
-                    asteroid->life = 0;
+                    asteroid->obj_life = 0;
                     if (asteroid->wire_size == 1)
                         num--;
                 }
@@ -445,7 +445,7 @@ void Asteroid_update(void)
              LI_FORWARD(iter))
         {
             asteroid = (wireobject_t *)LI_DATA(iter);
-            if (asteroid->life > 0)
+            if (asteroid->obj_life > 0)
                 Asteroid_rotate(asteroid);
         }
 
@@ -455,7 +455,7 @@ void Asteroid_update(void)
              LI_FORWARD(iter))
         {
             asteroid = (wireobject_t *)LI_DATA(iter);
-            if (asteroid->life > 0)
+            if (asteroid->obj_life > 0)
                 Asteroid_move(asteroid);
         }
     }

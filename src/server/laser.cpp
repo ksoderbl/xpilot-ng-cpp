@@ -119,7 +119,7 @@ void Fire_general_laser(int id, int team, clpos_t pos, int dir,
     pulse->acc.x = 0;
     pulse->acc.y = 0;
     pulse->mass = 0;
-    pulse->life = life;
+    pulse->obj_life = life;
     pulse->obj_status = (pl ? 0 : FROMCANNON);
     pulse->type = OBJ_PULSE;
     pulse->mods = mods;
@@ -164,7 +164,7 @@ void Laser_pulse_hits_player(player_t *pl, pulseobject_t *pulse)
         pulse->vel.x = options.pulseSpeed * tcos(pulse->pulse_dir);
         pulse->vel.y = options.pulseSpeed * tsin(pulse->pulse_dir);
 
-        pulse->life += pl->item[ITEM_MIRROR];
+        pulse->obj_life += pl->item[ITEM_MIRROR];
         pulse->pulse_len = 0 /*PULSE_LENGTH*/;
         pulse->pulse_refl = true;
         return;
@@ -177,7 +177,7 @@ void Laser_pulse_hits_player(player_t *pl, pulseobject_t *pulse)
 
     /* kps - do we need some hack so that the laser pulse is
      * not removed in the same frame that its life ends ?? */
-    pulse->life = 0;
+    pulse->obj_life = 0;
     if ((Mods_get(pulse->mods, ModsLaser) & MODS_LASER_STUN) || (options.laserIsStunGun && options.allowLaserModifiers == false))
     {
         if (BIT(pl->used, HAS_SHIELD | HAS_LASER | HAS_SHOT) || Player_is_thrusting(pl))

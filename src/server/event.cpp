@@ -135,7 +135,11 @@ static void Player_lock_next_or_prev(player_t *pl, int key)
             return;
 
         pl_i = Player_by_index(i);
-    } while (i == ind || Player_is_paused(pl_i) || Player_is_dead(pl_i) || Player_is_waiting(pl_i) || !Player_lock_allowed(pl, pl_i));
+    } while (i == ind ||
+             Player_is_paused(pl_i) ||
+             Player_is_dead(pl_i) ||
+             Player_is_waiting(pl_i) ||
+             !Player_lock_allowed(pl, pl_i));
 
     if (i == ind)
         CLR_BIT(pl->lock.tagged, LOCK_PLAYER);

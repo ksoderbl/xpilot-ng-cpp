@@ -999,7 +999,12 @@ static bool Detect_ship(player_t *pl, player_t *ship)
     if (Player_is_thrusting(ship) && options.cloakedExhaust)
         return true;
 
-    if (BIT(ship->used, HAS_SHOT) || BIT(ship->used, HAS_LASER) || Player_is_refueling(ship) || Player_is_repairing(ship) || Player_uses_connector(ship) || Player_uses_tractor_beam(ship))
+    if (BIT(ship->used, HAS_SHOT) ||
+        BIT(ship->used, HAS_LASER) ||
+        Player_is_refueling(ship) ||
+        Player_is_repairing(ship) ||
+        Player_uses_connector(ship) ||
+        Player_uses_tractor_beam(ship))
         return true;
 
     if (BIT(ship->have, HAS_BALL))

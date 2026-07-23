@@ -216,7 +216,7 @@ void Cannon_throw_items(cannon_t *c)
                 item->acc.x = 0;
                 item->acc.y = 0;
                 item->mass = 10;
-                item->life = 1500 + rfrac() * 512;
+                item->obj_life = 1500 + rfrac() * 512;
                 item->item_count = amount;
                 item->pl_range = ITEM_SIZE / 2;
                 item->pl_radius = ITEM_SIZE / 2;
@@ -326,7 +326,7 @@ static int Cannon_in_danger(cannon_t *c)
     {
         shot = obj_list[i];
 
-        if (shot->life <= 0)
+        if (shot->obj_life <= 0)
             continue;
         if (!BIT(OBJ_TYPEBIT(shot->type), kill_shots))
             continue;
