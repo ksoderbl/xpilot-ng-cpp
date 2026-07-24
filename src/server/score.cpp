@@ -509,7 +509,9 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
             {
                 player_t *pl_i = Player_by_index(i);
 
-                if (Player_is_tank(pl_i) || (Player_is_paused(pl_i) && pl_i->pause_count <= 0) || Player_is_waiting(pl_i))
+                if (Player_is_tank(pl_i) ||
+                    (Player_is_paused(pl_i) && pl_i->pause_count <= 0) ||
+                    Player_is_waiting(pl_i))
                     continue;
                 if (pl_i->team == treasure->team)
                 {
@@ -545,7 +547,9 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
         {
             player_t *pl_i = Player_by_index(i);
 
-            if (Player_is_tank(pl_i) || (Player_is_paused(pl_i) && pl_i->pause_count <= 0) || Player_is_waiting(pl_i))
+            if (Player_is_tank(pl_i) ||
+                (Player_is_paused(pl_i) && pl_i->pause_count <= 0) ||
+                Player_is_waiting(pl_i))
                 continue;
 
             if (pl_i->team == treasure->team)

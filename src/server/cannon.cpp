@@ -326,7 +326,7 @@ static int Cannon_in_danger(cannon_t *c)
     {
         shot = obj_list[i];
 
-        if (shot->obj_life <= 0)
+        if (shot->obj_life <= 0.0)
             continue;
         if (!BIT(OBJ_TYPEBIT(shot->type), kill_shots))
             continue;

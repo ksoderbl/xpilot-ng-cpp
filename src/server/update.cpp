@@ -1458,7 +1458,7 @@ void Update_objects(void)
         /* Balls never die of old age. */
         if (obj->type == OBJ_BALL)
         {
-            if (obj->obj_life <= 0)
+            if (obj->obj_life <= 0.0)
                 Delete_shot(i);
             continue;
         }

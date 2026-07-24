@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -24,9 +22,9 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#include "commonproto.h"
+#include "asteroid.h"
 
-#include "list.h"
+#include "commonproto.h"
 
 // #include <iostream>
 
@@ -56,22 +54,11 @@
 #include "object.h"
 #include "objpos.h"
 #include "saudio.h"
+#include "walls.h"
 #include "walls2.h"
 
-// #define SERVER
-// #include "xpconfig.h"
-// #include "serverconst.h"
-// #include "list.h"
-//
-// #include "proto.h"
-// #include "saudio.h"
-// #include "bit.h"
-// #include "objpos.h"
-// #include "asteroid.h"
-// #include "xpmath.h"
-
 /* list containing pointers to all asteroids */
-static list_t Asteroid_list = NULL;
+std::vector<wireobject_t *> Asteroid_vector;
 
 /*
  * Prototypes.
@@ -81,45 +68,29 @@ static void Make_asteroid(clpos_t pos, int size, int dir, double speed);
 /*
  * Return the asteroid list.
  */
-list_t Asteroid_get_list(void)
+std::vector<wireobject_t *> &Asteroid_get_list(void)
 {
-    return Asteroid_list;
+    return Asteroid_vector;
 }
 
 static bool Asteroid_add_to_list(wireobject_t *ast)
 {
-    list_iter_t list_pos;
-    bool result = false;
-
-    if (Asteroid_list == NULL)
-        Asteroid_list = List_new();
-
-    if (Asteroid_list != NULL)
-    {
-        list_pos = List_push_back(Asteroid_list, ast);
-        if (list_pos != NULL)
-            result = true;
-    }
-
-    return result;
+    // TODO: handle errors/exceptions
+    Asteroid_vector.push_back(ast);
+    return true;
 }
 
 static bool Asteroid_remove_from_list(wireobject_t *ast)
 {
-    list_iter_t list_pos;
     bool result = false;
+    const auto it = std::find(Asteroid_vector.begin(), Asteroid_vector.end(), ast);
 
-    if (Asteroid_list != NULL)
-    {
-        list_pos = List_find(Asteroid_list, ast);
-        if (list_pos != List_end(Asteroid_list))
-        {
-            List_erase(Asteroid_list, list_pos);
-            result = true;
-        }
-    }
+    if (it == Asteroid_vector.end())
+        return false;
 
-    return result;
+    Asteroid_vector.erase(it);
+
+    return true;
 }
 
 /*
@@ -387,7 +358,7 @@ static void Place_asteroid(void)
 
 static void Asteroid_move(wireobject_t *wireobj)
 {
-    Move_object2(OBJ_PTR(wireobj));
+    Move_object(OBJ_PTR(wireobj));
 }
 
 static void Asteroid_rotate(wireobject_t *wireobj)
@@ -404,12 +375,8 @@ static void Asteroid_rotate(wireobject_t *wireobj)
 void Asteroid_update(void)
 {
     int num;
-    list_t list;
-    list_iter_t iter;
     wireobject_t *asteroid;
 
-    list = Asteroid_get_list();
-    if (list)
     {
         /*
          * if there are more asteroids than are wanted, mark
@@ -423,14 +390,11 @@ void Asteroid_update(void)
         num = World.asteroids.num;
         if (num > World.asteroids.max)
         {
-            for (iter = List_begin(list);
-                 iter != List_end(list);
-                 LI_FORWARD(iter))
+            for (wireobject_t *asteroid : Asteroid_vector)
             {
-                asteroid = (wireobject_t *)LI_DATA(iter);
                 if (asteroid->obj_life > 0)
                 {
-                    asteroid->obj_life = 0;
+                    asteroid->obj_life = 0.0;
                     if (asteroid->wire_size == 1)
                         num--;
                 }
@@ -440,21 +404,15 @@ void Asteroid_update(void)
         }
 
         /* rotate asteroids */
-        for (iter = List_begin(list);
-             iter != List_end(list);
-             LI_FORWARD(iter))
+        for (wireobject_t *asteroid : Asteroid_vector)
         {
-            asteroid = (wireobject_t *)LI_DATA(iter);
             if (asteroid->obj_life > 0)
                 Asteroid_rotate(asteroid);
         }
 
         /* move asteroids */
-        for (iter = List_begin(list);
-             iter != List_end(list);
-             LI_FORWARD(iter))
+        for (wireobject_t *asteroid : Asteroid_vector)
         {
-            asteroid = (wireobject_t *)LI_DATA(iter);
             if (asteroid->obj_life > 0)
                 Asteroid_move(asteroid);
         }

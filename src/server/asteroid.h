@@ -24,8 +24,11 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef ASTEROID_H
-#define ASTEROID_H
+#pragma once
+
+#include <vector>
+
+#include "object.h"
 
 /* maximum size of asteroid */
 #define ASTEROID_MAX_SIZE 4
@@ -75,4 +78,7 @@ static inline shape_t *Asteroid_get_shape_by_size(int size)
     }
 }
 
-#endif
+void Break_asteroid(wireobject_t *asteroid);
+void Asteroid_update(void);
+std::vector<wireobject_t *> &Asteroid_get_list(void);
+void Asteroid_line_init(void);

@@ -1823,7 +1823,12 @@ static void Robot_default_play_check_objects(player_t *pl,
             SET_BIT(pl->used, HAS_SHIELD);
             Thrust(pl, true);
 
-            if ((shot->type == OBJ_TORPEDO || shot->type == OBJ_SMART_SHOT || shot->type == OBJ_ASTEROID || shot->type == OBJ_HEAT_SHOT || shot->type == OBJ_MINE) && (pl->fuel.sum < my_data->fuel_l3 || !BIT(pl->have, HAS_SHIELD)))
+            if ((shot->type == OBJ_TORPEDO ||
+                 shot->type == OBJ_SMART_SHOT ||
+                 shot->type == OBJ_ASTEROID ||
+                 shot->type == OBJ_HEAT_SHOT ||
+                 shot->type == OBJ_MINE) &&
+                (pl->fuel.sum < my_data->fuel_l3 || !BIT(pl->have, HAS_SHIELD)))
             {
                 if (Initiate_hyperjump(pl))
                     break;
@@ -2066,7 +2071,10 @@ static void Robot_default_play(player_t *pl)
     if (enemy_i >= 0)
     {
         ship = Player_by_index(enemy_i);
-        if (!BIT(pl->lock.tagged, LOCK_PLAYER) || (enemy_dist < pl->lock.distance / 2 && (BIT(World.rules->mode, TIMING) ? (ship->check >= pl->check && ship->round >= pl->round) : 1)) || (enemy_dist < pl->lock.distance * 2 && BIT(World.rules->mode, TEAM_PLAY) && BIT(ship->have, HAS_BALL)) || Get_Score(ship) > Get_Score(Player_by_id(pl->lock.pl_id)))
+        if (!BIT(pl->lock.tagged, LOCK_PLAYER) ||
+            (enemy_dist < pl->lock.distance / 2 && (BIT(World.rules->mode, TIMING) ? (ship->check >= pl->check && ship->round >= pl->round) : 1)) ||
+            (enemy_dist < pl->lock.distance * 2 && BIT(World.rules->mode, TEAM_PLAY) && BIT(ship->have, HAS_BALL)) ||
+            Get_Score(ship) > Get_Score(Player_by_id(pl->lock.pl_id)))
         {
             pl->lock.pl_id = ship->id;
             SET_BIT(pl->lock.tagged, LOCK_PLAYER);
@@ -2083,7 +2091,13 @@ static void Robot_default_play(player_t *pl)
         delta_dir = (int)(pl->dir - Wrap_cfindDir(ship->pos.cx - pl->pos.cx,
                                                   ship->pos.cy - pl->pos.cy));
         delta_dir = MOD2(delta_dir, ANGLE_RESOLUTION);
-        if (!Player_is_active(ship) || (BIT(my_data->robot_lock, LOCK_PLAYER) && my_data->robot_lock_id != pl->lock.pl_id && Player_is_active(Player_by_id(my_data->robot_lock_id))) || !Detect_ship(pl, ship) || (pl->fuel.sum <= my_data->fuel_l3 && !BIT(World.rules->mode, TIMING)) || (BIT(World.rules->mode, TIMING) && (delta_dir < 3 * ANGLE_RESOLUTION / 4 || delta_dir > ANGLE_RESOLUTION / 4)) || Team_immune(pl->id, ship->id))
+        if (!Player_is_active(ship) ||
+            (BIT(my_data->robot_lock, LOCK_PLAYER) && my_data->robot_lock_id != pl->lock.pl_id && Player_is_active(Player_by_id(my_data->robot_lock_id))) ||
+            !Detect_ship(pl, ship) ||
+            (pl->fuel.sum <= my_data->fuel_l3 && !BIT(World.rules->mode, TIMING)) ||
+            (BIT(World.rules->mode, TIMING) && (delta_dir < 3 * ANGLE_RESOLUTION / 4 ||
+                                                delta_dir > ANGLE_RESOLUTION / 4)) ||
+            Team_immune(pl->id, ship->id))
         {
             /* unset the player lock */
             CLR_BIT(pl->lock.tagged, LOCK_PLAYER);

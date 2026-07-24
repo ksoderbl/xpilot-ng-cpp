@@ -72,6 +72,7 @@
 
 #include "target.h"
 #include "walls2.h"
+#include "asteroid.h"
 
 /*
  * Global variables

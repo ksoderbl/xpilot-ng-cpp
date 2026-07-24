@@ -303,14 +303,6 @@ void Make_wreckage(clpos_t pos,
 void Explode_fighter(player_t *pl);
 
 /*
- * Prototypes for asteroid.c
- */
-void Break_asteroid(wireobject_t *asteroid);
-void Asteroid_update(void);
-list_t Asteroid_get_list(void);
-void Asteroid_line_init(void);
-
-/*
  * Prototypes for command.c
  */
 void Handle_player_command(player_t *pl, char *cmd);

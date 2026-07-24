@@ -248,12 +248,15 @@ bool Initiate_hyperjump(player_t *pl)
 {
     if (pl->item[ITEM_HYPERJUMP] <= 0)
         return false;
+
     if (pl->fuel.sum < -ED_HYPERJUMP)
         return false;
+
     pl->item[ITEM_HYPERJUMP]--;
     Player_add_fuel(pl, ED_HYPERJUMP);
     SET_BIT(pl->obj_status, WARPING);
     pl->wormHoleHit = -1;
+
     return true;
 }
 

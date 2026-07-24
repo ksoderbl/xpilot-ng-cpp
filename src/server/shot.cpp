@@ -330,7 +330,7 @@ void Detonate_mines(player_t *pl)
         }
     }
     if (closest != -1)
-        Obj[closest]->obj_life = 0;
+        Obj[closest]->obj_life = 0.0;
 
     return;
 }
@@ -1386,7 +1386,7 @@ void Delete_shot(int ind)
             /* If -timeStep < item->obj_life <= 0, then it died of old age. */
             /* If it was picked up, then life was set to 0 and it is now
              * -timeStep after the substract in update.c. */
-            if (-timeStep < item->obj_life && item->obj_life <= 0)
+            if (-timeStep < item->obj_life && item->obj_life <= 0.0)
             {
                 if (item->color != WHITE)
                 {
@@ -1401,7 +1401,7 @@ void Delete_shot(int ind)
 
         case ITEM_MINE:
             /* See comment for ITEM_MISSILE above */
-            if (-timeStep < item->obj_life && item->obj_life <= 0)
+            if (-timeStep < item->obj_life && item->obj_life <= 0.0)
             {
                 if (item->color != WHITE)
                 {
@@ -1429,7 +1429,7 @@ void Delete_shot(int ind)
     }
 
     Cell_remove_object(shot);
-    shot->obj_life = 0;
+    shot->obj_life = 0.0;
     shot->type = 0;
     shot->mass = 0;
 

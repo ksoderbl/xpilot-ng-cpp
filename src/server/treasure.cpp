@@ -109,7 +109,7 @@ void Ball_is_replaced(ballobject_t *ball)
 {
     player_t *pl = Player_by_id(ball->ball_owner);
 
-    ball->obj_life = 0;
+    ball->obj_life = 0.0;
     SET_BIT(ball->obj_status, (NOEXPLOSION | RECREATE));
 
     if (!options.zeroSumScoring)
@@ -155,7 +155,9 @@ static int Punish_team2(player_t *pl, treasure_t *td, clpos_t pos)
         {
             player_t *pl_i = Player_by_index(i);
 
-            if (Player_is_tank(pl_i) || (Player_is_paused(pl_i) && pl_i->pause_count <= 0) || Player_is_waiting(pl_i))
+            if (Player_is_tank(pl_i) ||
+                (Player_is_paused(pl_i) && pl_i->pause_count <= 0) ||
+                Player_is_waiting(pl_i))
                 continue;
             if (pl_i->team == td->team)
             {
@@ -377,7 +379,7 @@ int Punish_team1(player_t *pl, treasure_t *td, clpos_t pos)
             player_t *pl_i = Player_by_index(i);
 
             if (Player_is_tank(pl_i) ||
-                Player_is_paused(pl_i) ||
+                (Player_is_paused(pl_i) && pl_i->pause_count <= 0) ||
                 Player_is_waiting(pl_i))
                 continue;
             if (pl_i->team == td->team)
@@ -417,7 +419,7 @@ int Punish_team1(player_t *pl, treasure_t *td, clpos_t pos)
         player_t *pl_i = Player_by_index(i);
 
         if (Player_is_tank(pl_i) ||
-            Player_is_paused(pl_i) ||
+            (Player_is_paused(pl_i) && pl_i->pause_count <= 0) ||
             Player_is_waiting(pl_i))
             continue;
         if (pl_i->team == td->team)

@@ -38,7 +38,6 @@
 #include <cassert>
 
 #include "commonproto.h"
-#include "list.h"
 
 #include "server.h"
 
@@ -666,7 +665,7 @@ static void PlayerObjectCollision(player_t *pl)
         }
         /* KHS Let cannon dodgers shots survive collision */
         if (obj->type != OBJ_CANNON_SHOT || options.survivalScore == 0.0)
-            obj->obj_life = 0;
+            obj->obj_life = 0.0;
 
         if (BIT(OBJ_TYPEBIT(obj->type), KILLING_SHOTS))
         {
@@ -674,7 +673,7 @@ static void PlayerObjectCollision(player_t *pl)
             if (Player_is_killed(pl))
                 return;
             else
-                obj->obj_life = 0;
+                obj->obj_life = 0.0;
             /* KHS except when player is shielded - shot would */
             /* stay with player and kill him anyways, then */
         }
@@ -700,7 +699,7 @@ static void Player_collides_with_ball(player_t *pl, ballobject_t *ball)
         if (BIT(World.rules->mode, TEAM_PLAY) && pl->team == ball->ball_treasure->team)
             Rank_saved_ball(pl);
         Delta_mv(OBJ_PTR(pl), OBJ_PTR(ball));
-        ball->obj_life = 0;
+        ball->obj_life = 0.0;
     }
 
     if (options.treasureCollisionMayKill && !BIT(pl->used, HAS_SHIELD))
@@ -1271,13 +1270,13 @@ static void AsteroidCollision(void)
     double damage = 0.0;
     bool sound = false;
 
-    list = Asteroid_get_list();
-    if (!list)
+    std::vector<wireobject_t *> &asteroids = Asteroid_get_list();
+    if (asteroids.size() == 0)
         return;
 
-    for (iter = List_begin(list); iter != List_end(list); LI_FORWARD(iter))
+    for (wireobject_t *wireobject : asteroids)
     {
-        ast = (object_t *)LI_DATA(iter);
+        ast = OBJ_PTR(wireobject);
 
         assert(ast->type == OBJ_ASTEROID);
 
@@ -1367,7 +1366,7 @@ static void AsteroidCollision(void)
                 sound = true;
                 break;
             case OBJ_PULSE:
-                obj->obj_life = 0;
+                obj->obj_life = 0.0;
                 damage = ED_LASER_HIT;
                 sound = true;
                 break;

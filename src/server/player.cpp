@@ -787,7 +787,7 @@ void Reset_all_players(void)
                 ballobject_t *ball = BALL_IND(j);
 
                 ball->id = NO_ID;
-                ball->obj_life = 0;
+                ball->obj_life = 0.0;
                 /*
                  * why not -1 ???
                  * naive question, obviously yet another dirty hack
@@ -839,7 +839,7 @@ void Reset_all_players(void)
             if (BIT(OBJ_TYPEBIT(obj->type),
                     OBJ_SHOT_BIT | OBJ_MINE_BIT | OBJ_DEBRIS_BIT | OBJ_SPARK_BIT | OBJ_CANNON_SHOT_BIT | OBJ_TORPEDO_BIT | OBJ_SMART_SHOT_BIT | OBJ_HEAT_SHOT_BIT | OBJ_PULSE_BIT | OBJ_ITEM_BIT))
             {
-                obj->obj_life = 0;
+                obj->obj_life = 0.0;
                 if (BIT(OBJ_TYPEBIT(obj->type),
                         OBJ_TORPEDO_BIT | OBJ_SMART_SHOT_BIT | OBJ_HEAT_SHOT_BIT | OBJ_CANNON_SHOT_BIT | OBJ_MINE_BIT))
                     /* Take care that no new explosions are made. */
@@ -1060,7 +1060,9 @@ void Team_game_over(int winning_team, const char *reason)
             if (pl_i->team != winning_team)
                 continue;
 
-            if (Player_is_tank(pl_i) || (Player_is_paused(pl_i) && pl_i->pause_count <= 0) || Player_is_waiting(pl_i))
+            if (Player_is_tank(pl_i) ||
+                (Player_is_paused(pl_i) && pl_i->pause_count <= 0) ||
+                Player_is_waiting(pl_i))
                 continue;
 
             for (j = 0; j < num_best_players; j++)
@@ -1503,7 +1505,7 @@ void Delete_player(player_t *pl)
             {
                 if (!options.keepShots)
                 {
-                    obj->obj_life = 0;
+                    obj->obj_life = 0.0;
                     if (BIT(OBJ_TYPEBIT(obj->type),
                             OBJ_CANNON_SHOT_BIT | OBJ_MINE_BIT | OBJ_SMART_SHOT_BIT | OBJ_HEAT_SHOT_BIT | OBJ_TORPEDO_BIT))
                         obj->mass = 0;
@@ -1524,7 +1526,7 @@ void Delete_player(player_t *pl)
                     mine->mine_owner = NO_ID;
                     if (!options.keepShots)
                     {
-                        obj->obj_life = 0;
+                        obj->obj_life = 0.0;
                         obj->mass = 0;
                     }
                 }
