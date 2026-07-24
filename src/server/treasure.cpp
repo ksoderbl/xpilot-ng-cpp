@@ -136,7 +136,8 @@ void Ball_is_destroyed(ballobject_t *ball)
     Rank_ballrun(pl, ticks);
 }
 
-static int Punish_team(player_t *pl, treasure_t *td, clpos_t pos)
+// Punish_team1 = xpilot 4.5.5, Punish_team2 = NG
+static int Punish_team2(player_t *pl, treasure_t *td, clpos_t pos)
 {
     double win_score = 0.0, lose_score = 0.0;
     int i, win_team_members = 0, lose_team_members = 0;
@@ -203,6 +204,7 @@ void Ball_hits_goal2(ballobject_t *ball, group_t *gp)
         SET_BIT(ball->obj_status, (NOEXPLOSION | RECREATE));
         return;
     }
+
     /*
      * If it's not team play, nothing interesting happens.
      */
@@ -226,7 +228,7 @@ void Ball_hits_goal2(ballobject_t *ball, group_t *gp)
         if (options.captureTheFlag && !tt->have && !tt->empty)
             Set_message(" < The treasure must be safe before you "
                         "can cash an opponent's! >");
-        else if (Punish_team(owner, td, ball->pos))
+        else if (Punish_team2(owner, td, ball->pos))
             CLR_BIT(ball->obj_status, RECREATE);
         return;
     }
@@ -252,7 +254,7 @@ void Ball_hits_goal2(ballobject_t *ball, group_t *gp)
                 continue;
             opponent_teams++;
             td->team = i; /* give ball to team that has to be punished*/
-            if (Punish_team(owner, td, ball->pos))
+            if (Punish_team2(owner, td, ball->pos))
             {
                 CLR_BIT(ball->obj_status, RECREATE);
                 /*undo treasure counts from Punish_team so we don't
@@ -269,7 +271,7 @@ void Ball_hits_goal2(ballobject_t *ball, group_t *gp)
         if (!opponent_teams)
         {
             SET_BIT(ball->obj_status, RECREATE);
-            if (Punish_team(owner, td, ball->pos))
+            if (Punish_team2(owner, td, ball->pos))
                 World.teams[options.specialBallTeam].TreasuresLeft++;
         }
         return;
@@ -279,7 +281,7 @@ void Ball_hits_goal2(ballobject_t *ball, group_t *gp)
     {
         Ball_is_destroyed(ball);
         td->team = gp->team; /* give ball to team that has to be punished*/
-        if (Punish_team(owner, td, ball->pos))
+        if (Punish_team2(owner, td, ball->pos))
         {
             CLR_BIT(ball->obj_status, RECREATE);
             /*undo treasure counts from Punish_team so we don't
@@ -350,4 +352,89 @@ bool Balltarget_hitfunc(group_t *gp, const move_t *move)
 
     /* allow grabbing of ball */
     return false;
+}
+
+// pl = player who cashed ball
+// td  = destroyed treasure
+// pos = ball position
+int Punish_team1(player_t *pl, treasure_t *td, clpos_t pos)
+{
+    static char msg[MSG_LEN];
+    int i;
+    int win_score = 0, lose_score = 0;
+    int win_team_members = 0, lose_team_members = 0;
+    int sc, por;
+    bool somebody = false;
+
+    Check_team_members(td->team);
+    if (td->team == pl->team)
+        return 0;
+
+    if (BIT(World.rules->mode, TEAM_PLAY))
+    {
+        for (i = 0; i < NumPlayers; i++)
+        {
+            player_t *pl_i = Player_by_index(i);
+
+            if (Player_is_tank(pl_i) ||
+                Player_is_paused(pl_i) ||
+                Player_is_waiting(pl_i))
+                continue;
+            if (pl_i->team == td->team)
+            {
+                lose_score += Get_Score(pl_i);
+                lose_team_members++;
+                if (!Player_is_dead(pl_i))
+                    somebody = true;
+            }
+            else if (pl_i->team == pl->team)
+            {
+                win_score += Get_Score(pl_i);
+                win_team_members++;
+            }
+        }
+    }
+
+    sound_play_all(DESTROY_BALL_SOUND);
+    Set_message_f(" < %s's (%d) team has destroyed team %d treasure >",
+                  pl->name, pl->team, td->team);
+
+    if (!somebody)
+    {
+        Score(pl, Rate(Get_Score(pl), CANNON_SCORE) / 2, pos, "Treasure:");
+        return 0;
+    }
+
+    td->destroyed++;
+    World.teams[td->team].TreasuresLeft--;
+    World.teams[pl->team].TreasuresDestroyed++;
+
+    sc = 3 * Rate(win_score, lose_score);
+    por = (sc * lose_team_members) / (2 * win_team_members + 1);
+
+    for (i = 0; i < NumPlayers; i++)
+    {
+        player_t *pl_i = Player_by_index(i);
+
+        if (Player_is_tank(pl_i) ||
+            Player_is_paused(pl_i) ||
+            Player_is_waiting(pl_i))
+            continue;
+        if (pl_i->team == td->team)
+        {
+            Score(pl_i, -sc, pos, "Treasure: ");
+            if (options.treasureKillTeam)
+                Player_set_state(pl_i, PL_STATE_KILLED);
+        }
+        else if (pl_i->team == pl->team &&
+                 (pl_i->team != TEAM_NOT_SET || pl_i->id == pl->id))
+            Score(pl_i, (pl_i->id == pl->id ? 3 * por : 2 * por), pos, "Treasure: ");
+    }
+
+    if (options.treasureKillTeam)
+        pl->kills++;
+
+    updateScores = true;
+
+    return 1;
 }

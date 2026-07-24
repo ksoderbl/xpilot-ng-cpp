@@ -482,7 +482,10 @@ static void Cannon_aim(cannon_t *c, int weapon, player_t **pl_p, int *dir)
             continue;
 
         /* mode 3 also checks if a player is using a phasing device */
-        if (Player_is_paused(pl) || (BIT(World.rules->mode, TEAM_PLAY) && pl->team == c->team) || ((pl->forceVisible <= 0) && Player_is_cloaked(pl) && (int)(rfrac() * (pl->item[ITEM_CLOAK] + 1)) > (int)(rfrac() * (c->item[ITEM_SENSOR] + 1))) || (smartness > 2 && Player_is_phasing(pl)))
+        if (Player_is_paused(pl) ||
+            (BIT(World.rules->mode, TEAM_PLAY) && pl->team == c->team) ||
+            ((pl->forceVisible <= 0) && Player_is_cloaked(pl) && (int)(rfrac() * (pl->item[ITEM_CLOAK] + 1)) > (int)(rfrac() * (c->item[ITEM_SENSOR] + 1))) ||
+            (smartness > 2 && Player_is_phasing(pl)))
             continue;
 
         switch (smartness)

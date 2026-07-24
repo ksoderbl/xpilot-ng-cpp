@@ -149,8 +149,7 @@ void Object_hits_target2(object_t *obj, target_t *targ, double player_cost)
         if (Mods_get(obj->mods, ModsNuclear))
             targ->damage = 0.0;
         else
-            targ->damage += ED_SMART_SHOT_HIT /
-                            (Mods_get(obj->mods, ModsMini) + 1);
+            targ->damage += ED_SMART_SHOT_HIT / (Mods_get(obj->mods, ModsMini) + 1);
         break;
     case OBJ_MINE:
         if (!obj->mass)
