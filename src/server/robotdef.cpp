@@ -837,13 +837,13 @@ static void Robotdef_fire_laser(player_t *pl)
         return;
 
     m_gun = Ship_get_m_gun_clpos(pl->ship, pl->dir);
-    x2 = CLICK_TO_PIXEL(pl->pos.cx) + pl->vel.x + CLICK_TO_PIXEL(m_gun.cx);
-    y2 = CLICK_TO_PIXEL(pl->pos.cy) + pl->vel.y + CLICK_TO_PIXEL(m_gun.cy);
-    x3 = CLICK_TO_PIXEL(ship->pos.cx) + ship->vel.x;
-    y3 = CLICK_TO_PIXEL(ship->pos.cy) + ship->vel.y;
+    x2 = CLICK_TO_FLOAT(pl->pos.cx) + pl->vel.x + CLICK_TO_FLOAT(m_gun.cx);
+    y2 = CLICK_TO_FLOAT(pl->pos.cy) + pl->vel.y + CLICK_TO_FLOAT(m_gun.cy);
+    x3 = CLICK_TO_FLOAT(ship->pos.cx) + ship->vel.x;
+    y3 = CLICK_TO_FLOAT(ship->pos.cy) + ship->vel.y;
 
-    ship_dist = Wrap_length(PIXEL_TO_CLICK(x3 - x2),
-                            PIXEL_TO_CLICK(y3 - y2)) /
+    ship_dist = Wrap_length(FLOAT_TO_CLICK(x3 - x2),
+                            FLOAT_TO_CLICK(y3 - y2)) /
                 CLICK;
 
     if (ship_dist >= options.pulseSpeed * options.pulseLife + SHIP_SZ)
@@ -1252,6 +1252,7 @@ static bool Detect_ship(player_t *pl, player_t *ship)
     distance = Wrap_length(ship->pos.cx - pl->pos.cx,
                            ship->pos.cy - pl->pos.cy) /
                CLICK;
+
     /* can't detect ships beyond visual range */
     if (distance > Visibility_distance)
         return false;
