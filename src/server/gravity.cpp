@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -70,7 +68,7 @@ static void Compute_global_gravity(void)
             for (yi = 0; yi < World.y; yi++, grav++)
             {
                 dy = (yi - options.gravityPoint.y) * BLOCK_SZ;
-                dy = WORLD_WRAP_DX(world, dy);
+                dy = WORLD_WRAP_DY(world, dy);
 
                 if (dx == 0 && dy == 0)
                 {
