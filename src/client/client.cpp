@@ -201,8 +201,6 @@ int Client_init(char *server, unsigned server_version)
     else
         oldServer = false;
 
-    Make_table();
-
     if (Paint_init() == -1)
         return -1;
 

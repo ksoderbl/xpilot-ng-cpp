@@ -146,9 +146,6 @@ int main(int argc, char **argv)
 
     Groups_init();
 
-    /* Make trigonometric tables */
-    Make_table();
-
     if (!Parser(argc, argv))
         exit(1);
 

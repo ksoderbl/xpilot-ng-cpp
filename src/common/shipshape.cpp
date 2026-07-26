@@ -222,8 +222,6 @@ shipshape_t *Default_ship(void)
 
         sh.num_l_gun = sh.num_r_gun = sh.num_l_rgun = sh.num_r_rgun = 0;
 
-        Make_table();
-
         Rotate_ship(&sh);
     }
 
