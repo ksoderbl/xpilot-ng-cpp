@@ -31,7 +31,9 @@
 
 void Object_position_set_clpos(object_t *obj, clpos_t pos)
 {
-    if (!World_contains_clpos(pos))
+    world_t *world = &World;
+
+    if (!World_contains_clpos(world, pos))
     {
         if (0)
         {

@@ -167,6 +167,7 @@ void Meta_update(bool change)
 {
 #define GIVE_META_SERVER_A_HINT 180
 
+    world_t *world = &World;
     char *string = meta_update_string, freebases[120];
     int i, num_active_players, active_per_team[MAX_TEAMS];
     size_t len, max_size;
@@ -211,7 +212,7 @@ void Meta_update(bool change)
             continue;
 
         num_active_players++;
-        if (BIT(World.rules->mode, TEAM_PLAY))
+        if (Team_play(world))
             active_per_team[pl->team]++;
     }
 
@@ -219,7 +220,7 @@ void Meta_update(bool change)
 
     /* calculate number of available homebases per team. */
     freebases[0] = '\0';
-    if (BIT(World.rules->mode, TEAM_PLAY))
+    if (Team_play(world))
     {
         bool firstteam = true;
 
@@ -297,7 +298,7 @@ void Meta_update(bool change)
                  pl->username,
                  pl->hostname);
 
-        if (BIT(World.rules->mode, TEAM_PLAY))
+        if (Team_play(world))
         {
             snprintf(tstr, sizeof(tstr), "{%d}", pl->team);
             strlcat(str, tstr, sizeof(str));

@@ -72,6 +72,8 @@ bool team_dead(int team)
  */
 static bool Player_lock_allowed(player_t *pl, player_t *lock_pl)
 {
+    world_t *world = &World;
+
     /* we can never lock on ourselves, nor on NULL. */
     if (lock_pl == NULL || pl->id == lock_pl->id)
         return false;
@@ -85,7 +87,7 @@ static bool Player_lock_allowed(player_t *pl, player_t *lock_pl)
         return true;
 
     /* if there is no team play then we can always lock on anyone. */
-    if (!BIT(World.rules->mode, TEAM_PLAY))
+    if (!Team_play(world))
         return true;
 
     /* we can always lock on players from our own team. */
@@ -152,6 +154,7 @@ static void Player_lock_next_or_prev(player_t *pl, int key)
 
 int Player_lock_closest(player_t *pl, bool next)
 {
+    world_t *world = &World;
     int i;
     double dist = 0.0, best, l;
     player_t *lock_pl = NULL, *new_pl = NULL;
@@ -162,8 +165,10 @@ int Player_lock_closest(player_t *pl, bool next)
     if (BIT(pl->lock.tagged, LOCK_PLAYER))
     {
         lock_pl = Player_by_id(pl->lock.pl_id);
-        dist = Wrap_length(lock_pl->pos.cx - pl->pos.cx,
-                           lock_pl->pos.cy - pl->pos.cy);
+        dist = World_wrap_length(
+            world,
+            lock_pl->pos.cx - pl->pos.cx,
+            lock_pl->pos.cy - pl->pos.cy);
     }
     best = FLT_MAX;
     for (i = 0; i < NumPlayers; i++)
@@ -178,8 +183,8 @@ int Player_lock_closest(player_t *pl, bool next)
             Players_are_allies(pl, pl_i))
             continue;
 
-        l = Wrap_length(pl_i->pos.cx - pl->pos.cx,
-                        pl_i->pos.cy - pl->pos.cy);
+        l = World_wrap_length(world, pl_i->pos.cx - pl->pos.cx,
+                              pl_i->pos.cy - pl->pos.cy);
         if (l >= dist && l < best)
         {
             best = l;
@@ -197,6 +202,7 @@ int Player_lock_closest(player_t *pl, bool next)
 
 static void Player_change_home(player_t *pl)
 {
+    world_t *world = &World;
     player_t *pl2 = NULL;
     base_t *base2 = NULL;
     base_t *enemybase = NULL;
@@ -207,8 +213,11 @@ static void Player_change_home(player_t *pl)
     {
         base_t *base = Base_by_index(i);
 
-        l = Wrap_length(pl->pos.cx - base->pos.cx,
-                        pl->pos.cy - base->pos.cy);
+        l = World_wrap_length(
+            world,
+            pl->pos.cx - base->pos.cx,
+            pl->pos.cy - base->pos.cy);
+
         if (l < dist && l < 1.5 * BLOCK_CLICKS)
         {
             if (base->team != TEAM_NOT_SET && base->team != pl->team)
@@ -306,6 +315,7 @@ static void Player_change_home(player_t *pl)
 
 static void Player_refuel(player_t *pl)
 {
+    world_t *world = &World;
     int i;
     double l, dist = 1e19;
 
@@ -317,8 +327,11 @@ static void Player_refuel(player_t *pl)
     {
         fuel_t *fs = Fuel_by_index(i);
 
-        l = Wrap_length(pl->pos.cx - fs->pos.cx,
-                        pl->pos.cy - fs->pos.cy);
+        l = World_wrap_length(
+            world,
+            pl->pos.cx - fs->pos.cx,
+            pl->pos.cy - fs->pos.cy);
+
         if (!Player_is_refueling(pl) || l < dist)
         {
             SET_BIT(pl->used, USES_REFUEL);
@@ -331,6 +344,7 @@ static void Player_refuel(player_t *pl)
 /* Repair target or possibly something else. */
 static void Player_repair(player_t *pl)
 {
+    world_t *world = &World;
     int i;
     double l, dist = 1e19;
 
@@ -344,8 +358,8 @@ static void Player_repair(player_t *pl)
 
         if (targ->team == pl->team && targ->dead_ticks <= 0)
         {
-            l = Wrap_length(pl->pos.cx - targ->pos.cx,
-                            pl->pos.cy - targ->pos.cy);
+            l = World_wrap_length(world, pl->pos.cx - targ->pos.cx,
+                                  pl->pos.cy - targ->pos.cy);
             if (!Player_is_repairing(pl) || l < dist)
             {
                 SET_BIT(pl->used, USES_REPAIR);
@@ -359,6 +373,7 @@ static void Player_repair(player_t *pl)
 /* Player pressed pause key. */
 static void Player_toggle_pause(player_t *pl)
 {
+    world_t *world = &World;
     enum pausetype
     {
         unknown,
@@ -375,8 +390,10 @@ static void Player_toggle_pause(player_t *pl)
     else
     {
         base_t *base = pl->home_base;
-        double dist = Wrap_length(pl->pos.cx - base->pos.cx,
-                                  pl->pos.cy - base->pos.cy);
+        double dist = World_wrap_length(
+            world,
+            pl->pos.cx - base->pos.cx,
+            pl->pos.cy - base->pos.cy);
         double minv;
 
         if (dist < 1.5 * BLOCK_CLICKS)

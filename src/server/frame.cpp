@@ -465,6 +465,7 @@ static void Frame_radar_buffer_free(void)
 
 static int Frame_status(connection_t *conn, player_t *pl)
 {
+    world_t *world = &World;
     static char modsstr[MAX_CHARS];
     int n, lock_ind, lock_id = NO_ID, lock_dist = 0, lock_dir = 0;
     int showautopilot;
@@ -492,8 +493,10 @@ static int Frame_status(connection_t *conn, player_t *pl)
             double a;
 
             SET_BIT(pl->lock.tagged, LOCK_VISIBLE);
-            a = Wrap_cfindDir(lock_pl->pos.cx - pl->pos.cx,
-                              lock_pl->pos.cy - pl->pos.cy);
+            a = World_wrap_cfindDir(
+                world,
+                lock_pl->pos.cx - pl->pos.cx,
+                lock_pl->pos.cy - pl->pos.cy);
             lock_dir = (int)a;
             lock_dist = (int)pl->lock.distance;
         }
@@ -719,6 +722,7 @@ static void Frame_shuffle(void)
 
 static void Frame_shots(connection_t *conn, player_t *pl)
 {
+    world_t *world = &World;
     clpos_t pos;
     int ldir = 0, i, k, color, fuzz = 0, teamshot, len, obj_count;
     object_t *shot, **obj_list;
@@ -759,7 +763,7 @@ static void Frame_shots(connection_t *conn, player_t *pl)
             {
                 pos.cx = (click_t)(pos.cx - tcos(pulse->pulse_dir) * pulse->pulse_len * CLICK);
                 pos.cy = (click_t)(pos.cy - tsin(pulse->pulse_dir) * pulse->pulse_len * CLICK);
-                pos = World_wrap_clpos(pos);
+                pos = World_wrap_clpos(world, pos);
                 ldir = pulse->pulse_dir;
                 if (!clpos_inview(&cv, pos))
                     continue;
@@ -840,7 +844,7 @@ static void Frame_shots(connection_t *conn, player_t *pl)
 
         case OBJ_SHOT:
         case OBJ_CANNON_SHOT:
-            if (Team_immune(shot->id, pl->id) || (shot->id != NO_ID && Player_is_paused(Player_by_id(shot->id))) || (shot->id == NO_ID && BIT(World.rules->mode, TEAM_PLAY) && shot->team == pl->team))
+            if (Team_immune(shot->id, pl->id) || (shot->id != NO_ID && Player_is_paused(Player_by_id(shot->id))) || (shot->id == NO_ID && Team_play(world) && shot->team == pl->team))
             {
                 color = BLUE;
                 teamshot = DEBRIS_TYPES;
@@ -892,8 +896,8 @@ static void Frame_shots(connection_t *conn, player_t *pl)
             mineobject_t *mine = MINE_PTR(shot);
 
             /* calculate whether ownership of mine can be determined */
-            if (options.identifyMines && (Wrap_length(pl->pos.cx - mine->pos.cx,
-                                                      pl->pos.cy - mine->pos.cy) /
+            if (options.identifyMines && (World_wrap_length(world, pl->pos.cx - mine->pos.cx,
+                                                            pl->pos.cy - mine->pos.cy) /
                                               CLICK <
                                           (SHIP_SZ + MINE_SENSE_BASE_RANGE + pl->item[ITEM_SENSOR] * MINE_SENSE_RANGE_FACTOR)))
             {
@@ -1097,6 +1101,7 @@ static void Frame_ships(connection_t *conn, player_t *pl)
 
 static void Frame_radar(connection_t *conn, player_t *pl)
 {
+    world_t *world = &World;
     int i, k, mask, shownuke, size;
     object_t *shot;
     clpos_t pos;
@@ -1154,13 +1159,13 @@ static void Frame_radar(connection_t *conn, player_t *pl)
             }
 
             pos = shot->pos;
-            if (Wrap_length(pl->pos.cx - pos.cx,
-                            pl->pos.cy - pos.cy) <= pl->sensor_range * CLICK)
+            if (World_wrap_length(world, pl->pos.cx - pos.cx,
+                                  pl->pos.cy - pos.cy) <= pl->sensor_range * CLICK)
                 Frame_radar_buffer_add(pos, size);
         }
     }
 
-    if (options.playersOnRadar || BIT(World.rules->mode, TEAM_PLAY) || NumPseudoPlayers > 0 || NumAlliances > 0)
+    if (options.playersOnRadar || Team_play(world) || NumPseudoPlayers > 0 || NumAlliances > 0)
     {
         for (k = 0; k < num_player_shuffle; k++)
         {
@@ -1179,8 +1184,10 @@ static void Frame_radar(connection_t *conn, player_t *pl)
                 || (!Players_are_teammates(pl_i, pl) && !Players_are_allies(pl, pl_i) && !Player_owns_tank(pl, pl_i) && (!options.playersOnRadar || !pl->visibility[i].canSee)))
                 continue;
             pos = pl_i->pos;
-            if (BIT(World.rules->mode, LIMITED_VISIBILITY) && Wrap_length(pl->pos.cx - pos.cx,
-                                                                          pl->pos.cy - pos.cy) > pl->sensor_range * CLICK)
+            if (BIT(World.rules->mode, LIMITED_VISIBILITY) &&
+                World_wrap_length(world,
+                                  pl->pos.cx - pos.cx,
+                                  pl->pos.cy - pos.cy) > pl->sensor_range * CLICK)
                 continue;
             if (Player_uses_compass(pl) && BIT(pl->lock.tagged, LOCK_PLAYER) && GetInd(pl->lock.pl_id) == i && frame_loops_slow % 5 >= 3)
                 continue;

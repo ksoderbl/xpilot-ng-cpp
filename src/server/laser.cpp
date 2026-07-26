@@ -57,6 +57,7 @@
 
 void Fire_laser(player_t *pl)
 {
+    world_t *world = &World;
     clpos_t m_gun, pos;
 
     if (frame_time <= pl->laser_time + options.laserRepeatRate - timeStep + 1e-3)
@@ -72,7 +73,7 @@ void Fire_laser(player_t *pl)
             m_gun = Ship_get_m_gun_clpos(pl->ship, pl->dir);
             pos.cx = pl->pos.cx + m_gun.cx + FLOAT_TO_CLICK(pl->vel.x * timeStep);
             pos.cy = pl->pos.cy + m_gun.cy + FLOAT_TO_CLICK(pl->vel.y * timeStep);
-            pos = World_wrap_clpos(pos);
+            pos = World_wrap_clpos(world, pos);
             if (is_inside(pos.cx, pos.cy, NONBALL_BIT | NOTEAM_BIT, NULL) != NO_GROUP)
                 return;
             Fire_general_laser(pl->id, pl->team, pos,
@@ -84,12 +85,13 @@ void Fire_laser(player_t *pl)
 void Fire_general_laser(int id, int team, clpos_t pos, int dir,
                         modifiers_t mods)
 {
+    world_t *world = &World;
     double life;
     pulseobject_t *pulse;
     player_t *pl = Player_by_id(id);
     /*cannon_t *cannon = Cannon_by_id(id);*/
 
-    if (!World_contains_clpos(pos))
+    if (!World_contains_clpos(world, pos))
     {
         warn("Fire_general_laser: outside world.\n");
         return;
@@ -145,6 +147,7 @@ void Fire_general_laser(int id, int team, clpos_t pos, int dir,
  */
 void Laser_pulse_hits_player(player_t *pl, pulseobject_t *pulse)
 {
+    world_t *world = &World;
     player_t *kp = Player_by_id(pulse->id);
     cannon_t *cannon = NULL;
 
@@ -155,8 +158,10 @@ void Laser_pulse_hits_player(player_t *pl, pulseobject_t *pulse)
     pl->forceVisible += 1;
     if (Player_has_mirror(pl) && (rfrac() * (2 * pl->item[ITEM_MIRROR])) >= 1)
     {
-        pulse->pulse_dir = (int)(Wrap_cfindDir(pl->pos.cx - pulse->pos.cx,
-                                               pl->pos.cy - pulse->pos.cy) *
+        pulse->pulse_dir = (int)(World_wrap_cfindDir(
+                                     world,
+                                     pl->pos.cx - pulse->pos.cx,
+                                     pl->pos.cy - pulse->pos.cy) *
                                      2 -
                                  ANGLE_RESOLUTION / 2 - pulse->pulse_dir);
         pulse->pulse_dir = MOD2(pulse->pulse_dir, ANGLE_RESOLUTION);

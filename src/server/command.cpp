@@ -1106,6 +1106,7 @@ static int Cmd_stats(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 
 static int Cmd_team(char *arg, player_t *pl, bool oper, char *msg, size_t size)
 {
+    world_t *world = &World;
     int i, team, swap_allowed;
     char *arg2;
 
@@ -1116,7 +1117,7 @@ static int Cmd_team(char *arg, player_t *pl, bool oper, char *msg, size_t size)
     swap_allowed = false;
     team = pl->team;
 
-    if (!BIT(World.rules->mode, TEAM_PLAY))
+    if (!Team_play(world))
         snprintf(msg, size, "No team play going on.");
     else if (pl->team >= MAX_TEAMS)
         snprintf(msg, size, "You do not currently have a team.");

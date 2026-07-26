@@ -130,6 +130,7 @@ void Place_moving_mine(player_t *pl)
 void Place_general_mine(int id, int team, int status,
                         clpos_t pos, vector_t vel, modifiers_t mods)
 {
+    world_t *world = &World;
     int used, i, minis;
     double life, drain, mass;
     vector_t mv;
@@ -139,7 +140,7 @@ void Place_general_mine(int id, int team, int status,
     if (NumObjs + Mods_get(mods, ModsMini) >= MAX_TOTAL_SHOTS)
         return;
 
-    pos = World_wrap_clpos(pos);
+    pos = World_wrap_clpos(world, pos);
 
     if (pl && Player_is_killed(pl))
         life = rfrac() * 12;
@@ -205,8 +206,8 @@ void Place_general_mine(int id, int team, int status,
                     continue;
                 if (pl_i->id != pl->id && !Team_immune(pl_i->id, pl->id) && !Player_is_tank(pl_i))
                 {
-                    if (Wrap_length(pos.cx - pl_i->home_base->pos.cx,
-                                    pos.cy - pl_i->home_base->pos.cy) <= options.baseMineRange * BLOCK_CLICKS)
+                    if (World_wrap_length(world, pos.cx - pl_i->home_base->pos.cx,
+                                          pos.cy - pl_i->home_base->pos.cy) <= options.baseMineRange * BLOCK_CLICKS)
                     {
                         Set_player_message(pl, "No base mining!");
                         return;
@@ -302,6 +303,7 @@ void Place_general_mine(int id, int team, int status,
  */
 void Detonate_mines(player_t *pl)
 {
+    world_t *world = &World;
     int i, closest = -1;
     double dist, min_dist = World.hypotenuse * CLICK + 1;
 
@@ -320,8 +322,10 @@ void Detonate_mines(player_t *pl)
          */
         if (mine->id == pl->id)
         {
-            dist = Wrap_length(pl->pos.cx - mine->pos.cx,
-                               pl->pos.cy - mine->pos.cy);
+            dist = World_wrap_length(
+                world,
+                pl->pos.cx - mine->pos.cx,
+                pl->pos.cy - mine->pos.cy);
             if (dist < min_dist)
             {
                 min_dist = dist;
@@ -501,6 +505,7 @@ void Fire_general_shot(int id, int team, bool cannon,
                        clpos_t pos, int type, int dir,
                        modifiers_t mods, int target_id)
 {
+    world_t *world = &World;
     int used, fuse = 0, lock = 0, status = GRAVITY, i, ldir, minis;
     int pl_range, pl_radius, rack_no = 0, racks_left = 0, r, on_this_rack = 0;
     int side = 0, fired = 0;
@@ -976,7 +981,7 @@ void Fire_general_shot(int id, int team, bool cannon,
             side = CLICK_TO_PIXEL(
                 Ship_get_m_rack_clpos(pl->ship, rack_no, 0).cy);
         }
-        shotpos = World_wrap_clpos(shotpos);
+        shotpos = World_wrap_clpos(world, shotpos);
         Object_position_init_clpos(shot, shotpos);
 
         if (type == OBJ_SHOT || !pl)
@@ -1513,6 +1518,7 @@ void Delete_shot(int ind)
  */
 void Update_connector_force(ballobject_t *ball)
 {
+    world_t *world = &World;
     player_t *pl = Player_by_id(ball->id);
     vector_t D;
     double length, force, ratio, accell, damping;
@@ -1530,8 +1536,8 @@ void Update_connector_force(ballobject_t *ball)
     }
 
     /* compute the normalized vector between the ball and the player */
-    D.x = WRAP_DCX(pl->pos.cx - ball->pos.cx);
-    D.y = WRAP_DCY(pl->pos.cy - ball->pos.cy);
+    D.x = WORLD_WRAP_DCX(world, pl->pos.cx - ball->pos.cx);
+    D.y = WORLD_WRAP_DCY(world, pl->pos.cy - ball->pos.cy);
     length = VECTOR_LENGTH(D);
     if (length > 0.0)
     {
@@ -1594,6 +1600,7 @@ void Update_torpedo(torpobject_t *torp)
 
 void Update_missile(missileobject_t *missile)
 {
+    world_t *world = &World;
     player_t *pl;
     int angle, theta;
     double range = 0.0, acc = SMART_SHOT_ACC;
@@ -1614,8 +1621,8 @@ void Update_missile(missileobject_t *missile)
             if (!pl)
                 return;
             engine = Ship_get_engine_clpos(pl->ship, pl->dir);
-            range = Wrap_length(pl->pos.cx + engine.cx - heat->pos.cx,
-                                pl->pos.cy + engine.cy - heat->pos.cy) /
+            range = World_wrap_length(world, pl->pos.cx + engine.cx - heat->pos.cx,
+                                      pl->pos.cy + engine.cy - heat->pos.cy) /
                     CLICK;
         }
         else
@@ -1656,8 +1663,8 @@ void Update_missile(missileobject_t *missile)
                         continue;
 
                     engine = Ship_get_engine_clpos(pl_i->ship, pl_i->dir);
-                    l = Wrap_length(pl_i->pos.cx + engine.cx - heat->pos.cx,
-                                    pl_i->pos.cy + engine.cy - heat->pos.cy) /
+                    l = World_wrap_length(world, pl_i->pos.cx + engine.cx - heat->pos.cx,
+                                          pl_i->pos.cy + engine.cy - heat->pos.cy) /
                         CLICK;
                     /*
                      * After burners can be detected easier;
@@ -1747,13 +1754,13 @@ void Update_missile(missileobject_t *missile)
     acc *= (1 + (Mods_get(missile->mods, ModsPower) * MISSILE_POWER_SPEED_FACT));
     if ((shot_speed = VECTOR_LENGTH(missile->vel)) < 1)
         shot_speed = 1;
-    range = Wrap_length(pl->pos.cx - missile->pos.cx,
-                        pl->pos.cy - missile->pos.cy) /
+    range = World_wrap_length(world, pl->pos.cx - missile->pos.cx,
+                              pl->pos.cy - missile->pos.cy) /
             CLICK;
     x_dif += pl->vel.x * (range / shot_speed);
     y_dif += pl->vel.y * (range / shot_speed);
-    a = Wrap_cfindDir(pl->pos.cx + PIXEL_TO_CLICK(x_dif) - missile->pos.cx,
-                      pl->pos.cy + PIXEL_TO_CLICK(y_dif) - missile->pos.cy);
+    a = World_wrap_cfindDir(world, pl->pos.cx + PIXEL_TO_CLICK(x_dif) - missile->pos.cx,
+                            pl->pos.cy + PIXEL_TO_CLICK(y_dif) - missile->pos.cy);
     theta = MOD2((int)(a + 0.5), ANGLE_RESOLUTION);
 
     {
@@ -1875,9 +1882,9 @@ void Update_missile(missileobject_t *missile)
         if (angle >= 0)
         {
             i = angle & 7;
-            a = Wrap_findDir(
-                (yi + sur[i].dy) * BLOCK_SZ - (CLICK_TO_PIXEL(missile->pos.cy) + 2 * missile->vel.y),
-                (xi + sur[i].dx) * BLOCK_SZ - (CLICK_TO_PIXEL(missile->pos.cx) - 2 * missile->vel.x));
+            a = World_wrap_findDir(world,
+                                   (yi + sur[i].dy) * BLOCK_SZ - (CLICK_TO_PIXEL(missile->pos.cy) + 2 * missile->vel.y),
+                                   (xi + sur[i].dx) * BLOCK_SZ - (CLICK_TO_PIXEL(missile->pos.cx) - 2 * missile->vel.x));
             theta = MOD2((int)(a + 0.5), ANGLE_RESOLUTION);
 #ifdef SHOT_EXTRA_SLOWDOWN
             if (!foundw && range > (SHOT_LOOK_AH - i) * BLOCK_SZ)

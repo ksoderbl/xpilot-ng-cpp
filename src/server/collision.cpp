@@ -218,6 +218,7 @@ void Check_collision(void)
 
 static void PlayerCollision(void)
 {
+    world_t *world = &World;
     int i, j;
     player_t *pl;
 
@@ -228,7 +229,7 @@ static void PlayerCollision(void)
         if (!Player_is_alive(pl))
             continue;
 
-        if (!World_contains_clpos(pl->pos))
+        if (!World_contains_clpos(world, pl->pos))
         {
             Player_set_state(pl, PL_STATE_KILLED);
             Set_message_f("%s left the known universe.", pl->name);
@@ -362,8 +363,8 @@ static void PlayerCollision(void)
                 pl->ball = NULL;
             else
             {
-                double distance = Wrap_length(pl->pos.cx - ball->pos.cx,
-                                              pl->pos.cy - ball->pos.cy);
+                double distance = World_wrap_length(world, pl->pos.cx - ball->pos.cx,
+                                                    pl->pos.cy - ball->pos.cy);
                 int group;
 
                 if (distance >= options.ballConnectorLength * CLICK)
@@ -412,8 +413,8 @@ static void PlayerCollision(void)
 
                 if (obj->type == OBJ_BALL && obj->id == NO_ID)
                 {
-                    dist = Wrap_length(pl->pos.cx - obj->pos.cx,
-                                       pl->pos.cy - obj->pos.cy);
+                    dist = World_wrap_length(world, pl->pos.cx - obj->pos.cx,
+                                             pl->pos.cy - obj->pos.cy);
                     if (dist < mindist)
                     {
                         ballobject_t *ball = BALL_PTR(obj);
@@ -425,7 +426,7 @@ static void PlayerCollision(void)
                          * taking and hiding with the ball... this was
                          * considered bad gamesmanship.
                          */
-                        if (BIT(World.rules->mode, TEAM_PLAY) && ball->ball_treasure->have && pl->team == ball->ball_treasure->team)
+                        if (Team_play(world) && ball->ball_treasure->have && pl->team == ball->ball_treasure->team)
                             continue;
                         pl->ball = ball;
                         mindist = dist;
@@ -503,6 +504,7 @@ static inline double collision_cost(double mass, double speed)
 
 static void PlayerObjectCollision(player_t *pl)
 {
+    world_t *world = &World;
     int j, obj_count;
     double range, radius;
     object_t *obj, **obj_list;
@@ -549,7 +551,7 @@ static void PlayerObjectCollision(player_t *pl)
             else if (Player_is_paused(Player_by_id(obj->id)))
                 continue;
         }
-        else if (BIT(World.rules->mode, TEAM_PLAY) && options.teamImmunity && obj->team == pl->team
+        else if (Team_play(world) && options.teamImmunity && obj->team == pl->team
                  /* allow players to destroy their team's unowned balls */
                  && obj->type != OBJ_BALL)
             continue;
@@ -685,6 +687,8 @@ static void PlayerObjectCollision(player_t *pl)
 
 static void Player_collides_with_ball(player_t *pl, ballobject_t *ball)
 {
+    world_t *world = &World;
+
     /*
      * The ball is special, usually players bounce off of it with
      * shields up, or die with shields down.  The treasure may
@@ -696,7 +700,7 @@ static void Player_collides_with_ball(player_t *pl, ballobject_t *ball)
 
     if (options.treasureCollisionDestroys)
     {
-        if (BIT(World.rules->mode, TEAM_PLAY) && pl->team == ball->ball_treasure->team)
+        if (Team_play(world) && pl->team == ball->ball_treasure->team)
             Rank_saved_ball(pl);
         Delta_mv(OBJ_PTR(pl), OBJ_PTR(ball));
         ball->obj_life = 0.0;
@@ -1408,6 +1412,7 @@ static void AsteroidCollision(void)
 /* do ball - object and ball - checkpoint collisions */
 static void BallCollision(void)
 {
+    world_t *world = &World;
     int i, j, obj_count;
     int ignored_object_types;
     object_t **obj_list;
@@ -1444,8 +1449,8 @@ static void BallCollision(void)
             {
                 clpos_t cpos = Check_by_index(owner->check)->pos;
 
-                if (Wrap_length(ball->pos.cx - cpos.cx,
-                                ball->pos.cy - cpos.cy) < options.checkpointRadius * BLOCK_CLICKS)
+                if (World_wrap_length(world, ball->pos.cx - cpos.cx,
+                                      ball->pos.cy - cpos.cy) < options.checkpointRadius * BLOCK_CLICKS)
                     Player_pass_checkpoint(owner);
             }
         }

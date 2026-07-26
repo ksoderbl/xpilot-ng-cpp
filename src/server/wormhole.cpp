@@ -147,6 +147,8 @@ void Object_hits_wormhole2(object_t *obj, int ind)
  */
 static void Warp_balls(player_t *pl, clpos_t dest)
 {
+    world_t *world = &World;
+
     /*
      * Don't connect to balls while warping.
      */
@@ -173,9 +175,9 @@ static void Warp_balls(player_t *pl, clpos_t dest)
 
                 ballpos.cx = b->pos.cx + dest.cx - pl->pos.cx;
                 ballpos.cy = b->pos.cy + dest.cy - pl->pos.cy;
-                ballpos = World_wrap_clpos(ballpos);
-                if (!World_contains_clpos(ballpos) || (shape_is_inside(ballpos.cx, ballpos.cy, hitmask,
-                                                                       (object_t *)b, &ball_wire, 0) != NO_GROUP))
+                ballpos = World_wrap_clpos(world, ballpos);
+                if (!World_contains_clpos(world, ballpos) || (shape_is_inside(ballpos.cx, ballpos.cy, hitmask,
+                                                                              (object_t *)b, &ball_wire, 0) != NO_GROUP))
                 {
                     b->obj_life = 0.0;
                     continue;
@@ -265,6 +267,7 @@ bool Initiate_hyperjump(player_t *pl)
  */
 static void Hyperjump(player_t *pl)
 {
+    world_t *world = &World;
     clpos_t dest;
     int counter;
     hitmask_t hitmask = NONBALL_BIT | HITMASK(pl->team); /* kps - ok ? */
@@ -272,7 +275,7 @@ static void Hyperjump(player_t *pl)
     /* Try to find empty space to hyperjump to. */
     for (counter = 100; counter > 0; counter--)
     {
-        dest = World_get_random_clpos();
+        dest = World_get_random_clpos(world);
         if (shape_is_inside(dest.cx, dest.cy, hitmask, OBJ_PTR(pl),
                             (shape_t *)pl->ship, pl->dir) == NO_GROUP)
             break;

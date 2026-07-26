@@ -104,6 +104,7 @@ static bool Asteroid_remove_from_list(wireobject_t *ast)
  */
 void Break_asteroid(wireobject_t *asteroid)
 {
+    world_t *world = &World;
     double mass, mass3;
     double speed, speed1, speed2, radius;
     double velx1, vely1, velx2, vely2, dir;
@@ -158,10 +159,10 @@ void Break_asteroid(wireobject_t *asteroid)
         radius = ASTEROID_RADIUS(asteroid->wire_size - 1);
         pos1.cx = (click_t)(asteroid->pos.cx + tcos(split_dir) * radius);
         pos1.cy = (click_t)(asteroid->pos.cy + tsin(split_dir) * radius);
-        pos1 = World_wrap_clpos(pos1);
+        pos1 = World_wrap_clpos(world, pos1);
         pos2.cx = (click_t)(asteroid->pos.cx - tcos(split_dir) * radius);
         pos2.cy = (click_t)(asteroid->pos.cy - tsin(split_dir) * radius);
-        pos2 = World_wrap_clpos(pos2);
+        pos2 = World_wrap_clpos(world, pos2);
         Make_asteroid(pos1, asteroid->wire_size - 1, dir1, speed1);
         Make_asteroid(pos2, asteroid->wire_size - 1, dir2, speed2);
         Make_wreckage(asteroid->pos,
@@ -230,6 +231,7 @@ void Break_asteroid(wireobject_t *asteroid)
  */
 static void Make_asteroid(clpos_t pos, int size, int dir, double speed)
 {
+    world_t *world = &World;
     wireobject_t *asteroid;
     double radius;
     shape_t *shape;
@@ -240,8 +242,8 @@ static void Make_asteroid(clpos_t pos, int size, int dir, double speed)
     if (size < 1 || size > ASTEROID_MAX_SIZE)
         return;
 
-    pos = World_wrap_clpos(pos);
-    if (!World_contains_clpos(pos))
+    pos = World_wrap_clpos(world, pos);
+    if (!World_contains_clpos(world, pos))
         return;
 
     /*
@@ -299,6 +301,7 @@ static void Make_asteroid(clpos_t pos, int size, int dir, double speed)
  */
 static void Place_asteroid(void)
 {
+    world_t *world = &World;
     int place_count, dir, dist, i;
     bool okay = false;
     asteroid_concentrator_t *con;
@@ -324,12 +327,12 @@ static void Place_asteroid(void)
             dist = (int)(rfrac() * ((options.asteroidConcentratorRadius * BLOCK_CLICKS) + 1));
             pos.cx = (click_t)(con->pos.cx + dist * tcos(dir));
             pos.cy = (click_t)(con->pos.cy + dist * tsin(dir));
-            pos = World_wrap_clpos(pos);
-            if (!World_contains_clpos(pos))
+            pos = World_wrap_clpos(world, pos);
+            if (!World_contains_clpos(world, pos))
                 continue;
         }
         else
-            pos = World_get_random_clpos();
+            pos = World_get_random_clpos(world);
 
         okay = true;
 
@@ -340,8 +343,10 @@ static void Place_asteroid(void)
             if (!Player_is_alive(pl))
                 continue;
 
-            if (Wrap_length(pos.cx - pl->pos.cx,
-                            pos.cy - pl->pos.cy) < ASTEROID_MIN_DIST)
+            if (World_wrap_length(
+                    world,
+                    pos.cx - pl->pos.cx,
+                    pos.cy - pl->pos.cy) < ASTEROID_MIN_DIST)
             {
                 /* too close to player */
                 okay = false;

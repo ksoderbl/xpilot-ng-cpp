@@ -1114,11 +1114,12 @@ static void LegalizeHost(char *string)
  */
 static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
 {
+    world_t *world = &World;
     player_t *pl;
     int i, conn_bit;
     const char sender[] = "[*Server notice*]";
 
-    if (BIT(World.rules->mode, TEAM_PLAY))
+    if (Team_play(world))
     {
         if (connp->team < 0 || connp->team >= MAX_TEAMS || (options.reserveRobotTeam && (connp->team == options.robotTeam)))
             connp->team = TEAM_NOT_SET;
@@ -1177,7 +1178,7 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
 
     if (pl->rectype < 2)
     {
-        if (BIT(World.rules->mode, TEAM_PLAY) && pl->team == TEAM_NOT_SET)
+        if (Team_play(world) && pl->team == TEAM_NOT_SET)
         {
             Player_set_state(pl, PL_STATE_PAUSED);
             pl->home_base = NULL;
@@ -1284,7 +1285,7 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
         if (NumPlayers == 1)
             Set_message_f("Welcome to \"%s\", made by %s.",
                           World.name, World.author);
-        else if (BIT(World.rules->mode, TEAM_PLAY))
+        else if (Team_play(world))
             Set_message_f("%s (%s, team %d) has entered \"%s\", made by %s.",
                           pl->name, pl->username, pl->team,
                           World.name, World.author);
@@ -1387,7 +1388,7 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
     {
         if (BIT(World.rules->mode, TIMING))
             Race_game_over();
-        else if (BIT(World.rules->mode, TEAM_PLAY))
+        else if (Team_play(world))
             Team_game_over(-1, "");
         else if (BIT(World.rules->mode, LIMITED_LIVES))
             Individual_game_over(-1);

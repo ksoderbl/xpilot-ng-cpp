@@ -3343,7 +3343,9 @@ void Check_playerlimit(void)
 
 static void Check_baseless(void)
 {
-    if (!BIT(World.rules->mode, TEAM_PLAY))
+    world_t *world = &World;
+
+    if (!Team_play(world))
         options.baselessPausing = false;
 }
 

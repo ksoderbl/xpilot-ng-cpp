@@ -88,6 +88,7 @@ static void Transport_to_home(player_t *pl)
      * acceleration G, during the second part we make this a negative one -G.
      * This results in a visually pleasing take off and landing.
      */
+    world_t *world = &World;
     clpos_t startpos;
     double dx, dy, t, m;
     const double T = RECOVERY_DELAY;
@@ -112,8 +113,8 @@ static void Transport_to_home(player_t *pl)
     else
         startpos = pl->home_base->pos;
 
-    dx = WRAP_DCX(startpos.cx - pl->pos.cx);
-    dy = WRAP_DCY(startpos.cy - pl->pos.cy);
+    dx = WORLD_WRAP_DCX(world, startpos.cx - pl->pos.cx);
+    dy = WORLD_WRAP_DCY(world, startpos.cy - pl->pos.cy);
     t = pl->recovery_count;
     if (2 * t <= T)
         m = 2 / t;
@@ -824,11 +825,16 @@ static void Use_items(player_t *pl)
  */
 static void Do_refuel(player_t *pl)
 {
+    world_t *world = &World;
     fuel_t *fs = Fuel_by_index(pl->fs);
 
-    if ((Wrap_length(pl->pos.cx - fs->pos.cx,
-                     pl->pos.cy - fs->pos.cy) > 90.0 * CLICK) ||
-        (pl->fuel.sum >= pl->fuel.max) || Player_is_phasing(pl) || (BIT(World.rules->mode, TEAM_PLAY) && options.teamFuel && fs->team != pl->team))
+    if ((World_wrap_length(
+             world,
+             pl->pos.cx - fs->pos.cx,
+             pl->pos.cy - fs->pos.cy) > 90.0 * CLICK) ||
+        (pl->fuel.sum >= pl->fuel.max) ||
+        Player_is_phasing(pl) ||
+        (Team_play(world) && options.teamFuel && fs->team != pl->team))
     {
         CLR_BIT(pl->used, USES_REFUEL);
     }
@@ -869,11 +875,16 @@ static void Do_refuel(player_t *pl)
  */
 static void Do_repair(player_t *pl)
 {
+    world_t *world = &World;
     target_t *targ = Target_by_index(pl->repair_target);
 
-    if ((Wrap_length(pl->pos.cx - targ->pos.cx,
-                     pl->pos.cy - targ->pos.cy) > 90.0 * CLICK) ||
-        targ->damage >= TARGET_DAMAGE || targ->dead_ticks > 0 || Player_is_phasing(pl))
+    if ((World_wrap_length(
+             world,
+             pl->pos.cx - targ->pos.cx,
+             pl->pos.cy - targ->pos.cy) > 90.0 * CLICK) ||
+        targ->damage >= TARGET_DAMAGE ||
+        targ->dead_ticks > 0 ||
+        Player_is_phasing(pl))
         CLR_BIT(pl->used, USES_REPAIR);
     else
     {
@@ -942,6 +953,7 @@ static void Update_visibility(player_t *pl, int ind)
  */
 static void Update_players(void)
 {
+    world_t *world = &World;
     int i;
     player_t *pl;
 
@@ -1192,8 +1204,8 @@ static void Update_players(void)
         if (0)
         {
             static double olddist = 0;
-            double dist = Wrap_length(pl->pos.cx - pl->home_base->pos.cx,
-                                      pl->pos.cy - pl->home_base->pos.cy) /
+            double dist = World_wrap_length(world, pl->pos.cx - pl->home_base->pos.cx,
+                                            pl->pos.cy - pl->home_base->pos.cy) /
                           CLICK;
 
             /* use with 12fps/12gs or 48fps/12gs */
@@ -1264,6 +1276,7 @@ static void Update_players(void)
  */
 void Update_objects(void)
 {
+    world_t *world = &World;
     int i;
     player_t *pl;
 
@@ -1396,8 +1409,10 @@ void Update_objects(void)
         {
             player_t *lpl = Player_by_id(pl->lock.pl_id);
 
-            pl->lock.distance = Wrap_length(pl->pos.cx - lpl->pos.cx,
-                                            pl->pos.cy - lpl->pos.cy) /
+            pl->lock.distance = World_wrap_length(
+                                    world,
+                                    pl->pos.cx - lpl->pos.cx,
+                                    pl->pos.cy - lpl->pos.cy) /
                                 CLICK;
         }
     }

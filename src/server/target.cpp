@@ -56,6 +56,7 @@
 
 void Target_update(void)
 {
+    world_t *world = &World;
     int i, j;
 
     for (i = 0; i < Num_targets(); i++)
@@ -66,7 +67,7 @@ void Target_update(void)
         {
             if ((targ->dead_ticks -= timeStep) <= 0)
             {
-                World_restore_target(targ);
+                World_restore_target(world, targ);
 
                 if (options.targetSync)
                 {
@@ -75,7 +76,7 @@ void Target_update(void)
                         target_t *t = Target_by_index(j);
 
                         if (t->team == targ->team)
-                            World_restore_target(t);
+                            World_restore_target(world, t);
                     }
                 }
             }
@@ -101,6 +102,7 @@ void Target_update(void)
 
 void Object_hits_target2(object_t *obj, target_t *targ, double player_cost)
 {
+    world_t *world = &World;
     int j;
     player_t *kp;
     double win_score = 0.0, lose_score = 0.0, drainfactor;
@@ -173,7 +175,7 @@ void Object_hits_target2(object_t *obj, target_t *targ, double player_cost)
     if (targ->damage > 0.0)
         return;
 
-    World_remove_target(targ);
+    World_remove_target(world, targ);
 
     Make_debris(targ->pos,
                 zero_vel,
@@ -189,7 +191,7 @@ void Object_hits_target2(object_t *obj, target_t *targ, double player_cost)
                 20.0, 70.0,
                 10.0, 100.0);
 
-    if (BIT(World.rules->mode, TEAM_PLAY))
+    if (Team_play(world))
     {
         for (j = 0; j < NumPlayers; j++)
         {
@@ -293,7 +295,7 @@ void Target_init(void)
 #endif
 }
 
-void World_restore_target(target_t *targ)
+void World_restore_target(world_t *world, target_t *targ)
 {
     blkpos_t blk = Clpos_to_blkpos(targ->pos);
     int i;
@@ -311,7 +313,7 @@ void World_restore_target(target_t *targ)
     }
 #endif
 
-    World_set_block(blk, TARGET);
+    World_set_block(world, blk, TARGET);
 
     for (i = 0; i < num_polys; i++)
     {
@@ -334,7 +336,7 @@ void World_restore_target(target_t *targ)
     P_set_hitmask(targ->group, Target_hitmask(targ));
 }
 
-void World_remove_target(target_t *targ)
+void World_remove_target(world_t *world, target_t *targ)
 {
     blkpos_t blk = Clpos_to_blkpos(targ->pos);
     int i;
@@ -348,7 +350,7 @@ void World_remove_target(target_t *targ)
      * Destroy target.
      * Turn it into a space to simplify other calculations.
      */
-    World_set_block(blk, SPACE);
+    World_set_block(world, blk, SPACE);
 
     for (i = 0; i < num_polys; i++)
     {

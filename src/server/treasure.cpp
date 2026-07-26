@@ -139,6 +139,7 @@ void Ball_is_destroyed(ballobject_t *ball)
 // Punish_team1 = xpilot 4.5.5, Punish_team2 = NG
 static int Punish_team2(player_t *pl, treasure_t *td, clpos_t pos)
 {
+    world_t *world = &World;
     double win_score = 0.0, lose_score = 0.0;
     int i, win_team_members = 0, lose_team_members = 0;
     bool somebody = false;
@@ -149,7 +150,7 @@ static int Punish_team2(player_t *pl, treasure_t *td, clpos_t pos)
 
     Handle_Scoring(SCORE_TREASURE, pl, NULL, td, NULL);
 
-    if (BIT(World.rules->mode, TEAM_PLAY))
+    if (Team_play(world))
     {
         for (i = 0; i < NumPlayers; i++)
         {
@@ -188,6 +189,7 @@ static int Punish_team2(player_t *pl, treasure_t *td, clpos_t pos)
 
 void Ball_hits_goal2(ballobject_t *ball, group_t *gp)
 {
+    world_t *world = &World;
     player_t *owner;
     treasure_t *td;
     int i;
@@ -210,7 +212,7 @@ void Ball_hits_goal2(ballobject_t *ball, group_t *gp)
     /*
      * If it's not team play, nothing interesting happens.
      */
-    if (!BIT(World.rules->mode, TEAM_PLAY))
+    if (!Team_play(world))
         return;
 
     td = ball->ball_treasure;
@@ -315,6 +317,7 @@ extern bool in_legacy_mode_ball_hack;
  */
 bool Balltarget_hitfunc(group_t *gp, const move_t *move)
 {
+    world_t *world = &World;
     const ballobject_t *ball = NULL;
 
     /* this can happen if is_inside is called for a balltarget with
@@ -332,7 +335,7 @@ bool Balltarget_hitfunc(group_t *gp, const move_t *move)
     if (in_legacy_mode_ball_hack)
         return true;
 
-    if (BIT(World.rules->mode, TEAM_PLAY))
+    if (Team_play(world))
     {
         /*
          * The only case a ball does not hit a balltarget is when
@@ -361,6 +364,7 @@ bool Balltarget_hitfunc(group_t *gp, const move_t *move)
 // pos = ball position
 int Punish_team1(player_t *pl, treasure_t *td, clpos_t pos)
 {
+    world_t *world = &World;
     static char msg[MSG_LEN];
     int i;
     int win_score = 0, lose_score = 0;
@@ -372,7 +376,7 @@ int Punish_team1(player_t *pl, treasure_t *td, clpos_t pos)
     if (td->team == pl->team)
         return 0;
 
-    if (BIT(World.rules->mode, TEAM_PLAY))
+    if (Team_play(world))
     {
         for (i = 0; i < NumPlayers; i++)
         {

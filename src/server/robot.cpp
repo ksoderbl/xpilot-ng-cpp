@@ -650,6 +650,7 @@ static void Robot_talks(enum robot_talk_t says_what,
 
 static void Robot_create(void)
 {
+    world_t *world = &World;
     player_t *robot;
     robot_t *rob;
     team_t *teamp = NULL;
@@ -725,7 +726,7 @@ static void Robot_create(void)
     robot->power = MAX_PLAYER_POWER;
     robot->power_s = MAX_PLAYER_POWER;
     robot->check = 0;
-    if (BIT(World.rules->mode, TEAM_PLAY))
+    if (Team_play(world))
     {
         robot->team = Pick_team(PL_TYPE_ROBOT);
         teamp = Team_by_index(robot->team);
@@ -993,13 +994,20 @@ static void Tank_play(player_t *pl)
  */
 void Robot_update(bool tick)
 {
+    world_t *world = &World;
     int i;
     static double new_robot_delay;
     int num_playing_ships, num_any_ships;
 
     num_any_ships = NumPlayers + login_in_progress;
     num_playing_ships = num_any_ships - NumPseudoPlayers;
-    if ((num_playing_ships < options.maxRobots || NumRobots < options.minRobots) && (options.baselessPausing || num_playing_ships < Num_bases()) && num_any_ships < NUM_IDS && NumRobots < MAX_ROBOTS && !(BIT(World.rules->mode, TEAM_PLAY) && options.restrictRobots && World.teams[options.robotTeam].NumMembers >= World.teams[options.robotTeam].NumBases))
+    if ((num_playing_ships < options.maxRobots || NumRobots < options.minRobots) &&
+        (options.baselessPausing || num_playing_ships < Num_bases()) &&
+        num_any_ships < NUM_IDS &&
+        NumRobots < MAX_ROBOTS &&
+        !(Team_play(world) &&
+          options.restrictRobots &&
+          World.teams[options.robotTeam].NumMembers >= World.teams[options.robotTeam].NumBases))
     {
 
         new_robot_delay += timeStep;

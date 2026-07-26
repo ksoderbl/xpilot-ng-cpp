@@ -136,6 +136,7 @@ void Add_Score(player_t *pl, double score)
 void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
                     void *extra, const char *somemsg)
 {
+    world_t *world = &World;
     double sc = 0.0, sc2 = 0.0, factor = 0.0;
     int i_tank_owner = 0, j = 0;
     player_t *true_killer;
@@ -150,7 +151,7 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
     {
     case SCORE_CANNON_KILL:
         sc = Rate(Get_Score(killer), ((cannon_t *)extra)->score) * options.cannonKillScoreMult;
-        if (BIT(World.rules->mode, TEAM_PLAY) && killer->team == ((cannon_t *)extra)->team)
+        if (Team_play(world) && killer->team == ((cannon_t *)extra)->team)
             sc = -sc;
         if (!options.zeroSumScoring)
             Score(killer, sc, ((cannon_t *)extra)->pos, "");
@@ -417,7 +418,7 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
         target_t *targ = (target_t *)extra;
         bool somebody = false;
 
-        if (BIT(World.rules->mode, TEAM_PLAY))
+        if (Team_play(world))
         {
             for (j = 0; j < NumPlayers; j++)
             {
@@ -503,7 +504,7 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
         treasure_t *treasure = (treasure_t *)extra;
         bool somebody = false;
 
-        if (BIT(World.rules->mode, TEAM_PLAY))
+        if (Team_play(world))
         {
             for (i = 0; i < NumPlayers; i++)
             {

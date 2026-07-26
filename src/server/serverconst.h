@@ -31,45 +31,45 @@
  * Two macros for edge wrap of x and y coordinates measured in map blocks.
  * Note that the correction needed shouldn't ever be bigger than one mapsize.
  */
-#define WRAP_XBLOCK(x_)                 \
-    (BIT(World.rules->mode, WRAP_PLAY)  \
-         ? ((x_) < 0                    \
-                ? (x_) + World.x        \
-                : ((x_) >= World.x      \
-                       ? (x_) - World.x \
-                       : (x_)))         \
-         : (x_))
+#define WORLD_WRAP_XBLOCK(world, bx)     \
+    (BIT(world->rules->mode, WRAP_PLAY)  \
+         ? ((bx) < 0                     \
+                ? (bx) + world->x        \
+                : ((bx) >= world->x      \
+                       ? (bx) - world->x \
+                       : (bx)))          \
+         : (bx))
 
-#define WRAP_YBLOCK(y_)                 \
-    (BIT(World.rules->mode, WRAP_PLAY)  \
-         ? ((y_) < 0                    \
-                ? (y_) + World.y        \
-                : ((y_) >= World.y      \
-                       ? (y_) - World.y \
-                       : (y_)))         \
-         : (y_))
+#define WORLD_WRAP_YBLOCK(world, by)     \
+    (BIT(world->rules->mode, WRAP_PLAY)  \
+         ? ((by) < 0                     \
+                ? (by) + world->y        \
+                : ((by) >= world->y      \
+                       ? (by) - world->y \
+                       : (by)))          \
+         : (by))
 
 /*
  * Two macros for edge wrap of differences in position.
  * If the absolute value of a difference is bigger than
  * half the map size then it is wrapped.
  */
-#define WRAP_DX(dx)                          \
-    (BIT(World.rules->mode, WRAP_PLAY)       \
-         ? ((dx) < -(World.width >> 1)       \
-                ? (dx) + World.width         \
-                : ((dx) > (World.width >> 1) \
-                       ? (dx) - World.width  \
-                       : (dx)))              \
+#define WORLD_WRAP_DX(world, dx)              \
+    (BIT(world->rules->mode, WRAP_PLAY)       \
+         ? ((dx) < -(world->width >> 1)       \
+                ? (dx) + world->width         \
+                : ((dx) > (world->width >> 1) \
+                       ? (dx) - world->width  \
+                       : (dx)))               \
          : (dx))
 
-#define WRAP_DY(dy)                           \
-    (BIT(World.rules->mode, WRAP_PLAY)        \
-         ? ((dy) < -(World.height >> 1)       \
-                ? (dy) + World.height         \
-                : ((dy) > (World.height >> 1) \
-                       ? (dy) - World.height  \
-                       : (dy)))               \
+#define WORLD_WRAP_DY(world, dy)               \
+    (BIT(world->rules->mode, WRAP_PLAY)        \
+         ? ((dy) < -(world->height >> 1)       \
+                ? (dy) + world->height         \
+                : ((dy) > (world->height >> 1) \
+                       ? (dy) - world->height  \
+                       : (dy)))                \
          : (dy))
 
 #define PSEUDO_TEAM(pl1, pl2) \

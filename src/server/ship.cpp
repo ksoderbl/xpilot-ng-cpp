@@ -181,6 +181,7 @@ void Delta_mv_elastic(object_t *obj1, object_t *obj2)
 
 void Delta_mv_partly_elastic(object_t *obj1, object_t *obj2, double elastic)
 {
+    world_t *world = &World;
     double m1 = (double)obj1->mass,
            m2 = (double)obj2->mass,
            ms = m1 + m2;
@@ -195,8 +196,8 @@ void Delta_mv_partly_elastic(object_t *obj1, object_t *obj2, double elastic)
 
     vxd = v1x - v2x;
     vyd = v1y - v2y;
-    xd = WRAP_DCX(obj2->pos.cx - obj1->pos.cx);
-    yd = WRAP_DCY(obj2->pos.cy - obj1->pos.cy);
+    xd = WORLD_WRAP_DCX(world, obj2->pos.cx - obj1->pos.cx);
+    yd = WORLD_WRAP_DCY(world, obj2->pos.cy - obj1->pos.cy);
 
     /* KHS objects  going away from each other, dont do anything */
     if ((vxd * xd + vyd * yd) < 0)
@@ -205,8 +206,8 @@ void Delta_mv_partly_elastic(object_t *obj1, object_t *obj2, double elastic)
         /* because the objects have already passed each other */
         /* so lets check with positions from  1 frame back */
 
-        xd = WRAP_DCX(obj2->prevpos.cx - obj1->prevpos.cx);
-        yd = WRAP_DCY(obj2->prevpos.cy - obj1->prevpos.cy);
+        xd = WORLD_WRAP_DCX(world, obj2->prevpos.cx - obj1->prevpos.cx);
+        yd = WORLD_WRAP_DCY(world, obj2->prevpos.cy - obj1->prevpos.cy);
 
         if ((vxd * xd + vyd * yd) < 0)
             return;
@@ -231,11 +232,12 @@ void Delta_mv_partly_elastic(object_t *obj1, object_t *obj2, double elastic)
 
 void Obj_repel(object_t *obj1, object_t *obj2, int repel_dist)
 {
+    world_t *world = &World;
     double xd, yd, force, dm, dvx1, dvy1, dvx2, dvy2, a;
     int obj_theta;
 
-    xd = WRAP_DCX(obj2->pos.cx - obj1->pos.cx);
-    yd = WRAP_DCY(obj2->pos.cy - obj1->pos.cy);
+    xd = WORLD_WRAP_DCX(world, obj2->pos.cx - obj1->pos.cx);
+    yd = WORLD_WRAP_DCY(world, obj2->pos.cy - obj1->pos.cy);
     force = CLICK_TO_PIXEL((int)(repel_dist - LENGTH(xd, yd)));
 
     if (force <= 0)
@@ -564,6 +566,7 @@ void Make_debris(clpos_t pos,
                  double min_speed, double max_speed,
                  double min_life, double max_life)
 {
+    world_t *world = &World;
     object_t *debris;
     int i;
     double life;
@@ -572,8 +575,8 @@ void Make_debris(clpos_t pos,
     if (!options.useDebris)
         return;
 
-    pos = World_wrap_clpos(pos);
-    if (!World_contains_clpos(pos))
+    pos = World_wrap_clpos(world, pos);
+    if (!World_contains_clpos(world, pos))
         return;
 
     if (max_life < min_life)
@@ -649,6 +652,7 @@ void Make_wreckage(clpos_t pos,
                    double min_speed, double max_speed,
                    double min_life, double max_life)
 {
+    world_t *world = &World;
     wireobject_t *wreckage;
     int i, size;
     double life, mass, sum_mass = 0.0;
@@ -657,8 +661,8 @@ void Make_wreckage(clpos_t pos,
     if (!options.useWreckage)
         return;
 
-    pos = World_wrap_clpos(pos);
-    if (!World_contains_clpos(pos))
+    pos = World_wrap_clpos(world, pos);
+    if (!World_contains_clpos(world, pos))
         return;
 
     if (max_life < min_life)

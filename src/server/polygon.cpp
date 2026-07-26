@@ -141,9 +141,10 @@ static clpos_t P_cv;
 
 void P_start_polygon(clpos_t pos, int style)
 {
+    world_t *world = &World;
     poly_t t;
 
-    if (!World_contains_clpos(pos))
+    if (!World_contains_clpos(world, pos))
     {
         warn("Polygon start point (%d, %d) is not inside the map"
              "(0 <= x < %d, 0 <= y < %d)",

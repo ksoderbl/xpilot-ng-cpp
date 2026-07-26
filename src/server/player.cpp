@@ -736,6 +736,7 @@ void Update_score_table(void)
 
 void Reset_all_players(void)
 {
+    world_t *world = &World;
     player_t *pl;
     int i, j;
 
@@ -776,7 +777,7 @@ void Reset_all_players(void)
         }
     }
 
-    if (BIT(World.rules->mode, TEAM_PLAY))
+    if (Team_play(world))
     {
         /* Detach any balls and kill ball */
         /* We are starting all over again */
@@ -825,7 +826,7 @@ void Reset_all_players(void)
                 target_t *targ = Target_by_index(i);
 
                 if (targ->damage != TARGET_DAMAGE || targ->dead_ticks > 0)
-                    World_restore_target(targ);
+                    World_restore_target(world, targ);
             }
         }
     }
@@ -855,11 +856,12 @@ void Reset_all_players(void)
 
 void Check_team_members(int team)
 {
+    world_t *world = &World;
     player_t *pl;
     team_t *teamp;
     int members, i;
 
-    if (!BIT(World.rules->mode, TEAM_PLAY))
+    if (!Team_play(world))
         return;
 
     for (members = i = 0; i < NumPlayers; i++)
@@ -1171,6 +1173,7 @@ void Individual_game_over(int winner)
 
 void Compute_game_status(void)
 {
+    world_t *world = &World;
     int i;
     char msg[MSG_LEN];
 
@@ -1179,9 +1182,8 @@ void Compute_game_status(void)
 
     if (BIT(World.rules->mode, TIMING))
         Race_compute_game_status();
-    else if (BIT(World.rules->mode, TEAM_PLAY))
+    else if (Team_play(world))
     {
-
         /* Do we have a winning team ? */
 
         enum TeamState
