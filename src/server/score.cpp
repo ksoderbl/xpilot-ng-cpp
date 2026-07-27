@@ -36,6 +36,7 @@
 #include "xperror.h"
 
 #include "cannon.h"
+#include "frame.h"
 #include "server.h"
 #include "tag.h"
 

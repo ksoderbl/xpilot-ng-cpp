@@ -345,12 +345,3 @@ void Meta_gone(void);
 void Meta_init(void);
 void Meta_update(bool change);
 void Meta_update_max_size_tuner(void);
-
-/*
- * Prototypes for frame.c
- */
-void Frame_update(void);
-void Set_message(const char *message);
-void Set_player_message(player_t *pl, const char *message);
-void Set_message_f(const char *format, ...);
-void Set_player_message_f(player_t *pl, const char *format, ...);

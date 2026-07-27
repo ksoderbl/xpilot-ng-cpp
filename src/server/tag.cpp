@@ -1,5 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
+ * XPilot, a multiplayer gravity war game.
  *
  * Copyright (C) 2002-2004 by
  *
@@ -21,6 +21,9 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include "tag.h"
+
+#include "frame.h"
 #include "player.h"
 #include "server.h"
 

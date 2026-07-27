@@ -42,9 +42,11 @@
 
 #include "alliance.h"
 #include "contact.h"
+#include "frame.h"
 #include "parser.h"
 #include "rank.h"
 #include "server.h"
+#include "ship.h"
 
 #define SERVER
 #include "version.h"

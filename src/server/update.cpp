@@ -34,8 +34,10 @@
 #include "commonproto.h"
 #include "xperror.h"
 
+#include "frame.h"
 #include "laser.h"
 #include "server.h"
+#include "ship.h"
 #include "tag.h"
 #include "target.h"
 

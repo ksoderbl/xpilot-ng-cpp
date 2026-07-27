@@ -1,14 +1,12 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 2000-2004 Uoti Urpala
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
  *      Bert Gijsbers
  *      Dick Balaska
+ *
+ * Copyright (C) 2000-2004 Uoti Urpala
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,7 +36,9 @@
 #include "commonproto.h"
 #include "xperror.h"
 
+#include "frame.h"
 #include "server.h"
+#include "ship.h"
 #include "tag.h"
 
 #define SERVER
