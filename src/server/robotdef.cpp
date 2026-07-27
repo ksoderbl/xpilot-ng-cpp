@@ -37,6 +37,7 @@
 
 #include "alliance.h"
 #include "server.h"
+#include "ship.h"
 #include "frame.h"
 #include "update.h"
 

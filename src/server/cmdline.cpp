@@ -36,6 +36,7 @@
 #include "option.h"
 
 #include "contact.h"
+#include "metaserver.h"
 #include "server.h"
 #include "serverrules.h"
 #include "srecord.h"

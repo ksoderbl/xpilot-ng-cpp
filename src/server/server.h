@@ -263,67 +263,7 @@ void add_temp_wormholes(int xin, int yin, int xout, int yout);
 void remove_temp_wormhole(int ind);
 
 /*
- * Prototypes for ship.c
- */
-void Make_thrust_sparks(player_t *pl);
-void Record_shove(player_t *pl, player_t *pusher, long shove_time);
-void Delta_mv(object_t *ship, object_t *obj);
-void Delta_mv_elastic(object_t *obj1, object_t *obj2);
-void Delta_mv_partly_elastic(object_t *obj1, object_t *obj2, double elastic);
-void Obj_repel(object_t *obj1, object_t *obj2, int repel_dist);
-/*void Add_fuel(pl_fuel_t *ft, double fuel);*/
-void Update_tanks(pl_fuel_t *ft);
-void Tank_handle_detach(player_t *pl);
-void Make_debris(clpos_t pos,
-                 vector_t vel,
-                 int owner_id,
-                 int owner_team,
-                 int type,
-                 double mass,
-                 int status,
-                 int color,
-                 int radius,
-                 int num_debris,
-                 int min_dir, int max_dir,
-                 double min_speed, double max_speed,
-                 double min_life, double max_life);
-void Make_wreckage(clpos_t pos,
-                   vector_t vel,
-                   int owner_id,
-                   int owner_team,
-                   double min_mass, double max_mass,
-                   double total_mass,
-                   int status,
-                   int max_wreckage,
-                   int min_dir, int max_dir,
-                   double min_speed, double max_speed,
-                   double min_life, double max_life);
-void Explode_fighter(player_t *pl);
-
-/*
- * Prototypes for command.c
- */
-void Handle_player_command(player_t *pl, char *cmd);
-player_t *Get_player_by_name(const char *str,
-                             int *errcode, const char **errorstr_p);
-void Send_info_about_player(player_t *pl);
-void Set_swapper_state(player_t *pl);
-
-/*
- * Prototypes for race.c
- */
-void Race_compute_game_status(void);
-void Race_game_over(void);
-void Player_reset_timing(player_t *pl);
-void Player_pass_checkpoint(player_t *pl);
-void PlayerCheckpointCollision(player_t *pl);
-
-/*
- * Prototypes for rules.c
- */
-
-/*
- * Prototypes for server.c
+ * Prototypes for server.cpp
  */
 void End_game(void);
 int Pick_team(int pick_for_type);
@@ -335,13 +275,3 @@ void Server_shutdown(const char *user_name, int delay, const char *reason);
 void Server_log_admin_message(player_t *pl, const char *str);
 int plock_server(bool on);
 void Main_loop(void);
-
-/*
- * Prototypes for metaserver.c
- */
-void Meta_send(char *mesg, size_t len);
-int Meta_from(char *addr, int port);
-void Meta_gone(void);
-void Meta_init(void);
-void Meta_update(bool change);
-void Meta_update_max_size_tuner(void);

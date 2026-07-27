@@ -34,6 +34,7 @@
 #include "click.h"
 #include "xperror.h"
 
+#include "command.h"
 #include "frame.h"
 #include "race.h"
 #include "ship.h"
