@@ -36,7 +36,10 @@
 
 #include "click.h"
 
+#include "frame.h"
 #include "server.h"
+#include "ship.h"
+#include "update.h"
 
 #define SERVER
 #include "xpconfig.h"

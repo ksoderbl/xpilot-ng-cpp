@@ -38,6 +38,7 @@
 #include "commonmacros.h"
 #include "commonproto.h"
 
+#include "parser.h"
 #include "score.h"
 #include "server.h"
 

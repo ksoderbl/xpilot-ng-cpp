@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -35,8 +33,11 @@
 #include <unistd.h>
 
 #include "commonmacros.h"
-#include "const.h"
 #include "commonproto.h"
+#include "const.h"
+
+#include "frame.h"
+#include "update.h"
 
 #define SERVER
 #include "xpconfig.h"

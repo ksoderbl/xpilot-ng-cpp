@@ -354,31 +354,3 @@ void Set_message(const char *message);
 void Set_player_message(player_t *pl, const char *message);
 void Set_message_f(const char *format, ...);
 void Set_player_message_f(player_t *pl, const char *format, ...);
-
-/*
- * Prototypes for update.c
- */
-void Update_objects(void);
-void Autopilot(player_t *pl, bool on);
-void Cloak(player_t *pl, bool on);
-void Deflector(player_t *pl, bool on);
-void Emergency_thrust(player_t *pl, bool on);
-void Emergency_shield(player_t *pl, bool on);
-void Phasing(player_t *pl, bool on);
-void Thrust(player_t *pl, bool on);
-
-/*
- * Prototypes for parser.c
- */
-int Parser_list_option(int *ind, char *buf);
-bool Parser(int argc, char **argv);
-int Tune_option(char *name, char *val);
-int Get_option_value(const char *name, char *value, size_t size);
-
-/*
- * Prototypes for fileparser.c
- */
-bool parseDefaultsFile(const char *filename);
-bool parsePasswordFile(const char *filename);
-bool parseMapFile(const char *filename);
-void expandKeyword(const char *keyword);

@@ -42,6 +42,7 @@
 
 #include "alliance.h"
 #include "contact.h"
+#include "parser.h"
 #include "rank.h"
 #include "server.h"
 

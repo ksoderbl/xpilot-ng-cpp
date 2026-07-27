@@ -21,6 +21,8 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include "ship.h"
+
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
@@ -34,6 +36,7 @@
 #include "alliance.h"
 #include "score.h"
 #include "server.h"
+#include "update.h"
 
 #define SERVER
 #include "xpconfig.h"

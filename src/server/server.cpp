@@ -47,8 +47,12 @@
 
 #include "cannon.h"
 #include "contact.h"
+#include "frame.h"
+#include "metaserver.h"
+#include "parser.h"
 #include "score.h"
 #include "server.h"
+#include "update.h"
 #include "robot.h"
 
 #define SERVER

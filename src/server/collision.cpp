@@ -37,8 +37,12 @@
 
 #include "commonproto.h"
 
+#include "frame.h"
 #include "laser.h"
+#include "race.h"
 #include "server.h"
+#include "ship.h"
+#include "update.h"
 
 #define SERVER
 #include "xpconfig.h"
