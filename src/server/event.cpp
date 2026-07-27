@@ -406,7 +406,7 @@ static void Player_toggle_pause(player_t *pl)
             minv = 5.0;
             pausetype = hoverpaused;
         }
-        minv += VECTOR_LENGTH(World_gravity(pl->pos));
+        minv += VECTOR_LENGTH(World_gravity(world, pl->pos));
         if (pl->velocity > minv)
         {
             Set_player_message(pl,

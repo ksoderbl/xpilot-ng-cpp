@@ -23,7 +23,16 @@
 
 #pragma once
 
-#define PATHNAME_SEP '/'
+#include "player.h"
 
-extern int Get_process_id(void);
-extern void Get_login_name(char *buf, size_t size);
+int Invite_player(player_t *pl, player_t *ally);
+int Cancel_invitation(player_t *pl);
+int Refuse_alliance(player_t *pl, player_t *ally);
+int Refuse_all_alliances(player_t *pl);
+int Accept_alliance(player_t *pl, player_t *ally);
+int Accept_all_alliances(player_t *pl);
+int Get_alliance_member_count(int id);
+void Player_join_alliance(player_t *pl, player_t *ally);
+void Dissolve_all_alliances(void);
+int Leave_alliance(player_t *pl);
+void Alliance_player_list(player_t *pl);

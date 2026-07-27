@@ -319,7 +319,7 @@ void Place_item(player_t *pl, int item)
         }
         else
         {
-            vector_t gravity = World_gravity(pos);
+            vector_t gravity = World_gravity(world, pos);
 
             vel.x -= options.gravity * gravity.x;
             vel.y -= options.gravity * gravity.y;

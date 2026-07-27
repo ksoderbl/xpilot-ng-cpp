@@ -23,7 +23,7 @@
 
 #pragma once
 
-#define PATHNAME_SEP '/'
+#include "player.h"
 
-extern int Get_process_id(void);
-extern void Get_login_name(char *buf, size_t size);
+void Transfer_tag(player_t *oldtag_pl, player_t *newtag_pl);
+void Check_tag(void);

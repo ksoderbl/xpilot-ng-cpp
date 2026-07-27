@@ -1144,7 +1144,6 @@ void Xpmap_find_map_object_teams(void)
 
         treasure->team = Find_closest_team(treasure->pos);
         teamp = Team_by_index(treasure->team);
-        assert(teamp != NULL);
 
         teamp->NumTreasures++;
         if (treasure->empty)
@@ -1195,7 +1194,7 @@ void Xpmap_find_base_direction(void)
     {
         base_t *base = Base_by_index(i);
         int x, y, dir, att;
-        vector_t gravity = World_gravity(base->pos);
+        vector_t gravity = World_gravity(world, base->pos);
 
         if (gravity.x == 0.0 && gravity.y == 0.0)
             /*

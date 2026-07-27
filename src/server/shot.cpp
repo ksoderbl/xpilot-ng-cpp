@@ -1754,13 +1754,17 @@ void Update_missile(missileobject_t *missile)
     acc *= (1 + (Mods_get(missile->mods, ModsPower) * MISSILE_POWER_SPEED_FACT));
     if ((shot_speed = VECTOR_LENGTH(missile->vel)) < 1)
         shot_speed = 1;
-    range = World_wrap_length(world, pl->pos.cx - missile->pos.cx,
-                              pl->pos.cy - missile->pos.cy) /
+    range = World_wrap_length(
+                world,
+                pl->pos.cx - missile->pos.cx,
+                pl->pos.cy - missile->pos.cy) /
             CLICK;
     x_dif += pl->vel.x * (range / shot_speed);
     y_dif += pl->vel.y * (range / shot_speed);
-    a = World_wrap_cfindDir(world, pl->pos.cx + PIXEL_TO_CLICK(x_dif) - missile->pos.cx,
-                            pl->pos.cy + PIXEL_TO_CLICK(y_dif) - missile->pos.cy);
+    a = World_wrap_cfindDir(
+        world,
+        pl->pos.cx + PIXEL_TO_CLICK(x_dif) - missile->pos.cx,
+        pl->pos.cy + PIXEL_TO_CLICK(y_dif) - missile->pos.cy);
     theta = MOD2((int)(a + 0.5), ANGLE_RESOLUTION);
 
     {
@@ -1845,7 +1849,6 @@ void Update_missile(missileobject_t *missile)
 
                 if (xt >= 0 && xt < World.x && yt >= 0 && yt < World.y)
                 {
-
                     switch (World.block[xt][yt])
                     {
                     case TARGET:
@@ -1882,9 +1885,10 @@ void Update_missile(missileobject_t *missile)
         if (angle >= 0)
         {
             i = angle & 7;
-            a = World_wrap_findDir(world,
-                                   (yi + sur[i].dy) * BLOCK_SZ - (CLICK_TO_PIXEL(missile->pos.cy) + 2 * missile->vel.y),
-                                   (xi + sur[i].dx) * BLOCK_SZ - (CLICK_TO_PIXEL(missile->pos.cx) - 2 * missile->vel.x));
+            a = World_wrap_findDir(
+                world,
+                (yi + sur[i].dy) * BLOCK_SZ - (CLICK_TO_PIXEL(missile->pos.cy) + 2 * missile->vel.y),
+                (xi + sur[i].dx) * BLOCK_SZ - (CLICK_TO_PIXEL(missile->pos.cx) - 2 * missile->vel.x));
             theta = MOD2((int)(a + 0.5), ANGLE_RESOLUTION);
 #ifdef SHOT_EXTRA_SLOWDOWN
             if (!foundw && range > (SHOT_LOOK_AH - i) * BLOCK_SZ)

@@ -36,8 +36,10 @@
 #include <unistd.h>
 
 #include "commonmacros.h"
-#include "const.h"
 #include "commonproto.h"
+#include "const.h"
+
+#include "alliance.h"
 
 #define SERVER
 #include "xpconfig.h"
@@ -304,20 +306,23 @@ static void Robot_suibot_invite(player_t *pl, player_t *inviter)
         Refuse_alliance(pl, inviter);
 }
 
-static inline int decide_travel_dir(player_t *pl)
+static inline int decide_travel_dir(world_t *world, player_t *pl)
 {
+    int travel_dir;
     double gdir;
 
     if (pl->velocity <= 0.2)
     {
-        vector_t grav = World_gravity(pl->pos);
+        vector_t grav = World_gravity(world, pl->pos);
 
         gdir = findDir(grav.x, grav.y);
     }
     else
         gdir = findDir(pl->vel.x, pl->vel.y);
 
-    return MOD2((int)(gdir + 0.5), ANGLE_RESOLUTION);
+    travel_dir = MOD2((int)(gdir + 0.5), ANGLE_RESOLUTION);
+
+    return travel_dir;
 }
 
 static void Robot_take_off_from_base(player_t *pl);

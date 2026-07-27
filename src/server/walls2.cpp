@@ -37,7 +37,9 @@
 #include "const.h"
 #include "commonproto.h"
 #include "xperror.h"
+
 #include "server.h"
+#include "tag.h"
 
 #define SERVER
 #include "xpconfig.h"

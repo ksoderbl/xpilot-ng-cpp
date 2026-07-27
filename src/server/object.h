@@ -352,3 +352,10 @@ union xp_anyobject
     pulseobject_t pulse;
     itemobject_t item;
 };
+
+object_t *Object_allocate(void);
+void Object_free_ind(int ind);
+void Object_free_ptr(object_t *obj);
+void Alloc_shots(int number);
+void Free_shots(void);
+const char *Object_typename(object_t *obj);

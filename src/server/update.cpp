@@ -1,17 +1,15 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 2000-2004 by
- *
- *      Uoti Urpala
- *      Kristian Söderblom
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
  *      Bert Gijsbers
  *      Dick Balaska
+ *
+ * Copyright (C) 2000-2004 by
+ *
+ *      Uoti Urpala
+ *      Kristian Söderblom
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +35,7 @@
 #include "xperror.h"
 
 #include "server.h"
+#include "tag.h"
 #include "target.h"
 
 #define SERVER
@@ -62,11 +61,11 @@ int roundtime = -1;               /* time left this round */
 static double time_to_tick = 1.0; /* game time till next tick */
 static bool tick = false;         /* new tick of game time this frame */
 
-static inline void update_object_speed(object_t *obj)
+static inline void update_object_speed(world_t *world, object_t *obj)
 {
     if (BIT(obj->obj_status, GRAVITY))
     {
-        vector_t gravity = World_gravity(obj->pos);
+        vector_t gravity = World_gravity(world, obj->pos);
 
         obj->vel.x += (obj->acc.x + gravity.x) * timeStep;
         obj->vel.y += (obj->acc.y + gravity.y) * timeStep;
@@ -347,6 +346,7 @@ void Autopilot(player_t *pl, bool on)
  */
 static void do_Autopilot(player_t *pl)
 {
+    world_t *world = &World;
     int vad; /* Velocity Away Delta */
     int dir, afterburners;
     vector_t gravity;
@@ -382,7 +382,7 @@ static void do_Autopilot(player_t *pl)
     else
         afterburners = pl->item[ITEM_AFTERBURNER];
 
-    gravity = World_gravity(pl->pos);
+    gravity = World_gravity(world, pl->pos);
 
     /*
      * Due to rounding errors if the velocity is very small we were probably
@@ -568,6 +568,7 @@ static void legacy_mode_ball_hack(ballobject_t *ball)
 
 static void Misc_object_update(void)
 {
+    world_t *world = &World;
     int i;
     object_t *obj;
 
@@ -625,7 +626,7 @@ static void Misc_object_update(void)
             LIMIT(pulse->pulse_len, 0, options.pulseLength);
         }
 
-        update_object_speed(obj);
+        update_object_speed(world, obj);
 
         if (!(obj->type == OBJ_ASTEROID))
             Move_object(obj);
@@ -1157,7 +1158,7 @@ static void Update_players(void)
 
         if (options.legacyMode)
         {
-            update_object_speed(OBJ_PTR(pl));
+            update_object_speed(world, OBJ_PTR(pl));
             Move_player(pl);
         }
         else
@@ -1166,7 +1167,7 @@ static void Update_players(void)
 
             if (BIT(pl->obj_status, GRAVITY))
             {
-                vector_t gravity = World_gravity(pl->pos);
+                vector_t gravity = World_gravity(world, pl->pos);
 
                 acc.x += gravity.x;
                 acc.y += gravity.y;

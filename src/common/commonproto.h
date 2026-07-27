@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -61,3 +59,6 @@ int strcasecmp(const char *str1, const char *str2);
 #ifndef HAVE_STRNCASECMP
 int strncasecmp(const char *str1, const char *str2, size_t n);
 #endif
+
+/* showtime.cpp */
+char *showtime(void);

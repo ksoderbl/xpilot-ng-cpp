@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -100,9 +98,9 @@ extern double coriolisCosine, coriolisSine;
 
 extern shape_t ball_wire, wormhole_wire, filled_wire;
 
-static inline vector_t World_gravity(clpos_t pos)
+static inline vector_t World_gravity(world_t *world, clpos_t pos)
 {
-    return World.gravity[CLICK_TO_BLOCK(pos.cx)][CLICK_TO_BLOCK(pos.cy)];
+    return world->gravity[CLICK_TO_BLOCK(pos.cx)][CLICK_TO_BLOCK(pos.cy)];
 }
 
 static inline double SHOT_MULT(object_t *obj)
@@ -416,74 +414,3 @@ void Laser_pulse_hits_player(player_t *pl, pulseobject_t *pulse);
 /*
  * Prototypes for alliance.c
  */
-int Invite_player(player_t *pl, player_t *ally);
-int Cancel_invitation(player_t *pl);
-int Refuse_alliance(player_t *pl, player_t *ally);
-int Refuse_all_alliances(player_t *pl);
-int Accept_alliance(player_t *pl, player_t *ally);
-int Accept_all_alliances(player_t *pl);
-int Get_alliance_member_count(int id);
-void Player_join_alliance(player_t *pl, player_t *ally);
-void Dissolve_all_alliances(void);
-int Leave_alliance(player_t *pl);
-void Alliance_player_list(player_t *pl);
-
-/*
- * Prototypes for object.c
- */
-object_t *Object_allocate(void);
-void Object_free_ind(int ind);
-void Object_free_ptr(object_t *obj);
-void Alloc_shots(int number);
-void Free_shots(void);
-const char *Object_typename(object_t *obj);
-
-/*
- * Prototypes for polygon.c
- */
-void P_edgestyle(const char *id, int width, int color, int style);
-void P_polystyle(const char *id, int color, int texture_id, int defedge_id,
-                 int flags);
-void P_bmpstyle(const char *id, const char *filename, int flags);
-void P_start_polygon(clpos_t pos, int style);
-void P_offset(clpos_t offset, int edgestyle);
-void P_vertex(clpos_t pos, int edgestyle);
-void P_style(const char *state, int style);
-void P_end_polygon(void);
-int P_start_ballarea(void);
-void P_end_ballarea(void);
-int P_start_balltarget(int team, int treasure_ind);
-void P_end_balltarget(void);
-int P_start_target(int target_ind);
-void P_end_target(void);
-int P_start_cannon(int cannon_ind);
-void P_end_cannon(void);
-int P_start_wormhole(int wormhole_ind);
-void P_end_wormhole(void);
-void P_start_decor(void);
-void P_end_decor(void);
-int P_start_friction_area(int fa_ind);
-void P_end_friction_area(void);
-int P_get_bmp_id(const char *s);
-int P_get_edge_id(const char *s);
-int P_get_poly_id(const char *s);
-/*void P_grouphack(int type, void (*f)(int group, void *mapobj));*/
-void P_set_hitmask(int group, hitmask_t hitmask);
-
-/*
- * Prototypes for showtime.c
- */
-char *showtime(void);
-
-/*
- * Prototypes for srecord.c
- */
-void Init_recording(void);
-void Handle_recording_buffers(void);
-void Get_recording_data(void);
-
-/*
- * Prototypes for tag.c
- */
-void Transfer_tag(player_t *oldtag_pl, player_t *newtag_pl);
-void Check_tag(void);
