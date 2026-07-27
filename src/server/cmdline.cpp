@@ -34,6 +34,8 @@
 #include <cerrno>
 
 #include "option.h"
+
+#include "contact.h"
 #include "server.h"
 #include "serverrules.h"
 #include "srecord.h"
