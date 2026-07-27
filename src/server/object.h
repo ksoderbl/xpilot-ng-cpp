@@ -77,17 +77,33 @@
 /*
  * Possible object status bits.
  */
-#define GRAVITY (1U << 0)
-#define WARPING (1U << 1)
-#define WARPED (1U << 2)
-#define CONFUSED (1U << 3)
-#define FROMCANNON (1U << 4)     /* Object from cannon */
-#define RECREATE (1U << 5)       /* Recreate ball */
-#define THRUSTING (1U << 6)      /* Engine is thrusting */
-#define OWNERIMMUNE (1U << 7)    /* Owner is immune to object */
-#define NOEXPLOSION (1U << 8)    /* No recreate explosion */
-#define COLLISIONSHOVE (1U << 9) /* Collision counts as shove */
-#define RANDOM_ITEM (1U << 10)   /* Item shows up as random */
+// #define GRAVITY (1U << 0)
+// #define WARPING (1U << 1)
+// #define WARPED (1U << 2)
+// #define CONFUSED (1U << 3)
+// #define FROMCANNON (1U << 4)     /* Object from cannon */
+// #define RECREATE (1U << 5)       /* Recreate ball */
+// #define THRUSTING (1U << 6)      /* Engine is thrusting */
+// #define OWNERIMMUNE (1U << 7)    /* Owner is immune to object */
+// #define NOEXPLOSION (1U << 8)    /* No recreate explosion */
+// #define COLLISIONSHOVE (1U << 9) /* Collision counts as shove */
+// #define RANDOM_ITEM (1U << 10)   /* Item shows up as random */
+
+constexpr uint32_t LEGACY_PLAYING = PLAYER_STATUS_PLAYING;     /* Not returning to base */
+constexpr uint32_t LEGACY_PAUSE = PLAYER_STATUS_PAUSE;         /* Must stay below 8 */
+constexpr uint32_t LEGACY_GAME_OVER = PLAYER_STATUS_GAME_OVER; /* Must stay below 8 */
+
+constexpr uint32_t GRAVITY = (1U << 0);
+constexpr uint32_t WARPING = (1U << 1);
+constexpr uint32_t WARPED = (1U << 2);
+constexpr uint32_t CONFUSED = (1U << 3);
+constexpr uint32_t FROMCANNON = (1U << 4);     /* Object from cannon */
+constexpr uint32_t RECREATE = (1U << 5);       /* Recreate ball */
+constexpr uint32_t THRUSTING = (1U << 6);      /* Engine is thrusting */
+constexpr uint32_t OWNERIMMUNE = (1U << 7);    /* Owner is immune to object */
+constexpr uint32_t NOEXPLOSION = (1U << 8);    /* No recreate explosion */
+constexpr uint32_t COLLISIONSHOVE = (1U << 9); /* Collision counts as shove */
+constexpr uint32_t RANDOM_ITEM = (1U << 10);   /* Item shows up as random */
 
 #define LOCK_NONE 0x00    /* No lock */
 #define LOCK_PLAYER 0x01  /* Locked on player */
@@ -113,11 +129,11 @@ struct cell_node
     clpos_t pos;         /* World coordinates */                                                   \
     clpos_t prevpos;     /* previous position */                                                   \
     clpos_t extmove;     /* For collision detection */                                             \
-    float wall_time;     /* bounce/crash time within frame */                                      \
+    double wall_time;    /* bounce/crash time within frame */                                      \
     vector_t vel;        /* speed in x,y */                                                        \
     vector_t acc;        /* acceleration in x,y */                                                 \
-    float mass;          /* mass in unigrams */                                                    \
-    float obj_life;      /* No of ticks left to live */                                            \
+    double mass;         /* mass in unigrams */                                                    \
+    double obj_life;     /* No of ticks left to live */                                            \
     modifiers_t mods;    /* Modifiers to this object */                                            \
     uint8_t type;        /* one of OBJ_XXX */                                                      \
     uint8_t color;       /* Color of object */                                                     \
@@ -133,7 +149,7 @@ struct cell_node
     cell_node_t cell; /* node in cell linked list */ \
     short pl_range;   /* distance for collision */   \
     short pl_radius;  /* distance for hit */         \
-    float fuse;       /* ticks until fused */
+    double fuse;      /* ticks until fused */
 
 /* up to here all object types are the same. */
 
@@ -163,18 +179,18 @@ struct xp_mineobject
 
     OBJECT_EXTEND
 
-    float mine_count;       /* Misc snafus */
-    float mine_ecm_range;   /* Range from last ecm center */
-    float mine_spread_left; /* how much spread time left */
-    short mine_owner;       /* Who's object is this ? */
+    double mine_count;       /* Misc snafus */
+    double mine_ecm_range;   /* Range from last ecm center */
+    double mine_spread_left; /* how much spread time left */
+    short mine_owner;        /* Who's object is this ? */
 
 #define MINE_IND(ind) ((mineobject_t *)Obj[(ind)])
 #define MINE_PTR(ptr) ((mineobject_t *)(ptr))
 };
 
-#define MISSILE_EXTEND                              \
-    float missile_max_speed; /* speed limitation */ \
-    float missile_turnspeed; /* how fast to turn */
+#define MISSILE_EXTEND                               \
+    double missile_max_speed; /* speed limitation */ \
+    double missile_turnspeed; /* how fast to turn */
 
 /* up to here all missiles types are the same. */
 
@@ -184,7 +200,6 @@ struct xp_mineobject
 typedef struct xp_missileobject missileobject_t;
 struct xp_missileobject
 {
-
     OBJECT_BASE
 
     OBJECT_EXTEND
@@ -201,17 +216,16 @@ struct xp_missileobject
 typedef struct xp_smartobject smartobject_t;
 struct xp_smartobject
 {
-
     OBJECT_BASE
 
     OBJECT_EXTEND
 
     MISSILE_EXTEND
 
-    float smart_ecm_range; /* Range from last ecm center*/
-    float smart_count;     /* Misc snafus */
-    short smart_lock_id;   /* snafu */
-    short smart_relock_id; /* smart re-lock id */
+    double smart_ecm_range; /* Range from last ecm center*/
+    double smart_count;     /* Misc snafus */
+    short smart_lock_id;    /* snafu */
+    short smart_relock_id;  /* smart re-lock id */
 
 #define SMART_IND(ind) ((smartobject_t *)Obj[(ind)])
 #define SMART_PTR(ptr) ((smartobject_t *)(ptr))
@@ -223,15 +237,14 @@ struct xp_smartobject
 typedef struct xp_torpobject torpobject_t;
 struct xp_torpobject
 {
-
     OBJECT_BASE
 
     OBJECT_EXTEND
 
     MISSILE_EXTEND
 
-    float torp_spread_left; /* how much spread time left */
-    float torp_count;       /* Misc snafus */
+    double torp_spread_left; /* how much spread time left */
+    double torp_count;       /* Misc snafus */
 
 #define TORP_IND(ind) ((torpobject_t *)Obj[(ind)])
 #define TORP_PTR(ptr) ((torpobject_t *)(ptr))
@@ -243,14 +256,13 @@ struct xp_torpobject
 typedef struct xp_heatobject heatobject_t;
 struct xp_heatobject
 {
-
     OBJECT_BASE
 
     OBJECT_EXTEND
 
     MISSILE_EXTEND
 
-    float heat_count;   /* Misc snafus */
+    double heat_count;  /* Misc snafus */
     short heat_lock_id; /* snafu */
 
 #define HEAT_IND(ind) ((heatobject_t *)Obj[(ind)])
@@ -263,7 +275,6 @@ struct xp_heatobject
 typedef struct xp_ballobject ballobject_t;
 struct xp_ballobject
 {
-
     OBJECT_BASE
 
     OBJECT_EXTEND
@@ -283,12 +294,11 @@ struct xp_ballobject
 typedef struct xp_wireobject wireobject_t;
 struct xp_wireobject
 {
-
     OBJECT_BASE
 
     OBJECT_EXTEND
 
-    float wire_turnspeed; /* how fast to turn */
+    double wire_turnspeed; /* how fast to turn */
 
     uint8_t wire_type;     /* Type of object */
     uint8_t wire_size;     /* Size of object */
@@ -304,12 +314,11 @@ struct xp_wireobject
 typedef struct xp_pulseobject pulseobject_t;
 struct xp_pulseobject
 {
-
     OBJECT_BASE
 
     OBJECT_EXTEND
 
-    float pulse_len;   /* Length of the pulse */
+    double pulse_len;  /* Length of the pulse */
     uint8_t pulse_dir; /* Direction of the pulse */
     bool pulse_refl;   /* Pulse was reflected ? */
 
@@ -323,7 +332,6 @@ struct xp_pulseobject
 typedef struct xp_itemobject itemobject_t;
 struct xp_itemobject
 {
-
     OBJECT_BASE
 
     OBJECT_EXTEND

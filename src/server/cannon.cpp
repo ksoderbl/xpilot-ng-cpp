@@ -36,6 +36,7 @@
 // #include "randommt.h"
 #include "xperror.h"
 
+#include "laser.h"
 #include "objpos.h"
 #include "score.h"
 #include "server.h"

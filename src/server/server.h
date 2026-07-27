@@ -321,14 +321,6 @@ void PlayerCheckpointCollision(player_t *pl);
 /*
  * Prototypes for rules.c
  */
-void Tune_item_probs(void);
-void Tune_item_packs(void);
-void Set_initial_resources(void);
-void Set_world_items(void);
-void Set_world_rules(void);
-void Set_world_asteroids(void);
-void Set_misc_item_limits(void);
-void Tune_asteroid_prob(void);
 
 /*
  * Prototypes for server.c
@@ -402,15 +394,3 @@ bool parseDefaultsFile(const char *filename);
 bool parsePasswordFile(const char *filename);
 bool parseMapFile(const char *filename);
 void expandKeyword(const char *keyword);
-
-/*
- * Prototypes for laser.c
- */
-void Fire_laser(player_t *pl);
-void Fire_general_laser(int id, int team, clpos_t pos,
-                        int dir, modifiers_t mods);
-void Laser_pulse_hits_player(player_t *pl, pulseobject_t *pulse);
-
-/*
- * Prototypes for alliance.c
- */

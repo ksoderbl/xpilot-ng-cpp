@@ -34,6 +34,7 @@
 #include "commonproto.h"
 #include "xperror.h"
 
+#include "laser.h"
 #include "server.h"
 #include "tag.h"
 #include "target.h"

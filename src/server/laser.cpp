@@ -1,14 +1,12 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 2003 Kristian Söderblom
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
  *      Bert Gijsbers
  *      Dick Balaska
+ *
+ * Copyright (C) 2003 Kristian Söderblom
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +22,8 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include "laser.h"
 
 #include <vector>
 

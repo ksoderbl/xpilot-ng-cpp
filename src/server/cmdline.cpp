@@ -35,6 +35,7 @@
 
 #include "option.h"
 #include "server.h"
+#include "serverrules.h"
 #include "srecord.h"
 
 #define SERVER

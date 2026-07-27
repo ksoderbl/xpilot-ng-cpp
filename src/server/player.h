@@ -160,7 +160,6 @@ struct ranknode;
  */
 typedef struct player
 {
-
     OBJECT_BASE
 
     /* up to here the player type should be the same as an object. */

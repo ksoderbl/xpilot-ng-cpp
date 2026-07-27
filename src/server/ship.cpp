@@ -341,7 +341,6 @@ void Update_tanks(pl_fuel_t *ft)
             {
                 if (t && t != ft->current && *f >= low_level + frame_refuel && *(f - 1) <= TANK_CAP(t - 1) - frame_refuel)
                 {
-
                     *f -= frame_refuel;
                     fuel = frame_refuel;
                 }
@@ -422,7 +421,7 @@ void Tank_handle_detach(player_t *pl)
 
     /*
      * MWAAH: this was ... naieve at least:
-     * *tank = *pl;
+     * *tank              = *pl;
      * Player structures contain pointers to dynamic memory...
      */
 

@@ -23,7 +23,7 @@
 
 #pragma once
 
-typedef enum Item
+enum Item
 {
     NO_ITEM = -1,
     ITEM_FUEL = 0,
@@ -47,8 +47,11 @@ typedef enum Item
     ITEM_PHASING = 18,
     ITEM_MIRROR = 19,
     ITEM_ARMOR = 20,
-    NUM_ITEMS = 21
-} Item_t;
+    // NUM_ITEMS = 21
+};
+typedef enum Item Item_t;
+
+constexpr int NUM_ITEMS = ITEM_ARMOR + 1;
 
 #define ITEM_BIT_FUEL (1U << ITEM_FUEL)
 #define ITEM_BIT_WIDEANGLE (1U << ITEM_WIDEANGLE)

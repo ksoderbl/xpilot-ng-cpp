@@ -26,6 +26,7 @@
 #pragma once
 
 #include "const.h"
+#include "rules.h"
 
 /*
  * Two macros for edge wrap of x and y coordinates measured in map blocks.
