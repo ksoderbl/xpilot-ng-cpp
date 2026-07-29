@@ -1411,13 +1411,13 @@ void Update_objects(void)
 
         if (BIT(pl->lock.tagged, LOCK_PLAYER))
         {
-            player_t *lpl = Player_by_id(pl->lock.pl_id);
-
-            pl->lock.distance = World_wrap_length(
-                                    world,
-                                    pl->pos.cx - lpl->pos.cx,
-                                    pl->pos.cy - lpl->pos.cy) /
-                                CLICK;
+            player_t *lock_pl = Player_by_id(pl->lock.pl_id);
+            pl->lock.distance =
+                World_wrap_length(
+                    world,
+                    pl->pos.cx - lock_pl->pos.cx,
+                    pl->pos.cy - lock_pl->pos.cy) /
+                CLICK;
         }
     }
 

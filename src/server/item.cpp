@@ -297,7 +297,7 @@ void Place_item(player_t *pl, int item)
 
                 vel.x *= drop_speed_factor;
                 vel.y *= drop_speed_factor;
-                if (vl < 1.0f)
+                if (vl < 1.0)
                 {
                     vel.x -= (pl->vel.x >= 0) ? dvx : -dvx;
                     vel.y -= (pl->vel.y >= 0) ? dvy : -dvy;
@@ -516,8 +516,10 @@ void General_tractor_beam(int id, clpos_t pos,
     player_t *pl = Player_by_id(id);
     /*cannon_t *cannon = Cannon_by_id(id);*/
 
-    dist = World_wrap_length(world, pos.cx - victim->pos.cx,
-                             pos.cy - victim->pos.cy) /
+    dist = World_wrap_length(
+               world,
+               pos.cx - victim->pos.cx,
+               pos.cy - victim->pos.cy) /
            CLICK;
     if (dist > maxdist)
         return;

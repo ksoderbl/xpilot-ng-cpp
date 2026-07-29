@@ -1433,7 +1433,8 @@ int Net_input(void)
      * then we send our current keyboard state.
      */
     time_now = time(NULL);
-    if ((last_keyboard_ack != last_keyboard_change && last_keyboard_update /*+ 1*/ < last_loops) || time_now - last_send_anything > 5)
+    if ((last_keyboard_ack != last_keyboard_change && last_keyboard_update /*+ 1*/ < last_loops) ||
+        time_now - last_send_anything > 5)
     {
         Key_update();
         last_send_anything = time_now;

@@ -42,20 +42,20 @@ extern bool updateScores;
 /*
  * These values are set in the player->pl_type field.
  */
-#define PL_TYPE_HUMAN 0
-#define PL_TYPE_ROBOT 1
-#define PL_TYPE_TANK 2
+constexpr int PL_TYPE_HUMAN = 0;
+constexpr int PL_TYPE_ROBOT = 1;
+constexpr int PL_TYPE_TANK = 2;
 
 /*
  * These values are set in the player->pl_state field.
  */
-#define PL_STATE_UNDEFINED 0
-#define PL_STATE_WAITING 1
-#define PL_STATE_APPEARING 2
-#define PL_STATE_ALIVE 3
-#define PL_STATE_KILLED 4
-#define PL_STATE_DEAD 5
-#define PL_STATE_PAUSED 6
+constexpr int PL_STATE_UNDEFINED = 0;
+constexpr int PL_STATE_WAITING = 1;
+constexpr int PL_STATE_APPEARING = 2;
+constexpr int PL_STATE_ALIVE = 3;
+constexpr int PL_STATE_KILLED = 4;
+constexpr int PL_STATE_DEAD = 5;
+constexpr int PL_STATE_PAUSED = 6;
 
 /*
  * Different types of attributes a player can have.
@@ -158,7 +158,7 @@ struct ranknode;
  * this makes it possible to use the same basic operations on both of them
  * (mainly used in update.c).
  */
-typedef struct player
+typedef struct
 {
     OBJECT_BASE
 
@@ -184,7 +184,7 @@ typedef struct player
     long used; /* Items you use */
     long have; /* Items you have */
 
-    double shield_time;                    /* Shields if no options.playerShielding */
+    double shield_time;                    /* Shields if no playerShielding */
     pl_fuel_t fuel;                        /* ship tanks and the stored fuel */
     double emptymass;                      /* Mass of empty ship */
     double float_dir;                      /* Direction, in float var */
@@ -277,10 +277,11 @@ typedef struct player
 
     visibility_t *visibility;
 
+    bool updateVisibility;
+
     double forceVisible;
     double damaged;
     double stunned;
-    bool updateVisibility;
 
     int last_target_update;    /* index of last updated target */
     int last_cannon_update;    /* index of last updated cannon */

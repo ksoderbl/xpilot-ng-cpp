@@ -910,7 +910,9 @@ static void Compute_end_of_round_values(double *average_score,
     {
         player_t *pl = Player_by_index(i);
 
-        if (Player_is_tank(pl) || (Player_is_paused(pl) && pl->pause_count <= 0) || Player_is_waiting(pl))
+        if (Player_is_tank(pl) ||
+            (Player_is_paused(pl) && pl->pause_count <= 0) ||
+            Player_is_waiting(pl))
             continue;
 
         n++;
@@ -1716,6 +1718,32 @@ void Kill_player(player_t *pl, bool add_rank_death)
     Player_death_reset(pl, add_rank_death);
 }
 
+static std::string bitsToStr(uint32_t s)
+{
+    std::string ret = "";
+
+    if (s & LEGACY_PLAYING)
+        ret += "LEGACY_PLAYING ";
+    if (s & LEGACY_PAUSE)
+        ret += "LEGACY_PAUSE ";
+    if (s & LEGACY_GAME_OVER)
+        ret += "LEGACY_GAME_OVER ";
+    // if (s & LEGACY_KILLED)
+    //     ret += "LEGACY_KILLED ";
+    if (s & THRUSTING)
+        ret += "THRUSTING ";
+    // if (s & SELF_DESTRUCT)
+    //     ret += "SELF_DESTRUCT ";
+    if (s & GRAVITY)
+        ret += "GRAVITY ";
+    if (s & WARPING)
+        ret += "WARPING ";
+    if (s & WARPED)
+        ret += "WARPED ";
+
+    return ret;
+}
+
 void Player_death_reset(player_t *pl, bool add_rank_death)
 {
     if (Player_is_tank(pl))
@@ -1831,7 +1859,7 @@ static char *old_status2str(int old_status)
     return buf;
 }
 
-static char *state2str(int state)
+char *Player_state_str(int state)
 {
     static char buf[256];
 
@@ -1839,26 +1867,28 @@ static char *state2str(int state)
 
     if (state == PL_STATE_UNDEFINED)
         strlcat(buf, "PL_STATE_UNDEFINED", sizeof(buf));
-    if (state == PL_STATE_WAITING)
+    else if (state == PL_STATE_WAITING)
         strlcat(buf, "PL_STATE_WAITING", sizeof(buf));
-    if (state == PL_STATE_APPEARING)
+    else if (state == PL_STATE_APPEARING)
         strlcat(buf, "PL_STATE_APPEARING", sizeof(buf));
-    if (state == PL_STATE_ALIVE)
+    else if (state == PL_STATE_ALIVE)
         strlcat(buf, "PL_STATE_ALIVE", sizeof(buf));
-    if (state == PL_STATE_KILLED)
+    else if (state == PL_STATE_KILLED)
         strlcat(buf, "PL_STATE_KILLED", sizeof(buf));
-    if (state == PL_STATE_DEAD)
+    else if (state == PL_STATE_DEAD)
         strlcat(buf, "PL_STATE_DEAD", sizeof(buf));
-    if (state == PL_STATE_PAUSED)
+    else if (state == PL_STATE_PAUSED)
         strlcat(buf, "PL_STATE_PAUSED", sizeof(buf));
+    else
+        strlcat(buf, "UNKNOWN STATE (BUG)", sizeof(buf));
 
     return buf;
 }
 
 void Player_print_state(player_t *pl, const char *funcname)
 {
-    warn("%-20s: %-16s (%c): %-20s %s ", funcname, pl->name, pl->mychar,
-         state2str(pl->pl_state), old_status2str(pl->pl_old_status));
+    warn("%-20s: %-16s (%c): %-20s ", funcname, pl->name, pl->mychar,
+         Player_state_str(pl->pl_state));
 }
 
 void Player_set_state(player_t *pl, int state)

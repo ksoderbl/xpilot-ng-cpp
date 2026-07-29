@@ -424,7 +424,9 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
             {
                 player_t *pl = Player_by_index(j);
 
-                if (Player_is_tank(pl) || (Player_is_paused(pl) && pl->pause_count <= 0) || Player_is_waiting(pl))
+                if (Player_is_tank(pl) ||
+                    (Player_is_paused(pl) && pl->pause_count <= 0) ||
+                    Player_is_waiting(pl))
                     continue;
 
                 if (pl->team == targ->team)
@@ -480,7 +482,9 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
         {
             player_t *pl = Player_by_index(j);
 
-            if (Player_is_tank(pl) || (Player_is_paused(pl) && pl->pause_count <= 0) || Player_is_waiting(pl))
+            if (Player_is_tank(pl) ||
+                (Player_is_paused(pl) && pl->pause_count <= 0) ||
+                Player_is_waiting(pl))
                 continue;
 
             if (pl->team == targ->team)
