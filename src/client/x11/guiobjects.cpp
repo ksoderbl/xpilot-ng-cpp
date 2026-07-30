@@ -42,7 +42,7 @@
 
 #include "client.h"
 #include "netclient.h"
-#include "option.h"
+#include "clientoption.h"
 #include "paint.h"
 
 #include "xpconfig.h"

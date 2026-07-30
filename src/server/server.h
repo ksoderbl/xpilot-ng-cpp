@@ -39,7 +39,7 @@
 #include "object.h"
 #include "map.h"
 
-#include "option.h"
+#include "serveroption.h"
 
 #include "polygon.h"
 

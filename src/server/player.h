@@ -35,7 +35,7 @@
 #include "shipshape.h"
 #include "item.h"
 #include "click.h"
-#include "option.h"
+#include "serveroption.h"
 
 extern bool updateScores;
 

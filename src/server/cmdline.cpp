@@ -33,7 +33,7 @@
 #include <cstring>
 #include <cerrno>
 
-#include "option.h"
+#include "serveroption.h"
 
 #include "contact.h"
 #include "metaserver.h"

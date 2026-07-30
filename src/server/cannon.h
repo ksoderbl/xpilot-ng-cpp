@@ -27,7 +27,7 @@
 #pragma once
 
 #include "map.h"
-#include "option.h"
+#include "serveroption.h"
 #include "player.h"
 #include "polygon.h"
 #include "serverconst.h"

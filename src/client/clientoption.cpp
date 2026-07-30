@@ -43,7 +43,7 @@
 #include "messages.h"
 
 #include "client.h"
-#include "option.h"
+#include "clientoption.h"
 
 std::vector<xp_option_t> optionsVector;
 
