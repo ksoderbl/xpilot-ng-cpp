@@ -263,10 +263,10 @@ int main (int argc, char **argv)
     gFinderLaunch = NO;
     }
     gArgv = (char**) malloc (sizeof(*gArgv) * (gArgc+1));
-    assert (gArgv != NULL);
+    assert (gArgv != nullptr);
     for (i = 0; i < gArgc; i++)
         gArgv[i] = argv[i];
-    gArgv[i] = NULL;
+    gArgv[i] = nullptr;
 
 #if SDL_USE_NIB_FILE
     [SDLApplication poseAsClass:[NSApplication class]];

@@ -75,10 +75,10 @@ static int Config_save_confirm_callback(int widget_desc, void *popup_desc,
 
 static int num_default_options = 0;
 static int max_default_options = 0;
-static int *default_option_indices = NULL;
+static int *default_option_indices = nullptr;
 static int num_color_options = 0;
 static int max_color_options = 0;
-static int *color_option_indices = NULL;
+static int *color_option_indices = nullptr;
 
 static bool config_created = false,
             config_mapped = false;
@@ -103,7 +103,7 @@ static int config_page,
 static int *config_widget_desc,
     config_save_confirm_desc = NO_WIDGET;
 
-static int *config_widget_ids = NULL;
+static int *config_widget_ids = nullptr;
 static int config_what = CONFIG_NONE;
 
 /* this must be updated if new config menu items are added */
@@ -209,7 +209,7 @@ static void Create_config(void)
 
     config_max = Nelem_config_creator();
     config_widget_desc = XMALLOC(int, config_max);
-    if (config_widget_desc == NULL)
+    if (config_widget_desc == nullptr)
     {
         error("No memory for config");
         return;
@@ -272,7 +272,7 @@ static void Create_config(void)
             height = config_space;
         }
 
-        if (opt == NULL && i != Nelem_config_creator() - 1)
+        if (opt == nullptr && i != Nelem_config_creator() - 1)
             assert(0);
 
         if ((config_widget_ids[i] =
@@ -517,7 +517,7 @@ static int Config_create_save(int widget_desc, int *height)
 
 static int Config_creator(xp_option_t *opt, int widget_desc, int *height)
 {
-    if (opt == NULL)
+    if (opt == nullptr)
         return Config_create_save(widget_desc, height);
 
     if (Option_get_flags(opt) & XP_OPTFLAG_CONFIG_COLORS)
@@ -649,7 +649,7 @@ void Config_destroy(void)
             Widget_destroy(config_widget_desc[i]);
         config_created = false;
         free(config_widget_desc);
-        config_widget_desc = NULL;
+        config_widget_desc = nullptr;
         config_max = 0;
         config_page = 0;
     }
@@ -701,7 +701,7 @@ void Config_init(void)
     /* +1 is for the save widget */
     max_ids = MAX(num_color_options, num_default_options) + 1;
     config_widget_ids = XMALLOC(int, max_ids);
-    if (config_widget_ids == NULL)
+    if (config_widget_ids == nullptr)
     {
         error("Config_init: not enough memory.");
         exit(1);

@@ -61,10 +61,10 @@ static void sample_parse_info(char *filename, sample_t *sample)
     sample->loop = 0;
 
     strtok(filename, ",");
-    if (!(token = strtok(NULL, ",")))
+    if (!(token = strtok(nullptr, ",")))
         return;
     sample->gain = atof(token);
-    if (!(token = strtok(NULL, ",")))
+    if (!(token = strtok(nullptr, ",")))
         return;
     sample->loop = atoi(token);
 }
@@ -81,7 +81,7 @@ static sample_t *sample_load(char *filename)
     if (!(sample = (sample_t *)malloc(sizeof(sample_t))))
     {
         error("failed to allocate memory for a sample");
-        return NULL;
+        return nullptr;
     }
     sample_parse_info(filename, sample);
 
@@ -93,7 +93,7 @@ static sample_t *sample_load(char *filename)
         error("failed to create a sample buffer %x %s",
               err, alGetString(err));
         free(sample);
-        return NULL;
+        return nullptr;
     }
 #if defined(MACOSX_FRAMEWORKS) /* && Mac OS X version < 10.4 */
     alutLoadWAVFile((ALbyte *)filename, &format, &data, &size, &freq);
@@ -106,7 +106,7 @@ static sample_t *sample_load(char *filename)
               filename, err, alGetString(err));
         alDeleteBuffers(1, &sample->buffer);
         free(sample);
-        return NULL;
+        return nullptr;
     }
     alBufferData(sample->buffer, format, data, size, freq);
     if ((err = alGetError()) != AL_NO_ERROR)
@@ -115,7 +115,7 @@ static sample_t *sample_load(char *filename)
               err, alGetString(err));
         alDeleteBuffers(1, &sample->buffer);
         free(sample);
-        return NULL;
+        return nullptr;
     }
     alutUnloadWAV(format, data, size, freq);
 
@@ -140,7 +140,7 @@ int audioDeviceInit(char *display)
     int i;
     ALenum err;
 
-    alutInit(NULL, 0);
+    alutInit(nullptr, 0);
     alListenerf(AL_GAIN, 1.0);
     alDopplerFactor(1.0);
     alDopplerVelocity(343);
@@ -154,14 +154,14 @@ int audioDeviceInit(char *display)
     }
     for (i = 0; i < MAX_SOUNDS; i++)
     {
-        soundinfo[i].sample = NULL;
+        soundinfo[i].sample = nullptr;
         soundinfo[i].volume = 0;
         soundinfo[i].updated = 0;
         soundinfo[i].source = source[i];
         soundinfo[i].next = &soundinfo[(i + 1) % MAX_SOUNDS];
     }
     ring = soundinfo;
-    looping = NULL;
+    looping = nullptr;
 
     return 0;
 }
@@ -238,7 +238,7 @@ void audioDeviceUpdate(void)
     /* Go through the looping list and stop all those sounds
      * that haven't been updated during this frame. The stopped
      * sounds are moved back to the ring. */
-    for (prev = NULL, iter = looping; iter;)
+    for (prev = nullptr, iter = looping; iter;)
     {
         if (iter->updated < loops - 1)
         {

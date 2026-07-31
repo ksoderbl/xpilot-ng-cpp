@@ -133,7 +133,7 @@ static struct rgb_cube_size
  */
 #define RGB2COLOR(c) RGB(((c) >> 16) & 255, ((c) >> 8) & 255, ((c) & 255))
 
-unsigned long (*RGB)(int r, int g, int b) = NULL;
+unsigned long (*RGB)(int r, int g, int b) = nullptr;
 static unsigned long RGB_PC(int r, int g, int b);
 static unsigned long RGB_TC(int r, int g, int b);
 
@@ -322,7 +322,7 @@ static void Choose_visual(void)
             mask |= VisualIDMask;
         }
         num = 0;
-        if ((vinfo_ptr = XGetVisualInfo(dpy, mask, &my_vinfo, &num)) == NULL || num <= 0)
+        if ((vinfo_ptr = XGetVisualInfo(dpy, mask, &my_vinfo, &num)) == nullptr || num <= 0)
         {
             if (using_default == false)
                 warn("No visuals available with class name \"%s\", "
@@ -387,7 +387,7 @@ static int Parse_colors(Colormap cmap)
                 continue;
             warn("Can't parse color %d \"%s\".", i, color_names[i]);
         }
-        if (def[i] != NULL && strlen(def[i]) > 0)
+        if (def[i] != nullptr && strlen(def[i]) > 0)
         {
             if (XParseColor(dpy, cmap, def[i], &colors[i]))
                 continue;
@@ -425,7 +425,7 @@ static void Fill_colormap(void)
         return;
 
     if (XAllocColorCells(dpy, colormap,
-                         False, NULL,
+                         False, nullptr,
                          0, pixels, (unsigned)max_fill) == False)
     {
         warn("Can't pre-alloc color cells");
@@ -504,7 +504,7 @@ int Colors_init(void)
     /*
      * Initialize the double buffering routine.
      */
-    dbuf_state = NULL;
+    dbuf_state = nullptr;
 
     if (multibuffer)
         dbuf_state = start_dbuff(dpy,
@@ -515,7 +515,7 @@ int Colors_init(void)
                                  MULTIBUFFER,
                                  num_planes,
                                  colors);
-    if (dbuf_state == NULL)
+    if (dbuf_state == nullptr)
         dbuf_state = start_dbuff(dpy,
                                  (colormap != 0)
                                      ? colormap
@@ -524,7 +524,7 @@ int Colors_init(void)
                                  ((colorSwitch) ? COLOR_SWITCH : PIXMAP_COPY),
                                  num_planes,
                                  colors);
-    if (dbuf_state == NULL && colormap == 0)
+    if (dbuf_state == nullptr && colormap == 0)
     {
 
         /*
@@ -541,7 +541,7 @@ int Colors_init(void)
             dbuf_state = start_dbuff(dpy, colormap, MULTIBUFFER, num_planes,
                                      colors);
 
-        if (dbuf_state == NULL)
+        if (dbuf_state == nullptr)
             dbuf_state = start_dbuff(dpy, colormap,
                                      ((colorSwitch)
                                           ? COLOR_SWITCH
@@ -550,7 +550,7 @@ int Colors_init(void)
                                      colors);
     }
 
-    if (dbuf_state == NULL)
+    if (dbuf_state == nullptr)
     {
         /* Can't setup double buffering */
         warn("Can't setup colors with visual %s and %d colormap entries",
@@ -685,7 +685,7 @@ void Colors_init_style_colors(void)
 int Colors_init_bitmaps(void)
 {
     /* kps hack */
-    if (dbuf_state == NULL)
+    if (dbuf_state == nullptr)
         return 0;
 
     if (dbuf_state->type == COLOR_SWITCH)
@@ -791,7 +791,7 @@ static int Colors_init_color_cube(void)
     int i, n, r, g, b;
     XColor colorarray[256];
 
-    if (color_cube != NULL)
+    if (color_cube != nullptr)
     {
         error("Already a cube!\n");
         exit(1);
@@ -816,7 +816,7 @@ static int Colors_init_color_cube(void)
                                  ? colormap
                                  : DefaultColormap(dpy,
                                                    DefaultScreen(dpy)),
-                             False, NULL, 0,
+                             False, nullptr, 0,
                              &color_cube->pixels[0],
                              (unsigned)n) == False)
         {
@@ -870,8 +870,8 @@ static void Colors_free_color_cube(void)
             color_cube->mustfree = 0;
         }
         free(color_cube);
-        color_cube = NULL;
-        RGB = NULL;
+        color_cube = nullptr;
+        RGB = nullptr;
     }
 }
 
@@ -968,8 +968,8 @@ static void Colors_free_true_color(void)
     if (true_color)
     {
         free(true_color);
-        true_color = NULL;
-        RGB = NULL;
+        true_color = nullptr;
+        RGB = nullptr;
     }
 }
 
@@ -995,7 +995,7 @@ void Colors_cleanup(void)
     if (dbuf_state)
     {
         end_dbuff(dbuf_state);
-        dbuf_state = NULL;
+        dbuf_state = nullptr;
     }
     if (colormap)
     {
@@ -1143,7 +1143,7 @@ static bool Set_color(xp_option_t *opt, const char *val)
     char *buf = (char *)Option_get_private_data(opt);
 
     /*warn("Set_color: name=%s, val=\"%s\", buf=%p", opt->name, val, buf);*/
-    assert(val != NULL);
+    assert(val != nullptr);
     strlcpy(buf, val, MAX_COLOR_LEN);
 
     return true;
@@ -1168,7 +1168,7 @@ static xp_option_t color_options[] = {
         XP_COLOR0,
         color_names[0],
         MAX_COLOR_LEN,
-        Set_color, color_names[0], NULL,
+        Set_color, color_names[0], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the first color.\n"),
 
@@ -1177,7 +1177,7 @@ static xp_option_t color_options[] = {
         XP_COLOR1,
         color_names[1],
         MAX_COLOR_LEN,
-        Set_color, color_names[1], NULL,
+        Set_color, color_names[1], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the second color.\n"),
 
@@ -1186,7 +1186,7 @@ static xp_option_t color_options[] = {
         XP_COLOR2,
         color_names[2],
         MAX_COLOR_LEN,
-        Set_color, color_names[2], NULL,
+        Set_color, color_names[2], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the third color.\n"),
 
@@ -1195,7 +1195,7 @@ static xp_option_t color_options[] = {
         XP_COLOR3,
         color_names[3],
         MAX_COLOR_LEN,
-        Set_color, color_names[3], NULL,
+        Set_color, color_names[3], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the fourth color.\n"),
 
@@ -1204,7 +1204,7 @@ static xp_option_t color_options[] = {
         XP_COLOR4,
         color_names[4],
         MAX_COLOR_LEN,
-        Set_color, color_names[4], NULL,
+        Set_color, color_names[4], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the fifth color.\n"),
 
@@ -1213,7 +1213,7 @@ static xp_option_t color_options[] = {
         XP_COLOR5,
         color_names[5],
         MAX_COLOR_LEN,
-        Set_color, color_names[5], NULL,
+        Set_color, color_names[5], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the sixth color.\n"),
 
@@ -1222,7 +1222,7 @@ static xp_option_t color_options[] = {
         XP_COLOR6,
         color_names[6],
         MAX_COLOR_LEN,
-        Set_color, color_names[6], NULL,
+        Set_color, color_names[6], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the seventh color.\n"),
 
@@ -1231,7 +1231,7 @@ static xp_option_t color_options[] = {
         XP_COLOR7,
         color_names[7],
         MAX_COLOR_LEN,
-        Set_color, color_names[7], NULL,
+        Set_color, color_names[7], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the eighth color.\n"),
 
@@ -1240,7 +1240,7 @@ static xp_option_t color_options[] = {
         XP_COLOR8,
         color_names[8],
         MAX_COLOR_LEN,
-        Set_color, color_names[8], NULL,
+        Set_color, color_names[8], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the ninth color.\n"),
 
@@ -1249,7 +1249,7 @@ static xp_option_t color_options[] = {
         XP_COLOR9,
         color_names[9],
         MAX_COLOR_LEN,
-        Set_color, color_names[9], NULL,
+        Set_color, color_names[9], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the tenth color.\n"),
 
@@ -1258,7 +1258,7 @@ static xp_option_t color_options[] = {
         XP_COLOR10,
         color_names[10],
         MAX_COLOR_LEN,
-        Set_color, color_names[10], NULL,
+        Set_color, color_names[10], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the eleventh color.\n"),
 
@@ -1267,7 +1267,7 @@ static xp_option_t color_options[] = {
         XP_COLOR11,
         color_names[11],
         MAX_COLOR_LEN,
-        Set_color, color_names[11], NULL,
+        Set_color, color_names[11], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the twelfth color.\n"),
 
@@ -1276,7 +1276,7 @@ static xp_option_t color_options[] = {
         XP_COLOR12,
         color_names[12],
         MAX_COLOR_LEN,
-        Set_color, color_names[12], NULL,
+        Set_color, color_names[12], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the thirteenth color.\n"),
 
@@ -1285,7 +1285,7 @@ static xp_option_t color_options[] = {
         XP_COLOR13,
         color_names[13],
         MAX_COLOR_LEN,
-        Set_color, color_names[13], NULL,
+        Set_color, color_names[13], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the fourteenth color.\n"),
 
@@ -1294,7 +1294,7 @@ static xp_option_t color_options[] = {
         XP_COLOR14,
         color_names[14],
         MAX_COLOR_LEN,
-        Set_color, color_names[14], NULL,
+        Set_color, color_names[14], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the fifteenth color.\n"),
 
@@ -1303,7 +1303,7 @@ static xp_option_t color_options[] = {
         XP_COLOR15,
         color_names[15],
         MAX_COLOR_LEN,
-        Set_color, color_names[15], NULL,
+        Set_color, color_names[15], nullptr,
         XP_OPTFLAG_DEFAULT,
         "The color value for the sixteenth color.\n"),
 
@@ -1312,7 +1312,7 @@ static xp_option_t color_options[] = {
         "5,6,7,3",
         sparkColors,
         sizeof sparkColors,
-        Set_sparkColors, NULL, NULL,
+        Set_sparkColors, nullptr, nullptr,
         XP_OPTFLAG_DEFAULT,
         "Which color numbers to use for spark and debris particles.\n"),
 

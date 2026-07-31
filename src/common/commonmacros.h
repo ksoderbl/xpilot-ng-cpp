@@ -42,15 +42,15 @@
  * The goal is to keep the number of malloc/realloc calls low
  * while not wasting too much memory because of over-allocation.
  */
-#define STORE(T, P, N, M, V)                                                    \
-    if (N >= M && ((M <= 0)                                                     \
-                       ? (P = (T *)malloc((M = 1) * sizeof(*P)))                \
-                       : (P = (T *)realloc(P, (M += M) * sizeof(*P)))) == NULL) \
-    {                                                                           \
-        error("No memory");                                                     \
-        exit(1);                                                                \
-    }                                                                           \
-    else                                                                        \
+#define STORE(T, P, N, M, V)                                                       \
+    if (N >= M && ((M <= 0)                                                        \
+                       ? (P = (T *)malloc((M = 1) * sizeof(*P)))                   \
+                       : (P = (T *)realloc(P, (M += M) * sizeof(*P)))) == nullptr) \
+    {                                                                              \
+        error("No memory");                                                        \
+        exit(1);                                                                   \
+    }                                                                              \
+    else                                                                           \
         (P[N++] = V)
 /*
  * Macro to make room in a given dynamic array for new elements.
@@ -76,7 +76,7 @@
             M = ((M) << 1) + (E);                 \
             P = (T *)realloc(P, (M) * sizeof(T)); \
         }                                         \
-        if (P == NULL)                            \
+        if (P == nullptr)                         \
         {                                         \
             error("No memory");                   \
             N = M = 0;                            \
@@ -115,14 +115,14 @@
     ((type *)malloc((num) * sizeof(type)))
 #define XREALLOC(type, p, num) \
     ((type *)realloc((p), (num) * sizeof(type)))
-#define XFREE(ptr)      \
-    do                  \
-    {                   \
-        if (ptr)        \
-        {               \
-            free(ptr);  \
-            ptr = NULL; \
-        }               \
+#define XFREE(ptr)         \
+    do                     \
+    {                      \
+        if (ptr)           \
+        {                  \
+            free(ptr);     \
+            ptr = nullptr; \
+        }                  \
     } while (0)
 
 static inline double timeval_to_seconds(struct timeval *tvp)

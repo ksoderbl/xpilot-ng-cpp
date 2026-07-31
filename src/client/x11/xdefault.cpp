@@ -148,7 +148,7 @@ static bool Set_fullColor(xp_option_t *opt, bool val)
     {
         Colors_free_bitmaps();
         fullColor = false;
-        Set_texturedObjects(NULL, false);
+        Set_texturedObjects(nullptr, false);
     }
     /* Make sure texture on score list is redrawn. */
     scoresChanged = true;
@@ -233,7 +233,7 @@ static bool Set_fontName(xp_option_t *opt, const char *val)
     char *buf = (char *)Option_get_private_data(opt);
     char *tmpval, *fontname;
 
-    assert(val != NULL);
+    assert(val != nullptr);
 
     /* remove whitespace from font specification */
     tmpval = xp_safe_strdup(val);
@@ -276,8 +276,8 @@ xp_option_t xdefault_options[] = {
     XP_STRING_OPTION(
         "geometry",
         "1280x1024",
-        NULL, 0,
-        Set_geometry, NULL, Get_geometry,
+        nullptr, 0,
+        Set_geometry, nullptr, Get_geometry,
         XP_OPTFLAG_DEFAULT,
         "Set the window size and position in standard X geometry format.\n"
         "The maximum allowed window size is 1922x1440.\n"),
@@ -287,7 +287,7 @@ xp_option_t xdefault_options[] = {
         "",
         displayName,
         sizeof displayName,
-        NULL, NULL, NULL,
+        nullptr, nullptr, nullptr,
         XP_OPTFLAG_KEEP,
         "Set the X display.\n"),
 
@@ -296,7 +296,7 @@ xp_option_t xdefault_options[] = {
         "",
         keyboardName,
         sizeof keyboardName,
-        NULL, NULL, NULL,
+        nullptr, nullptr, nullptr,
         XP_OPTFLAG_KEEP,
         "Set the X keyboard input if you want keyboard input from\n"
         "another display.  The default is to use the keyboard input from\n"
@@ -307,7 +307,7 @@ xp_option_t xdefault_options[] = {
         "",
         visualName,
         sizeof visualName,
-        NULL, NULL, NULL,
+        nullptr, nullptr, nullptr,
         XP_OPTFLAG_KEEP,
         "Specify which visual to use for allocating colors.\n"
         "To get a listing of all possible visuals on your dislay\n"
@@ -317,7 +317,7 @@ xp_option_t xdefault_options[] = {
         "colorSwitch",
         true,
         &colorSwitch,
-        NULL,
+        nullptr,
         XP_OPTFLAG_KEEP,
         "Use color buffering or not.\n"
         "Usually color buffering is faster, especially on 8-bit\n"
@@ -327,7 +327,7 @@ xp_option_t xdefault_options[] = {
         "multibuffer",
         false,
         &multibuffer,
-        NULL,
+        nullptr,
         XP_OPTFLAG_DEFAULT,
         "Use the X windows multibuffer extension if present.\n"),
 
@@ -335,7 +335,7 @@ xp_option_t xdefault_options[] = {
         "ignoreWindowManager",
         false,
         &ignoreWindowManager,
-        NULL,
+        nullptr,
         XP_OPTFLAG_DEFAULT,
         "Ignore the window manager when opening the top level player window.\n"
         "This can be handy if you want to have your XPilot window on a\n"
@@ -348,7 +348,7 @@ xp_option_t xdefault_options[] = {
         GAME_FONT,
         gameFontName,
         sizeof gameFontName,
-        Set_fontName, gameFontName, NULL,
+        Set_fontName, gameFontName, nullptr,
         XP_OPTFLAG_DEFAULT,
         "The font used on the HUD and for most other text.\n"),
 
@@ -357,7 +357,7 @@ xp_option_t xdefault_options[] = {
         SCORE_LIST_FONT,
         scoreListFontName,
         sizeof scoreListFontName,
-        Set_fontName, scoreListFontName, NULL,
+        Set_fontName, scoreListFontName, nullptr,
         XP_OPTFLAG_DEFAULT,
         "The font used on the score list.\n"
         "This must be a non-proportional font.\n"),
@@ -367,7 +367,7 @@ xp_option_t xdefault_options[] = {
         BUTTON_FONT,
         buttonFontName,
         sizeof buttonFontName,
-        Set_fontName, buttonFontName, NULL,
+        Set_fontName, buttonFontName, nullptr,
         XP_OPTFLAG_DEFAULT,
         "The font used on all buttons.\n"),
 
@@ -376,7 +376,7 @@ xp_option_t xdefault_options[] = {
         TEXT_FONT,
         textFontName,
         sizeof textFontName,
-        Set_fontName, textFontName, NULL,
+        Set_fontName, textFontName, nullptr,
         XP_OPTFLAG_DEFAULT,
         "The font used in the help and about windows.\n"),
 
@@ -385,7 +385,7 @@ xp_option_t xdefault_options[] = {
         TALK_FONT,
         talkFontName,
         sizeof talkFontName,
-        Set_fontName, talkFontName, NULL,
+        Set_fontName, talkFontName, nullptr,
         XP_OPTFLAG_DEFAULT,
         "The font used in the talk window.\n"),
 
@@ -394,7 +394,7 @@ xp_option_t xdefault_options[] = {
         MOTD_FONT,
         motdFontName,
         sizeof motdFontName,
-        Set_fontName, motdFontName, NULL,
+        Set_fontName, motdFontName, nullptr,
         XP_OPTFLAG_DEFAULT,
         "The font used in the MOTD window and key list window.\n"
         "This must be a non-proportional font.\n"),
@@ -404,7 +404,7 @@ xp_option_t xdefault_options[] = {
         MESSAGE_FONT,
         messageFontName,
         sizeof messageFontName,
-        Set_fontName, messageFontName, NULL,
+        Set_fontName, messageFontName, nullptr,
         XP_OPTFLAG_DEFAULT,
         "The font used for drawing messages.\n"),
 
@@ -412,7 +412,7 @@ xp_option_t xdefault_options[] = {
         "showNastyShots",
         false,
         &instruments.showNastyShots,
-        NULL,
+        nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Use the Nasty Looking Shots instead of the round shots.\n"
         "You will probably want to increase your shotSize if you use this.\n"),
@@ -421,7 +421,7 @@ xp_option_t xdefault_options[] = {
         "mouseAccelInClient",
         true,
         &mouseAccelInClient,
-        NULL,
+        nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "This option makes the client handle the mouse acceleration.\n"
         "Options mouseAccelNum, mouseAccelDenom and mouseAccelThresh can\n"
@@ -525,26 +525,26 @@ void Handle_X_options(void)
     assert(displayName);
     if (strlen(displayName) == 0)
     {
-        if ((ptr = getenv(DISPLAY_ENV)) != NULL)
+        if ((ptr = getenv(DISPLAY_ENV)) != nullptr)
             Set_option("display", ptr, xp_option_origin_env);
         else
             Set_option("display", DISPLAY_DEF, xp_option_origin_default);
     }
 
-    if ((dpy = XOpenDisplay(displayName)) == NULL)
+    if ((dpy = XOpenDisplay(displayName)) == nullptr)
         fatal("Can't open display '%s'.", displayName);
 
     /* handle keyboard */
     assert(keyboardName);
     if (strlen(keyboardName) == 0)
     {
-        if ((ptr = getenv(KEYBOARD_ENV)) != NULL)
+        if ((ptr = getenv(KEYBOARD_ENV)) != nullptr)
             Set_option("keyboard", ptr, xp_option_origin_env);
     }
 
     if (strlen(keyboardName) == 0)
-        kdpy = NULL;
-    else if ((kdpy = XOpenDisplay(keyboardName)) == NULL)
+        kdpy = nullptr;
+    else if ((kdpy = XOpenDisplay(keyboardName)) == nullptr)
         fatal("Can't open keyboard '%s'.", keyboardName);
 
     /* handle visual */

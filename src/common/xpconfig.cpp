@@ -90,7 +90,7 @@ char *Conf_servermotdfile(void)
     char *filename;
 
     filename = getenv(env);
-    if (filename == NULL)
+    if (filename == nullptr)
         filename = conf;
 
     return filename;

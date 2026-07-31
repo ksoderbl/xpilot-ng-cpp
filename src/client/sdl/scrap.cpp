@@ -33,7 +33,7 @@ void put_scrap(int type, int srclen, char *src) {}
 void get_scrap(int type, int *dstlen, char **dst)
 {
   *dstlen = 0;
-  *dst = NULL;
+  *dst = nullptr;
 }
 #else
 
@@ -307,7 +307,7 @@ init_scrap(void)
 
 #elif defined(QNX_SCRAP)
     /* * */
-    InputGroup = PhInputGroup(NULL);
+    InputGroup = PhInputGroup(nullptr);
     retval = 0;
 
 #endif /* scrap type */
@@ -332,7 +332,7 @@ lost_scrap(void)
 
 #elif defined(QNX_SCRAP)
   /* * */
-  retval = (PhInputGroup(NULL) != InputGroup);
+  retval = (PhInputGroup(nullptr) != InputGroup);
 
 #endif /* scrap type */
 
@@ -347,12 +347,12 @@ put_scrap(int type, int srclen, char *src)
   char *dst;
 
   format = convert_format(type);
-  dstlen = convert_data(type, NULL, src, srclen);
+  dstlen = convert_data(type, nullptr, src, srclen);
 
 #if defined(X11_SCRAP)
   /* * */
   dst = (char *)malloc(dstlen);
-  if (dst != NULL)
+  if (dst != nullptr)
   {
     Lock_Display();
     convert_data(type, dst, src, srclen);
@@ -371,7 +371,7 @@ put_scrap(int type, int srclen, char *src)
     HANDLE hMem;
 
     hMem = GlobalAlloc((GMEM_MOVEABLE | GMEM_DDESHARE), dstlen);
-    if (hMem != NULL)
+    if (hMem != nullptr)
     {
       dst = (char *)GlobalLock(hMem);
       convert_data(type, dst, src, srclen);
@@ -386,12 +386,12 @@ put_scrap(int type, int srclen, char *src)
   /* * */
 #if (_NTO_VERSION < 620) /* before 6.2.0 releases */
   {
-    PhClipHeader clheader = {Ph_CLIPBOARD_TYPE_TEXT, 0, NULL};
+    PhClipHeader clheader = {Ph_CLIPBOARD_TYPE_TEXT, 0, nullptr};
     int *cldata;
     int status;
 
     dst = (char *)malloc(dstlen + 4);
-    if (dst != NULL)
+    if (dst != nullptr)
     {
       cldata = (int *)dst;
       *cldata = type;
@@ -415,12 +415,12 @@ put_scrap(int type, int srclen, char *src)
   }
 #else                    /* 6.2.0 and 6.2.1 and future releases */
   {
-    PhClipboardHdr clheader = {Ph_CLIPBOARD_TYPE_TEXT, 0, NULL};
+    PhClipboardHdr clheader = {Ph_CLIPBOARD_TYPE_TEXT, 0, nullptr};
     int *cldata;
     int status;
 
     dst = (char *)malloc(dstlen + 4);
-    if (dst != NULL)
+    if (dst != nullptr)
     {
       cldata = (int *)dst;
       *cldata = type;
@@ -497,9 +497,9 @@ get_scrap(int type, int *dstlen, char **dst)
     {
       if (seln_type == format)
       {
-        *dstlen = convert_scrap(type, NULL, (char *)src, nbytes);
+        *dstlen = convert_scrap(type, nullptr, (char *)src, nbytes);
         *dst = (char *)realloc(*dst, *dstlen);
-        if (*dst == NULL)
+        if (*dst == nullptr)
           *dstlen = 0;
         else
           convert_scrap(type, *dst, (char *)src, nbytes);
@@ -517,12 +517,12 @@ get_scrap(int type, int *dstlen, char **dst)
     char *src;
 
     hMem = GetClipboardData(format);
-    if (hMem != NULL)
+    if (hMem != nullptr)
     {
       src = (char *)GlobalLock(hMem);
-      *dstlen = convert_scrap(type, NULL, src, 0);
+      *dstlen = convert_scrap(type, nullptr, src, 0);
       *dst = (char *)realloc(*dst, *dstlen);
-      if (*dst == NULL)
+      if (*dst == nullptr)
         *dstlen = 0;
       else
         convert_scrap(type, *dst, src, 0);
@@ -539,17 +539,17 @@ get_scrap(int type, int *dstlen, char **dst)
     int *cldata;
 
     clhandle = PhClipboardPasteStart(InputGroup);
-    if (clhandle != NULL)
+    if (clhandle != nullptr)
     {
       clheader = PhClipboardPasteType(clhandle, Ph_CLIPBOARD_TYPE_TEXT);
-      if (clheader != NULL)
+      if (clheader != nullptr)
       {
         cldata = clheader->data;
         if ((clheader->length > 4) && (*cldata == type))
         {
-          *dstlen = convert_scrap(type, NULL, (char *)clheader->data + 4, clheader->length - 4);
+          *dstlen = convert_scrap(type, nullptr, (char *)clheader->data + 4, clheader->length - 4);
           *dst = (char *)realloc(*dst, *dstlen);
-          if (*dst == NULL)
+          if (*dst == nullptr)
           {
             *dstlen = 0;
           }
@@ -569,14 +569,14 @@ get_scrap(int type, int *dstlen, char **dst)
     int *cldata;
 
     clheader = PhClipboardRead(InputGroup, Ph_CLIPBOARD_TYPE_TEXT);
-    if (clheader != NULL)
+    if (clheader != nullptr)
     {
       cldata = clheader->data;
       if ((clheader->length > 4) && (*cldata == type))
       {
-        *dstlen = convert_scrap(type, NULL, (char *)clheader->data + 4, clheader->length - 4);
+        *dstlen = convert_scrap(type, nullptr, (char *)clheader->data + 4, clheader->length - 4);
         *dst = (char *)realloc(*dst, *dstlen);
-        if (*dst == NULL)
+        if (*dst == nullptr)
         {
           *dstlen = 0;
         }

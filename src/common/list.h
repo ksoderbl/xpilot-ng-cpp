@@ -32,7 +32,7 @@
 typedef struct List *list_t;
 typedef struct ListNode *list_iter_t;
 
-/* create a new list and return the new list or NULL on failure. */
+/* create a new list and return the new list or nullptr on failure. */
 list_t List_new(void);
 
 /* delete a list. */
@@ -63,7 +63,7 @@ list_iter_t List_erase(list_t, list_iter_t);
 list_iter_t List_erase_range(list_t alist, list_iter_t first, list_iter_t last);
 
 /* insert a new element into the list at position
- * and return the new position or NULL on failure. */
+ * and return the new position or nullptr on failure. */
 list_iter_t List_insert(list_t alist, list_iter_t pos, void *element);
 
 /* remove the first element from the list and return a pointer to it. */
@@ -73,11 +73,11 @@ void *List_pop_front(list_t);
 void *List_pop_back(list_t);
 
 /* add a new element to the beginning of the list.
- * and return the new position or NULL on failure. */
+ * and return the new position or nullptr on failure. */
 list_iter_t List_push_front(list_t list, void *data);
 
 /* append a new element at the end of the list.
- * and return the new position or NULL on failure. */
+ * and return the new position or nullptr on failure. */
 list_iter_t List_push_back(list_t list, void *data);
 
 /*

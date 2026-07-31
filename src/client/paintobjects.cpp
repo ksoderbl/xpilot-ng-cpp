@@ -147,7 +147,7 @@ static void Paint_balls(void)
 static void Paint_mines(void)
 {
     int i, x, y;
-    char *name = NULL;
+    char *name = nullptr;
 
     if (clMap.mines.size() > 0)
     {
@@ -164,7 +164,7 @@ static void Paint_mines(void)
                  * Mines unsafe to all players have the name "Expired"
                  * We do not know who is safe for mines sent with id==0
                  */
-                name = NULL;
+                name = nullptr;
                 if (mine.id != 0)
                 {
                     other_t *other;
@@ -173,7 +173,7 @@ static void Paint_mines(void)
                         static char expired_name[] = "Expired";
                         name = expired_name;
                     }
-                    else if ((other = Other_by_id(mine.id)) != NULL)
+                    else if ((other = Other_by_id(mine.id)) != nullptr)
                         name = other->id_string;
                     else
                     {
@@ -483,11 +483,11 @@ static void Paint_all_ships(void)
             /*
              * ship in the center? (svenska-hack)
              */
-            if (abs(X(x) - ext_view_width / 2) <= 1 && abs(Y(y) - ext_view_height / 2) <= 1 && Other_by_id(ship.id) != NULL)
+            if (abs(X(x) - ext_view_width / 2) <= 1 && abs(Y(y) - ext_view_height / 2) <= 1 && Other_by_id(ship.id) != nullptr)
             {
                 eyesId = ship.id;
                 eyes = Other_by_id(eyesId);
-                if (eyes != NULL)
+                if (eyes != nullptr)
                     eyeTeam = eyes->team;
             }
 
@@ -598,7 +598,7 @@ int Init_wreckage(void)
      */
     point_size = sizeof(position_t) * ANGLE_RESOLUTION;
     total_size = point_size * NUM_WRECKAGE_POINTS * NUM_WRECKAGE_SHAPES;
-    if ((dynmem = (char *)malloc(total_size)) == NULL)
+    if ((dynmem = (char *)malloc(total_size)) == nullptr)
     {
         error("Not enough memory for wreckage shapes");
         return -1;

@@ -117,7 +117,7 @@ static void Print_default_value(xp_option_t *opt)
     case xp_key_option:
         if (opt->key_defval && strlen(opt->key_defval) > 0)
             printf("        The default %s: %s.\n",
-                   (strchr(opt->key_defval, ' ') == NULL
+                   (strchr(opt->key_defval, ' ') == nullptr
                         ? "key is"
                         : "keys are"),
                    opt->key_defval);
@@ -315,7 +315,7 @@ bool Set_string_option(xp_option_t *opt, const char *value,
     assert(opt);
     assert(opt->type == xp_string_option);
     assert(opt->str_ptr || (opt->str_setfunc && opt->str_getfunc));
-    assert(value); /* allow NULL ? */
+    assert(value); /* allow nullptr ? */
 
     /*
      * The reason string options don't assume a static area is that that
@@ -332,7 +332,7 @@ bool Set_string_option(xp_option_t *opt, const char *value,
     return retval;
 }
 
-xp_keydefs_t *keydefs = NULL;
+xp_keydefs_t *keydefs = nullptr;
 int num_keydefs = 0;
 int max_keydefs = 0;
 
@@ -467,8 +467,8 @@ static bool Set_key_option(xp_option_t *opt, const char *value,
     opt->key_string = xp_safe_strdup(value);
     valcpy = xp_safe_strdup(value);
     for (str = strtok(valcpy, " \t\r\n");
-         str != NULL;
-         str = strtok(NULL, " \t\r\n"))
+         str != nullptr;
+         str = strtok(nullptr, " \t\r\n"))
     {
         xp_keysym_t ks;
 
@@ -584,7 +584,7 @@ void Set_command(const char *args)
     valcpy = xp_safe_strdup(args);
 
     name = strtok(valcpy, " \t\r\n");
-    value = strtok(NULL, "");
+    value = strtok(nullptr, "");
 
     opt = Find_option(name);
 
@@ -640,7 +640,7 @@ const char *Option_value_to_string(xp_option_t *opt)
         break;
     case xp_string_option:
         /*
-         * Assertion in Store_option guarantees one of these is not NULL.
+         * Assertion in Store_option guarantees one of these is not nullptr.
          */
         if (opt->str_getfunc)
             return opt->str_getfunc(opt);
@@ -713,7 +713,7 @@ void Store_option(xp_option_t *opt)
     /*
      * Let's not allow several options with the same name
      */
-    if (Find_option(opt->name) != NULL)
+    if (Find_option(opt->name) != nullptr)
     {
         warn("Trying to store duplicate option \"%s\"", opt->name);
         assert(0);
@@ -774,7 +774,7 @@ typedef struct xpilotrc_line
     const char *comment;
 } xpilotrc_line_t;
 
-static xpilotrc_line_t *xpilotrc_lines = NULL;
+static xpilotrc_line_t *xpilotrc_lines = nullptr;
 static int num_xpilotrc_lines = 0, max_xpilotrc_lines = 0;
 static int num_ok_options = 0;
 
@@ -798,7 +798,7 @@ static int num_ok_options = 0;
 static void Parse_xpilotrc_line(const char *line)
 {
     char *lcpy = xp_safe_strdup(line);
-    char *l = lcpy, *colon, *name, *value, *semicolon, *comment = NULL;
+    char *l = lcpy, *colon, *name, *value, *semicolon, *comment = nullptr;
     xpilotrc_line_t t;
     xp_option_t *opt;
     int i;
@@ -812,7 +812,7 @@ static void Parse_xpilotrc_line(const char *line)
     l += strlen("xpilot.");
 
     colon = strchr(l, ':');
-    if (colon == NULL)
+    if (colon == nullptr)
     {
         /* no colon on line, not ok */
         warn("Xpilotrc line %d:", num_xpilotrc_lines + 1);
@@ -837,7 +837,7 @@ static void Parse_xpilotrc_line(const char *line)
       name, Find_option(name) ? "found" : "not found");*/
 
     opt = Find_option(name);
-    if (opt == NULL)
+    if (opt == nullptr)
         goto line_is_comment;
 
     if (Option_get_flags(opt) & XP_OPTFLAG_NEVER_SAVE)
@@ -905,7 +905,7 @@ line_is_comment:
      */
     /*warn("Comment: \"%s\"", line);*/
     XFREE(comment);
-    t.opt = NULL;
+    t.opt = nullptr;
     t.comment = xp_safe_strdup(line);
     STORE(xpilotrc_line_t,
           xpilotrc_lines, num_xpilotrc_lines, max_xpilotrc_lines, t);
@@ -934,7 +934,7 @@ int Xpilotrc_read(const char *path)
     }
 
     fp = fopen(path, "r");
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         error("Xpilotrc_read: Failed to open file \"%s\"", path);
         return -2;
@@ -972,7 +972,7 @@ static void Xpilotrc_create_line(char *buf, size_t size,
 {
     int len, numtabs, i;
 
-    assert(buf != NULL);
+    assert(buf != nullptr);
 
     if (comment_whole_line)
     {
@@ -1027,7 +1027,7 @@ int Xpilotrc_write(const char *path)
     }
 
     fp = fopen(path, "w");
-    if (fp == NULL)
+    if (fp == nullptr)
     {
         error("Xpilotrc_write: Failed to open file \"%s\"", path);
         return -2;
@@ -1079,13 +1079,13 @@ int Xpilotrc_write(const char *path)
             char buf[4096];
             bool found = false;
 
-            Xpilotrc_create_line(buf, sizeof(buf), opt, NULL, true);
+            Xpilotrc_create_line(buf, sizeof(buf), opt, nullptr, true);
 
             for (j = 0; j < num_xpilotrc_lines; j++)
             {
                 xpilotrc_line_t *lp = &xpilotrc_lines[j];
 
-                if (lp->opt == NULL && lp->comment != NULL && !strcmp(buf, lp->comment))
+                if (lp->opt == nullptr && lp->comment != nullptr && !strcmp(buf, lp->comment))
                 {
                     found = true;
                     break;
@@ -1197,7 +1197,7 @@ void Parse_options(int *argcp, char **argvp)
      * + 1 is for the program name.
      */
     for (i = num_servers + 1; i < *argcp; i++)
-        argvp[i] = NULL;
+        argvp[i] = nullptr;
     *argcp = num_servers + 1;
 
     if (xpArgs.help)
@@ -1224,13 +1224,13 @@ const char *Get_keyHelpString(keys_t key)
         if (opt->key == key)
         {
             strlcpy(buf, opt->help, sizeof buf);
-            if ((nl = strchr(buf, '\n')) != NULL)
+            if ((nl = strchr(buf, '\n')) != nullptr)
                 *nl = '\0';
             return buf;
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 const char *Get_keyResourceString(keys_t key)
@@ -1245,7 +1245,7 @@ const char *Get_keyResourceString(keys_t key)
             return opt->name;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 void Xpilotrc_get_filename(char *path, size_t size)
@@ -1254,9 +1254,9 @@ void Xpilotrc_get_filename(char *path, size_t size)
     const char *defaultFile = ".xpilotrc";
     const char *optionalFile = getenv("XPILOTRC");
 
-    if (optionalFile != NULL)
+    if (optionalFile != nullptr)
         strlcpy(path, optionalFile, size);
-    else if (home != NULL)
+    else if (home != nullptr)
     {
         strlcpy(path, home, size);
         strlcat(path, "/", size);

@@ -334,8 +334,8 @@ void Paint_frame(void)
 static void Paint_score_background(void)
 {
     if (fullColor &&
-        Bitmap_get(playersWindow, BM_SCORE_BG, 0) != NULL &&
-        Bitmap_get(playersWindow, BM_LOGO, 0) != NULL)
+        Bitmap_get(playersWindow, BM_SCORE_BG, 0) != nullptr &&
+        Bitmap_get(playersWindow, BM_LOGO, 0) != nullptr)
     {
         unsigned bgh, lh;
 

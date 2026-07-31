@@ -63,7 +63,7 @@ list_t List_new(void)
 
         list->tail.next = &list->tail;
         list->tail.prev = &list->tail;
-        list->tail.data = NULL;
+        list->tail.data = nullptr;
         list->size = 0;
     }
 
@@ -76,7 +76,7 @@ void List_delete(list_t list)
     if (list)
     {
         List_clear(list);
-        list->tail.next = list->tail.prev = NULL;
+        list->tail.next = list->tail.prev = nullptr;
         free(list);
 
         lists_allocated--;
@@ -138,9 +138,9 @@ list_iter_t List_erase(list_t list, list_iter_t pos)
     next->prev = prev;
     list->size--;
 
-    pos->prev = NULL;
-    pos->next = NULL;
-    pos->data = NULL;
+    pos->prev = nullptr;
+    pos->next = nullptr;
+    pos->data = nullptr;
     free(pos);
 
     nodes_allocated--;
@@ -159,7 +159,7 @@ list_iter_t List_erase_range(list_t list, list_iter_t first, list_iter_t last)
 }
 
 /* insert a new element into the list at position
- * and return new position or NULL on failure. */
+ * and return new position or nullptr on failure. */
 list_iter_t List_insert(list_t list, list_iter_t pos, void *data)
 {
     list_iter_t node = (list_iter_t)malloc(sizeof(*node));
@@ -196,14 +196,14 @@ void *List_pop_back(list_t list)
 }
 
 /* add a new element to the beginning of the list.
- * and return the new position or NULL on failure. */
+ * and return the new position or nullptr on failure. */
 list_iter_t List_push_front(list_t list, void *data)
 {
     return List_insert(list, list->tail.next, data);
 }
 
 /* append a new element at the end of the list.
- * and return the new position or NULL on failure. */
+ * and return the new position or nullptr on failure. */
 list_iter_t List_push_back(list_t list, void *data)
 {
     return List_insert(list, &list->tail, data);

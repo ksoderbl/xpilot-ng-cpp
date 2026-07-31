@@ -105,7 +105,7 @@ static void Input_loop(void)
             tv.tv_usec = t % 1000000;
         }
 
-        if ((n = select(max + 1, &rfds, NULL, NULL, &tv)) == -1)
+        if ((n = select(max + 1, &rfds, nullptr, nullptr, &tv)) == -1)
         {
             if (errno == EINTR)
                 continue;
@@ -139,7 +139,7 @@ static void Input_loop(void)
         {
             struct timeval tv1, tv2;
 
-            gettimeofday(&tv1, NULL);
+            gettimeofday(&tv1, nullptr);
 
             if ((result = Net_input()) == -1)
             {
@@ -179,7 +179,7 @@ static void Input_loop(void)
 
             if (newSecond)
             {
-                gettimeofday(&tv2, NULL);
+                gettimeofday(&tv2, nullptr);
                 clData.clientLag = 1e-3 * timeval_sub(&tv2, &tv1);
             }
         }
