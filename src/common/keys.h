@@ -104,8 +104,8 @@ typedef enum
     KEY_UNUSED_69,
     KEY_UNUSED_70, /* 70 */
     KEY_UNUSED_71,
-    NUM_KEYS /* The number of different keys_t */
-#ifndef SERVER
+    NUM_SERVER_KEYS /* The number of different keys_t */
+
     /*
      * Hack (patent pending BG):
      * Here all keys only used by the client can be defined.
@@ -158,5 +158,4 @@ typedef enum
     KEY_YES,
     KEY_NO,
     NUM_CLIENT_KEYS /* The number of keys really used by the client. */
-#endif
 } keys_t;

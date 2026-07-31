@@ -42,7 +42,6 @@
 #include "ship.h"
 #include "teamcup.h"
 
-#define SERVER
 #include "xpconfig.h"
 #include "serverconst.h"
 
@@ -96,7 +95,7 @@ void Pick_startpos(player_t *pl)
 {
     int ind = GetInd(pl->id), i, num_free, pick = 0, seen = 0, order, min_order = INT_MAX;
     static int prev_num_bases = 0;
-    static char *free_bases = NULL;
+    static char *free_bases = nullptr;
 
     if (Player_is_tank(pl))
     {
@@ -109,7 +108,7 @@ void Pick_startpos(player_t *pl)
         prev_num_bases = Num_bases();
         XFREE(free_bases);
         free_bases = XMALLOC(char, Num_bases());
-        if (free_bases == NULL)
+        if (free_bases == nullptr)
         {
             error("Can't allocate memory for free_bases");
             End_game();
@@ -203,7 +202,7 @@ void Pick_startpos(player_t *pl)
                     continue;
                 }
                 pl_i = Player_by_index(i);
-                if (pl_i->conn != NULL)
+                if (pl_i->conn != nullptr)
                     Send_base(pl_i->conn, pl->id, pl->home_base->ind);
             }
             if (Player_is_paused(pl) || Player_is_waiting(pl) || Player_is_dead(pl))
@@ -239,7 +238,7 @@ void Go_home(player_t *pl)
         dir = pl->last_check_dir;
         dir = MOD2(dir + (int)((rfrac() - 0.5) * (ANGLE_RESOLUTION / 8)), ANGLE_RESOLUTION);
     }
-    else if (pl->home_base != NULL)
+    else if (pl->home_base != nullptr)
     {
         pos = pl->home_base->pos;
         dir = pl->home_base->dir;
@@ -538,7 +537,7 @@ int Init_player(int ind, shipshape_t *ship, int type)
      */
     assert(pl->wall_time == 0);
     assert(pl->turnspeed == 0);
-    assert(pl->conn == NULL);
+    assert(pl->conn == nullptr);
 
     pl->dir = DIR_UP;
     Player_set_float_dir(pl, (double)pl->dir);
@@ -707,7 +706,7 @@ void Update_score_table(void)
             {
                 player_t *pl_i = Player_by_index(i);
 
-                if (pl_i->conn != NULL)
+                if (pl_i->conn != nullptr)
                     Send_score(pl_i->conn, pl->id, Get_Score(pl), pl->pl_life,
                                pl->mychar, pl->alliance);
             }
@@ -730,7 +729,7 @@ void Update_score_table(void)
                 {
                     player_t *pl_i = Player_by_index(i);
 
-                    if (pl_i->conn != NULL)
+                    if (pl_i->conn != nullptr)
                         Send_timing(pl_i->conn, pl->id, check, pl->round);
                 }
             }
@@ -872,7 +871,7 @@ void Check_team_members(int team)
     for (members = i = 0; i < NumPlayers; i++)
     {
         pl = Player_by_index(i);
-        if (!Player_is_tank(pl) && pl->team == team && pl->home_base != NULL)
+        if (!Player_is_tank(pl) && pl->team == team && pl->home_base != nullptr)
             members++;
     }
     teamp = Team_by_index(team);
@@ -883,7 +882,7 @@ void Check_team_members(int team)
         for (i = 0; i < NumPlayers; i++)
         {
             pl = Player_by_index(i);
-            if (!Player_is_tank(pl) && pl->team == team && pl->home_base != NULL)
+            if (!Player_is_tank(pl) && pl->team == team && pl->home_base != nullptr)
                 warn("Team %d currently has player %d: \"%s\"",
                      team, i + 1, pl->name);
         }
@@ -1634,7 +1633,7 @@ void Delete_player(player_t *pl)
     {
         player_t *pl_i = Player_by_index(i);
 
-        if (pl_i->conn != NULL)
+        if (pl_i->conn != nullptr)
             Send_leave(pl_i->conn, id);
         else if (Player_is_tank(pl_i))
         {
@@ -1652,7 +1651,7 @@ void Delete_player(player_t *pl)
 
 void Add_spectator(player_t *pl)
 {
-    pl->home_base = NULL;
+    pl->home_base = nullptr;
     pl->team = 0;
     GetIndArray[pl->id] = spectatorStart + NumSpectators;
     Player_set_score(pl, -6666);
@@ -1683,9 +1682,9 @@ void Detach_ball(player_t *pl, ballobject_t *ball)
 {
     int i, cnt;
 
-    if (ball == NULL || ball == pl->ball)
+    if (ball == nullptr || ball == pl->ball)
     {
-        pl->ball = NULL;
+        pl->ball = nullptr;
         CLR_BIT(pl->used, USES_CONNECTOR);
     }
 
@@ -1697,7 +1696,7 @@ void Detach_ball(player_t *pl, ballobject_t *ball)
 
             if (obj->type == OBJ_BALL && obj->id == pl->id)
             {
-                if (ball == NULL || ball == BALL_PTR(obj))
+                if (ball == nullptr || ball == BALL_PTR(obj))
                     obj->id = NO_ID;
                 /* Don't reset owner so you can throw balls */
                 else
@@ -1755,7 +1754,7 @@ void Player_death_reset(player_t *pl, bool add_rank_death)
     if (Player_is_paused(pl))
         return;
 
-    Detach_ball(pl, NULL);
+    Detach_ball(pl, nullptr);
     if (Player_uses_autopilot(pl) || Player_is_hoverpaused(pl))
     {
         CLR_BIT(pl->pl_status, HOVERPAUSE);

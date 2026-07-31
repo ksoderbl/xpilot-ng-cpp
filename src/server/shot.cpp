@@ -37,7 +37,6 @@
 #include "server.h"
 #include "ship.h"
 
-#define SERVER
 #include "xpconfig.h"
 #include "serverconst.h"
 
@@ -202,7 +201,7 @@ void Place_general_mine(int id, int team, int status,
             {
                 player_t *pl_i = Player_by_index(i);
 
-                if (pl_i->home_base == NULL)
+                if (pl_i->home_base == nullptr)
                     continue;
                 if (pl_i->id != pl->id && !Team_immune(pl_i->id, pl->id) && !Player_is_tank(pl_i))
                 {
@@ -239,7 +238,7 @@ void Place_general_mine(int id, int team, int status,
     {
         mineobject_t *mine;
 
-        if ((mine = MINE_PTR(Object_allocate())) == NULL)
+        if ((mine = MINE_PTR(Object_allocate())) == nullptr)
             break;
 
         mine->type = OBJ_MINE;
@@ -634,7 +633,7 @@ void Fire_general_shot(int id, int team, bool cannon,
 #ifndef HEAT_LOCK
             lock = NO_ID;
 #else  /* HEAT_LOCK */
-            if (pl == NULL)
+            if (pl == nullptr)
                 lock = target_id;
             else
             {
@@ -654,7 +653,7 @@ void Fire_general_shot(int id, int team, bool cannon,
             break;
 
         case OBJ_SMART_SHOT:
-            if (pl == NULL)
+            if (pl == nullptr)
                 lock = target_id;
             else
             {
@@ -927,7 +926,7 @@ void Fire_general_shot(int id, int team, bool cannon,
     {
         object_t *shot;
 
-        if ((shot = Object_allocate()) == NULL)
+        if ((shot = Object_allocate()) == nullptr)
             break;
 
         shot->obj_life = life / minis;
@@ -1218,7 +1217,7 @@ void Delete_shot(int ind)
                 player_t *pl_i = Player_by_index(i);
 
                 if (pl_i->ball == ball)
-                    pl_i->ball = NULL;
+                    pl_i->ball = nullptr;
             }
         }
         if (ball->ball_owner == NO_ID)
@@ -1617,7 +1616,7 @@ void Update_missile(missileobject_t *missile)
 
             /* Get player and set min to distance */
             pl = Player_by_id(heat->heat_lock_id);
-            /* kps - bandaid since Player_by_id can return NULL. */
+            /* kps - bandaid since Player_by_id can return nullptr. */
             if (!pl)
                 return;
             engine = Ship_get_engine_clpos(pl->ship, pl->dir);
@@ -1628,7 +1627,7 @@ void Update_missile(missileobject_t *missile)
         else
         {
             /* No player. Number of moves so that new target is searched */
-            pl = NULL;
+            pl = nullptr;
             heat->heat_count = HEAT_WIDE_TIMEOUT + HEAT_WIDE_ERROR;
         }
         if (pl && Player_is_thrusting(pl))
@@ -1744,7 +1743,7 @@ void Update_missile(missileobject_t *missile)
         /*NOTREACHED*/
         return;
 
-    /* kps - Player_by_id might return NULL. */
+    /* kps - Player_by_id might return nullptr. */
     if (!pl)
         return;
 

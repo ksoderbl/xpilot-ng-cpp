@@ -37,7 +37,6 @@
 
 #include "server.h"
 
-#define SERVER
 #include "xpconfig.h"
 #include "serverconst.h"
 #include "defaults.h"
@@ -475,7 +474,7 @@ static FILE *fileOpen(const char *file)
         if (!copyFilename(file))
         {
             fclose(fp);
-            fp = NULL;
+            fp = nullptr;
         }
     }
     return fp;
@@ -509,7 +508,7 @@ static bool hasDirectoryPrefix(const char *filename)
 {
     static const char sep = '/';
 
-    return (strchr(filename, sep) != NULL ? true : false);
+    return (strchr(filename, sep) != nullptr ? true : false);
 }
 
 /*
@@ -568,9 +567,9 @@ static void closeCompressedFile(FILE *fp)
 
 static FILE *openCompressedFile(const char *filename)
 {
-    FILE *fp = NULL;
-    char *cmdline = NULL;
-    char *newname = NULL;
+    FILE *fp = nullptr;
+    char *cmdline = nullptr;
+    char *newname = nullptr;
 
     usePclose = false;
     if (!isCompressed(filename))
@@ -579,7 +578,7 @@ static FILE *openCompressedFile(const char *filename)
             return fileOpen(filename);
         newname = fileAddExtension(filename, Conf_zcat_ext());
         if (!newname)
-            return NULL;
+            return nullptr;
         filename = newname;
     }
     if (access(filename, 4) == 0)
@@ -596,7 +595,7 @@ static FILE *openCompressedFile(const char *filename)
                 if (!copyFilename(filename))
                 {
                     closeCompressedFile(fp);
-                    fp = NULL;
+                    fp = nullptr;
                 }
             }
         }
@@ -648,7 +647,7 @@ static FILE *openCompressedFile(const char *filename)
  */
 static FILE *openMapFile(const char *filename)
 {
-    FILE *fp = NULL;
+    FILE *fp = nullptr;
     char *newname, *newpath;
 
     fp = openCompressedFile(filename);
@@ -679,7 +678,7 @@ static FILE *openMapFile(const char *filename)
     {
         newpath = fileJoin(Conf_mapdir(), filename);
         if (!newpath)
-            return NULL;
+            return nullptr;
         if (hasDirectoryPrefix(newpath))
             /*
              * call recursively.
@@ -689,7 +688,7 @@ static FILE *openMapFile(const char *filename)
         if (fp)
             return fp;
     }
-    return NULL;
+    return nullptr;
 }
 
 static void closeMapFile(FILE *fp)
@@ -715,7 +714,7 @@ bool parseDefaultsFile(const char *filename)
     FILE *ifile;
     bool result;
 
-    if ((ifile = openDefaultsFile(filename)) == NULL)
+    if ((ifile = openDefaultsFile(filename)) == nullptr)
         return false;
 
     result = parseOpenFile(ifile, OPT_DEFAULTS);
@@ -732,7 +731,7 @@ bool parsePasswordFile(const char *filename)
     FILE *ifile;
     bool result;
 
-    if ((ifile = openDefaultsFile(filename)) == NULL)
+    if ((ifile = openDefaultsFile(filename)) == nullptr)
         return false;
 
     result = parseOpenFile(ifile, OPT_PASSWORD);
@@ -749,7 +748,7 @@ bool parseMapFile(const char *filename)
     FILE *ifile;
     bool result;
 
-    if ((ifile = openMapFile(filename)) == NULL)
+    if ((ifile = openMapFile(filename)) == nullptr)
         return false;
 
     result = parseOpenFile(ifile, OPT_MAP);
@@ -764,7 +763,7 @@ void expandKeyword(const char *keyword)
     char *p;
 
     p = Option_get_value(keyword, &expand_origin);
-    if (p == NULL)
+    if (p == nullptr)
         warn("Can't expand '%s' because it has not been defined.\n",
              keyword);
     else

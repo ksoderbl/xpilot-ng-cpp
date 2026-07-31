@@ -41,7 +41,6 @@
 #include "serverrules.h"
 #include "srecord.h"
 
-#define SERVER
 #include "xpconfig.h"
 #include "serverconst.h"
 
@@ -105,7 +104,7 @@ static option_desc opts[] = {
     {"help",
      "help",
      "0",
-     NULL,
+     nullptr,
      valVoid,
      tuner_none,
      "Print out this help message.\n",
@@ -113,7 +112,7 @@ static option_desc opts[] = {
     {"version",
      "version",
      "0",
-     NULL,
+     nullptr,
      valVoid,
      tuner_none,
      "Print version information.\n",
@@ -121,7 +120,7 @@ static option_desc opts[] = {
     {"dump",
      "dump",
      "0",
-     NULL,
+     nullptr,
      valVoid,
      tuner_none,
      "Print all options and their default values in defaultsfile format.\n",
@@ -289,7 +288,7 @@ static option_desc opts[] = {
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"robotFile",
      "robotFile",
-     NULL,
+     nullptr,
      &options.robotFile,
      valString,
      tuner_none,
@@ -486,7 +485,7 @@ static option_desc opts[] = {
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"mapFileName",
      "map",
-     NULL,
+     nullptr,
      &options.mapFileName,
      valString,
      tuner_none,
@@ -510,7 +509,7 @@ static option_desc opts[] = {
      OPT_ORIGIN_ANY | OPT_VISIBLE},
     {"mapData",
      "mapData",
-     NULL,
+     nullptr,
      &options.mapData,
      valString,
      tuner_none,
@@ -526,7 +525,7 @@ static option_desc opts[] = {
      OPT_COMMAND | OPT_DEFAULTS | OPT_VISIBLE},
     {"serverHost",
      "serverHost",
-     NULL,
+     nullptr,
      &options.serverHost,
      valString,
      tuner_none,
@@ -534,7 +533,7 @@ static option_desc opts[] = {
      OPT_COMMAND | OPT_DEFAULTS | OPT_VISIBLE},
     {"greeting",
      "xpilotGreeting",
-     NULL,
+     nullptr,
      &options.greeting,
      valString,
      tuner_dummy,
@@ -1560,7 +1559,7 @@ static option_desc opts[] = {
     {
         "defaultsFileName",
         "defaults",
-        NULL,
+        nullptr,
         &options.defaultsFileName,
         valString,
         tuner_none,
@@ -1570,7 +1569,7 @@ static option_desc opts[] = {
     {
         "passwordFileName",
         "passwordFileName",
-        NULL,
+        nullptr,
         &options.passwordFileName,
         valString,
         tuner_none,
@@ -1580,7 +1579,7 @@ static option_desc opts[] = {
     {
         "motdFileName",
         "motd",
-        NULL,
+        nullptr,
         &options.motdFileName,
         valString,
         tuner_none,
@@ -1589,7 +1588,7 @@ static option_desc opts[] = {
     },
     {"scoreTableFileName",
      "scoretable",
-     NULL,
+     nullptr,
      &options.scoreTableFileName,
      valString,
      tuner_none,
@@ -1617,7 +1616,7 @@ static option_desc opts[] = {
      OPT_COMMAND | OPT_DEFAULTS},
     {"rankFileName",
      "rankFileName",
-     NULL,
+     nullptr,
      &options.rankFileName,
      valString,
      tuner_none,
@@ -1626,7 +1625,7 @@ static option_desc opts[] = {
      OPT_COMMAND | OPT_DEFAULTS},
     {"rankWebpageFileName",
      "rankWebpage",
-     NULL,
+     nullptr,
      &options.rankWebpageFileName,
      valString,
      tuner_none,
@@ -1634,7 +1633,7 @@ static option_desc opts[] = {
      OPT_COMMAND | OPT_DEFAULTS},
     {"rankWebpageCSS",
      "rankCSS",
-     NULL,
+     nullptr,
      &options.rankWebpageCSS,
      valString,
      tuner_none,
@@ -2892,7 +2891,7 @@ static option_desc opts[] = {
 #endif
     {"password",
      "password",
-     NULL,
+     nullptr,
      &options.password,
      valString,
      tuner_dummy,
@@ -2976,7 +2975,7 @@ static option_desc opts[] = {
      OPT_COMMAND | OPT_DEFAULTS},
     {"recordFileName",
      "recordFile",
-     NULL,
+     nullptr,
      &options.recordFileName,
      valString,
      tuner_none,
@@ -3254,23 +3253,23 @@ static void Init_default_options(void)
 {
     option_desc *desc;
 
-    if ((desc = Find_option_by_name("mapFileName")) == NULL)
+    if ((desc = Find_option_by_name("mapFileName")) == nullptr)
         dumpcore("Could not find map file option");
     desc->defaultValue = Conf_default_map();
 
-    if ((desc = Find_option_by_name("motdFileName")) == NULL)
+    if ((desc = Find_option_by_name("motdFileName")) == nullptr)
         dumpcore("Could not find motd file option");
     desc->defaultValue = Conf_servermotdfile();
 
-    if ((desc = Find_option_by_name("robotFile")) == NULL)
+    if ((desc = Find_option_by_name("robotFile")) == nullptr)
         dumpcore("Could not find robot file option");
     desc->defaultValue = Conf_robotfile();
 
-    if ((desc = Find_option_by_name("defaultsFileName")) == NULL)
+    if ((desc = Find_option_by_name("defaultsFileName")) == nullptr)
         dumpcore("Could not find defaults file option");
     desc->defaultValue = Conf_defaults_file_name();
 
-    if ((desc = Find_option_by_name("passwordFileName")) == NULL)
+    if ((desc = Find_option_by_name("passwordFileName")) == nullptr)
         dumpcore("Could not find password file option");
     desc->defaultValue = Conf_password_file_name();
 }
@@ -3309,10 +3308,10 @@ void Free_options(void)
                 char **str_ptr = (char **)opts[i].variable;
                 char *str = *str_ptr;
 
-                if (str != NULL && str != opts[i].defaultValue)
+                if (str != nullptr && str != opts[i].defaultValue)
                 {
                     free(str);
-                    *str_ptr = NULL;
+                    *str_ptr = nullptr;
                 }
             }
         }
@@ -3328,7 +3327,7 @@ option_desc *Find_option_by_name(const char *name)
         if (!strcasecmp(opts[j].commandLineOption, name) || !strcasecmp(opts[j].name, name))
             return (&opts[j]);
     }
-    return NULL;
+    return nullptr;
 }
 
 void Check_playerlimit(void)
@@ -3424,9 +3423,9 @@ void Timing_setup(void)
     }
 
 #ifdef SELECT_SCHED
-    install_timer_tick(NULL, FPS);
+    install_timer_tick(nullptr, FPS);
 #else
-    install_timer_tick(NULL, options.timerResolution ? options.timerResolution
-                                                     : FPS);
+    install_timer_tick(nullptr, options.timerResolution ? options.timerResolution
+                                                        : FPS);
 #endif
 }

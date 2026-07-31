@@ -41,7 +41,6 @@
 #include "update.h"
 #include "server.h"
 
-#define SERVER
 #include "xpconfig.h"
 #include "serverconst.h"
 
@@ -77,8 +76,8 @@ static bool Player_lock_allowed(player_t *pl, player_t *lock_pl)
 {
     world_t *world = &World;
 
-    /* we can never lock on ourselves, nor on NULL. */
-    if (lock_pl == NULL || pl->id == lock_pl->id)
+    /* we can never lock on ourselves, nor on nullptr. */
+    if (lock_pl == nullptr || pl->id == lock_pl->id)
         return false;
 
     /* Spectators can watch freely */
@@ -160,7 +159,7 @@ int Player_lock_closest(player_t *pl, bool next)
     world_t *world = &World;
     int i;
     double dist = 0.0, best, l;
-    player_t *lock_pl = NULL, *new_pl = NULL;
+    player_t *lock_pl = nullptr, *new_pl = nullptr;
 
     if (!next)
         CLR_BIT(pl->lock.tagged, LOCK_PLAYER);
@@ -194,7 +193,7 @@ int Player_lock_closest(player_t *pl, bool next)
             new_pl = pl_i;
         }
     }
-    if (new_pl == NULL)
+    if (new_pl == nullptr)
         return 0;
 
     SET_BIT(pl->lock.tagged, LOCK_PLAYER);
@@ -206,9 +205,9 @@ int Player_lock_closest(player_t *pl, bool next)
 static void Player_change_home(player_t *pl)
 {
     world_t *world = &World;
-    player_t *pl2 = NULL;
-    base_t *base2 = NULL;
-    base_t *enemybase = NULL;
+    player_t *pl2 = nullptr;
+    base_t *base2 = nullptr;
+    base_t *enemybase = nullptr;
     double l, dist = 1e19;
     int i;
 
@@ -233,7 +232,7 @@ static void Player_change_home(player_t *pl)
         }
     }
 
-    if (base2 == NULL)
+    if (base2 == nullptr)
     {
         if (enemybase)
             Set_player_message_f(pl, "Base belongs to team %d. "
@@ -265,7 +264,7 @@ static void Player_change_home(player_t *pl)
 
 #if 0
     /* kps - perhaps this isn't a good idea. */
-    if (pl2 != NULL
+    if (pl2 != nullptr
     && Players_are_teammates(pl, pl2)
     && Get_Score(pl) <= Get_Score(pl2)) {
     Set_player_message(pl, "You must have a higher score than your "
@@ -278,7 +277,7 @@ static void Player_change_home(player_t *pl)
     pl->home_base = base2;
     sound_play_all(CHANGE_HOME_SOUND);
 
-    if (pl2 != NULL)
+    if (pl2 != nullptr)
     {
         Pick_startpos(pl2);
         Set_message_f("%s has taken over %s's home base.",
@@ -294,7 +293,7 @@ static void Player_change_home(player_t *pl)
     {
         player_t *pl_i = Player_by_index(i);
 
-        if (pl_i->conn != NULL)
+        if (pl_i->conn != nullptr)
             Send_base(pl_i->conn, pl->id, pl->home_base->ind);
     }
     for (i = 0; i < NumSpectators; i++)
@@ -307,7 +306,7 @@ static void Player_change_home(player_t *pl)
         {
             player_t *pl_i = Player_by_index(i);
 
-            if (pl_i->conn != NULL)
+            if (pl_i->conn != nullptr)
                 Send_base(pl_i->conn, pl2->id, pl2->home_base->ind);
         }
         for (i = 0; i < NumSpectators; i++)
@@ -551,7 +550,7 @@ void Pause_player(player_t *pl, bool on)
             {
                 player_t *pl_i = Player_by_index(i);
 
-                if (pl_i->conn != NULL)
+                if (pl_i->conn != nullptr)
                 {
                     Send_base(pl_i->conn, NO_ID, pl->home_base->ind);
                     Send_team(pl_i->conn, pl->id, 0);
@@ -564,11 +563,11 @@ void Pause_player(player_t *pl, bool on)
                 Send_base(pl_i->conn, NO_ID, pl->home_base->ind);
                 Send_team(pl_i->conn, pl->id, 0);
             }
-            pl->home_base = NULL;
+            pl->home_base = nullptr;
         }
         updateScores = true;
 
-        Detach_ball(pl, NULL);
+        Detach_ball(pl, nullptr);
         if (Player_uses_autopilot(pl) || Player_is_hoverpaused(pl))
         {
             CLR_BIT(pl->pl_status, HOVERPAUSE);
@@ -614,7 +613,7 @@ void Pause_player(player_t *pl, bool on)
         /* there seems to be a race condition if idleTime is set later */
         pl->idleTime = 0;
 
-        if (pl->home_base == NULL)
+        if (pl->home_base == nullptr)
         {
             int team = pl->pl_prev_team;
 
@@ -658,7 +657,7 @@ int Handle_keyboard(player_t *pl)
 
     /*assert(!Player_is_killed(pl));*/
 
-    for (key = 0; key < NUM_KEYS; key++)
+    for (key = 0; key < NUM_SERVER_KEYS; key++)
     {
         /* Find first keyv element where last_keyv isn't equal to prev_keyv. */
         if (pl->last_keyv[key / BITV_SIZE] == pl->prev_keyv[key / BITV_SIZE])
@@ -670,10 +669,10 @@ int Handle_keyboard(player_t *pl)
         /* Now check which specific key it is that has changed state. */
         while (BITV_ISSET(pl->last_keyv, key) == BITV_ISSET(pl->prev_keyv, key))
         {
-            if (++key >= NUM_KEYS)
+            if (++key >= NUM_SERVER_KEYS)
                 break;
         }
-        if (key >= NUM_KEYS)
+        if (key >= NUM_SERVER_KEYS)
             break;
 
         pressed = (BITV_ISSET(pl->last_keyv, key) != 0) ? true : false;
@@ -831,7 +830,7 @@ int Handle_keyboard(player_t *pl)
                 break;
 
             case KEY_DROP_BALL:
-                Detach_ball(pl, NULL);
+                Detach_ball(pl, nullptr);
                 break;
 
             case KEY_FIRE_SHOT:

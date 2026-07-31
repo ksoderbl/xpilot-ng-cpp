@@ -41,8 +41,6 @@
 #include "server.h"
 #include "ship.h"
 
-#define SERVER
-
 #include "bit.h"
 #include "click.h"
 #include "const.h"
@@ -254,13 +252,13 @@ static void Make_asteroid(clpos_t pos, int size, int dir, double speed)
     assert(shape);
     if (shape_is_inside(pos.cx, pos.cy,
                         NONBALL_BIT, /* kps - OK ??? */
-                        NULL,
+                        nullptr,
                         shape,
                         dir) != NO_GROUP)
         return;
 
     asteroid = WIRE_PTR(Object_allocate());
-    if (asteroid == NULL)
+    if (asteroid == nullptr)
         return;
 
     asteroid->color = WHITE;
@@ -311,7 +309,7 @@ static void Place_asteroid(void)
     if (Num_asteroidConcs() > 0 && rfrac() < options.asteroidConcentratorProb)
         con = AsteroidConc_by_index((int)(rfrac() * Num_asteroidConcs()));
     else
-        con = NULL;
+        con = nullptr;
 
     /*
      * We bail out after some unsuccessful attempts to avoid wasting

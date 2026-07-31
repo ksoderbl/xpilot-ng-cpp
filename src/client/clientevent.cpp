@@ -53,8 +53,8 @@
 
 #define MAX_BUTTON_DEFS 10
 
-static BITV_DECL(keyv, NUM_KEYS);
-static uint8_t keyv_new[NUM_KEYS];
+static BITV_DECL(keyv, NUM_SERVER_KEYS);
+static uint8_t keyv_new[NUM_SERVER_KEYS];
 
 keys_t buttonDefs[MAX_POINTER_BUTTONS][MAX_BUTTON_DEFS + 1];
 
@@ -163,7 +163,7 @@ int Key_init(void)
         exit(1);
     }
     memset(keyv, 0, sizeof keyv);
-    for (i = 0; i < NUM_KEYS; i++)
+    for (i = 0; i < NUM_SERVER_KEYS; i++)
         keyv_new[i] = 0;
 
     BITV_SET(keyv, KEY_SHIELD);
@@ -402,7 +402,7 @@ static bool Key_press_exit(void)
 
 static int Key_get_count(keys_t key)
 {
-    if (key >= NUM_KEYS)
+    if (key >= NUM_SERVER_KEYS)
         return -1;
 
     return keyv_new[key];
@@ -410,7 +410,7 @@ static int Key_get_count(keys_t key)
 
 static bool Key_inc_count(keys_t key)
 {
-    if (key >= NUM_KEYS)
+    if (key >= NUM_SERVER_KEYS)
         return false;
 
     if (keyv_new[key] < 255)
@@ -424,7 +424,7 @@ static bool Key_inc_count(keys_t key)
 
 static bool Key_dec_count(keys_t key)
 {
-    if (key >= NUM_KEYS)
+    if (key >= NUM_SERVER_KEYS)
         return false;
 
     if (keyv_new[key] > 0)
@@ -441,7 +441,7 @@ void Key_clear_counts(void)
     int i;
     bool change = false;
 
-    for (i = 0; i < NUM_KEYS; i++)
+    for (i = 0; i < NUM_SERVER_KEYS; i++)
     {
         if (keyv_new[i] > 0)
         {
@@ -603,7 +603,7 @@ bool Key_press(keys_t key)
         break;
     }
 
-    if (key < NUM_KEYS)
+    if (key < NUM_SERVER_KEYS)
         BITV_SET(keyv, key);
 
     return true;
@@ -699,7 +699,7 @@ bool Key_release(keys_t key)
     default:
         break;
     }
-    if (key < NUM_KEYS)
+    if (key < NUM_SERVER_KEYS)
         BITV_CLR(keyv, key);
 
     return true;

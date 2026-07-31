@@ -39,7 +39,6 @@
 #include "frame.h"
 #include "update.h"
 
-#define SERVER
 #include "xpconfig.h"
 #include "serverconst.h"
 
@@ -391,7 +390,7 @@ void Parse_robot_file(void)
                 {
                     end_of_record = 1;
                     fclose(fp);
-                    fp = NULL;
+                    fp = nullptr;
                 }
                 else if (*buf == '\n')
                     end_of_record = 1;
@@ -486,7 +485,7 @@ void Parse_robot_file(void)
     }
 
 #ifdef DEVELOPMENT
-    if (getenv("XPILOTS_DUMP_ROBOTS_TO_ROBOT_FILE") != NULL)
+    if (getenv("XPILOTS_DUMP_ROBOTS_TO_ROBOT_FILE") != nullptr)
     {
         if (options.robotFile && *options.robotFile)
         {
@@ -654,7 +653,7 @@ static void Robot_create(void)
     world_t *world = &World;
     player_t *robot;
     robot_t *rob;
-    team_t *teamp = NULL;
+    team_t *teamp = nullptr;
     int i, num, most_used, least_used;
     robot_data_t *data, *new_data;
     robot_type_t *rob_type;
@@ -662,12 +661,12 @@ static void Robot_create(void)
     if (peek_ID() == 0)
         return;
 
-    if ((new_data = XMALLOC(robot_data_t, 1)) == NULL)
+    if ((new_data = XMALLOC(robot_data_t, 1)) == nullptr)
     {
         error("malloc robot_data");
         return;
     }
-    new_data->private_data = NULL;
+    new_data->private_data = nullptr;
 
     most_used = 0;
     for (i = 0; i < MAX_ROBOTS; i++)
@@ -710,7 +709,7 @@ static void Robot_create(void)
     rob_type = &robot_types[new_data->robot_types_ind];
 
     Init_player(NumPlayers,
-                options.allowShipShapes ? Parse_shape_str(rob->shape) : NULL,
+                options.allowShipShapes ? Parse_shape_str(rob->shape) : nullptr,
                 PL_TYPE_ROBOT);
 
     robot = Player_by_index(NumPlayers);
@@ -752,7 +751,7 @@ static void Robot_create(void)
     {
         player_t *pl_i = Player_by_index(i);
 
-        if (pl_i->conn != NULL)
+        if (pl_i->conn != nullptr)
         {
             Send_player(pl_i->conn, robot->id);
             Send_base(pl_i->conn, robot->id, robot->home_base->ind);
@@ -791,9 +790,9 @@ void Robot_delete(player_t *pl, bool kicked)
 {
     int i;
 
-    if (pl == NULL)
+    if (pl == nullptr)
     {
-        player_t *low_pl = NULL;
+        player_t *low_pl = nullptr;
         double low_score = (double)LONG_MAX;
 
         /*
@@ -1024,7 +1023,7 @@ void Robot_update(bool tick)
         if (NumRobots > 0)
         {
             if ((!options.baselessPausing && num_playing_ships > Num_bases()) || (num_any_ships > NUM_IDS) || (num_playing_ships > options.maxRobots && NumRobots > options.minRobots))
-                Robot_delete(NULL, false);
+                Robot_delete(nullptr, false);
         }
     }
 

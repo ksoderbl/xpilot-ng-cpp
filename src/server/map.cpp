@@ -45,7 +45,6 @@
 #include "score.h"
 #include "server.h"
 
-#define SERVER
 #include "xpconfig.h"
 #include "serverconst.h"
 
@@ -298,7 +297,7 @@ int World_place_check(world_t *world, clpos_t pos, int ind)
 
         /*
          * kps hack - we can't use Check_by_index because it might return
-         * NULL since ind can here be >= World.NumChecks.
+         * nullptr since ind can here be >= World.NumChecks.
          */
         check = &World.checks[ind];
         if (World_contains_clpos(world, check->pos))
@@ -422,17 +421,17 @@ static bool World_alloc(void)
     vector_t *grav_line;
     vector_t **grav_pointer;
 
-    assert(World.block == NULL);
-    assert(World.gravity == NULL);
+    assert(World.block == nullptr);
+    assert(World.gravity == nullptr);
 
     World.block = (uint8_t **)
         malloc(sizeof(uint8_t *) * World.x + World.x * sizeof(uint8_t) * World.y);
     World.gravity = (vector_t **)
         malloc(sizeof(vector_t *) * World.x + World.x * sizeof(vector_t) * World.y);
 
-    assert(World.checks == NULL);
+    assert(World.checks == nullptr);
 
-    if (World.block == NULL || World.gravity == NULL)
+    if (World.block == nullptr || World.gravity == nullptr)
     {
         World_free();
         error("Couldn't allocate memory for map");

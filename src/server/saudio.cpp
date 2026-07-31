@@ -32,7 +32,6 @@
 
 #include "server.h"
 
-#define SERVER
 #include "xpconfig.h"
 #include "serverconst.h"
 
@@ -80,7 +79,7 @@ static void queue_audio(player_t *pl, int sound_ind, int volume)
 
     a->index = sound_ind;
     a->volume = volume;
-    a->next = NULL;
+    a->next = nullptr;
 
     if (prev)
         prev->next = a;
@@ -92,7 +91,7 @@ int sound_player_init(player_t *pl)
 {
     SDBG(printf("sound_player_init %p\n", pl));
 
-    pl->audio = NULL;
+    pl->audio = nullptr;
 
     return 0;
 }
@@ -204,7 +203,7 @@ void sound_play_queued(player_t *pl)
     SDBG(printf("sound_play_sensors %p\n", pl));
 
     p = (AudioQPtr)pl->audio;
-    pl->audio = NULL;
+    pl->audio = nullptr;
 
     while (p)
     {
@@ -222,7 +221,7 @@ void sound_close(player_t *pl)
     SDBG(printf("sound_close %p\n", pl));
 
     p = (AudioQPtr)pl->audio;
-    pl->audio = NULL;
+    pl->audio = nullptr;
 
     while (p)
     {

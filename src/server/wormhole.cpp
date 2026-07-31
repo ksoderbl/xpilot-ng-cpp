@@ -128,7 +128,7 @@ bool Wormhole_hitfunc(group_t *gp, const move_t *move)
     if (wormhole->type == WORM_OUT)
         return false;
 
-    if (obj == NULL)
+    if (obj == nullptr)
         return true;
 
     if (BIT(obj->obj_status, WARPED | WARPING))
@@ -154,7 +154,7 @@ static void Warp_balls(player_t *pl, clpos_t dest)
      * Don't connect to balls while warping.
      */
     if (Player_uses_connector(pl))
-        pl->ball = NULL;
+        pl->ball = nullptr;
 
     if (BIT(pl->have, HAS_BALL))
     {

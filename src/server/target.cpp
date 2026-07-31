@@ -40,7 +40,6 @@
 #include "server.h"
 #include "ship.h"
 
-#define SERVER
 #include "xpconfig.h"
 #include "serverconst.h"
 
@@ -234,7 +233,7 @@ void Object_hits_target2(object_t *obj, target_t *targ, double player_cost)
     if (!somebody)
         return;
 
-    Handle_Scoring(SCORE_TARGET, kp, NULL, targ, NULL);
+    Handle_Scoring(SCORE_TARGET, kp, nullptr, targ, nullptr);
 
     sound_play_sensors(targ->pos, DESTROY_TARGET_SOUND);
 

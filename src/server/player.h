@@ -290,11 +290,11 @@ typedef struct
 
     int ecmcount; /* number of active ecms */
 
-    connection_t *conn; /* connection index, NULL if robot */
+    connection_t *conn; /* connection index, nullptr if robot */
     unsigned version;   /* XPilot version number of client */
 
-    BITV_DECL(last_keyv, NUM_KEYS); /* Keyboard state */
-    BITV_DECL(prev_keyv, NUM_KEYS); /* Keyboard state */
+    BITV_DECL(last_keyv, NUM_SERVER_KEYS); /* Keyboard state */
+    BITV_DECL(prev_keyv, NUM_SERVER_KEYS); /* Keyboard state */
 
     long frame_last_busy; /* When player touched keyboard. */
 
@@ -335,7 +335,7 @@ int GetInd(int id);
 static inline player_t *Player_by_index(int ind)
 {
     if (ind < 0 || ind >= playerArrayNumber)
-        return NULL;
+        return nullptr;
     return PlayersArray[ind];
 }
 

@@ -35,7 +35,6 @@
 
 #include "cannon.h"
 
-#define SERVER
 #include "bit.h"
 #include "commonmacros.h"
 #include "const.h"
@@ -212,22 +211,22 @@ void Create_blockmap_from_polygons(void)
 
             pos = Block_get_center_clpos(blk);
 
-            if (shape_is_inside(pos.cx + 1, pos.cy, 0, NULL, &r_wire, 0) == 0)
+            if (shape_is_inside(pos.cx + 1, pos.cy, 0, nullptr, &r_wire, 0) == 0)
             {
                 r_inside = true;
                 num_inside++;
             }
-            if (shape_is_inside(pos.cx, pos.cy + 1, 0, NULL, &u_wire, 0) == 0)
+            if (shape_is_inside(pos.cx, pos.cy + 1, 0, nullptr, &u_wire, 0) == 0)
             {
                 u_inside = true;
                 num_inside++;
             }
-            if (shape_is_inside(pos.cx - 1, pos.cy, 0, NULL, &l_wire, 0) == 0)
+            if (shape_is_inside(pos.cx - 1, pos.cy, 0, nullptr, &l_wire, 0) == 0)
             {
                 l_inside = true;
                 num_inside++;
             }
-            if (shape_is_inside(pos.cx, pos.cy - 1, 0, NULL, &d_wire, 0) == 0)
+            if (shape_is_inside(pos.cx, pos.cy - 1, 0, nullptr, &d_wire, 0) == 0)
             {
                 d_inside = true;
                 num_inside++;
@@ -312,11 +311,11 @@ void Create_blockmap_from_polygons(void)
 
             pos = Block_get_center_clpos(blk);
             group = shape_is_inside(pos.cx, pos.cy,
-                                    BALL_BIT, NULL, &filled_wire, 0);
+                                    BALL_BIT, nullptr, &filled_wire, 0);
             if (group == NO_GROUP || group == 0)
                 continue;
             gp = groupptr_by_id(group);
-            if (gp == NULL)
+            if (gp == nullptr)
                 continue;
             if (gp->type == TREASURE && gp->hitmask == NONBALL_BIT)
                 World_set_block(world, blk, TREASURE);
@@ -411,10 +410,10 @@ setup_t *Xpmap_init_setup(void)
     setup_t *setup;
 
     numblocks = World.x * World.y;
-    if ((mapdata = XMALLOC(uint8_t, numblocks)) == NULL)
+    if ((mapdata = XMALLOC(uint8_t, numblocks)) == nullptr)
     {
         error("No memory for mapdata");
-        return NULL;
+        return nullptr;
     }
     memset(mapdata, SETUP_SPACE, numblocks);
     mapptr = mapdata;
@@ -699,12 +698,12 @@ setup_t *Xpmap_init_setup(void)
         {
             warn("Map compression error (%d)", size);
             free(mapdata);
-            return NULL;
+            return nullptr;
         }
-        if ((mapdata = XREALLOC(uint8_t, mapdata, size)) == NULL)
+        if ((mapdata = XREALLOC(uint8_t, mapdata, size)) == nullptr)
         {
             error("Cannot reallocate mapdata");
-            return NULL;
+            return nullptr;
         }
     }
 
@@ -712,11 +711,11 @@ setup_t *Xpmap_init_setup(void)
         printf("%s Block map compression ratio is %-4.2f%%\n",
                showtime(), 100.0 * size / numblocks);
 
-    if ((setup = (setup_t *)malloc(sizeof(setup_t) + size)) == NULL)
+    if ((setup = (setup_t *)malloc(sizeof(setup_t) + size)) == nullptr)
     {
         error("No memory to hold oldsetup");
         free(mapdata);
-        return NULL;
+        return nullptr;
     }
     memset(setup, 0, sizeof(setup_t) + size);
     memcpy(setup->map_data, mapdata, size);
@@ -747,7 +746,7 @@ void Xpmap_grok_map_data(void)
     char *s = options.mapData;
     blkpos_t blk;
 
-    if (options.mapData == NULL)
+    if (options.mapData == nullptr)
     {
         warn("Map didn't have any mapData.");
         return;

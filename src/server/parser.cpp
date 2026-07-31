@@ -33,7 +33,6 @@
 #include "fileparser.h"
 #include "server.h"
 
-#define SERVER
 #include "version.h"
 #include "xpconfig.h"
 #include "serverconst.h"
@@ -141,7 +140,7 @@ static void Parser_dump_options(char *progname)
 
             printf("%s:%*s%s\n", option_descs[j].name,
                    (len < 40) ? (40 - len) : 1, "",
-                   (option_descs[j].defaultValue != NULL)
+                   (option_descs[j].defaultValue != nullptr)
                        ? option_descs[j].defaultValue
                        : "");
         }
@@ -234,7 +233,7 @@ int Parser_list_option(int *ind, char *buf)
     if (i < 0 || i >= option_count)
         return -1;
 
-    if (opts[i].defaultValue == NULL)
+    if (opts[i].defaultValue == nullptr)
         return 0;
 
     if ((opts[i].flags & OPT_VISIBLE) == 0)
@@ -346,7 +345,7 @@ bool Parser(int argc, char **argv)
     char *fname;
     option_desc *desc;
 
-    options.mapData = NULL;
+    options.mapData = nullptr;
     options.mapWidth = 0;
     options.mapHeight = 0;
 
@@ -361,7 +360,7 @@ bool Parser(int argc, char **argv)
         if (argv[i][0] == '-' || argv[i][0] == '+')
         {
             desc = Find_option_by_name(argv[i] + 1);
-            if (desc != NULL)
+            if (desc != nullptr)
             {
                 if (desc->type == valBool)
                 {
@@ -396,7 +395,7 @@ bool Parser(int argc, char **argv)
     /*
      * Read local defaults file
      */
-    if ((fname = Option_get_value("defaultsFileName", NULL)) != NULL)
+    if ((fname = Option_get_value("defaultsFileName", nullptr)) != nullptr)
         parseDefaultsFile(fname);
     else
         parseDefaultsFile(Conf_defaults_file_name());
@@ -404,7 +403,7 @@ bool Parser(int argc, char **argv)
     /*
      * Read local password file
      */
-    if ((fname = Option_get_value("passwordFileName", NULL)) != NULL)
+    if ((fname = Option_get_value("passwordFileName", nullptr)) != nullptr)
         parsePasswordFile(fname);
     else
         parsePasswordFile(Conf_password_file_name());
@@ -415,9 +414,9 @@ bool Parser(int argc, char **argv)
      * If "mapFileName" is defined then read it's contents from file.
      * Else read a default map.
      */
-    if (!(fname = Option_get_value("mapData", NULL)))
+    if (!(fname = Option_get_value("mapData", nullptr)))
     {
-        if ((fname = Option_get_value("mapFileName", NULL)) != NULL)
+        if ((fname = Option_get_value("mapFileName", nullptr)) != nullptr)
         {
             if (!parseMapFile(fname))
             {
@@ -534,7 +533,7 @@ int Get_option_value(const char *name, char *value, size_t size)
         sprintf(value, "%s", *((bool *)opt->variable) ? "true" : "false");
         break;
     case valString:
-        if (*((char **)opt->variable) == NULL)
+        if (*((char **)opt->variable) == nullptr)
             return -4;
         strlcpy(value, *((char **)opt->variable), size);
         break;

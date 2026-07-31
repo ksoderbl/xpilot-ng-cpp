@@ -40,7 +40,6 @@
 #include "server.h"
 #include "tag.h"
 
-#define SERVER
 #include "version.h"
 #include "xpconfig.h"
 #include "serverconst.h"
@@ -54,7 +53,7 @@
 void Score(player_t *pl, double points, clpos_t pos, const char *msg)
 {
     Rank_add_score(pl, points);
-    if (pl->conn != NULL)
+    if (pl->conn != nullptr)
         Send_score_object(pl->conn, points, pos, msg);
     updateScores = true;
 }
@@ -268,7 +267,7 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
                  options.selfKillScoreMult;
             if (!options.zeroSumScoring)
                 Score(victim, -sc, victim->pos,
-                      (killer == NULL) ? "[Explosion]" : victim->name);
+                      (killer == nullptr) ? "[Explosion]" : victim->name);
         }
         else
         {
@@ -300,7 +299,7 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
 
             if (options.survivalScore != 0.0)
                 sc = Get_Score(victim) * 0.02;
-            else if (cannon != NULL)
+            else if (cannon != nullptr)
                 sc = Rate(cannon->score, Get_Score(victim)) * options.cannonKillScoreMult;
             else
             {
@@ -395,7 +394,7 @@ void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
                 Rank_add_laser_kill(killer);
             }
         }
-        else if (((cannon_t *)extra) != NULL)
+        else if (((cannon_t *)extra) != nullptr)
         {
             sc = Rate(((cannon_t *)extra)->score, Get_Score(victim)) * options.cannonKillScoreMult;
             if (!options.zeroSumScoring)

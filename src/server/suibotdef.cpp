@@ -42,7 +42,6 @@
 #include "ship.h"
 #include "update.h"
 
-#define SERVER
 #include "xpconfig.h"
 #include "serverconst.h"
 
@@ -385,7 +384,7 @@ static bool Wall_in_between_points(int cx1, int cy1, int cx2, int cy2)
     mv.delta.cy = WORLD_WRAP_DCY(world, cy2 - cy1);
     mv.start.cx = WORLD_WRAP_XCLICK(world, cx1);
     mv.start.cy = WORLD_WRAP_YCLICK(world, cy1);
-    mv.obj = NULL;
+    mv.obj = nullptr;
     mv.hitmask = NONBALL_BIT;
 
     while (mv.delta.cx || mv.delta.cy)
@@ -1148,7 +1147,7 @@ static void Robot_suibot_play(player_t *pl)
 
     double ship_dist_closest;
     player_t *closest_opponent;
-    closest_opponent = NULL;
+    closest_opponent = nullptr;
     const int maxdist = 1200; /* maximum distance from which to try to pop ball*/
     double ball_dist;
 
@@ -1248,7 +1247,7 @@ static void Robot_suibot_play(player_t *pl)
 
     ball_dist = 2 * maxdist;
     closest_ball_dist = 2 * maxdist;
-    closest_ball = NULL;
+    closest_ball = nullptr;
 
     Cell_get_objects(pl->pos, (int)(Visibility_distance / BLOCK_SZ),
                      max_objs, &obj_list, &obj_count);

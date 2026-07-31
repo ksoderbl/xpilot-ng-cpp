@@ -118,7 +118,6 @@
 #include "race.h"
 #include "update.h"
 
-#define SERVER
 #include "version.h"
 #include "xpconfig.h"
 #include "serverconst.h"
@@ -181,10 +180,10 @@ static int Send_motd(connection_t *connp);
 #define MAX_MOTD_SIZE (30 * 1024)
 #define MAX_MOTD_LOOPS (10 * FPS)
 
-static connection_t *Conn = NULL;
+static connection_t *Conn = nullptr;
 static int max_connections = 0;
-static setup_t *Setup = NULL;
-static setup_t *Oldsetup = NULL;
+static setup_t *Setup = nullptr;
+static setup_t *Oldsetup = nullptr;
 static int (*playing_receive[256])(connection_t *connp),
     (*login_receive[256])(connection_t *connp),
     (*drain_receive[256])(connection_t *connp);
@@ -267,7 +266,7 @@ static int Init_setup(void)
     printf("%s Server->client polygon map transfer size is %d bytes.\n",
            showtime(), size);
 
-    if ((Setup = (setup_t *)malloc(sizeof(setup_t) + size)) == NULL)
+    if ((Setup = (setup_t *)malloc(sizeof(setup_t) + size)) == nullptr)
     {
         error("No memory to hold setup");
         free(mapdata);
@@ -369,7 +368,7 @@ int Setup_net_server(void)
      */
     max_connections = MIN((int)MAX_SELECT_FD - 5,
                           options.playerLimit_orig + MAX_SPECTATORS * !!rplayback);
-    if ((Conn = XCALLOC(connection_t, max_connections)) == NULL)
+    if ((Conn = XCALLOC(connection_t, max_connections)) == nullptr)
     {
         error("Cannot allocate memory for connections");
         return -1;
@@ -464,7 +463,7 @@ void Destroy_connection(connection_t *connp, const char *reason)
         id = connp->id;
         connp->id = NO_ID;
         pl = Player_by_id(id);
-        pl->conn = NULL;
+        pl->conn = nullptr;
         if (pl->rectype != 2)
             Delete_player(pl);
         else
@@ -582,10 +581,10 @@ static void dcase(char *str)
     }
 }
 
-char *banned_users[] = { "<", ">", "\"", "'", NULL };
-char *banned_nicks[] = { "<", ">", "\"", "'", NULL };
-char *banned_addrs[] = { NULL };
-char *banned_hosts[] = { "<", ">", "\"", "'", NULL };
+char *banned_users[] = { "<", ">", "\"", "'", nullptr };
+char *banned_nicks[] = { "<", ">", "\"", "'", nullptr };
+char *banned_addrs[] = { nullptr };
+char *banned_hosts[] = { "<", ">", "\"", "'", nullptr };
 
 int CheckBanned(char *user, char *nick, char *addr, char *host)
 {
@@ -600,26 +599,26 @@ int CheckBanned(char *user, char *nick, char *addr, char *host)
     dcase(addr);
     dcase(host);
 
-    for (i = 0; banned_users[i] != NULL; i++) {
-    if (strstr(user, banned_users[i]) != NULL) {
+    for (i = 0; banned_users[i] != nullptr; i++) {
+    if (strstr(user, banned_users[i]) != nullptr) {
         ret = 1;
         goto out;
     }
     }
-    for (i = 0; banned_nicks[i] != NULL; i++) {
-    if (strstr(nick, banned_nicks[i]) != NULL) {
+    for (i = 0; banned_nicks[i] != nullptr; i++) {
+    if (strstr(nick, banned_nicks[i]) != nullptr) {
         ret = 1;
         goto out;
     }
     }
-    for (i = 0; banned_addrs[i] != NULL; i++) {
-    if (strstr(addr, banned_addrs[i]) != NULL) {
+    for (i = 0; banned_addrs[i] != nullptr; i++) {
+    if (strstr(addr, banned_addrs[i]) != nullptr) {
         ret = 1;
         goto out;
     }
     }
-    for (i = 0; banned_hosts[i] != NULL; i++) {
-    if (strstr(host, banned_hosts[i]) != NULL) {
+    for (i = 0; banned_hosts[i] != nullptr; i++) {
+    if (strstr(host, banned_hosts[i]) != nullptr) {
         ret = 1;
         goto out;
     }
@@ -640,22 +639,22 @@ struct restrict {
 };
 
 struct restrict restricted[] = {
-    { NULL, NULL, NULL }
+    { nullptr, nullptr, nullptr }
 };
 
 int CheckAllowed(char *user, char *nick, char *addr, char *host)
 {
     int i, allowed = 1;
     /*char *realnick = nick;*/
-    char *mail = NULL;
+    char *mail = nullptr;
 
     nick = strdup(nick);
     addr = strdup(addr);
     dcase(nick);
     dcase(addr);
 
-    for (i = 0; restricted[i].nick != NULL; i++) {
-    if (strstr(nick, restricted[i].nick) != NULL) {
+    for (i = 0; restricted[i].nick != nullptr; i++) {
+    if (strstr(nick, restricted[i].nick) != nullptr) {
         if (strncmp(addr, restricted[i].addr, strlen(restricted[i].addr))
         == 0) {
         allowed = 1;
@@ -780,7 +779,7 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
     Sockbuf_init(&connp->r, &sock, SERVER_RECV_SIZE,
                  SOCKBUF_READ | SOCKBUF_DGRAM);
 
-    Sockbuf_init(&connp->c, (sock_t *)NULL, MAX_SOCKBUF_SIZE,
+    Sockbuf_init(&connp->c, (sock_t *)nullptr, MAX_SOCKBUF_SIZE,
                  SOCKBUF_WRITE | SOCKBUF_READ | SOCKBUF_LOCK);
 
     connp->ind = free_conn_index;
@@ -790,7 +789,7 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
     connp->dpy = xp_strdup(dpy);
     connp->addr = xp_strdup(addr);
     connp->host = xp_strdup(host);
-    connp->ship = NULL;
+    connp->ship = nullptr;
     connp->team = team;
     connp->version = version;
     Feature_init(connp);
@@ -844,7 +843,7 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
     connp->last_mouse_pos = 0;
     connp->rectype = rplayback ? 2 - playback : 0;
     Conn_set_state(connp, CONN_LISTENING, CONN_FREE);
-    if (connp->w.buf == NULL || connp->r.buf == NULL || connp->c.buf == NULL || connp->user == NULL || connp->nick == NULL || connp->dpy == NULL || connp->addr == NULL || connp->host == NULL)
+    if (connp->w.buf == nullptr || connp->r.buf == nullptr || connp->c.buf == nullptr || connp->user == nullptr || connp->nick == nullptr || connp->dpy == nullptr || connp->addr == nullptr || connp->host == nullptr)
     {
         error("Not enough memory for connection");
         /* socket is not yet connected, but it doesn't matter much. */
@@ -1070,10 +1069,10 @@ static void UglyHack(char *string)
         char *s;
 
         /* not really needed, but here for safety */
-        if (substr == NULL)
+        if (substr == nullptr)
             break;
 
-        while ((s = strstr(string, substr)) != NULL)
+        while ((s = strstr(string, substr)) != nullptr)
             *s = 'X';
     }
 }
@@ -1184,7 +1183,7 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
         if (Team_play(world) && pl->team == TEAM_NOT_SET)
         {
             Player_set_state(pl, PL_STATE_PAUSED);
-            pl->home_base = NULL;
+            pl->home_base = nullptr;
             pl->team = 0;
         }
         else
@@ -1193,7 +1192,7 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
             Go_home(pl);
         }
         Rank_get_saved_score(pl);
-        if (pl->team != TEAM_NOT_SET && pl->home_base != NULL)
+        if (pl->team != TEAM_NOT_SET && pl->home_base != nullptr)
         {
             team_t *teamp = Team_by_index(pl->team);
 
@@ -1255,7 +1254,7 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
         Send_player(pl->conn, pl_i->id);
         Send_score(pl->conn, pl_i->id, Get_Score(pl_i),
                    pl_i->pl_life, pl_i->mychar, pl_i->alliance);
-        if (!Player_is_tank(pl_i) && pl_i->home_base != NULL)
+        if (!Player_is_tank(pl_i) && pl_i->home_base != nullptr)
             Send_base(pl->conn, pl_i->id, pl_i->home_base->ind);
     }
     /*
@@ -1273,7 +1272,7 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
         pl_i = Player_by_index(i);
         if (pl_i->rectype == 1 && pl->rectype == 2)
             continue;
-        if (pl_i->conn != NULL)
+        if (pl_i->conn != nullptr)
         {
             Send_player(pl_i->conn, pl->id);
             Send_score(pl_i->conn, pl->id, Get_Score(pl),
@@ -1425,8 +1424,8 @@ static void Handle_input(int fd, void *arg)
 {
     connection_t *connp = (connection_t *)arg;
     int type, result, (**receive_tbl)(connection_t *);
-    short *pbscheck = NULL;
-    char *pbdcheck = NULL;
+    short *pbscheck = nullptr;
+    char *pbdcheck = nullptr;
 
     if (connp->state & (CONN_PLAYING | CONN_READY))
         receive_tbl = &playing_receive[0];
@@ -2810,11 +2809,11 @@ static void Handle_talk(connection_t *connp, char *str)
 
     pl->flooding += FPS / 3;
 
-    if ((cp = strchr(str, ':')) == NULL || cp == str || strchr("-_~)(/\\}{[]", cp[1]) /* smileys are smileys */
+    if ((cp = strchr(str, ':')) == nullptr || cp == str || strchr("-_~)(/\\}{[]", cp[1]) /* smileys are smileys */
     )
     {
         sprintf(msg, "%s [%s]", str, pl->name);
-        if (!(mute_baseless && pl->home_base == NULL) && !pl->muted)
+        if (!(mute_baseless && pl->home_base == nullptr) && !pl->muted)
             Set_message(msg);
         else
         {
@@ -2822,7 +2821,7 @@ static void Handle_talk(connection_t *connp, char *str)
             {
                 player_t *pl_i = Player_by_index(i);
 
-                if (pl_i->home_base == NULL)
+                if (pl_i->home_base == nullptr)
                     Set_player_message(pl_i, msg);
             }
         }
@@ -2839,7 +2838,7 @@ static void Handle_talk(connection_t *connp, char *str)
         team = atoi(str);
         sprintf(msg + strlen(msg), ":[%d]", team);
         sent = 0;
-        if (!(mute_baseless && pl->home_base == NULL))
+        if (!(mute_baseless && pl->home_base == nullptr))
         {
             for (i = 0; i < NumPlayers; i++)
             {
@@ -2859,7 +2858,7 @@ static void Handle_talk(connection_t *connp, char *str)
         }
         else
         {
-            if (!(mute_baseless && pl->home_base == NULL))
+            if (!(mute_baseless && pl->home_base == nullptr))
                 sprintf(msg, "Message not sent, nobody in team %d!", team);
             else
                 sprintf(msg, "You may not send messages to active teams!");
@@ -2872,7 +2871,7 @@ static void Handle_talk(connection_t *connp, char *str)
     else
     { /* Player message */
         const char *errmsg;
-        player_t *other_pl = Get_player_by_name(str, NULL, &errmsg);
+        player_t *other_pl = Get_player_by_name(str, nullptr, &errmsg);
 
         if (!other_pl)
         {
@@ -2885,8 +2884,8 @@ static void Handle_talk(connection_t *connp, char *str)
 
         if (other_pl != pl)
         {
-            if (!(mute_baseless && pl->home_base == NULL &&
-                  other_pl->home_base != NULL))
+            if (!(mute_baseless && pl->home_base == nullptr &&
+                  other_pl->home_base != nullptr))
             {
                 sprintf(msg + strlen(msg), ":[%s]", other_pl->name);
                 Set_player_message(other_pl, msg);
@@ -2997,16 +2996,16 @@ int Get_player_id(connection_t *connp)
 
 const char *Player_get_addr(player_t *pl)
 {
-    if (pl->conn != NULL)
+    if (pl->conn != nullptr)
         return pl->conn->addr;
-    return NULL;
+    return nullptr;
 }
 
 const char *Player_get_dpy(player_t *pl)
 {
-    if (pl->conn != NULL)
+    if (pl->conn != nullptr)
         return pl->conn->dpy;
-    return NULL;
+    return nullptr;
 }
 
 static int Receive_shape(connection_t *connp)
@@ -3026,7 +3025,7 @@ static int Receive_shape(connection_t *connp)
             Destroy_connection(connp, "read shape ext");
         return n;
     }
-    if (connp->state == CONN_LOGIN && connp->ship == NULL)
+    if (connp->state == CONN_LOGIN && connp->ship == nullptr)
         connp->ship = Parse_shape_str(str);
     return 1;
 }
@@ -3109,7 +3108,7 @@ static int Get_motd(char *buf, int offset, int maxlen, int *size_ptr)
                 return 0;
             }
             XFREE(motd_buf);
-            if ((motd_buf = XMALLOC(char, size)) == NULL)
+            if ((motd_buf = XMALLOC(char, size)) == nullptr)
             {
                 close(fd);
                 return -1;

@@ -530,7 +530,7 @@ static inline check_t *Check_by_index(int ind)
 {
     if (ind >= 0 && ind < World.NumChecks)
         return &World.checks[ind];
-    return NULL;
+    return nullptr;
 }
 
 /*
@@ -540,7 +540,7 @@ static inline team_t *Team_by_index(int ind)
 {
     if (ind >= 0 && ind < MAX_TEAMS)
         return &World.teams[ind];
-    return NULL;
+    return nullptr;
 }
 
 static inline bool Team_play(world_t *world)

@@ -255,7 +255,7 @@ static const char *Rank_get_logout_message(ranknode_t *rank)
     player_t *pl;
 
     assert(strlen(rank->name) > 0);
-    pl = Get_player_by_name(rank->name, NULL, NULL);
+    pl = Get_player_by_name(rank->name, nullptr, nullptr);
     if (pl)
     {
         if (Player_is_paused(pl))
@@ -342,7 +342,7 @@ void Rank_write_webpage(void)
             "content=\"text/html; charset=ISO-8859-1\">\n",
             options.mapName, Server.host);
 
-    if (options.rankWebpageCSS != NULL)
+    if (options.rankWebpageCSS != nullptr)
         fprintf(file,
                 "  <link rel=\"StyleSheet\" type=\"text/css\" href=\"%s\" />\n",
                 options.rankWebpageCSS);
@@ -442,7 +442,7 @@ void Rank_write_webpage(void)
             "  </p>\n"
             "</body>\n"
             "</html>\n",
-            rank_showtime(time(NULL)));
+            rank_showtime(time(nullptr)));
 
     fclose(file);
 }
@@ -451,7 +451,7 @@ bool Rank_get_stats(const char *name, char *buf, size_t size)
 {
     ranknode_t *r = Rank_get_by_name(name);
 
-    if (r == NULL)
+    if (r == nullptr)
         return false;
 
     snprintf(buf, size,
@@ -480,7 +480,7 @@ void Rank_show_ranks(void)
         if (strlen(rank->name) > 0)
             numranks++;
 
-        if (rank->pl != NULL)
+        if (rank->pl != nullptr)
         {
             if (num > 0)
                 strlcat(msg, ", ", sizeof(msg));
@@ -535,7 +535,7 @@ ranknode_t *Rank_get_by_name(const char *name)
     int i;
     player_t *pl;
 
-    assert(name != NULL);
+    assert(name != nullptr);
 
     for (i = 0; i < MAX_SCORES; i++)
     {
@@ -550,11 +550,11 @@ ranknode_t *Rank_get_by_name(const char *name)
      * let's see if it could be an abbreviation of the nick of some player
      * who is currently playing.
      */
-    pl = Get_player_by_name(name, NULL, NULL);
+    pl = Get_player_by_name(name, nullptr, nullptr);
     if (pl && pl->rank)
         return pl->rank;
 
-    return NULL;
+    return nullptr;
 }
 
 /* Read scores from disk, and zero-initialize the ones that are not used.
@@ -614,7 +614,7 @@ void Rank_init_saved_scores(void)
  */
 void Rank_get_saved_score(player_t *pl)
 {
-    ranknode_t *rank, *unused = NULL;
+    ranknode_t *rank, *unused = nullptr;
     int i;
 
     updateScores = true;
@@ -624,7 +624,7 @@ void Rank_get_saved_score(player_t *pl)
         rank = &ranknodes[i];
         if (!strcasecmp(pl->name, rank->name))
         {
-            if (rank->pl == NULL)
+            if (rank->pl == nullptr)
             {
                 /* Ok, found it. */
                 rank->pl = pl;
@@ -635,7 +635,7 @@ void Rank_get_saved_score(player_t *pl)
             {
                 /* That ranknode is already in use by another player! */
                 Player_set_score(pl, 0);
-                pl->rank = NULL;
+                pl->rank = nullptr;
             }
             return;
         }
@@ -677,7 +677,7 @@ void Rank_get_saved_score(player_t *pl)
 
     Init_ranknode(rank, pl->name, pl->username, pl->hostname);
     rank->pl = pl;
-    rank->timestamp = time(NULL);
+    rank->timestamp = time(nullptr);
     Player_set_score(pl, 0);
     pl->rank = rank;
 }
@@ -688,14 +688,14 @@ void Rank_save_score(player_t *pl)
     ranknode_t *rank = pl->rank;
 
     rank->score = Get_Score(pl);
-    rank->pl = NULL;
-    rank->timestamp = time(NULL);
+    rank->pl = nullptr;
+    rank->timestamp = time(nullptr);
 }
 
 /* Save the scores to disk (not the webpage). */
 void Rank_write_rankfile(void)
 {
-    FILE *file = NULL;
+    FILE *file = nullptr;
     char tmp_file[PATH_MAX];
     int i;
 
@@ -705,7 +705,7 @@ void Rank_write_rankfile(void)
     snprintf(tmp_file, sizeof(tmp_file), "%s-new", options.rankFileName);
 
     file = fopen(tmp_file, "w");
-    if (file == NULL)
+    if (file == nullptr)
     {
         error("Open temporary file \"%s\"", tmp_file);
         goto failed;
@@ -791,7 +791,7 @@ void Rank_write_rankfile(void)
         error("Close temporary file \"%s\"", tmp_file);
         goto failed;
     }
-    file = NULL;
+    file = nullptr;
 
     /* Overwrite old rank file. */
     if (rename(tmp_file, options.rankFileName) < 0)
@@ -925,7 +925,7 @@ static bool Rank_parse_rankfile(FILE *file)
 {
     char buf[8192];
     int len, fd;
-    XML_Parser p = XML_ParserCreate(NULL);
+    XML_Parser p = XML_ParserCreate(nullptr);
 
     fd = fileno(file);
     if (fd == -1)

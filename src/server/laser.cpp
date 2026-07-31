@@ -41,7 +41,6 @@
 #include "ship.h"
 #include "update.h"
 
-#define SERVER
 #include "xpconfig.h"
 #include "serverconst.h"
 
@@ -77,7 +76,7 @@ void Fire_laser(player_t *pl)
             pos.cx = pl->pos.cx + m_gun.cx + FLOAT_TO_CLICK(pl->vel.x * timeStep);
             pos.cy = pl->pos.cy + m_gun.cy + FLOAT_TO_CLICK(pl->vel.y * timeStep);
             pos = World_wrap_clpos(world, pos);
-            if (is_inside(pos.cx, pos.cy, NONBALL_BIT | NOTEAM_BIT, NULL) != NO_GROUP)
+            if (is_inside(pos.cx, pos.cy, NONBALL_BIT | NOTEAM_BIT, nullptr) != NO_GROUP)
                 return;
             Fire_general_laser(pl->id, pl->team, pos,
                                pl->dir, pl->mods);
@@ -103,7 +102,7 @@ void Fire_general_laser(int id, int team, clpos_t pos, int dir,
     if (NumObjs >= MAX_TOTAL_SHOTS)
         return;
 
-    if ((pulse = PULSE_PTR(Object_allocate())) == NULL)
+    if ((pulse = PULSE_PTR(Object_allocate())) == nullptr)
         return;
 
     if (pl)
@@ -152,9 +151,9 @@ void Laser_pulse_hits_player(player_t *pl, pulseobject_t *pulse)
 {
     world_t *world = &World;
     player_t *kp = Player_by_id(pulse->id);
-    cannon_t *cannon = NULL;
+    cannon_t *cannon = nullptr;
 
-    if (kp == NULL)
+    if (kp == nullptr)
         /* Perhaps it was a cannon pulse? */
         cannon = Cannon_by_id(pulse->id);
 
@@ -216,14 +215,14 @@ void Laser_pulse_hits_player(player_t *pl, pulseobject_t *pulse)
         if (!BIT(pl->used, HAS_SHIELD) && !Player_has_armor(pl))
         {
             Player_set_state(pl, PL_STATE_KILLED);
-            Handle_Scoring(SCORE_LASER, kp, pl, cannon, NULL);
+            Handle_Scoring(SCORE_LASER, kp, pl, cannon, nullptr);
             if (kp)
             {
                 Set_message_f("%s got roasted alive by %s's laser.%s",
                               pl->name, kp->name,
                               pl->id == kp->id ? " How strange!" : "");
             }
-            else if (cannon != NULL)
+            else if (cannon != nullptr)
             {
                 Set_message_f("%s got roasted alive by cannonfire.", pl->name);
             }

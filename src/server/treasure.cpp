@@ -33,7 +33,6 @@
 #include "frame.h"
 #include "server.h"
 
-#define SERVER
 #include "xpconfig.h"
 #include "serverconst.h"
 
@@ -62,7 +61,7 @@ void Make_treasure_ball(treasure_t *t)
         return;
     }
 
-    if ((ball = BALL_PTR(Object_allocate())) == NULL)
+    if ((ball = BALL_PTR(Object_allocate())) == nullptr)
         return;
 
     ball->obj_life = 1; /* doesn't matter, as long as it is > 0 */
@@ -147,7 +146,7 @@ static int Punish_team2(player_t *pl, treasure_t *td, clpos_t pos)
     if (td->team == pl->team)
         return 0;
 
-    Handle_Scoring(SCORE_TREASURE, pl, NULL, td, NULL);
+    Handle_Scoring(SCORE_TREASURE, pl, nullptr, td, nullptr);
 
     if (Team_play(world))
     {
@@ -317,11 +316,11 @@ extern bool in_legacy_mode_ball_hack;
 bool Balltarget_hitfunc(group_t *gp, const move_t *move)
 {
     world_t *world = &World;
-    const ballobject_t *ball = NULL;
+    const ballobject_t *ball = nullptr;
 
     /* this can happen if is_inside is called for a balltarget with
-       a NULL obj */
-    if (move->obj == NULL)
+       a nullptr obj */
+    if (move->obj == nullptr)
         return true;
 
     assert(move->obj->type == OBJ_BALL);

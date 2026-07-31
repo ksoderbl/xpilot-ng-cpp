@@ -41,7 +41,6 @@
 #include "tag.h"
 #include "target.h"
 
-#define SERVER
 #include "xpconfig.h"
 #include "serverconst.h"
 
@@ -95,7 +94,7 @@ static void Transport_to_home(player_t *pl)
     double dx, dy, t, m;
     const double T = RECOVERY_DELAY;
 
-    if (pl->home_base == NULL)
+    if (pl->home_base == nullptr)
     {
         pl->vel.x = 0;
         pl->vel.y = 0;
@@ -145,7 +144,7 @@ void Phasing(player_t *pl, bool on)
         CLR_BIT(pl->used, USES_REFUEL);
         CLR_BIT(pl->used, USES_REPAIR);
         if (BIT(pl->used, USES_CONNECTOR))
-            pl->ball = NULL;
+            pl->ball = nullptr;
         CLR_BIT(pl->used, USES_TRACTOR_BEAM);
         CLR_BIT(pl->obj_status, GRAVITY);
         sound_play_sensors(pl->pos, PHASING_ON_SOUND);
@@ -1008,7 +1007,7 @@ static void Update_players(void)
         /* ugly hack */
         if (Player_is_human(pl) || Player_is_robot(pl))
             /* kps - keep only score in one place ???? */
-            if (pl->rank != NULL)
+            if (pl->rank != nullptr)
                 pl->rank->score = Get_Score(pl);
 
         if (pl->pause_count > 0)
@@ -1064,7 +1063,7 @@ static void Update_players(void)
             pl->self_destruct_count -= timeStep;
             if (pl->self_destruct_count <= 0)
             {
-                Handle_Scoring(SCORE_SELF_DESTRUCT, pl, NULL, NULL, NULL);
+                Handle_Scoring(SCORE_SELF_DESTRUCT, pl, nullptr, nullptr, nullptr);
                 Player_set_state(pl, PL_STATE_KILLED);
                 Set_message_f("%s has committed suicide.", pl->name);
                 Throw_items(pl);
@@ -1343,7 +1342,7 @@ void Update_objects(void)
     {
         for (i = 0; i < NUM_ITEMS; i++)
             if (World.items[i].num < World.items[i].max && World.items[i].chance > 0 && (rfrac() * World.items[i].chance) < 1.0f)
-                Place_item(NULL, i);
+                Place_item(nullptr, i);
     }
 
     Fuel_update();
