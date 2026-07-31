@@ -1207,8 +1207,10 @@ static void Update_players(void)
         if (0)
         {
             static double olddist = 0;
-            double dist = World_wrap_length(world, pl->pos.cx - pl->home_base->pos.cx,
-                                            pl->pos.cy - pl->home_base->pos.cy) /
+            double dist = World_wrap_length(
+                              world,
+                              pl->pos.cx - pl->home_base->pos.cx,
+                              pl->pos.cy - pl->home_base->pos.cy) /
                           CLICK;
 
             /* use with 12fps/12gs or 48fps/12gs */

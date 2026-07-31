@@ -1258,8 +1258,10 @@ static void Robot_suibot_play(player_t *pl)
         if (object->type == OBJ_BALL)
         {
             ball = BALL_PTR(object);
-            ball_dist = World_wrap_length(world, pl->pos.cx - ball->pos.cx,
-                                          pl->pos.cy - ball->pos.cy) /
+            ball_dist = World_wrap_length(
+                            world,
+                            pl->pos.cx - ball->pos.cx,
+                            pl->pos.cy - ball->pos.cy) /
                         CLICK;
             if (ball_dist < closest_ball_dist)
             {

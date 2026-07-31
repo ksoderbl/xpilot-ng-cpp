@@ -415,8 +415,10 @@ static void PlayerCollision(void)
 
                 if (obj->type == OBJ_BALL && obj->id == NO_ID)
                 {
-                    dist = World_wrap_length(world, pl->pos.cx - obj->pos.cx,
-                                             pl->pos.cy - obj->pos.cy);
+                    dist = World_wrap_length(
+                        world,
+                        pl->pos.cx - obj->pos.cx,
+                        pl->pos.cy - obj->pos.cy);
                     if (dist < mindist)
                     {
                         ballobject_t *ball = BALL_PTR(obj);
@@ -428,7 +430,9 @@ static void PlayerCollision(void)
                          * taking and hiding with the ball... this was
                          * considered bad gamesmanship.
                          */
-                        if (Team_play(world) && ball->ball_treasure->have && pl->team == ball->ball_treasure->team)
+                        if (Team_play(world) &&
+                            ball->ball_treasure->have &&
+                            pl->team == ball->ball_treasure->team)
                             continue;
                         pl->ball = ball;
                         mindist = dist;
