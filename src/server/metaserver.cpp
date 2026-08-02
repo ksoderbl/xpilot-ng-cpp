@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -22,6 +20,8 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include "metaserver.h"
 
 #include <cstdlib>
 #include <cstring>
@@ -142,14 +142,15 @@ static void asciidump(void *p, size_t size)
     uint8_t *up = p;
     char c;
 
-    for (i = 0; i < size; i++) {
-       if (!(i % 64))
-           printf("\n%08x ", i);
-       c = *(up + i);
-       if (isprint(c))
-           printf("%c", c);
-       else
-           printf(".");
+    for (i = 0; i < size; i++)
+    {
+        if (!(i % 64))
+            printf("\n%08x ", i);
+        c = *(up + i);
+        if (isprint(c))
+            printf("%c", c);
+        else
+            printf(".");
     }
     printf("\n\n");
 }
@@ -313,16 +314,17 @@ void Meta_update(bool change)
 
 #if 0
     /* kps - don't bother to send status, it probably isn't useful */
-    if (len + MSG_LEN < max_size) {
-    char status[MAX_STR_LEN];
+    if (len + MSG_LEN < max_size)
+    {
+        char status[MAX_STR_LEN];
 
-    strlcpy(&string[len], "\nadd status ", max_size - len);
-    len += strlen(&string[len]);
+        strlcpy(&string[len], "\nadd status ", max_size - len);
+        len += strlen(&string[len]);
 
-    Server_info(status, sizeof(status));
+        Server_info(status, sizeof(status));
 
-    strlcpy(&string[len], status, max_size - len);
-    len += strlen(&string[len]);
+        strlcpy(&string[len], status, max_size - len);
+        len += strlen(&string[len]);
     }
 #else
     {
@@ -341,7 +343,7 @@ void Meta_update(bool change)
 
 #if 0
     warn("Meta update string len is %d (limit is %d)",
-     len, options.metaUpdateMaxSize);
+         len, options.metaUpdateMaxSize);
 
     asciidump(string, len);
 #endif
