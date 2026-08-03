@@ -29,6 +29,7 @@
 
 #include "click.h"
 #include "object.h"
+#include "xperror.h"
 
 #include "pack.h"
 
@@ -117,13 +118,16 @@ extern std::vector<poly_t> pdata;
 
 extern int *estyleptr;
 extern int *edgeptr;
-extern group_t *groups;
-extern int num_groups, max_groups;
+
+extern std::vector<group_t> groups;
 
 static inline group_t *groupptr_by_id(int group)
 {
-    if (group >= 0 && group < num_groups)
+    if (group >= 0 && group < groups.size())
         return &groups[group];
+
+    warn("groupptr_by_id: group = %d, num_groups = %d, returning nullptr",
+         group, groups.size());
     return nullptr;
 }
 

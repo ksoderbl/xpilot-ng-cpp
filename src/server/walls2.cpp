@@ -141,8 +141,7 @@ shape_t ball_wire;
 struct bline *linet;
 #define S_LINES 100 /* stupid hack */
 
-struct group *groups = nullptr;
-int num_groups = 0, max_groups = 0;
+std::vector<struct group> groups;
 
 struct blockinfo *blockline;
 uint16_t *llist;
@@ -462,6 +461,16 @@ static uint16_t *Shape_lines(shape_t *s, int dir)
     return foo;
 }
 
+static inline group_t *Get_group(int group_ind)
+{
+    if (group_ind < 0 || group_ind >= groups.size())
+    {
+        warn("Get_group: group_ind = %d, num_groups = %d", group_ind, groups.size());
+        return nullptr;
+    }
+    return &groups[group_ind];
+}
+
 static int Bounce_object(object_t *obj, move_t *move, int line, int point)
 {
     world_t *world = &World;
@@ -471,8 +480,14 @@ static int Bounce_object(object_t *obj, move_t *move, int line, int point)
     int mapobj_ind;
 
     group = linet[line >= num_lines ? point : line].group;
-    type = groups[group].type;
-    mapobj_ind = groups[group].mapobj_ind;
+    group_t *gp = Get_group(group);
+
+    // TODO: Remove
+    if (gp == nullptr)
+        return 0;
+
+    type = gp->type;
+    mapobj_ind = gp->mapobj_ind;
 
     if (obj->collmode == 1)
     {
@@ -610,8 +625,16 @@ static void Bounce_player2(player_t *pl, move_t *move, int line, int point)
     sl = y / l;
 
     group = linet[line >= num_lines ? point : line].group;
-    type = groups[group].type;
-    mapobj_ind = groups[group].mapobj_ind;
+
+    group_t *gp = Get_group(group);
+
+    // TODO: Remove
+    if (gp == nullptr)
+        return;
+
+    type = gp->type;
+    mapobj_ind = gp->mapobj_ind;
+
     if (type == TREASURE && options.treasureCollisionKills)
     {
         Player_crash2(pl, CrashTreasure, NO_IND, 1);
@@ -1924,7 +1947,7 @@ static void store_inside_line(int bx, int by, int ox, int oy, int dx, int dy)
     temparray[block].lines = s;
 }
 
-static void finish_inside(int block, int group)
+static void finish_inside(int block, int groupInd)
 {
     int inside;
     struct inside_block *gblock;
@@ -1942,7 +1965,7 @@ static void finish_inside(int block, int group)
         gblock->next = (struct inside_block *)ralloc(nullptr, sizeof(struct inside_block));
         gblock = gblock->next;
     }
-    gblock->group = group;
+    gblock->group = groupInd;
     gblock->next = nullptr;
     j = 0;
     yptr = temparray[block].y;
@@ -2103,18 +2126,22 @@ static void Inside_init(void)
 {
     world_t *world = &World;
     int dx, dy, bx, by, ox, oy, startx, starty;
-    int i, j, num_points, minx = -1, miny = -1, polyInd, group;
+    int i, j, num_points, minx = -1, miny = -1, polyInd, groupInd;
     int bx2, by2, maxx = -1, maxy = -1, dir;
     double dist;
     int *edges;
 
     allocate_inside();
-    for (group = 0; group < num_groups; group++)
+
+    // TODO: for (auto &gp: groups)
+    for (groupInd = 0; groupInd < groups.size(); groupInd++)
     {
         minx = -1;
+
+        // TODO: for (auto &poly: pdata)
         for (polyInd = 0; polyInd < pdata.size(); polyInd++)
         {
-            if (pdata[polyInd].is_decor || pdata[polyInd].group != group)
+            if (pdata[polyInd].is_decor || pdata[polyInd].group != groupInd)
                 continue;
             num_points = pdata[polyInd].num_points;
             dx = 0;
@@ -2204,7 +2231,7 @@ static void Inside_init(void)
                         temparray[i * mapx + j].inside = 1;
                 }
                 if (bx2 < mapx)
-                    finish_inside(j + mapx * i, group);
+                    finish_inside(j + mapx * i, groupInd);
             }
         }
     }

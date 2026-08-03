@@ -280,14 +280,16 @@ void Target_set_hitmask(int group, target_t *targ)
 
 void Target_init(void)
 {
-    int group;
+    int groupInd = 0;
 
-    for (group = 0; group < num_groups; group++)
+    // for (group = 0; group < num_groups; group++)
+    for (auto &gp : groups)
     {
-        group_t *gp = groupptr_by_id(group);
+        // group_t *gp = groupptr_by_id(group);
 
-        if (gp->type == TARGET)
-            Target_set_hitmask(group, Target_by_index(gp->mapobj_ind));
+        if (gp.type == TARGET)
+            Target_set_hitmask(groupInd, Target_by_index(gp.mapobj_ind));
+        groupInd++;
     }
 
 #if 0

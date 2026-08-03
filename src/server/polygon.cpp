@@ -76,8 +76,9 @@ static int Create_group(int type, int team, hitmask_t hitmask,
         exit(1);
     }
 
-    current_group = num_groups;
-    STORE(group_t, groups, num_groups, max_groups, gp);
+    current_group = groups.size();
+    groups.push_back(gp);
+
     return current_group;
 }
 
@@ -175,7 +176,7 @@ void P_start_polygon(clpos_t pos, int style)
     t.last_change = frame_loops;
 
     current_estyle = pstyles[style].defedge_id;
-    // STORE(poly_t, pdata, num_polys, max_polys, t);
+
     pdata.push_back(t);
 }
 
