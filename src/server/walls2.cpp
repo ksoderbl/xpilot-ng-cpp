@@ -1688,12 +1688,12 @@ int Polys_to_client(uint8_t **start)
         STORE1(poly.style);
         j = poly.num_points;
         STORE2(poly.num_echanges);
-        edges = estyleptr + poly.estyles_start;
+        edges = &estyleptr[poly.estyles_start];
         while (*edges != INT_MAX)
             STORE2(*edges++);
         startx = poly.pos.cx;
         starty = poly.pos.cy;
-        edges = edgeptr + poly.edges;
+        edges = &edgeptr[poly.edges];
         STORE2(j);
         STORE2(startx >> CLICK_SHIFT);
         STORE2(starty >> CLICK_SHIFT);
@@ -2158,7 +2158,7 @@ static void Inside_init(void)
                 minx = maxx = bx2;
                 miny = maxy = by2;
             }
-            edges = edgeptr + pdata[polyInd].edges;
+            edges = &edgeptr[pdata[polyInd].edges];
             closest_line(bx, by, 1e10, 0); /* For polygons within one block */
             for (j = 0; j < num_points; j++)
             {
@@ -2570,15 +2570,19 @@ static void Poly_to_lines(void)
     {
         if (poly.is_decor)
             continue;
+
         group = poly.group;
         np = poly.num_points;
-        styleptr = estyleptr + poly.estyles_start;
+
+        styleptr = &estyleptr[poly.estyles_start];
+
         style = pstyles[poly.style].defedge_id;
         dx = 0;
         dy = 0;
         startx = poly.pos.cx;
         starty = poly.pos.cy;
-        edges = edgeptr + poly.edges;
+
+        edges = &edgeptr[poly.edges];
 
         for (j = 0; j < np; j++)
         {
@@ -2622,26 +2626,40 @@ void Walls_init2(void)
     double x, y, l2;
     int i;
 
+    warn("Walls_init2");
+
     mapx = (World.cwidth + B_MASK) >> B_SHIFT;
     mapy = (World.cheight + B_MASK) >> B_SHIFT;
 
+    warn("Walls_init2: calling Poly_to_lines");
+
     /* Break polygons down to a list of separate lines. */
     Poly_to_lines();
+
+    warn("Walls_init2: calling Distance_init");
 
     /* For each B_CLICKS x B_CLICKS rectangle on the map, find a list of
      * nearby lines that need to be checked for collision when moving
      * in that area. */
     Distance_init();
 
+    warn("Walls_init2: calling Corner_init");
+
     /* Like above, except list the map corners that could be hit by the
      * sides of a moving polygon shape. */
     Corner_init();
 
+    warn("Walls_init2: calling Ball_line_init2");
+
     Ball_line_init2();
+
+    warn("Walls_init2: calling Inside_init");
 
     /* Initialize the data structures used when determining whether a given
      * arbitrary point on the map is inside something. */
     Inside_init();
+
+    warn("Walls_init2: calling precalculate");
 
     /* Precalculate the .c and .s values used when calculating a bounce
      * from the line. */
@@ -2654,6 +2672,8 @@ void Walls_init2(void)
         linet[i].s = 2 * x * y / l2;
     }
 
+    warn("Walls_init2: create blockmap");
+
     if (is_polygon_map)
     {
         if (options.mapData)
@@ -2663,6 +2683,8 @@ void Walls_init2(void)
         }
         Create_blockmap_from_polygons();
     }
+
+    warn("Walls_init2: DONE");
 }
 
 static void Move_asteroid(object_t *obj)

@@ -41,9 +41,8 @@
 #include "wormhole.h"
 
 /* polygon map format related stuff */
-int num_edges, max_edges;
+std::vector<int> edgeptr;
 
-int *edgeptr;
 int *estyleptr;
 static int ptscount = -1, ecount;
 
@@ -165,7 +164,7 @@ void P_start_polygon(clpos_t pos, int style)
     P_cv = pos;
     t.pos = pos;
     t.group = current_group;
-    t.edges = num_edges;
+    t.edges = edgeptr.size();
     t.style = style;
     t.current_style = style;
     t.destroyed_style = style; /* may be changed */
@@ -219,8 +218,8 @@ void P_offset(clpos_t offset, int edgestyle)
     i = (MAX(ABS(offcx), ABS(offcy)) - 1) / POLYGON_MAX_OFFSET + 1;
     for (; i > 0; i--)
     {
-        STORE(int, edgeptr, num_edges, max_edges, offcx / i);
-        STORE(int, edgeptr, num_edges, max_edges, offcy / i);
+        edgeptr.push_back(offcx / i);
+        edgeptr.push_back(offcy / i);
         offcx -= offcx / i;
         offcy -= offcy / i;
         ptscount++;
