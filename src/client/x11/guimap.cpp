@@ -224,47 +224,64 @@ void Gui_paint_cannon(int x, int y, int type)
     }
 }
 
+static void Gui_paint_fuel_without_texture(int x, int y, double fuel)
+{
+    /* fuel box drawing can be disabled */
+    // todo: -1 should mean to not draw?
+    if (fuelColor == BLACK)
+        return;
+
+#define FUEL_BORDER 2
+    int size;
+
+    static char s[2] = "F";
+    static int text_width = 0;
+    static int text_is_bigger;
+    static double lastScaleFactor;
+
+    if (!text_width || lastScaleFactor != clData.scaleFactor)
+    {
+        lastScaleFactor = clData.scaleFactor;
+        text_width = XTextWidth(gameFont, s, 1);
+        text_is_bigger = (text_width + 4 > WINSCALE(BLOCK_SZ) + 1) ||
+                         (gameFont->ascent + gameFont->descent) > WINSCALE(BLOCK_SZ) + 2;
+    }
+    SET_FG(colors[fuelColor].pixel);
+    size = (int)((BLOCK_SZ - 2 * FUEL_BORDER) * fuel / MAX_STATION_FUEL);
+    rd.fillRectangle(dpy, drawPixmap, gameGC,
+                     SCALEX(x + FUEL_BORDER),
+                     SCALEY(y + FUEL_BORDER + size),
+                     (unsigned)WINSCALE(BLOCK_SZ - 2 * FUEL_BORDER + 1),
+                     (unsigned)WINSCALE(size + 1));
+
+    /* Draw F in fuel cells */
+    XSetFunction(dpy, gameGC, GXxor);
+    SET_FG(colors[BLACK].pixel ^ colors[fuelColor].pixel);
+    x = SCALEX(x + BLOCK_SZ / 2) - text_width / 2,
+    y = SCALEY(y + BLOCK_SZ / 2) + gameFont->ascent / 2,
+    rd.drawString(dpy, drawPixmap, gameGC, x, y, s, 1);
+    XSetFunction(dpy, gameGC, GXcopy);
+}
+
 void Gui_paint_fuel(int x, int y, double fuel)
 {
     /* fuel box drawing can be disabled */
+    // todo: -1 should mean to not draw?
     if (fuelColor == BLACK)
         return;
 
     if (!texturedObjects)
-    {
-#define FUEL_BORDER 2
-        int size;
-
-        static char s[2] = "F";
-        static int text_width = 0;
-        static int text_is_bigger;
-        static double lastScaleFactor;
-
-        if (!text_width || lastScaleFactor != clData.scaleFactor)
-        {
-            lastScaleFactor = clData.scaleFactor;
-            text_width = XTextWidth(gameFont, s, 1);
-            text_is_bigger = (text_width + 4 > WINSCALE(BLOCK_SZ) + 1) || (gameFont->ascent + gameFont->descent) > WINSCALE(BLOCK_SZ) + 2;
-        }
-        SET_FG(colors[fuelColor].pixel);
-        size = (int)((BLOCK_SZ - 2 * FUEL_BORDER) * fuel / MAX_STATION_FUEL);
-        rd.fillRectangle(dpy, drawPixmap, gameGC,
-                         SCALEX(x + FUEL_BORDER),
-                         SCALEY(y + FUEL_BORDER + size),
-                         (unsigned)WINSCALE(BLOCK_SZ - 2 * FUEL_BORDER + 1),
-                         (unsigned)WINSCALE(size + 1));
-
-        /* Draw F in fuel cells */
-        XSetFunction(dpy, gameGC, GXxor);
-        SET_FG(colors[BLACK].pixel ^ colors[fuelColor].pixel);
-        x = SCALEX(x + BLOCK_SZ / 2) - text_width / 2,
-        y = SCALEY(y + BLOCK_SZ / 2) + gameFont->ascent / 2,
-        rd.drawString(dpy, drawPixmap, gameGC, x, y, s, 1);
-        XSetFunction(dpy, gameGC, GXcopy);
-    }
+        Gui_paint_fuel_without_texture(x, y, fuel);
     else
     {
 #define BITMAP_FUEL_BORDER 3
+
+        // Prevent segfault if images did not load.
+        if (pixmaps.size() <= BM_FUEL)
+        {
+            Gui_paint_fuel_without_texture(x, y, fuel);
+            return;
+        }
 
         int fuel_images = ABS(pixmaps[BM_FUEL].count);
         int size, image;
