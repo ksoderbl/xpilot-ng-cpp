@@ -533,7 +533,7 @@ static const char *Get_protocolVersion(xp_option_t *opt)
 
 void defaultCleanup(void)
 {
-    XFREE(keydefs);
+    keydefsVector.clear();
     XFREE(texturePath);
     XFREE(shipShape);
 

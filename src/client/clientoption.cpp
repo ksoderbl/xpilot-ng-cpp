@@ -333,9 +333,7 @@ bool Set_string_option(xp_option_t *opt, const char *value,
     return retval;
 }
 
-xp_keydefs_t *keydefs = nullptr;
-int num_keydefs = 0;
-int max_keydefs = 0;
+std::vector<xp_keydefs_t> keydefsVector;
 
 /*
  * This function is used when platform specific code has an event where
@@ -348,7 +346,7 @@ int max_keydefs = 0;
  */
 keys_t Generic_lookup_key(xp_keysym_t ks, bool reset)
 {
-    // warn("Generic_lookup_key: ks = %d, reset = %d, num_keydefs = %d", ks, reset, num_keydefs);
+    warn("Generic_lookup_key: ks = %d, reset = %d, num_keydefs = %d", ks, reset, keydefsVector.size());
 
     keys_t ret = KEY_DUMMY;
     static int i = 0;
@@ -360,11 +358,11 @@ keys_t Generic_lookup_key(xp_keysym_t ks, bool reset)
      * Variable 'i' is already initialized.
      * Use brute force linear search to find the key.
      */
-    for (; i < num_keydefs; i++)
+    for (; i < keydefsVector.size(); i++)
     {
-        if (ks == keydefs[i].keysym)
+        if (ks == keydefsVector[i].keysym)
         {
-            ret = keydefs[i].key;
+            ret = keydefsVector[i].key;
             i++;
             break;
         }
@@ -381,13 +379,13 @@ static void Store_keydef(int ks, keys_t key)
     /*
      * first check if pair (ks, key) already exists
      */
-    for (i = 0; i < num_keydefs; i++)
+    for (i = 0; i < keydefsVector.size(); i++)
     {
-        xp_keydefs_t *kd = &keydefs[i];
+        xp_keydefs_t *kd = &keydefsVector[i];
 
         if (kd->keysym == ks && kd->key == key)
         {
-            /*warn("Pair (%d, %d) exist from before", ks, (int) key);*/
+            warn("Store_keydef: Pair (%d, %d) exist from before", ks, (int)key);
             /*
              * already exists, no need to store
              */
@@ -401,14 +399,14 @@ static void Store_keydef(int ks, keys_t key)
     /*
      * find first KEY_DUMMY after lazy deletion
      */
-    for (i = 0; i < num_keydefs; i++)
+    for (i = 0; i < keydefsVector.size(); i++)
     {
-        xp_keydefs_t *kd = &keydefs[i];
+        xp_keydefs_t *kd = &keydefsVector[i];
 
         if (kd->key == KEY_DUMMY)
         {
             assert(kd->keysym == XP_KS_UNKNOWN);
-            /*warn("Store_keydef: Found dummy at index %d", i);*/
+            warn("Store_keydef: Found dummy at index %d", i);
             *kd = keydef;
         }
     }
@@ -416,7 +414,8 @@ static void Store_keydef(int ks, keys_t key)
     /*
      * no lazily deleted entry, ok, just store it then
      */
-    STORE(xp_keydefs_t, keydefs, num_keydefs, max_keydefs, keydef);
+    warn("Storing keydef: %d, %d", keydef.key, keydef.keysym);
+    keydefsVector.push_back(keydef);
 }
 
 static void Remove_key_from_keydefs(keys_t key)
@@ -424,9 +423,9 @@ static void Remove_key_from_keydefs(keys_t key)
     int i;
 
     assert(key != KEY_DUMMY);
-    for (i = 0; i < num_keydefs; i++)
+    for (i = 0; i < keydefsVector.size(); i++)
     {
-        xp_keydefs_t *kd = &keydefs[i];
+        xp_keydefs_t *kd = &keydefsVector[i];
 
         /*
          * lazy deletion
@@ -452,9 +451,7 @@ static bool Set_key_option(xp_option_t *opt, const char *value,
     assert(opt->key != KEY_DUMMY);
     assert(value);
 
-    /*
-     * warn("Setting key option %s to \"%s\"", opt->name, value);
-     */
+    warn("Set_key_option: Setting key option %s to \"%s\"", opt->name, value);
 
     /*
      * First remove the old setting.

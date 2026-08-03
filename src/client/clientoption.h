@@ -1,5 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
+ * XPilot, a multiplayer gravity war game.
  *
  * Copyright (C) 2003 Kristian Söderblom
  *
@@ -144,6 +144,9 @@ struct xp_option
     /* ... */
 };
 
+/* number of options in global option array */
+// extern int num_options;
+// extern xp_option_t *options;
 extern std::vector<xp_option> optionsVector;
 
 extern void Parse_options(int *argcp, char **argvp);
@@ -362,6 +365,4 @@ typedef struct
     keys_t key;
 } xp_keydefs_t;
 
-extern xp_keydefs_t *keydefs;
-extern int num_keydefs;
-extern int max_keydefs;
+extern std::vector<xp_keydefs_t> keydefsVector;
