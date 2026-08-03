@@ -623,11 +623,13 @@ static void Frame_map(connection_t *conn, player_t *pl)
     packet_count = 0;
     max_packet = MAX(5, bytes_left / polystyle_packet_size);
     i = MAX(0, pl->last_polystyle_update);
-    for (k = 0; k < num_polys; k++)
+
+    int sz = pdata.size();
+    for (k = 0; k < sz; k++)
     {
         poly_t *poly;
 
-        if (++i >= num_polys)
+        if (++i >= sz)
             i = 0;
 
         poly = &pdata[i];

@@ -315,15 +315,13 @@ void World_restore_target(world_t *world, target_t *targ)
 
     World_set_block(world, blk, TARGET);
 
-    for (i = 0; i < num_polys; i++)
+    for (auto &poly : pdata)
     {
-        poly_t *poly = &pdata[i];
-
-        if (poly->group == targ->group)
+        if (poly.group == targ->group)
         {
-            poly->current_style = poly->style;
-            poly->update_mask = ~0;
-            poly->last_change = frame_loops;
+            poly.current_style = poly.style;
+            poly.update_mask = ~0;
+            poly.last_change = frame_loops;
         }
     }
 
@@ -352,15 +350,13 @@ void World_remove_target(world_t *world, target_t *targ)
      */
     World_set_block(world, blk, SPACE);
 
-    for (i = 0; i < num_polys; i++)
+    for (auto &poly : pdata)
     {
-        poly_t *poly = &pdata[i];
-
-        if (poly->group == targ->group)
+        if (poly.group == targ->group)
         {
-            poly->current_style = poly->destroyed_style;
-            poly->update_mask = ~0;
-            poly->last_change = frame_loops;
+            poly.current_style = poly.destroyed_style;
+            poly.update_mask = ~0;
+            poly.last_change = frame_loops;
         }
     }
 

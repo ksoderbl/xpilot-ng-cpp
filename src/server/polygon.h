@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <vector>
+
 #include <cstdint>
 
 #include "click.h"
@@ -104,12 +106,15 @@ typedef struct
     long last_change;
 } poly_t;
 
-extern int num_polys, num_pstyles, num_estyles, num_bstyles;
+extern int num_pstyles, num_estyles, num_bstyles;
 
 extern struct polystyle pstyles[256];
 extern struct edgestyle estyles[256];
 extern struct bmpstyle bstyles[256];
-extern poly_t *pdata;
+
+// extern poly_t *pdata;
+extern std::vector<poly_t> pdata;
+
 extern int *estyleptr;
 extern int *edgeptr;
 extern group_t *groups;

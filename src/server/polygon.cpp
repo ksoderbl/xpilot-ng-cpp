@@ -23,6 +23,8 @@
 
 #include "polygon.h"
 
+#include <vector>
+
 #include <cassert>
 #include <climits>
 #include <cstring>
@@ -49,10 +51,11 @@ struct polystyle pstyles[256];
 struct edgestyle estyles[256] =
     {{"internal", 0, 0, 0}}; /* Style 0 is always this special style */
 struct bmpstyle bstyles[256];
-poly_t *pdata;
+// poly_t *pdata;
+std::vector<poly_t> pdata;
 
-int num_pstyles, num_bstyles, num_estyles = 1;     /* "Internal" edgestyle */
-int max_bases, max_balls, max_polys, max_echanges; /* !@# make static after testing done */
+int num_pstyles, num_bstyles, num_estyles = 1;          /* "Internal" edgestyle */
+int max_bases, max_balls, /* max_polys,*/ max_echanges; /* !@# make static after testing done */
 static int current_estyle, current_group, is_decor;
 
 static int Create_group(int type, int team, hitmask_t hitmask,
@@ -172,7 +175,8 @@ void P_start_polygon(clpos_t pos, int style)
     t.last_change = frame_loops;
 
     current_estyle = pstyles[style].defedge_id;
-    STORE(poly_t, pdata, num_polys, max_polys, t);
+    // STORE(poly_t, pdata, num_polys, max_polys, t);
+    pdata.push_back(t);
 }
 
 void P_offset(clpos_t offset, int edgestyle)
@@ -247,7 +251,10 @@ void P_style(const char *state, int style)
     }
 
     if (!strcmp(state, "destroyed"))
-        pdata[num_polys - 1].destroyed_style = style;
+    {
+        int lastInd = pdata.size() - 1;
+        pdata[lastInd].destroyed_style = style;
+    }
     else
     {
         warn("<Style> does not support state \"%s\".", state);
@@ -257,17 +264,19 @@ void P_style(const char *state, int style)
 
 void P_end_polygon(void)
 {
+    int lastInd = pdata.size() - 1;
+
     if (ptscount < 3)
     {
         warn("Polygon with less than 3 edges?? (start %d, %d)",
-             pdata[num_polys - 1].pos.cx, pdata[num_polys - 1].pos.cy);
+             pdata[lastInd].pos.cx, pdata[lastInd].pos.cy);
         exit(1);
     }
 
     /* kps - add check that e.g. cannons have "destroyed" state <Style> ? */
 
-    pdata[num_polys - 1].num_points = ptscount;
-    pdata[num_polys - 1].num_echanges = ecount - pdata[num_polys - 1].estyles_start;
+    pdata[lastInd].num_points = ptscount;
+    pdata[lastInd].num_echanges = ecount - pdata[lastInd].estyles_start;
     STORE(int, estyleptr, ecount, max_echanges, INT_MAX);
     ptscount = -1;
 }

@@ -1,5 +1,5 @@
 /*
- * XPilot, a multiplayer gravity war game.
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -24,6 +24,8 @@
  */
 
 #include "walls2.h"
+
+#include <vector>
 
 #include <cstdlib>
 #include <cstring>
@@ -146,7 +148,6 @@ struct blockinfo *blockline;
 uint16_t *llist;
 uint16_t *plist;
 int num_lines = 0;
-int num_polys = 0;
 int mapx, mapy;
 
 static inline bool can_hit(group_t *gp, const move_t *move)
@@ -1656,18 +1657,20 @@ int Polys_to_client(uint8_t **start)
         }
         STORE1(bstyles[i].flags);
     }
+    int num_polys = pdata.size();
     STORE2(num_polys);
-    for (i = 0; i < num_polys; i++)
+
+    for (auto &poly : pdata)
     {
-        STORE1(pdata[i].style);
-        j = pdata[i].num_points;
-        STORE2(pdata[i].num_echanges);
-        edges = estyleptr + pdata[i].estyles_start;
+        STORE1(poly.style);
+        j = poly.num_points;
+        STORE2(poly.num_echanges);
+        edges = estyleptr + poly.estyles_start;
         while (*edges != INT_MAX)
             STORE2(*edges++);
-        startx = pdata[i].pos.cx;
-        starty = pdata[i].pos.cy;
-        edges = edgeptr + pdata[i].edges;
+        startx = poly.pos.cx;
+        starty = poly.pos.cy;
+        edges = edgeptr + poly.edges;
         STORE2(j);
         STORE2(startx >> CLICK_SHIFT);
         STORE2(starty >> CLICK_SHIFT);
@@ -2100,7 +2103,7 @@ static void Inside_init(void)
 {
     world_t *world = &World;
     int dx, dy, bx, by, ox, oy, startx, starty;
-    int i, j, num_points, minx = -1, miny = -1, poly, group;
+    int i, j, num_points, minx = -1, miny = -1, polyInd, group;
     int bx2, by2, maxx = -1, maxy = -1, dir;
     double dist;
     int *edges;
@@ -2109,15 +2112,15 @@ static void Inside_init(void)
     for (group = 0; group < num_groups; group++)
     {
         minx = -1;
-        for (poly = 0; poly < num_polys; poly++)
+        for (polyInd = 0; polyInd < pdata.size(); polyInd++)
         {
-            if (pdata[poly].is_decor || pdata[poly].group != group)
+            if (pdata[polyInd].is_decor || pdata[polyInd].group != group)
                 continue;
-            num_points = pdata[poly].num_points;
+            num_points = pdata[polyInd].num_points;
             dx = 0;
             dy = 0;
-            startx = pdata[poly].pos.cx;
-            starty = pdata[poly].pos.cy;
+            startx = pdata[polyInd].pos.cx;
+            starty = pdata[polyInd].pos.cy;
             /* Better wrapping for bx2/by2 could be selected for speed here,
              * but this keeping track of min/max at all is probably
              * unnoticeable in practice. */
@@ -2128,7 +2131,7 @@ static void Inside_init(void)
                 minx = maxx = bx2;
                 miny = maxy = by2;
             }
-            edges = edgeptr + pdata[poly].edges;
+            edges = edgeptr + pdata[polyInd].edges;
             closest_line(bx, by, 1e10, 0); /* For polygons within one block */
             for (j = 0; j < num_points; j++)
             {
@@ -2535,19 +2538,21 @@ static void Poly_to_lines(void)
     int *edges;
 
     num_lines = 0;
-    for (i = 0; i < num_polys; i++)
+
+    for (auto &poly : pdata)
     {
-        if (pdata[i].is_decor)
+        if (poly.is_decor)
             continue;
-        group = pdata[i].group;
-        np = pdata[i].num_points;
-        styleptr = estyleptr + pdata[i].estyles_start;
-        style = pstyles[pdata[i].style].defedge_id;
+        group = poly.group;
+        np = poly.num_points;
+        styleptr = estyleptr + poly.estyles_start;
+        style = pstyles[poly.style].defedge_id;
         dx = 0;
         dy = 0;
-        startx = pdata[i].pos.cx;
-        starty = pdata[i].pos.cy;
-        edges = edgeptr + pdata[i].edges;
+        startx = poly.pos.cx;
+        starty = poly.pos.cy;
+        edges = edgeptr + poly.edges;
+
         for (j = 0; j < np; j++)
         {
             if (j == *styleptr)
@@ -2574,9 +2579,7 @@ static void Poly_to_lines(void)
         }
         if (dx || dy)
         {
-            warn("Broken map: Polygon %d (%d points) doesn't form a "
-                 "closed loop",
-                 i + 1, np);
+            warn("Broken map: Polygon %d (%d points) doesn't form a closed loop", i + 1, np);
             exit(1);
         }
     }

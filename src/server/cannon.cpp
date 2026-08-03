@@ -875,15 +875,13 @@ void World_restore_cannon(world_t *world, cannon_t *cannon)
 
     World_set_block(world, blk, CANNON);
 
-    for (i = 0; i < num_polys; i++)
+    for (auto &poly : pdata)
     {
-        poly_t *poly = &pdata[i];
-
-        if (poly->group == cannon->group)
+        if (poly.group == cannon->group)
         {
-            poly->current_style = poly->style;
-            poly->update_mask = ~0;
-            poly->last_change = frame_loops;
+            poly.current_style = poly.style;
+            poly.update_mask = ~0;
+            poly.last_change = frame_loops;
         }
     }
 
@@ -904,15 +902,13 @@ void World_remove_cannon(world_t *world, cannon_t *cannon)
 
     World_set_block(world, blk, SPACE);
 
-    for (i = 0; i < num_polys; i++)
+    for (auto &poly : pdata)
     {
-        poly_t *poly = &pdata[i];
-
-        if (poly->group == cannon->group)
+        if (poly.group == cannon->group)
         {
-            poly->current_style = poly->destroyed_style;
-            poly->update_mask = ~0;
-            poly->last_change = frame_loops;
+            poly.current_style = poly.destroyed_style;
+            poly.update_mask = ~0;
+            poly.last_change = frame_loops;
         }
     }
 
