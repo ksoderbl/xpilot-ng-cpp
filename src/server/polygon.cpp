@@ -41,20 +41,19 @@
 #include "wormhole.h"
 
 /* polygon map format related stuff */
+std::vector<poly_t> pdata;
 std::vector<int> edgeptr;
+std::vector<int> estyleptr;
 
-int *estyleptr;
-static int ptscount = -1, ecount;
+static int ptscount = -1;
 
 struct polystyle pstyles[256];
 struct edgestyle estyles[256] =
     {{"internal", 0, 0, 0}}; /* Style 0 is always this special style */
 struct bmpstyle bstyles[256];
-// poly_t *pdata;
-std::vector<poly_t> pdata;
 
-int num_pstyles, num_bstyles, num_estyles = 1;          /* "Internal" edgestyle */
-int max_bases, max_balls, /* max_polys,*/ max_echanges; /* !@# make static after testing done */
+int num_pstyles, num_bstyles, num_estyles = 1; /* "Internal" edgestyle */
+int max_bases, max_balls;                      /* !@# make static after testing done */
 static int current_estyle, current_group, is_decor;
 
 static int Create_group(int type, int team, hitmask_t hitmask,
@@ -168,7 +167,7 @@ void P_start_polygon(clpos_t pos, int style)
     t.style = style;
     t.current_style = style;
     t.destroyed_style = style; /* may be changed */
-    t.estyles_start = ecount;
+    t.estyles_start = estyleptr.size();
     t.is_decor = is_decor;
 
     t.update_mask = 0;
@@ -207,8 +206,8 @@ void P_offset(clpos_t offset, int edgestyle)
 
     if (edgestyle != -1 && edgestyle != current_estyle)
     {
-        STORE(int, estyleptr, ecount, max_echanges, ptscount);
-        STORE(int, estyleptr, ecount, max_echanges, edgestyle);
+        estyleptr.push_back(ptscount);
+        estyleptr.push_back(edgestyle);
         current_estyle = edgestyle;
     }
 
@@ -276,8 +275,9 @@ void P_end_polygon(void)
     /* kps - add check that e.g. cannons have "destroyed" state <Style> ? */
 
     pdata[lastInd].num_points = ptscount;
+    int ecount = estyleptr.size();
     pdata[lastInd].num_echanges = ecount - pdata[lastInd].estyles_start;
-    STORE(int, estyleptr, ecount, max_echanges, INT_MAX);
+    estyleptr.push_back(INT_MAX);
     ptscount = -1;
 }
 

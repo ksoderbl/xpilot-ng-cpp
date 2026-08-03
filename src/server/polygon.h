@@ -116,7 +116,8 @@ extern struct bmpstyle bstyles[256];
 // extern poly_t *pdata;
 extern std::vector<poly_t> pdata;
 
-extern int *estyleptr;
+// extern int *estyleptr;
+extern std::vector<int> estyleptr;
 
 // extern int *edgeptr;
 extern std::vector<int> edgeptr;
