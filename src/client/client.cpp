@@ -78,8 +78,8 @@ bool is_server = false; /* used in common code */
 
 bool scoresChanged = true;
 int RadarHeight = 0;
-int RadarWidth = ServerRadarWidth; /* radar width at the server */
-bool UpdateRadar = false;          /* radar update because of polystyle changes? */
+int RadarWidth = 256;     /* radar width at the server */
+bool UpdateRadar = false; /* radar update because of polystyle changes? */
 
 bool oldServer;
 ipos_t selfPos;

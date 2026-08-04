@@ -1,5 +1,6 @@
 xpilot-ng-cpp-server \
--fps 12 \
+-fps 60 \
+-gamespeed 12 \
 +reporttometaserver \
 -robotTeam 4 \
 -maxRobots 12 \
