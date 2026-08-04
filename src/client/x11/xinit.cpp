@@ -514,23 +514,26 @@ int Init_playing_windows(void)
 
     Scale_dashes();
 
-    draw_width = top_width - (256 + 2);
+    draw_width = top_width - (RadarWidth + 2);
     draw_height = top_height;
-    drawWindow = XCreateSimpleWindow(dpy, topWindow, 258, 0,
+    drawWindow = XCreateSimpleWindow(dpy, topWindow, (RadarWidth + 2), 0,
                                      draw_width, draw_height,
                                      0, 0, colors[BLACK].pixel);
     radarWindow = XCreateSimpleWindow(dpy, topWindow, 0, 0,
-                                      256, RadarHeight, 0, 0,
+                                      RadarWidth, RadarHeight, 0, 0,
                                       colors[BLACK].pixel);
     radar_score_mapped = true;
 
     /* Create buttons */
-#define BUTTON_WIDTH 84
+    // BUTTON_WIDTH was defined as 84 when RadarWidth was 256.
+    int BUTTON_WIDTH = (RadarWidth / 3) - 1;
+    warn("BUTTON_WIDTH = %d", BUTTON_WIDTH);
+
     ButtonHeight = buttonFont->ascent + buttonFont->descent + 2 * BTN_BORDER;
 
     button_form = Widget_create_form(0, topWindow,
                                      0, (int)RadarHeight,
-                                     256, ButtonHeight + 2,
+                                     RadarWidth, ButtonHeight + 2,
                                      0);
     Widget_create_activate(button_form,
                            0 + 0 * BUTTON_WIDTH, 0,
@@ -584,15 +587,15 @@ int Init_playing_windows(void)
     {
 
     case PIXMAP_COPY:
-        radarPixmap = XCreatePixmap(dpy, radarWindow, 256, RadarHeight, dispDepth);
-        radarPixmap2 = XCreatePixmap(dpy, radarWindow, 256, RadarHeight, dispDepth);
+        radarPixmap = XCreatePixmap(dpy, radarWindow, RadarWidth, RadarHeight, dispDepth);
+        radarPixmap2 = XCreatePixmap(dpy, radarWindow, RadarWidth, RadarHeight, dispDepth);
         drawPixmap = XCreatePixmap(dpy, drawWindow, draw_width, draw_height,
                                    dispDepth);
         break;
 
     case MULTIBUFFER:
-        radarPixmap = XCreatePixmap(dpy, radarWindow, 256, RadarHeight, dispDepth);
-        radarPixmap2 = XCreatePixmap(dpy, radarWindow, 256, RadarHeight, dispDepth);
+        radarPixmap = XCreatePixmap(dpy, radarWindow, RadarWidth, RadarHeight, dispDepth);
+        radarPixmap2 = XCreatePixmap(dpy, radarWindow, RadarWidth, RadarHeight, dispDepth);
         dbuff_init_buffer(dbuf_state);
         break;
 
@@ -698,11 +701,12 @@ void Resize(Window w, unsigned width, unsigned height)
     LIMIT(height, MIN_TOP_HEIGHT, MAX_TOP_HEIGHT);
     top_width = width;
     top_height = height;
+
     if (!drawWindow)
         return;
 
     if (radar_score_mapped)
-        draw_width = top_width - 258;
+        draw_width = top_width - (RadarWidth + 2);
     else
         draw_width = top_width;
     draw_height = top_height;

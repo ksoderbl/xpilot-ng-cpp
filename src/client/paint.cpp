@@ -55,7 +55,8 @@ long loopsSlow = 0; /* Proceeds slower than loops */
 double timePerFrame = 0.0;
 static double time_counter = 0.0;
 
-unsigned draw_width, draw_height;
+int draw_width;
+int draw_height;
 int num_spark_colors;
 
 #define SCALE_ARRAY_SIZE 32768

@@ -228,7 +228,7 @@ void Paint_frame(void)
         if (!instruments.slidingRadar || BIT(Setup->mode, WRAP_PLAY) == 0)
         {
             XCopyArea(dpy, radarPixmap, radarWindow, gameGC,
-                      0, 0, 256, RadarHeight, 0, 0);
+                      0, 0, RadarWidth, RadarHeight, 0, 0);
         }
         else
         {
@@ -236,13 +236,13 @@ void Paint_frame(void)
             double xp, yp, xo, yo;
             unsigned w1, h1, w2, h2;
 
-            xp = (double)(selfPos.x * 256) / Setup->width;
+            xp = (double)(selfPos.x * RadarWidth) / Setup->width;
             yp = (double)(selfPos.y * RadarHeight) / Setup->height;
-            xo = (double)256 / 2;
+            xo = (double)RadarWidth / 2;
             yo = (double)RadarHeight / 2;
 
             assert(xp >= 0.0);
-            assert(xp < 256.0);
+            assert(xp < RadarWidth);
             assert(yp >= 0.0);
             assert(yp < RadarHeight);
 
@@ -255,19 +255,19 @@ void Paint_frame(void)
             y = (int)(yp - yo + 0.5);
 #endif
             if (x <= 0)
-                x += 256;
+                x += RadarWidth;
             if (y <= 0)
                 y += RadarHeight;
             w1 = (unsigned)x;
             h1 = (unsigned)y;
 
             assert(w1 > 0);
-            assert(w1 <= 256);
+            assert(w1 <= RadarWidth);
             assert(h1 > 0);
             assert(h1 <= RadarHeight);
 
             h2 = RadarHeight - h1;
-            w2 = 256 - w1;
+            w2 = RadarWidth - w1;
 
             XCopyArea(dpy, radarPixmap, radarWindow, gameGC,
                       0, (int)h2, w1, h1, (int)w2, 0);
@@ -546,10 +546,7 @@ struct team_score
 
 static void Paint_clock(bool redraw)
 {
-    int second,
-        minute,
-        hour,
-        border = 3;
+    int minute, hour, border = 3;
     struct tm *m;
     char buf[16];
     static unsigned width;
@@ -560,9 +557,13 @@ static void Paint_clock(bool redraw)
         if (width != 0)
         {
             XSetForeground(dpy, scoreListGC, colors[windowColor].pixel);
-            XFillRectangle(dpy, playersWindow, scoreListGC,
-                           256 - (int)(width + 2 * border), 0,
-                           width + 2 * border, height);
+            XFillRectangle(dpy,
+                           playersWindow,
+                           scoreListGC,
+                           256 - (int)(width + 2 * border),
+                           0,
+                           width + 2 * border,
+                           height);
             width = 0;
         }
         return;
@@ -572,7 +573,7 @@ static void Paint_clock(bool redraw)
         return;
 
     m = localtime(&currentTime);
-    second = m->tm_sec;
+    // second = m->tm_sec;
     minute = m->tm_min;
     hour = m->tm_hour;
     /*warn("drawing clock at %02d:%02d:%02d", hour, minute, second);*/

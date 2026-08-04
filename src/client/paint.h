@@ -56,7 +56,8 @@ extern int hudRadarDotSize;  /* Size for hudradar dot drawing */
 extern double hudRadarScale; /* Scale for hudradar drawing */
 extern double hudRadarLimit; /* Limit for hudradar drawing */
 
-extern unsigned draw_width, draw_height;
+extern int draw_width;
+extern int draw_height;
 
 extern short ext_view_width;   /* Width of extended visible area */
 extern short ext_view_height;  /* Height of extended visible area */

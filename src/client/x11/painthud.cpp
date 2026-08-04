@@ -394,7 +394,7 @@ static void Paint_hudradar(double hrscale, double xlimit, double ylimit,
                            int sz)
 {
     int i, x, y;
-    int hrw = (int)(hrscale * 256);
+    int hrw = (int)(hrscale * RadarWidth);
     int hrh = (int)(hrscale * RadarHeight);
     double xf = (double)hrw / (double)Setup->width;
     double yf = (double)hrh / (double)Setup->height;
@@ -439,7 +439,7 @@ static void Paint_hudradar(double hrscale, double xlimit, double ylimit,
 /*{
    float x,y,x2,y2,x3,y3;
     float hrscale = hrScale;
-    float hrw = (float)hrscale * (float)256;
+    float hrw = (float)hrscale * (float)RadarWidth;
     float hrh = (float)hrscale * (float)RadarHeight;
     int sz = hrSize;
     float xf = (float) hrw / (float) Setup->width;
@@ -618,7 +618,7 @@ void Paint_HUD(void)
 
     if (hudRadarEnemyColor || hudRadarOtherColor)
     {
-        double hudRadarMapScale = (double)Setup->width / (double)256;
+        double hudRadarMapScale = (double)Setup->width / (double)RadarWidth;
         Paint_hudradar(
             hudRadarScale,
             hudRadarLimit * (active_view_width / 2) * hudRadarScale / hudRadarMapScale,

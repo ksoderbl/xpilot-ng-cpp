@@ -111,7 +111,7 @@ void Platform_specific_pointer_control_set_state(bool on)
                      CurrentTime);
         XWarpPointer(dpy, None, drawWindow,
                      0, 0, 0, 0,
-                     (int)draw_width / 2, (int)draw_height / 2);
+                     draw_width / 2, draw_height / 2);
         XDefineCursor(dpy, drawWindow, pointerControlCursor);
         XSelectInput(dpy, drawWindow,
                      PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
@@ -178,14 +178,12 @@ void Toggle_radar_and_scorelist(void)
 
         /*
          * We need to map the score and radar windows
-         * move the window back, note how 258 is a hard coded
-         * value in xinit.c, if they cant be bothered to declare
-         * a constant, neither can I - kps fix
+         * move the window back
          */
-        draw_width = top_width - (258);
+        draw_width = top_width - (RadarWidth + 2);
         draw_height = top_height;
 
-        XMoveWindow(dpy, drawWindow, 258, 0);
+        XMoveWindow(dpy, drawWindow, RadarWidth + 2, 0);
         Widget_map(button_form);
         XMapWindow(dpy, radarWindow);
         XMapWindow(dpy, playersWindow);
