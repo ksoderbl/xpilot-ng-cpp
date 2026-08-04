@@ -326,7 +326,7 @@ void Images_cleanup(void)
     imagesVector.clear();
 }
 
-int Bitmap_add(const char *filename, int count, bool scalable)
+int Bitmap_add(std::string filename, int count, bool scalable)
 {
     image_t img;
 

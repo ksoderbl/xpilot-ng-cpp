@@ -25,6 +25,8 @@
 
 #pragma once
 
+#include <string>
+
 #include <ctime>
 
 #include "socklib.h"
@@ -221,8 +223,9 @@ extern int roundDelay;
 extern int roundDelayMax;
 
 extern bool UpdateRadar;
-extern unsigned RadarWidth;
-extern unsigned RadarHeight;
+constexpr int ServerRadarWidth = 256; /* radar width at the server */
+extern int RadarWidth;
+extern int RadarHeight;
 extern int backgroundPointDist; /* spacing of navigation points */
 extern int backgroundPointSize; /* size of navigation points */
 extern int sparkSize;           /* size of sparks and debris */
@@ -306,7 +309,7 @@ extern int protocolVersion;
  * somewhere
  */
 const char *Program_name(void);
-int Bitmap_add(const char *filename, int count, bool scalable);
+int Bitmap_add(std::string filename, int count, bool scalable);
 void Pointer_control_newbie_message(void);
 
 /*
