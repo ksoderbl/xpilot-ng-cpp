@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -449,7 +447,6 @@ void Map_restore(int startx, int starty, int width, int height)
             }
             else if ((type & BLUE_FUEL) == BLUE_FUEL)
                 Setup->map_data[map_index] = SETUP_FUEL;
-
             else if (type & BLUE_OPEN)
             {
                 if (type & BLUE_BELOW)
@@ -865,11 +862,11 @@ static int init_polymap(void)
         fs.bounds.y = cy - BLOCK_SZ / 2;
         fs.bounds.w = BLOCK_SZ;
         fs.bounds.h = BLOCK_SZ;
+        clMap.fuels.push_back(fs);
     }
     num_checks = *ptr++ & 0xff;
     if (num_checks != 0)
     {
-
         checks = XMALLOC(checkpoint_t, num_checks);
         if (checks == nullptr)
         {
