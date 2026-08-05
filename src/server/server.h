@@ -123,9 +123,9 @@ void Cell_remove_object(object_t *obj);
 void Cell_get_objects(clpos_t pos, int r, int max, object_t ***list, int *count);
 
 /*
- * Prototypes for collision.c
+ * Prototypes for collision2.cpp
  */
-void Check_collision(void);
+void Check_collision2(void);
 int IsOffensiveItem(enum Item i);
 int IsDefensiveItem(enum Item i);
 int CountOffensiveItems(player_t *pl);

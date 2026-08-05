@@ -1423,9 +1423,9 @@ void Update_objects(void)
     }
 
     /*
-     * Checking for collision, updating score etc. (see collision.c)
+     * Checking for collision, updating score etc. (see collision2.cpp)
      */
-    Check_collision();
+    Check_collision2();
 
     /*
      * Update tanks, Kill players that ought to be killed.
