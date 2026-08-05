@@ -147,7 +147,7 @@ void Fire_general_laser(int id, int team, clpos_t pos, int dir,
  * Do what needs to be done when a laser pulse
  * actually hits a player.
  */
-void Laser_pulse_hits_player(player_t *pl, pulseobject_t *pulse)
+void Laser_pulse_hits_player2(player_t *pl, pulseobject_t *pulse)
 {
     world_t *world = &World;
     player_t *kp = Player_by_id(pulse->id);

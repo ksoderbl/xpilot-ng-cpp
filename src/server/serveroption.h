@@ -29,10 +29,11 @@
 #include <vector>
 
 #include "types.h"
-#include "list.h"
 
-extern struct options
+typedef struct options
 {
+    std::vector<std::string> expandList; /* List of predefined settings. */
+
     int maxRobots;
     int minRobots;
     char *robotFile;
@@ -43,7 +44,6 @@ extern struct options
     bool restrictRobots;
     bool reserveRobotTeam;
     int robotTicksPerSecond;
-    list_t expandList; /* Predefined settings. */
     double shotMass;
     double shipMass;
     double shotSpeed;
@@ -332,15 +332,14 @@ extern struct options
 
     double mainLoopTime;
     int cellGetObjectsThreshold;
-} options;
+} options_t;
 
-/*
- * Prototypes for option.c
- */
+extern options_t options;
+
 void Options_parse(void);
 void Options_free(void);
 bool Convert_string_to_int(const char *value_str, int *int_ptr);
 bool Convert_string_to_float(const char *value_str, double *float_ptr);
 bool Convert_string_to_bool(const char *value_str, bool *bool_ptr);
-void Convert_list_to_string(list_t list, char **string);
-void Convert_string_to_list(const char *value, list_t *list_ptr);
+void Convert_list_to_string(const std::vector<std::string> &list, char **str);
+void Convert_string_to_list(const char *value, std::vector<std::string> *list_ptr);

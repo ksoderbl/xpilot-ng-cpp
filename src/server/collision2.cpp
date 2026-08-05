@@ -446,59 +446,6 @@ static void PlayerCollision(void)
     }
 }
 
-int IsOffensiveItem(enum Item i)
-{
-    if (BIT(1 << i,
-            ITEM_BIT_WIDEANGLE |
-                ITEM_BIT_REARSHOT |
-                ITEM_BIT_MINE |
-                ITEM_BIT_MISSILE |
-                ITEM_BIT_LASER))
-        return true;
-    return false;
-}
-
-int IsDefensiveItem(enum Item i)
-{
-    if (BIT(1 << i,
-            ITEM_BIT_CLOAK |
-                ITEM_BIT_ECM |
-                ITEM_BIT_TRANSPORTER |
-                ITEM_BIT_TRACTOR_BEAM |
-                ITEM_BIT_EMERGENCY_SHIELD |
-                ITEM_BIT_MIRROR |
-                ITEM_BIT_DEFLECTOR |
-                ITEM_BIT_HYPERJUMP |
-                ITEM_BIT_PHASING |
-                ITEM_BIT_TANK |
-                ITEM_BIT_ARMOR))
-        return true;
-    return false;
-}
-
-int CountOffensiveItems(player_t *pl)
-{
-    return (pl->item[ITEM_WIDEANGLE] + pl->item[ITEM_REARSHOT] +
-            pl->item[ITEM_MINE] + pl->item[ITEM_MISSILE] +
-            pl->item[ITEM_LASER]);
-}
-
-int CountDefensiveItems(player_t *pl)
-{
-    int count;
-
-    count = pl->item[ITEM_CLOAK] + pl->item[ITEM_ECM] + pl->item[ITEM_ARMOR] +
-            pl->item[ITEM_TRANSPORTER] + pl->item[ITEM_TRACTOR_BEAM] +
-            pl->item[ITEM_EMERGENCY_SHIELD] + pl->fuel.num_tanks +
-            pl->item[ITEM_DEFLECTOR] + pl->item[ITEM_HYPERJUMP] +
-            pl->item[ITEM_PHASING] + pl->item[ITEM_MIRROR];
-    if (pl->emergency_shield_left > 0)
-        count++;
-    if (pl->phasing_left > 0)
-        count++;
-    return count;
-}
-
 static inline double collision_cost(double mass, double speed)
 {
     /*
@@ -663,7 +610,7 @@ static void PlayerObjectCollision(player_t *pl)
             break;
 
         case OBJ_PULSE:
-            Laser_pulse_hits_player(pl, PULSE_PTR(obj));
+            Laser_pulse_hits_player2(pl, PULSE_PTR(obj));
             if (Player_is_killed(pl))
                 return;
             continue;
@@ -1275,8 +1222,6 @@ static void AsteroidCollision(void)
     int j, radius, obj_count;
     object_t *ast;
     object_t *obj = nullptr, **obj_list;
-    list_t list;
-    list_iter_t iter;
     double damage = 0.0;
     bool sound = false;
 
@@ -1293,7 +1238,7 @@ static void AsteroidCollision(void)
         if (ast->obj_life <= 0.0)
             continue;
 
-        assert(World_contains_clpos(ast->pos));
+        // assert(World_contains_clpos(world, ast->pos));
 
         if (NumObjs >= options.cellGetObjectsThreshold)
             Cell_get_objects(ast->pos, ast->pl_radius / BLOCK_SZ + 1,

@@ -261,24 +261,20 @@ int Parser_list_option(int *ind, char *buf)
         break;
     case valList:
     {
-        list_t list = *(list_t *)opts[i].variable;
+        std::vector<std::string> &list =
+            *(std::vector<std::string> *)opts[i].variable;
 
         sprintf(buf, "%s:", opts[i].name);
-        if (list)
+        printf("parser: name: %s\n", opts[i].name);
+
+        for (size_t j = 0; j < list.size(); ++j)
         {
-            list_iter_t iter;
-
-            for (iter = List_begin(list);
-                 iter != List_end(list);
-                 LI_FORWARD(iter))
-            {
-                char *str = (char *)LI_DATA(iter);
-
-                if (iter != List_begin(list))
-                    strlcat(buf, ",", MSG_LEN);
-                if (strlcat(buf, str, MSG_LEN) >= MSG_LEN)
-                    break;
-            }
+            const std::string &str = list[j];
+            printf("parser: str : %s\n", str.c_str());
+            if (j > 0)
+                strlcat(buf, ",", MSG_LEN);
+            if (strlcat(buf, str.c_str(), MSG_LEN) >= MSG_LEN)
+                break;
         }
     }
     break;
