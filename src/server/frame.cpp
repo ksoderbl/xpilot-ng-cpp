@@ -75,8 +75,8 @@ typedef struct
     clpos_t unrealWorld; /* Lower left hand corner is this */
                          /* world coordinate */
     clpos_t realWorld;   /* If the player is on the edge of
-                    the screen, these are the world
-                    coordinates before adjustment... */
+                       the screen, these are the world
+                       coordinates before adjustment... */
 } click_visibility_t;
 
 typedef struct
@@ -93,14 +93,9 @@ long frame_loops = 1;
 long frame_loops_slow = 1;
 double frame_time = 0;
 static long last_frame_shuffle;
-static shuffle_t *object_shuffle_ptr;
-static int num_object_shuffle;
-static int max_object_shuffle;
-static shuffle_t *player_shuffle_ptr;
-static int num_player_shuffle;
-static int max_player_shuffle;
-static radar_t *radar_ptr;
-static int num_radar, max_radar;
+static std::vector<shuffle_t> objectShuffleVector;
+static std::vector<shuffle_t> playerShuffleVector;
+static std::vector<radar_t> radarVector;
 
 static click_visibility_t cv;
 static int view_width,
@@ -120,113 +115,19 @@ static unsigned fastshot_num[DEBRIS_TYPES * 2],
     fastshot_max[DEBRIS_TYPES * 2];
 
 /*
- * Macro to make room in a given dynamic array for new elements.
- * P is the pointer to the array memory.
- * N is the current number of elements in the array.
- * M is the current size of the array.
- * T is the type of the elements.
- * E is the number of new elements to store in the array.
- * The goal is to keep the number of malloc/realloc calls low
- * while not wasting too much memory because of over-allocation.
- */
-#define EXPAND(P, N, M, T, E)                     \
-    if ((N) + (E) > (M))                          \
-    {                                             \
-        if ((M) <= 0)                             \
-        {                                         \
-            M = (E) + 2;                          \
-            P = (T *)malloc((M) * sizeof(T));     \
-            N = 0;                                \
-        }                                         \
-        else                                      \
-        {                                         \
-            M = ((M) << 1) + (E);                 \
-            P = (T *)realloc(P, (M) * sizeof(T)); \
-        }                                         \
-        if (P == nullptr)                         \
-        {                                         \
-            error("No memory");                   \
-            N = M = 0;                            \
-            return; /* ! */                       \
-        }                                         \
-    }
-
-/*
  * Note - I've changed the block_inview calls to clpos_inview calls,
  * which means that the center of a block has to be visible to be
  * in view.
  */
-static inline bool clpos_inview(click_visibility_t *v, clpos_t pos)
+static inline bool clpos_inview(click_visibility_t &v, clpos_t pos)
 {
-    clpos_t wpos = v->unrealWorld, rwpos = v->realWorld;
+    clpos_t wpos = v.unrealWorld, rwpos = v.realWorld;
 
     if (!((pos.cx > wpos.cx && pos.cx < wpos.cx + view_cwidth) || (pos.cx > rwpos.cx && pos.cx < rwpos.cx + view_cwidth)))
         return false;
     if (!((pos.cy > wpos.cy && pos.cy < wpos.cy + view_cheight) || (pos.cy > rwpos.cy && pos.cy < rwpos.cy + view_cheight)))
         return false;
     return true;
-}
-
-#define DEBRIS_STORE(xd, yd, color, offset)                                                                             \
-    int i;                                                                                                              \
-    if (xd < 0)                                                                                                         \
-        xd += World.width;                                                                                              \
-    if (yd < 0)                                                                                                         \
-        yd += World.height;                                                                                             \
-    if ((unsigned)xd >= (unsigned)view_width || (unsigned)yd >= (unsigned)view_height)                                  \
-    {                                                                                                                   \
-        /*                                                                                                              \
-         * There's some rounding error or so somewhere.                                                                 \
-         * Should be possible to resolve it.                                                                            \
-         */                                                                                                             \
-        return;                                                                                                         \
-    }                                                                                                                   \
-                                                                                                                        \
-    i = offset + color * debris_areas + (((yd >> 8) % debris_y_areas) * debris_x_areas) + ((xd >> 8) % debris_x_areas); \
-                                                                                                                        \
-    if (num_ >= 255)                                                                                                    \
-        return;                                                                                                         \
-    if (num_ >= max_)                                                                                                   \
-    {                                                                                                                   \
-        if (num_ == 0)                                                                                                  \
-            ptr_ = (debris_t *)malloc((max_ = 16) * sizeof(*ptr_));                                                     \
-        else                                                                                                            \
-            ptr_ = (debris_t *)realloc(ptr_, (max_ += max_) * sizeof(*ptr_));                                           \
-        if (ptr_ == nullptr)                                                                                            \
-        {                                                                                                               \
-            error("No memory for debris");                                                                              \
-            num_ = 0;                                                                                                   \
-            return;                                                                                                     \
-        }                                                                                                               \
-    }                                                                                                                   \
-    ptr_[num_].x = (uint8_t)xd;                                                                                         \
-    ptr_[num_].y = (uint8_t)yd;                                                                                         \
-    num_++;
-
-static void fastshot_store_old(int cx, int cy, int color, int offset)
-{
-    int xf = CLICK_TO_PIXEL(cx),
-        yf = CLICK_TO_PIXEL(cy);
-#define ptr_ (fastshot_ptr[i])
-#define num_ (fastshot_num[i])
-#define max_ (fastshot_max[i])
-    DEBRIS_STORE(xf, yf, color, offset);
-#undef ptr_
-#undef num_
-#undef max_
-}
-
-static void debris_store_old(int cx, int cy, int color)
-{
-    int xf = CLICK_TO_PIXEL(cx),
-        yf = CLICK_TO_PIXEL(cy);
-#define ptr_ (debris_ptr[i])
-#define num_ (debris_num[i])
-#define max_ (debris_max[i])
-    DEBRIS_STORE(xf, yf, color, 0);
-#undef ptr_
-#undef num_
-#undef max_
 }
 
 static void fastshot_end(connection_t *conn)
@@ -265,41 +166,33 @@ static void fastshot_store(int cx, int cy, int color, int offset)
 {
     int xf = CLICK_TO_PIXEL(cx),
         yf = CLICK_TO_PIXEL(cy);
-
     int i;
+
     if (xf < 0)
-    {
         xf += World.width;
-    }
+
     if (yf < 0)
-    {
         yf += World.height;
-    }
+
     if ((unsigned)xf >= (unsigned)view_width || (unsigned)yf >= (unsigned)view_height)
-    {
         /*
          * There's some rounding error or so somewhere.
          * Should be possible to resolve it.
          */
         return;
-    }
 
     i = offset + color * debris_areas + (((yf >> 8) % debris_y_areas) * debris_x_areas) + ((xf >> 8) % debris_x_areas);
 
     if ((fastshot_num[i]) >= 255)
-    {
         return;
-    }
+
     if ((fastshot_num[i]) >= (fastshot_max[i]))
     {
         if ((fastshot_num[i]) == 0)
-        {
             (fastshot_ptr[i]) = (debris_t *)malloc(((fastshot_max[i]) = 16) * sizeof(*(fastshot_ptr[i])));
-        }
         else
-        {
             (fastshot_ptr[i]) = (debris_t *)realloc((fastshot_ptr[i]), ((fastshot_max[i]) += (fastshot_max[i])) * sizeof(*(fastshot_ptr[i])));
-        }
+
         if ((fastshot_ptr[i]) == 0)
         {
             error("No memory for debris");
@@ -316,42 +209,34 @@ static void debris_store(int cx, int cy, int color)
 {
     int xf = CLICK_TO_PIXEL(cx),
         yf = CLICK_TO_PIXEL(cy);
-
     int i;
     int offset = 0;
+
     if (xf < 0)
-    {
         xf += World.width;
-    }
+
     if (yf < 0)
-    {
         yf += World.height;
-    }
+
     if ((unsigned)xf >= (unsigned)view_width || (unsigned)yf >= (unsigned)view_height)
-    {
         /*
          * There's some rounding error or so somewhere.
          * Should be possible to resolve it.
          */
         return;
-    }
 
     i = offset + color * debris_areas + (((yf >> 8) % debris_y_areas) * debris_x_areas) + ((xf >> 8) % debris_x_areas);
 
     if ((debris_num[i]) >= 255)
-    {
         return;
-    }
+
     if ((debris_num[i]) >= (debris_max[i]))
     {
         if ((debris_num[i]) == 0)
-        {
             (debris_ptr[i]) = (debris_t *)malloc(((debris_max[i]) = 16) * sizeof(*(debris_ptr[i])));
-        }
         else
-        {
             (debris_ptr[i]) = (debris_t *)realloc((debris_ptr[i]), ((debris_max[i]) += (debris_max[i])) * sizeof(*(debris_ptr[i])));
-        }
+
         if ((debris_ptr[i]) == 0)
         {
             error("No memory for debris");
@@ -366,18 +251,16 @@ static void debris_store(int cx, int cy, int color)
 
 static void Frame_radar_buffer_reset(void)
 {
-    num_radar = 0;
+    radarVector.clear();
 }
 
 static void Frame_radar_buffer_add(clpos_t pos, int s)
 {
-    radar_t *p;
-
-    EXPAND(radar_ptr, num_radar, max_radar, radar_t, 1);
-    p = &radar_ptr[num_radar++];
-    p->x = CLICK_TO_PIXEL(pos.cx);
-    p->y = CLICK_TO_PIXEL(pos.cy);
-    p->size = s;
+    radar_t t;
+    t.x = CLICK_TO_PIXEL(pos.cx);
+    t.y = CLICK_TO_PIXEL(pos.cy);
+    t.size = s;
+    radarVector.push_back(t);
 }
 
 static void Frame_radar_buffer_send(connection_t *conn, player_t *pl)
@@ -386,27 +269,28 @@ static void Frame_radar_buffer_send(connection_t *conn, player_t *pl)
     radar_t *p;
     const int radar_width = 256;
     int radar_height, radar_x, radar_y, send_x, send_y;
-    shuffle_t *radar_shuffle;
+    std::vector<shuffle_t> radarShuffleVector;
+    size_t shuffle_bufsize;
 
     radar_height = (radar_width * World.height) / World.width;
 
+    int num_radar = radarVector.size();
     if (num_radar > MIN(256, MAX_SHUFFLE_INDEX))
         num_radar = MIN(256, MAX_SHUFFLE_INDEX);
-    radar_shuffle = XMALLOC(shuffle_t, num_radar);
-    if (radar_shuffle == nullptr)
-        return;
+
+    radarShuffleVector.reserve(num_radar);
     for (i = 0; i < num_radar; i++)
-        radar_shuffle[i] = i;
+        radarShuffleVector[i] = i;
 
     if (conn->rectype != 2)
     {
         /* permute. */
         for (i = 0; i < num_radar; i++)
         {
-            dest = (int)(rfrac() * (num_radar - i)) + i;
-            tmp = radar_shuffle[i];
-            radar_shuffle[i] = radar_shuffle[dest];
-            radar_shuffle[dest] = tmp;
+            dest = (int)(rfrac() * num_radar);
+            tmp = radarShuffleVector[i];
+            radarShuffleVector[i] = radarShuffleVector[dest];
+            radarShuffleVector[dest] = tmp;
         }
     }
 
@@ -414,7 +298,7 @@ static void Frame_radar_buffer_send(connection_t *conn, player_t *pl)
     {
         for (i = 0; i < num_radar; i++)
         {
-            p = &radar_ptr[radar_shuffle[i]];
+            p = &radarVector[radarShuffleVector[i]];
             radar_x = (radar_width * p->x) / World.width;
             radar_y = (radar_height * p->y) / World.height;
             send_x = (World.width * radar_x) / radar_width;
@@ -432,7 +316,7 @@ static void Frame_radar_buffer_send(connection_t *conn, player_t *pl)
             num_radar = 256;
         for (i = 0; i < num_radar; i++)
         {
-            p = &radar_ptr[radar_shuffle[i]];
+            p = &radarVector[radarShuffleVector[i]];
             radar_x = (radar_width * p->x) / World.width;
             radar_y = (radar_height * p->y) / World.height;
             if (radar_y >= 1024)
@@ -450,14 +334,12 @@ static void Frame_radar_buffer_send(connection_t *conn, player_t *pl)
             Send_fastradar(conn, buf, fast_count);
     }
 
-    free(radar_shuffle);
+    // free(radar_shuffle);
 }
 
 static void Frame_radar_buffer_free(void)
 {
-    XFREE(radar_ptr);
-    num_radar = 0;
-    max_radar = 0;
+    radarVector.clear();
 }
 
 static int Frame_status(connection_t *conn, player_t *pl)
@@ -485,7 +367,12 @@ static int Frame_status(connection_t *conn, player_t *pl)
         lock_id = pl->lock.pl_id;
         lock_ind = GetInd(lock_id);
 
-        if ((!BIT(World.rules->mode, LIMITED_VISIBILITY) || pl->lock.distance <= pl->sensor_range) && (pl->visibility[lock_ind].canSee || Player_owns_tank(pl, lock_pl) || Players_are_teammates(pl, lock_pl) || Players_are_allies(pl, lock_pl)) && Player_is_alive(lock_pl) && (options.playersOnRadar || clpos_inview(&cv, lock_pl->pos)) && pl->lock.distance != 0)
+        if ((!BIT(World.rules->mode, LIMITED_VISIBILITY) || pl->lock.distance <= pl->sensor_range) &&
+            (pl->visibility[lock_ind].canSee ||
+             Player_owns_tank(pl, lock_pl) ||
+             Players_are_teammates(pl, lock_pl) ||
+             Players_are_allies(pl, lock_pl)) &&
+            Player_is_alive(lock_pl) && (options.playersOnRadar || clpos_inview(cv, lock_pl->pos)) && pl->lock.distance != 0)
         {
             double a;
 
@@ -560,7 +447,8 @@ static void Frame_map(connection_t *conn, player_t *pl)
         if (++i >= Num_targets())
             i = 0;
         targ = Target_by_index(i);
-        if (BIT(targ->update_mask, conn_bit) || (BIT(targ->conn_mask, conn_bit) == 0 && clpos_inview(&cv, targ->pos)))
+        if (BIT(targ->update_mask, conn_bit) ||
+            (BIT(targ->conn_mask, conn_bit) == 0 && clpos_inview(cv, targ->pos)))
         {
             Send_target(conn, i, (int)targ->dead_ticks, targ->damage);
             pl->last_target_update = i;
@@ -580,7 +468,7 @@ static void Frame_map(connection_t *conn, player_t *pl)
         if (++i >= Num_cannons())
             i = 0;
         cannon = Cannon_by_index(i);
-        if (clpos_inview(&cv, cannon->pos))
+        if (clpos_inview(cv, cannon->pos))
         {
             if (BIT(cannon->conn_mask, conn_bit) == 0)
             {
@@ -648,32 +536,22 @@ static void Frame_shuffle_objects(void)
 {
     int i;
 
-    num_object_shuffle = MIN(NumObjs, options.maxVisibleObject);
+    int num_object_shuffle = MIN(NumObjs, options.maxVisibleObject);
 
-    if (max_object_shuffle < num_object_shuffle)
-    {
-        XFREE(object_shuffle_ptr);
-        max_object_shuffle = num_object_shuffle;
-        object_shuffle_ptr = XMALLOC(shuffle_t, max_object_shuffle);
-        if (object_shuffle_ptr == nullptr)
-            max_object_shuffle = 0;
-    }
-
-    if (max_object_shuffle < num_object_shuffle)
-        num_object_shuffle = max_object_shuffle;
+    objectShuffleVector.clear();
 
     for (i = 0; i < num_object_shuffle; i++)
-        object_shuffle_ptr[i] = i;
+        objectShuffleVector.push_back(i);
 
     /* permute. Not perfect distribution but probably doesn't matter here */
     for (i = num_object_shuffle - 1; i >= 0; --i)
     {
-        if (object_shuffle_ptr[i] == i)
+        if (objectShuffleVector[i] == i)
         {
             int j = (int)(rfrac() * i);
-            shuffle_t tmp = object_shuffle_ptr[j];
-            object_shuffle_ptr[j] = object_shuffle_ptr[i];
-            object_shuffle_ptr[i] = tmp;
+            shuffle_t tmp = objectShuffleVector[j];
+            objectShuffleVector[j] = objectShuffleVector[i];
+            objectShuffleVector[i] = tmp;
         }
     }
 }
@@ -682,31 +560,28 @@ static void Frame_shuffle_players(void)
 {
     int i;
 
-    num_player_shuffle = MIN(NumPlayers, MAX_SHUFFLE_INDEX);
+    int num_player_shuffle = MIN(NumPlayers, MAX_SHUFFLE_INDEX);
 
-    if (max_player_shuffle < num_player_shuffle)
-    {
-        XFREE(player_shuffle_ptr);
-        max_player_shuffle = num_player_shuffle;
-        player_shuffle_ptr = XMALLOC(shuffle_t, max_player_shuffle);
-        if (player_shuffle_ptr == nullptr)
-            max_player_shuffle = 0;
-    }
-
-    if (max_player_shuffle < num_player_shuffle)
-        num_player_shuffle = max_player_shuffle;
+    // playerShuffleVector.reserve(num_player_shuffle);
+    playerShuffleVector.clear();
 
     for (i = 0; i < num_player_shuffle; i++)
-        player_shuffle_ptr[i] = i;
+        playerShuffleVector.push_back(i);
 
     /* permute. */
     for (i = 0; i < num_player_shuffle; i++)
     {
-        int j = (int)(rfrac() * (num_player_shuffle - i) + i);
-        shuffle_t tmp = player_shuffle_ptr[j];
-        player_shuffle_ptr[j] = player_shuffle_ptr[i];
-        player_shuffle_ptr[i] = tmp;
+        int j = (int)(rfrac() * num_player_shuffle);
+        shuffle_t tmp = playerShuffleVector[j];
+        playerShuffleVector[j] = playerShuffleVector[i];
+        playerShuffleVector[i] = tmp;
     }
+
+    // warn("playerShuffleVector.size = %d", playerShuffleVector.size());
+    // for (i = 0; i < num_player_shuffle; i++)
+    // {
+    //     warn("shuffle %d is %d", i, playerShuffleVector[i]);
+    // }
 }
 
 static void Frame_shuffle(void)
@@ -726,6 +601,7 @@ static void Frame_shots(connection_t *conn, player_t *pl)
     int ldir = 0, i, k, color, fuzz = 0, teamshot, len, obj_count;
     object_t *shot, **obj_list;
     int hori_blocks, vert_blocks;
+    int num_object_shuffle = objectShuffleVector.size();
 
     hori_blocks = (view_width + (BLOCK_SZ - 1)) / (2 * BLOCK_SZ);
     vert_blocks = (view_height + (BLOCK_SZ - 1)) / (2 * BLOCK_SZ);
@@ -740,7 +616,7 @@ static void Frame_shots(connection_t *conn, player_t *pl)
 
     for (k = 0; k < num_object_shuffle; k++)
     {
-        i = object_shuffle_ptr[k];
+        i = objectShuffleVector[k];
         if (i >= obj_count)
             continue;
         shot = obj_list[i];
@@ -748,7 +624,7 @@ static void Frame_shots(connection_t *conn, player_t *pl)
 
         if (shot->type != OBJ_PULSE)
         {
-            if (!clpos_inview(&cv, shot->pos))
+            if (!clpos_inview(cv, shot->pos))
                 continue;
         }
         else
@@ -756,7 +632,7 @@ static void Frame_shots(connection_t *conn, player_t *pl)
             pulseobject_t *pulse = PULSE_PTR(shot);
 
             /* check if either end of laser pulse is in view */
-            if (clpos_inview(&cv, pos))
+            if (clpos_inview(cv, pos))
                 ldir = MOD2(pulse->pulse_dir + ANGLE_RESOLUTION / 2, ANGLE_RESOLUTION);
             else
             {
@@ -764,7 +640,7 @@ static void Frame_shots(connection_t *conn, player_t *pl)
                 pos.cy = (click_t)(pos.cy - tsin(pulse->pulse_dir) * pulse->pulse_len * CLICK);
                 pos = World_wrap_clpos(world, pos);
                 ldir = pulse->pulse_dir;
-                if (!clpos_inview(&cv, pos))
+                if (!clpos_inview(cv, pos))
                     continue;
             }
         }
@@ -843,7 +719,9 @@ static void Frame_shots(connection_t *conn, player_t *pl)
 
         case OBJ_SHOT:
         case OBJ_CANNON_SHOT:
-            if (Team_immune(shot->id, pl->id) || (shot->id != NO_ID && Player_is_paused(Player_by_id(shot->id))) || (shot->id == NO_ID && Team_play(world) && shot->team == pl->team))
+            if (Team_immune(shot->id, pl->id) ||
+                (shot->id != NO_ID && Player_is_paused(Player_by_id(shot->id))) ||
+                (shot->id == NO_ID && Team_play(world) && shot->team == pl->team))
             {
                 color = BLUE;
                 teamshot = DEBRIS_TYPES;
@@ -895,10 +773,13 @@ static void Frame_shots(connection_t *conn, player_t *pl)
             mineobject_t *mine = MINE_PTR(shot);
 
             /* calculate whether ownership of mine can be determined */
-            if (options.identifyMines && (World_wrap_length(world, pl->pos.cx - mine->pos.cx,
-                                                            pl->pos.cy - mine->pos.cy) /
-                                              CLICK <
-                                          (SHIP_SZ + MINE_SENSE_BASE_RANGE + pl->item[ITEM_SENSOR] * MINE_SENSE_RANGE_FACTOR)))
+            if (options.identifyMines &&
+                (World_wrap_length(
+                     world,
+                     pl->pos.cx - mine->pos.cx,
+                     pl->pos.cy - mine->pos.cy) /
+                     CLICK <
+                 (SHIP_SZ + MINE_SENSE_BASE_RANGE + pl->item[ITEM_SENSOR] * MINE_SENSE_RANGE_FACTOR)))
             {
                 id = mine->id;
                 if (id == NO_ID)
@@ -963,7 +844,7 @@ static void Frame_ships(connection_t *conn, player_t *pl)
     {
         ecm_t *ecm = Ecm_by_index(i);
 
-        if (clpos_inview(&cv, ecm->pos))
+        if (clpos_inview(cv, ecm->pos))
             Send_ecm(conn, ecm->pos, (int)ecm->size);
     }
 
@@ -978,7 +859,7 @@ static void Frame_ships(connection_t *conn, player_t *pl)
         if (victim == nullptr || tpl == nullptr)
             continue;
 
-        if (clpos_inview(&cv, victim->pos) || clpos_inview(&cv, pos))
+        if (clpos_inview(cv, victim->pos) || clpos_inview(cv, pos))
             Send_trans(conn, victim->pos, pos);
     }
 
@@ -994,7 +875,7 @@ static void Frame_ships(connection_t *conn, player_t *pl)
             if (t == nullptr)
                 continue;
 
-            if (clpos_inview(&cv, t->pos))
+            if (clpos_inview(cv, t->pos))
             {
                 int j;
 
@@ -1011,11 +892,16 @@ static void Frame_ships(connection_t *conn, player_t *pl)
         }
     }
 
+    int num_player_shuffle = playerShuffleVector.size();
+
+    // warn("Frame_ships: num_player_shuffle = %d", num_player_shuffle);
+
     for (k = 0; k < num_player_shuffle; k++)
     {
         player_t *pl_i;
 
-        i = player_shuffle_ptr[k];
+        i = playerShuffleVector[k];
+
         pl_i = Player_by_index(i);
 
         if (Player_is_waiting(pl_i) || Player_is_dead(pl_i))
@@ -1025,7 +911,7 @@ static void Frame_ships(connection_t *conn, player_t *pl)
         {
             if (pl_i->home_base == nullptr)
                 continue;
-            if (!clpos_inview(&cv, pl_i->home_base->pos))
+            if (!clpos_inview(cv, pl_i->home_base->pos))
                 continue;
             if (Player_is_paused(pl_i))
                 Send_paused(conn, pl_i->home_base->pos,
@@ -1036,11 +922,14 @@ static void Frame_ships(connection_t *conn, player_t *pl)
             continue;
         }
 
-        if (!clpos_inview(&cv, pl_i->pos))
+        if (!clpos_inview(cv, pl_i->pos))
             continue;
 
         /* Don't transmit information if fighter is invisible */
-        if (pl->visibility[i].canSee || pl_i->id == pl->id || Players_are_teammates(pl_i, pl) || Players_are_allies(pl_i, pl))
+        if (pl->visibility[i].canSee ||
+            pl_i->id == pl->id ||
+            Players_are_teammates(pl_i, pl) ||
+            Players_are_allies(pl_i, pl))
         {
             /*
              * Transmit ship information
@@ -1060,7 +949,7 @@ static void Frame_ships(connection_t *conn, player_t *pl)
         {
             fuel_t *fs = Fuel_by_index(pl_i->fs);
 
-            if (clpos_inview(&cv, fs->pos))
+            if (clpos_inview(cv, fs->pos))
                 Send_refuel(conn, fs->pos, pl_i->pos);
         }
 
@@ -1068,7 +957,7 @@ static void Frame_ships(connection_t *conn, player_t *pl)
         {
             target_t *targ = Target_by_index(pl_i->repair_target);
 
-            if (clpos_inview(&cv, targ->pos))
+            if (clpos_inview(cv, targ->pos))
                 /* same packet as refuel */
                 Send_refuel(conn, pl_i->pos, targ->pos);
         }
@@ -1077,7 +966,7 @@ static void Frame_ships(connection_t *conn, player_t *pl)
         {
             player_t *t = Player_by_id(pl_i->lock.pl_id);
 
-            if (clpos_inview(&cv, t->pos))
+            if (clpos_inview(cv, t->pos))
             {
                 int j;
 
@@ -1093,7 +982,7 @@ static void Frame_ships(connection_t *conn, player_t *pl)
             }
         }
 
-        if (pl_i->ball != nullptr && clpos_inview(&cv, pl_i->ball->pos))
+        if (pl_i->ball != nullptr && clpos_inview(cv, pl_i->ball->pos))
             Send_connector(conn, pl_i->ball->pos, pl_i->pos, 0);
     }
 }
@@ -1158,19 +1047,26 @@ static void Frame_radar(connection_t *conn, player_t *pl)
             }
 
             pos = shot->pos;
-            if (World_wrap_length(world, pl->pos.cx - pos.cx,
-                                  pl->pos.cy - pos.cy) <= pl->sensor_range * CLICK)
+            if (World_wrap_length(
+                    world,
+                    pl->pos.cx - pos.cx,
+                    pl->pos.cy - pos.cy) <= pl->sensor_range * CLICK)
                 Frame_radar_buffer_add(pos, size);
         }
     }
 
     if (options.playersOnRadar || Team_play(world) || NumPseudoPlayers > 0 || NumAlliances > 0)
     {
+        int num_player_shuffle = playerShuffleVector.size();
+
+        // warn("Frame_radar: num_player_shuffle = %d", num_player_shuffle);
+
         for (k = 0; k < num_player_shuffle; k++)
         {
             player_t *pl_i;
 
-            i = player_shuffle_ptr[k];
+            i = playerShuffleVector[k];
+
             pl_i = Player_by_index(i);
             /*
              * Don't show on the radar:
@@ -1184,11 +1080,15 @@ static void Frame_radar(connection_t *conn, player_t *pl)
                 continue;
             pos = pl_i->pos;
             if (BIT(World.rules->mode, LIMITED_VISIBILITY) &&
-                World_wrap_length(world,
-                                  pl->pos.cx - pos.cx,
-                                  pl->pos.cy - pos.cy) > pl->sensor_range * CLICK)
+                World_wrap_length(
+                    world,
+                    pl->pos.cx - pos.cx,
+                    pl->pos.cy - pos.cy) > pl->sensor_range * CLICK)
                 continue;
-            if (Player_uses_compass(pl) && BIT(pl->lock.tagged, LOCK_PLAYER) && GetInd(pl->lock.pl_id) == i && frame_loops_slow % 5 >= 3)
+            if (Player_uses_compass(pl) &&
+                BIT(pl->lock.tagged, LOCK_PLAYER) &&
+                GetInd(pl->lock.pl_id) == i &&
+                frame_loops_slow % 5 >= 3)
                 continue;
             size = 3;
             if (Players_are_teammates(pl_i, pl) || Players_are_allies(pl, pl_i) || Player_owns_tank(pl, pl_i))
@@ -1222,6 +1122,7 @@ static void Frame_parameters(connection_t *conn, player_t *pl)
 
     view_cwidth = view_width * CLICK;
     view_cheight = view_height * CLICK;
+
     cv.unrealWorld.cx = pl->pos.cx - view_cwidth / 2; /* Scroll */
     cv.unrealWorld.cy = pl->pos.cy - view_cheight / 2;
     cv.realWorld = cv.unrealWorld;
@@ -1271,6 +1172,8 @@ void Frame_update(void)
             game_over_called = true;
         }
     }
+
+    int num_player_shuffle = playerShuffleVector.size();
 
     for (i = 0; i < spectatorStart + NumSpectators; i++)
     {
@@ -1326,7 +1229,10 @@ void Frame_update(void)
          * determining which data should be used (ind, set below) and
          * one determining which connection to send it to (conn).
          */
-        if (BIT(pl->lock.tagged, LOCK_PLAYER) && (Player_is_waiting(pl) || (Player_is_dead(pl) && pl->recovery_count == 0.0) || Player_is_paused(pl)))
+        if (BIT(pl->lock.tagged, LOCK_PLAYER) &&
+            (Player_is_waiting(pl) ||
+             (Player_is_dead(pl) && pl->recovery_count == 0.0) ||
+             Player_is_paused(pl)))
         {
             ind = GetInd(pl->lock.pl_id);
         }
