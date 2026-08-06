@@ -637,7 +637,7 @@ void Fire_general_shot(int id, int team, bool cannon,
                 lock = target_id;
             else
             {
-                if (!BIT(pl->lock.tagged, LOCK_PLAYER) || ((pl->lock.distance > pl->sensor_range) && BIT(World.rules->mode, LIMITED_VISIBILITY)))
+                if (!BIT(pl->lock.tagged, LOCK_PLAYER) || ((pl->lock.distance > pl->sensor_range) && BIT(World.rules.mode, LIMITED_VISIBILITY)))
                 {
                     lock = NO_ID;
                 }
@@ -657,7 +657,7 @@ void Fire_general_shot(int id, int team, bool cannon,
                 lock = target_id;
             else
             {
-                if (!BIT(pl->lock.tagged, LOCK_PLAYER) || ((pl->lock.distance > pl->sensor_range) && BIT(World.rules->mode, LIMITED_VISIBILITY)) || !pl->visibility[GetInd(pl->lock.pl_id)].canSee)
+                if (!BIT(pl->lock.tagged, LOCK_PLAYER) || ((pl->lock.distance > pl->sensor_range) && BIT(World.rules.mode, LIMITED_VISIBILITY)) || !pl->visibility[GetInd(pl->lock.pl_id)].canSee)
                     return;
                 lock = pl->lock.pl_id;
             }
@@ -1790,7 +1790,7 @@ void Update_missile(missileobject_t *missile)
         {
             xi = (int)((x += vx) / BLOCK_SZ);
             yi = (int)((y += vy) / BLOCK_SZ);
-            if (BIT(World.rules->mode, WRAP_PLAY))
+            if (BIT(World.rules.mode, WRAP_PLAY))
             {
                 if (xi < 0)
                     xi += World.x;

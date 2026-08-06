@@ -1050,14 +1050,14 @@ static int Rank_item_value(player_t *pl, enum Item itemtype)
     {
         if (pl->fuel.sum >= pl->fuel.max * 0.90)
             return ROBOT_IGNORE_ITEM; /* already (almost) full */
-        else if ((pl->fuel.sum < (BIT(World.rules->mode, TIMING))
+        else if ((pl->fuel.sum < (BIT(World.rules.mode, TIMING))
                       ? my_data->fuel_l1
                       : my_data->fuel_l2))
             return ROBOT_MUST_HAVE_ITEM; /* ahh fuel at last */
         else
             return ROBOT_HANDY_ITEM;
     }
-    if (BIT(World.rules->mode, TIMING))
+    if (BIT(World.rules.mode, TIMING))
     {
         switch (itemtype)
         {

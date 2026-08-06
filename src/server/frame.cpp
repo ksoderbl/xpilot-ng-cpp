@@ -367,7 +367,7 @@ static int Frame_status(connection_t *conn, player_t *pl)
         lock_id = pl->lock.pl_id;
         lock_ind = GetInd(lock_id);
 
-        if ((!BIT(World.rules->mode, LIMITED_VISIBILITY) || pl->lock.distance <= pl->sensor_range) &&
+        if ((!BIT(World.rules.mode, LIMITED_VISIBILITY) || pl->lock.distance <= pl->sensor_range) &&
             (pl->visibility[lock_ind].canSee ||
              Player_owns_tank(pl, lock_pl) ||
              Players_are_teammates(pl, lock_pl) ||
@@ -1079,7 +1079,7 @@ static void Frame_radar(connection_t *conn, player_t *pl)
                 || (!Players_are_teammates(pl_i, pl) && !Players_are_allies(pl, pl_i) && !Player_owns_tank(pl, pl_i) && (!options.playersOnRadar || !pl->visibility[i].canSee)))
                 continue;
             pos = pl_i->pos;
-            if (BIT(World.rules->mode, LIMITED_VISIBILITY) &&
+            if (BIT(World.rules.mode, LIMITED_VISIBILITY) &&
                 World_wrap_length(
                     world,
                     pl->pos.cx - pos.cx,
@@ -1126,7 +1126,7 @@ static void Frame_parameters(connection_t *conn, player_t *pl)
     cv.unrealWorld.cx = pl->pos.cx - view_cwidth / 2; /* Scroll */
     cv.unrealWorld.cy = pl->pos.cy - view_cheight / 2;
     cv.realWorld = cv.unrealWorld;
-    if (BIT(World.rules->mode, WRAP_PLAY))
+    if (BIT(World.rules.mode, WRAP_PLAY))
     {
         if (cv.unrealWorld.cx < 0 && cv.unrealWorld.cx + view_cwidth < World.cwidth)
             cv.unrealWorld.cx += World.cwidth;

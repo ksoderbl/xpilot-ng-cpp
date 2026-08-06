@@ -225,7 +225,7 @@ void Go_home(player_t *pl)
         return;
     }
 
-    if (BIT(World.rules->mode, TIMING) && pl->round && !(Player_is_waiting(pl) || Player_is_dead(pl)))
+    if (BIT(World.rules.mode, TIMING) && pl->round && !(Player_is_waiting(pl) || Player_is_dead(pl)))
     {
         if (pl->check)
             check = pl->check - 1;
@@ -596,7 +596,7 @@ int Init_player(int ind, shipshape_t *ship, int type)
         pl->pseudo_team = pseudo_team_no++;
     }
     pl->survival_time = 0;
-    Player_set_life(pl, World.rules->lives);
+    Player_set_life(pl, World.rules.lives);
 
     pl->player_fps = 50; /* Client should send a value after startup */
     pl->maxturnsps = MAX_SERVER_FPS;
@@ -617,7 +617,7 @@ int Init_player(int ind, shipshape_t *ship, int type)
      */
     if (NumPlayers > 0 && !Player_is_tank(pl))
     {
-        if (BIT(World.rules->mode, LIMITED_LIVES))
+        if (BIT(World.rules.mode, LIMITED_LIVES))
             Player_set_state(pl, PL_STATE_WAITING);
         else
             Player_set_state(pl, PL_STATE_APPEARING);
@@ -714,7 +714,7 @@ void Update_score_table(void)
                 Send_score(Player_by_index(i + spectatorStart)->conn, pl->id,
                            Get_Score(pl), pl->pl_life, pl->mychar, pl->alliance);
         }
-        if (BIT(World.rules->mode, TIMING))
+        if (BIT(World.rules.mode, TIMING))
         {
             if (pl->check != pl->prev_check || pl->round != pl->prev_round)
             {
@@ -777,7 +777,7 @@ void Reset_all_players(void)
         if (!Player_is_paused(pl))
         {
             Player_set_state(pl, PL_STATE_APPEARING);
-            Player_set_life(pl, World.rules->lives);
+            Player_set_life(pl, World.rules.lives);
         }
     }
 
@@ -1186,7 +1186,7 @@ void Compute_game_status(void)
     if (roundtime > 0)
         roundtime--;
 
-    if (BIT(World.rules->mode, TIMING))
+    if (BIT(World.rules.mode, TIMING))
         Race_compute_game_status();
     else if (Team_play(world))
     {
@@ -1766,7 +1766,7 @@ void Player_death_reset(player_t *pl, bool add_rank_death)
     pl->emptymass = pl->mass = options.shipMass;
     pl->obj_status &= ~(KILL_OBJ_BITS);
 
-    if (BIT(World.rules->mode, LIMITED_LIVES))
+    if (BIT(World.rules.mode, LIMITED_LIVES))
     {
         bool waiting = Player_is_waiting(pl);
 

@@ -272,7 +272,7 @@ int World_place_check(world_t *world, clpos_t pos, int ind)
 {
     check_t t;
 
-    if (!BIT(World.rules->mode, TIMING))
+    if (!BIT(World.rules.mode, TIMING))
     {
         warn("Checkpoint on map with no timing.");
         return NO_IND;
@@ -544,10 +544,10 @@ bool Grok_map_options(void)
     Set_world_items();
     Set_world_asteroids();
 
-    if (BIT(World.rules->mode, TEAM_PLAY | TIMING) == (TEAM_PLAY | TIMING))
+    if (BIT(World.rules.mode, TEAM_PLAY | TIMING) == (TEAM_PLAY | TIMING))
     {
         warn("Cannot teamplay while in race mode -- ignoring teamplay");
-        CLR_BIT(World.rules->mode, TEAM_PLAY);
+        CLR_BIT(World.rules.mode, TEAM_PLAY);
     }
 
     World.have_options = true;
@@ -574,11 +574,11 @@ bool Grok_map(void)
     if (!Verify_wormhole_consistency())
         return false;
 
-    if (BIT(World.rules->mode, TIMING) && Num_checks() == 0)
+    if (BIT(World.rules.mode, TIMING) && Num_checks() == 0)
     {
         warn("No checkpoints found while race mode (timing) was set.");
         warn("Turning off race mode.");
-        CLR_BIT(World.rules->mode, TIMING);
+        CLR_BIT(World.rules.mode, TIMING);
     }
 
     /* kps - what are these doing here ? */

@@ -359,9 +359,8 @@ void Set_world_items(void)
 void Set_world_rules(void)
 {
     world_t *world = &World;
-    static rules_t rules;
 
-    rules.mode =
+    world->rules.mode =
         ((options.allowPlayerCrashes ? CRASH_WITH_PLAYER : 0) |
          (options.allowPlayerBounces ? BOUNCE_WITH_PLAYER : 0) |
          (options.allowPlayerKilling ? PLAYER_KILLINGS : 0) |
@@ -377,14 +376,12 @@ void Set_world_rules(void)
          (options.allowLaserModifiers ? ALLOW_LASER_MODIFIERS : 0) |
          (options.edgeWrap ? WRAP_PLAY : 0));
 
-    rules.lives = options.worldLives;
-
-    World.rules = &rules;
+    world->rules.lives = options.worldLives;
 
     if (Team_play(world))
-        CLR_BIT(World.rules->mode, ALLIANCES);
+        CLR_BIT(world->rules.mode, ALLIANCES);
 
-    if (!BIT(World.rules->mode, PLAYER_KILLINGS))
+    if (!BIT(world->rules.mode, PLAYER_KILLINGS))
         CLR_BIT(KILLING_SHOTS,
                 OBJ_SHOT_BIT |
                     OBJ_CANNON_SHOT_BIT |
@@ -393,7 +390,7 @@ void Set_world_rules(void)
                     OBJ_HEAT_SHOT_BIT |
                     OBJ_PULSE_BIT);
 
-    if (!BIT(World.rules->mode, PLAYER_SHIELDING))
+    if (!BIT(world->rules.mode, PLAYER_SHIELDING))
         CLR_BIT(DEF_HAVE, HAS_SHIELD);
 
     DEF_USED &= DEF_HAVE;
