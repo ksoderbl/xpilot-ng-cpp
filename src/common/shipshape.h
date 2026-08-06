@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -23,18 +21,12 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef SHIPSHAPE_H
-#define SHIPSHAPE_H
+#pragma once
 
-#ifndef TYPES_H
-/* need position */
 #include "types.h"
-#include "const.h"
-#endif
-
-#ifndef CLICK_H
 #include "click.h"
-#endif
+#include "const.h"
+#include "xperror.h"
 
 /*
  * Please don't change any of these maxima.
@@ -113,7 +105,7 @@ extern shipshape_t *Default_ship(void);
 extern void Free_ship_shape(shipshape_t *ship);
 extern shipshape_t *Parse_shape_str(char *str);
 extern shipshape_t *Convert_shape_str(char *str);
-extern void Calculate_shield_radius(shipshape_t *ship);
+extern int Calculate_shield_radius(shipshape_t *ship);
 extern int Validate_shape_str(char *str);
 extern void Convert_ship_2_string(shipshape_t *ship, char *buf, char *ext,
                                   unsigned shape_version);
@@ -222,5 +214,3 @@ Ship_get_m_rack_position(shipshape_t *ship, int rack, int dir)
 {
     return clpos2position(Ship_get_m_rack_clpos(ship, rack, dir));
 }
-
-#endif

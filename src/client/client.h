@@ -366,7 +366,7 @@ int Check_client_fps(void);
 extern int Handle_motd(long off, char *buf, int len, long filesize);
 extern void aboutCleanup(void);
 
-extern int motd_viewer; /* so Windows can clean him up */
+extern int motd_viewer;
 extern int keys_viewer;
 
 extern void Colors_init_style_colors(void);

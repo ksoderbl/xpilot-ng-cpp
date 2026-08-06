@@ -59,9 +59,9 @@
 #include "walls2.h"
 #include "wormhole.h"
 
-int roundtime = -1;               /* time left this round */
-static double time_to_tick = 1.0; /* game time till next tick */
-static bool tick = false;         /* new tick of game time this frame */
+int roundtime = -1;                  /* time left this round */
+static double time_to_tick = 1.0;    /* game time till next tick */
+static bool tick_this_frame = false; /* new tick of game time this frame */
 
 static inline void update_object_speed(world_t *world, object_t *obj)
 {
@@ -807,7 +807,7 @@ static void Use_items(player_t *pl)
     /*
      * Compute energy drainage
      */
-    if (tick)
+    if (tick_this_frame)
     {
         if (BIT(pl->used, USES_SHIELD))
             Player_add_fuel(pl, ED_SHIELD);
@@ -838,9 +838,7 @@ static void Do_refuel(player_t *pl)
         (pl->fuel.sum >= pl->fuel.max) ||
         Player_is_phasing(pl) ||
         (Team_play(world) && options.teamFuel && fs->team != pl->team))
-    {
         CLR_BIT(pl->used, USES_REFUEL);
-    }
     else
     {
         int n = pl->fuel.num_tanks;
@@ -1138,7 +1136,7 @@ static void Update_players(void)
             }
 
             /* Decrement fuel */
-            if (tick)
+            if (tick_this_frame)
                 Player_add_fuel(pl, -f);
         }
         else
@@ -1293,14 +1291,14 @@ void Update_objects(void)
      *
      * Can also be used to do some updates less frequently.
      */
-    tick = false;
+    tick_this_frame = false;
     if ((time_to_tick -= timeStep) <= 0.0)
     {
-        tick = true;
+        tick_this_frame = true;
         time_to_tick += 1.0;
     }
 
-    Robot_update(tick);
+    Robot_update(tick_this_frame);
 
     /*
      * Fast aim:
@@ -1340,7 +1338,7 @@ void Update_objects(void)
     /*
      * Special items.
      */
-    if (tick)
+    if (tick_this_frame)
     {
         for (i = 0; i < NUM_ITEMS; i++)
             if (World.items[i].num < World.items[i].max && World.items[i].chance > 0 && (rfrac() * World.items[i].chance) < 1.0f)
@@ -1355,7 +1353,7 @@ void Update_objects(void)
     if (Num_transporters() > 0)
         Transporter_update();
     if (Num_cannons() > 0)
-        Cannon_update(tick);
+        Cannon_update(tick_this_frame);
     if (Num_targets() > 0)
         Target_update();
 
