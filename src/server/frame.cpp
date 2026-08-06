@@ -1114,6 +1114,8 @@ static void Frame_lose_item_state(player_t *pl)
 
 static void Frame_parameters(connection_t *conn, player_t *pl)
 {
+    world_t *world = &World;
+
     Get_display_parameters(conn, &view_width, &view_height,
                            &debris_colors, &spark_rand);
     debris_x_areas = (view_width + 255) >> 8;
@@ -1126,7 +1128,7 @@ static void Frame_parameters(connection_t *conn, player_t *pl)
     cv.unrealWorld.cx = pl->pos.cx - view_cwidth / 2; /* Scroll */
     cv.unrealWorld.cy = pl->pos.cy - view_cheight / 2;
     cv.realWorld = cv.unrealWorld;
-    if (BIT(World.rules.mode, WRAP_PLAY))
+    if (Wrap_play(world))
     {
         if (cv.unrealWorld.cx < 0 && cv.unrealWorld.cx + view_cwidth < World.cwidth)
             cv.unrealWorld.cx += World.cwidth;

@@ -262,6 +262,7 @@ static robot_default_data_t *Robot_default_get_data(player_t *pl)
  */
 static void Robot_default_create(player_t *pl, char *str)
 {
+    world_t *world = &World;
     robot_default_data_t *my_data;
 
     if (!(my_data = XMALLOC(robot_default_data_t, 1)))
@@ -291,7 +292,7 @@ static void Robot_default_create(player_t *pl, char *str)
      * some parameters which may be changed to be dependent upon
      * the 'attack' and 'defense' settings of this robot.
      */
-    if (BIT(World.rules.mode, TIMING))
+    if (Timing(world))
     {
         my_data->robot_normal_speed = 10.0;
         my_data->robot_attack_speed = 25.0 + (my_data->attack / 10);
@@ -988,7 +989,7 @@ static bool Check_robot_target(player_t *pl, clpos_t item_pos, int new_mode)
     travel_dir = decide_travel_dir(world, pl);
 
     pl->turnspeed = MAX_PLAYER_TURNSPEED / 2;
-    pl->power = (BIT(World.rules.mode, TIMING) ? MAX_PLAYER_POWER : MAX_PLAYER_POWER / 2);
+    pl->power = (Timing(world) ? MAX_PLAYER_POWER : MAX_PLAYER_POWER / 2);
 
     delta_dir = MOD2(item_dir - travel_dir, ANGLE_RESOLUTION);
     if (delta_dir >= ANGLE_RESOLUTION / 4 && delta_dir <= 3 * ANGLE_RESOLUTION / 4)
@@ -1008,7 +1009,7 @@ static bool Check_robot_target(player_t *pl, clpos_t item_pos, int new_mode)
         if (pl->item[ITEM_MINE] && item_dist < 8 * BLOCK_SZ)
         {
             Choose_weapon_modifier(pl, OBJ_MINE);
-            if (BIT(World.rules.mode, TIMING))
+            if (Timing(world))
                 Place_mine(pl);
             else
                 Place_moving_mine(pl);
@@ -1092,7 +1093,7 @@ static bool Check_robot_target(player_t *pl, clpos_t item_pos, int new_mode)
             Thrust(pl, false);
     }
 
-    if (new_mode == RM_ATTACK || (BIT(World.rules.mode, TIMING) && new_mode == RM_NAVIGATE))
+    if (new_mode == RM_ATTACK || (Timing(world) && new_mode == RM_NAVIGATE))
     {
         if (pl->item[ITEM_ECM] > 0 && item_dist < ECM_DISTANCE / 4)
             Fire_ecm(pl);
@@ -1314,6 +1315,7 @@ static bool Detect_ship(player_t *pl, player_t *ship)
  */
 static int Rank_item_value(player_t *pl, enum Item itemtype)
 {
+    world_t *world = &World;
     robot_default_data_t *my_data = Robot_default_get_data(pl);
 
     if (itemtype == ITEM_AUTOPILOT)
@@ -1326,14 +1328,14 @@ static int Rank_item_value(player_t *pl, enum Item itemtype)
     {
         if (pl->fuel.sum >= pl->fuel.max * 0.90)
             return ROBOT_IGNORE_ITEM; /* already (almost) full */
-        else if ((pl->fuel.sum < (BIT(World.rules.mode, TIMING))
+        else if ((pl->fuel.sum < (Timing(world))
                       ? my_data->fuel_l1
                       : my_data->fuel_l2))
             return ROBOT_MUST_HAVE_ITEM; /* ahh fuel at last */
         else
             return ROBOT_HANDY_ITEM;
     }
-    if (BIT(World.rules.mode, TIMING))
+    if (Timing(world))
     {
         switch (itemtype)
         {
@@ -1822,9 +1824,9 @@ static void Robot_default_play_check_objects(player_t *pl,
             shot->type == OBJ_HEAT_SHOT ||
             shot->type == OBJ_BALL ||
             shot->type == OBJ_CANNON_SHOT ||
-            (shot->type == OBJ_SHOT && !BIT(World.rules.mode, TIMING) && shot->id != pl->id && shot->id != NO_ID) ||
+            (shot->type == OBJ_SHOT && !Timing(world) && shot->id != pl->id && shot->id != NO_ID) ||
             (shot->type == OBJ_MINE && shot->id != pl->id) ||
-            (shot->type == OBJ_WRECKAGE && !BIT(World.rules.mode, TIMING)))
+            (shot->type == OBJ_WRECKAGE && !Timing(world)))
         {
             if (ABS(dx) < *mine_dist && ABS(dy) < *mine_dist && (distance = LENGTH(dx, dy)) < *mine_dist)
             {
@@ -1945,10 +1947,10 @@ static void Robot_default_play(player_t *pl)
     if (Player_has_emergency_thrust(pl) && !Player_uses_emergency_thrust(pl))
         Emergency_thrust(pl, true);
 
-    if (Player_has_deflector(pl) && !BIT(World.rules.mode, TIMING))
+    if (Player_has_deflector(pl) && !Timing(world))
         Deflector(pl, true);
 
-    if (pl->fuel.sum <= (BIT(World.rules.mode, TIMING) ? 0 : my_data->fuel_l1))
+    if (pl->fuel.sum <= (Timing(world) ? 0 : my_data->fuel_l1))
         Player_self_destruct(pl, true);
     else
         Player_self_destruct(pl, false);
@@ -1984,7 +1986,7 @@ static void Robot_default_play(player_t *pl)
     }
 
     /* don't turn NEED_FUEL off until refueling stops */
-    if (pl->fuel.sum < (BIT(World.rules.mode, TIMING) ? my_data->fuel_l1 : my_data->fuel_l3))
+    if (pl->fuel.sum < (Timing(world) ? my_data->fuel_l1 : my_data->fuel_l3))
         SET_BIT(my_data->longterm_mode, NEED_FUEL);
     else if (!Player_is_refueling(pl))
         CLR_BIT(my_data->longterm_mode, NEED_FUEL);
@@ -2094,7 +2096,7 @@ static void Robot_default_play(player_t *pl)
     if (ship_dist < 3 * SHIP_SZ && BIT(pl->have, HAS_SHIELD))
         SET_BIT(pl->used, HAS_SHIELD);
 
-    if (ship_dist <= 10 * BLOCK_SZ && pl->fuel.sum <= my_data->fuel_l3 && !BIT(World.rules.mode, TIMING))
+    if (ship_dist <= 10 * BLOCK_SZ && pl->fuel.sum <= my_data->fuel_l3 && !Timing(world))
     {
         if (Initiate_hyperjump(pl))
             return;
@@ -2107,7 +2109,7 @@ static void Robot_default_play(player_t *pl)
     {
         ship = Player_by_index(enemy_i);
         if (!BIT(pl->lock.tagged, LOCK_PLAYER) ||
-            (enemy_dist < pl->lock.distance / 2 && (BIT(World.rules.mode, TIMING) ? (ship->check >= pl->check && ship->round >= pl->round) : 1)) ||
+            (enemy_dist < pl->lock.distance / 2 && (Timing(world) ? (ship->check >= pl->check && ship->round >= pl->round) : 1)) ||
             (enemy_dist < pl->lock.distance * 2 && Team_play(world) && BIT(ship->have, HAS_BALL)) ||
             Get_Score(ship) > Get_Score(Player_by_id(pl->lock.pl_id)))
         {
@@ -2129,9 +2131,9 @@ static void Robot_default_play(player_t *pl)
         if (!Player_is_active(ship) ||
             (BIT(my_data->robot_lock, LOCK_PLAYER) && my_data->robot_lock_id != pl->lock.pl_id && Player_is_active(Player_by_id(my_data->robot_lock_id))) ||
             !Detect_ship(pl, ship) ||
-            (pl->fuel.sum <= my_data->fuel_l3 && !BIT(World.rules.mode, TIMING)) ||
-            (BIT(World.rules.mode, TIMING) && (delta_dir < 3 * ANGLE_RESOLUTION / 4 ||
-                                               delta_dir > ANGLE_RESOLUTION / 4)) ||
+            (pl->fuel.sum <= my_data->fuel_l3 && !Timing(world)) ||
+            (Timing(world) && (delta_dir < 3 * ANGLE_RESOLUTION / 4 ||
+                               delta_dir > ANGLE_RESOLUTION / 4)) ||
             Team_immune(pl->id, ship->id))
         {
             /* unset the player lock */
@@ -2153,7 +2155,7 @@ static void Robot_default_play(player_t *pl)
             return;
         }
     }
-    if (BIT(World.rules.mode, TIMING) && !navigate_checked)
+    if (Timing(world) && !navigate_checked)
     {
         int delta_dir;
 

@@ -1790,7 +1790,7 @@ void Update_missile(missileobject_t *missile)
         {
             xi = (int)((x += vx) / BLOCK_SZ);
             yi = (int)((y += vy) / BLOCK_SZ);
-            if (BIT(World.rules.mode, WRAP_PLAY))
+            if (Wrap_play(world))
             {
                 if (xi < 0)
                     xi += World.x;

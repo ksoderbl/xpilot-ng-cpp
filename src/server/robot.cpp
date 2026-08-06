@@ -772,7 +772,7 @@ static void Robot_create(void)
         else
             roundtime = -1;
         Set_message_f("Player entered. Delaying 0 seconds until next %s.",
-                      (BIT(World.rules.mode, TIMING) ? "race" : "round"));
+                      (Timing(world) ? "race" : "round"));
     }
 
     updateScores = true;

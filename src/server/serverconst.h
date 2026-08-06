@@ -33,7 +33,7 @@
  * Note that the correction needed shouldn't ever be bigger than one mapsize.
  */
 #define WORLD_WRAP_XBLOCK(world, bx)     \
-    (BIT(world->rules.mode, WRAP_PLAY)   \
+    (Wrap_play(world)                    \
          ? ((bx) < 0                     \
                 ? (bx) + world->x        \
                 : ((bx) >= world->x      \
@@ -42,7 +42,7 @@
          : (bx))
 
 #define WORLD_WRAP_YBLOCK(world, by)     \
-    (BIT(world->rules.mode, WRAP_PLAY)   \
+    (Wrap_play(world)                    \
          ? ((by) < 0                     \
                 ? (by) + world->y        \
                 : ((by) >= world->y      \
@@ -56,7 +56,7 @@
  * half the map size then it is wrapped.
  */
 #define WORLD_WRAP_DX(world, dx)              \
-    (BIT(world->rules.mode, WRAP_PLAY)        \
+    (Wrap_play(world)                         \
          ? ((dx) < -(world->width >> 1)       \
                 ? (dx) + world->width         \
                 : ((dx) > (world->width >> 1) \
@@ -65,7 +65,7 @@
          : (dx))
 
 #define WORLD_WRAP_DY(world, dy)               \
-    (BIT(world->rules.mode, WRAP_PLAY)         \
+    (Wrap_play(world)                          \
          ? ((dy) < -(world->height >> 1)       \
                 ? (dy) + world->height         \
                 : ((dy) > (world->height >> 1) \

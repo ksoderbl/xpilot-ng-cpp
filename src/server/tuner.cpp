@@ -126,12 +126,14 @@ void tuner_playerstartsshielded(void)
 
 void tuner_worldlives(void)
 {
+    world_t *world = &World;
+
     if (options.worldLives < 0)
         options.worldLives = 0;
 
     Set_world_rules();
 
-    if (BIT(World.rules.mode, LIMITED_LIVES))
+    if (Limited_lives(world))
     {
         Reset_all_players();
         if (options.gameDuration == -1)
@@ -212,7 +214,9 @@ void tuner_gameduration(void)
 
 void tuner_racelaps(void)
 {
-    if (BIT(World.rules.mode, TIMING))
+    world_t *world = &World;
+
+    if (Timing(world))
     {
         Reset_all_players();
         if (options.gameDuration == -1)

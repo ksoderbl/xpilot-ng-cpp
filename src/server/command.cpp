@@ -176,10 +176,12 @@ void Send_info_about_player(player_t *pl)
 
 void Set_swapper_state(player_t *pl)
 {
+    world_t *world = &World;
+
     if (BIT(pl->have, HAS_BALL))
         Detach_ball(pl, nullptr);
 
-    if (BIT(World.rules.mode, LIMITED_LIVES))
+    if (Limited_lives(world))
     {
         int i;
 

@@ -1058,6 +1058,7 @@ static inline double Missile_hit_drain(missileobject_t *missile)
 
 static void Player_collides_with_killing_shot(player_t *pl, object_t *obj)
 {
+    world_t *world = &World;
     player_t *kp = nullptr;
     cannon_t *cannon = nullptr;
     double drainfactor, drain;
@@ -1198,7 +1199,7 @@ static void Player_collides_with_killing_shot(player_t *pl, object_t *obj)
 
                 /* if there are no rounds in survival mode */
                 /* deaths act like rounds                  */
-                if (!BIT(World.rules.mode, LIMITED_LIVES))
+                if (!Limited_lives(world))
                     Rank_add_round(pl);
 
                 Rank_write_webpage();
@@ -1392,7 +1393,7 @@ static void BallCollision(void)
             continue;
 
         /* Ball - checkpoint */
-        if (BIT(World.rules.mode, TIMING) && options.ballrace && ball->ball_owner != NO_ID)
+        if (Timing(world) && options.ballrace && ball->ball_owner != NO_ID)
         {
             player_t *owner = Player_by_id(ball->ball_owner);
 

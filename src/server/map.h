@@ -373,7 +373,7 @@ static inline int WORLD_WRAP_YCLICK(world_t *world, int cy)
  * half the map size then it is wrapped.
  */
 #define WORLD_WRAP_DCX(world, dcx)              \
-    (BIT(world->rules.mode, WRAP_PLAY)          \
+    (Wrap_play(world)                           \
          ? ((dcx) < -(world->cwidth >> 1)       \
                 ? (dcx) + world->cwidth         \
                 : ((dcx) > (world->cwidth >> 1) \
@@ -382,7 +382,7 @@ static inline int WORLD_WRAP_YCLICK(world_t *world, int cy)
          : (dcx))
 
 #define WORLD_WRAP_DCY(world, dcy)               \
-    (BIT(world->rules.mode, WRAP_PLAY)           \
+    (Wrap_play(world)                            \
          ? ((dcy) < -(world->cheight >> 1)       \
                 ? (dcy) + world->cheight         \
                 : ((dcy) > (world->cheight >> 1) \
@@ -468,62 +468,62 @@ static inline int Num_checks()
 }
 
 // by_index functions
-static asteroid_concentrator_t *AsteroidConc_by_index(int i)
+static inline asteroid_concentrator_t *AsteroidConc_by_index(int i)
 {
     return &World.asteroidConcs[i];
 }
 
-static base_t *Base_by_index(int i)
+static inline base_t *Base_by_index(int i)
 {
     return &World.bases[i];
 }
 
-static cannon_t *Cannon_by_index(int i)
+static inline cannon_t *Cannon_by_index(int i)
 {
     return &World.cannons[i];
 }
 
-static ecm_t *Ecm_by_index(int i)
+static inline ecm_t *Ecm_by_index(int i)
 {
     return &World.ecms[i];
 }
 
-static friction_area_t *FrictionArea_by_index(int i)
+static inline friction_area_t *FrictionArea_by_index(int i)
 {
     return &World.frictionAreas[i];
 }
 
-static fuel_t *Fuel_by_index(int i)
+static inline fuel_t *Fuel_by_index(int i)
 {
     return &World.fuels[i];
 }
 
-static grav_t *Grav_by_index(int i)
+static inline grav_t *Grav_by_index(int i)
 {
     return &World.gravs[i];
 }
 
-static item_concentrator_t *ItemConc_by_index(int i)
+static inline item_concentrator_t *ItemConc_by_index(int i)
 {
     return &World.itemConcs[i];
 }
 
-static target_t *Target_by_index(int i)
+static inline target_t *Target_by_index(int i)
 {
     return &World.targets[i];
 }
 
-static treasure_t *Treasure_by_index(int i)
+static inline treasure_t *Treasure_by_index(int i)
 {
     return &World.treasures[i];
 }
 
-static wormhole_t *Wormhole_by_index(int i)
+static inline wormhole_t *Wormhole_by_index(int i)
 {
     return &World.wormholes[i];
 }
 
-static transporter_t *Transporter_by_index(int i)
+static inline transporter_t *Transporter_by_index(int i)
 {
     return &World.transporters[i];
 }
@@ -545,7 +545,23 @@ static inline team_t *Team_by_index(int ind)
     return nullptr;
 }
 
+// Rules
+static inline bool Limited_lives(world_t *world)
+{
+    return BIT(world->rules.mode, LIMITED_LIVES);
+}
+
 static inline bool Team_play(world_t *world)
 {
     return BIT(world->rules.mode, TEAM_PLAY);
+}
+
+static inline bool Timing(world_t *world)
+{
+    return BIT(world->rules.mode, TIMING);
+}
+
+static inline bool Wrap_play(world_t *world)
+{
+    return BIT(world->rules.mode, WRAP_PLAY);
 }
