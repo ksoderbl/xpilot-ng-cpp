@@ -46,7 +46,6 @@
 #include "paint.h"
 
 #include "dbuff.h"
-// #include "keydefs.h"
 #include "widget.h"
 #include "xinit.h"
 #include "xpaint.h"
