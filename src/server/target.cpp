@@ -104,7 +104,7 @@ void Object_hits_target2(object_t *obj, target_t *targ, double player_cost)
 {
     world_t *world = &World;
     int j;
-    player_t *kp;
+    Player *kp;
     double win_score = 0.0, lose_score = 0.0, drainfactor;
     int win_team_members = 0, lose_team_members = 0,
         targets_remaining = 0, targets_total = 0;
@@ -195,7 +195,7 @@ void Object_hits_target2(object_t *obj, target_t *targ, double player_cost)
     {
         for (j = 0; j < NumPlayers; j++)
         {
-            player_t *pl = Player_by_index(j);
+            Player *pl = Player_by_index(j);
 
             if (Player_is_tank(pl) ||
                 (Player_is_paused(pl) && pl->pause_count <= 0) ||
@@ -246,12 +246,12 @@ void Object_hits_target2(object_t *obj, target_t *targ, double player_cost)
          */
         if (options.targetTeamCollision && targets_total < 10)
             Set_message_f("%s blew up one of team %d's targets.",
-                          kp->name, targ->team);
+                          kp->name.c_str(), targ->team);
         return;
     }
 
     Set_message_f("%s blew up team %d's %starget.",
-                  kp->name, targ->team, (targets_total > 1) ? "last " : "");
+                  kp->name.c_str(), targ->team, (targets_total > 1) ? "last " : "");
 }
 
 hitmask_t Target_hitmask(target_t *targ)

@@ -44,7 +44,7 @@
 #define SOUND_MAX_VOLUME 100
 #define SOUND_MIN_VOLUME 10
 
-static inline double sound_range(player_t *pl)
+static inline double sound_range(Player *pl)
 {
     return SOUND_DEFAULT_RANGE + pl->item[ITEM_SENSOR] * SOUND_DEFAULT_RANGE * SOUND_RANGE_FACTOR;
 }
@@ -55,7 +55,7 @@ typedef struct AudioQRec
     struct AudioQRec *next;
 } AudioQRec, *AudioQPtr;
 
-static void queue_audio(player_t *pl, int sound_ind, int volume)
+static void queue_audio(Player *pl, int sound_ind, int volume)
 {
     AudioQPtr a, p, prev;
 
@@ -87,7 +87,7 @@ static void queue_audio(player_t *pl, int sound_ind, int volume)
         pl->audio = (void *)a;
 }
 
-int sound_player_init(player_t *pl)
+int sound_player_init(Player *pl)
 {
     SDBG(printf("sound_player_init %p\n", pl));
 
@@ -100,7 +100,7 @@ int sound_player_init(player_t *pl)
  * Set (or reset) a player status flag indicating
  * that a player wants (or doesn't want) sound.
  */
-void sound_player_on(player_t *pl, int on)
+void sound_player_on(Player *pl, int on)
 {
     SDBG(printf("sound_player_on %p, %d\n", pl, on));
 
@@ -119,7 +119,7 @@ void sound_player_on(player_t *pl, int on)
 /*
  * Play a sound for a player.
  */
-void sound_play_player(player_t *pl, int sound_ind)
+void sound_play_player(Player *pl, int sound_ind)
 {
     if (!options.sound)
         return;
@@ -144,7 +144,7 @@ void sound_play_all(int sound_ind)
 
     for (i = 0; i < NumPlayers; i++)
     {
-        player_t *pl_i = Player_by_index(i);
+        Player *pl_i = Player_by_index(i);
 
         if (pl_i->want_audio)
             sound_play_player(pl_i, sound_ind);
@@ -161,7 +161,7 @@ void sound_play_sensors(clpos_t pos, int sound_ind)
 {
     int i, volume;
     double dx, dy, range, factor;
-    player_t *pl;
+    Player *pl;
 
     if (!options.sound)
         return;
@@ -193,7 +193,7 @@ void sound_play_sensors(clpos_t pos, int sound_ind)
     }
 }
 
-void sound_play_queued(player_t *pl)
+void sound_play_queued(Player *pl)
 {
     AudioQPtr p, n;
 
@@ -214,7 +214,7 @@ void sound_play_queued(player_t *pl)
     }
 }
 
-void sound_close(player_t *pl)
+void sound_close(Player *pl)
 {
     AudioQPtr p, n;
 

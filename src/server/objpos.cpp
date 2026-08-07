@@ -45,7 +45,7 @@ void Object_position_set_clpos(object_t *obj, clpos_t pos)
         else
         {
             if (obj->type == OBJ_PLAYER)
-                Player_crash2((player_t *)obj, CrashUnknown, NO_IND, 1);
+                Player_crash2((Player *)obj, CrashUnknown, NO_IND, 1);
             else
                 Object_crash2(obj, CrashUnknown, NO_IND);
             return;
@@ -78,11 +78,11 @@ void Object_position_limit(object_t *obj)
 }
 
 #ifdef DEVELOPMENT
-void Player_position_debug(player_t *pl, const char *msg)
+void Player_position_debug(Player *pl, const char *msg)
 {
     int i;
 
-    printf("pl %s pos dump: ", pl->name);
+    printf("pl %s pos dump: ", pl->name.c_str());
     if (msg)
         printf("(%s)", msg);
     printf("\n");

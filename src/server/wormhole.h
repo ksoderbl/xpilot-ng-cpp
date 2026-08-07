@@ -30,9 +30,9 @@
 
 #define WORMHOLE_RADIUS ((BLOCK_CLICKS / 2) - 1)
 
-bool Initiate_hyperjump(player_t *pl);
-void Player_warp(player_t *pl);
-void Player_finish_warp(player_t *pl);
+bool Initiate_hyperjump(Player *pl);
+void Player_warp(Player *pl);
+void Player_finish_warp(Player *pl);
 void Object_warp(object_t *obj);
 void Object_finish_warp(object_t *obj);
 void Object_hits_wormhole2(object_t *obj, int ind);

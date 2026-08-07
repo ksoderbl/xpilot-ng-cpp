@@ -57,7 +57,7 @@
 #include "cannon.h"
 #include "walls2.h"
 
-void Fire_laser(player_t *pl)
+void Fire_laser(Player *pl)
 {
     world_t *world = &World;
     clpos_t m_gun, pos;
@@ -90,7 +90,7 @@ void Fire_general_laser(int id, int team, clpos_t pos, int dir,
     world_t *world = &World;
     double life;
     pulseobject_t *pulse;
-    player_t *pl = Player_by_id(id);
+    Player *pl = Player_by_id(id);
     /*cannon_t *cannon = Cannon_by_id(id);*/
 
     if (!World_contains_clpos(world, pos))
@@ -147,10 +147,10 @@ void Fire_general_laser(int id, int team, clpos_t pos, int dir,
  * Do what needs to be done when a laser pulse
  * actually hits a player.
  */
-void Laser_pulse_hits_player2(player_t *pl, pulseobject_t *pulse)
+void Laser_pulse_hits_player2(Player *pl, pulseobject_t *pulse)
 {
     world_t *world = &World;
-    player_t *kp = Player_by_id(pulse->id);
+    Player *kp = Player_by_id(pulse->id);
     cannon_t *cannon = nullptr;
 
     if (kp == nullptr)
@@ -191,10 +191,10 @@ void Laser_pulse_hits_player2(player_t *pl, pulseobject_t *pulse)
         {
             if (kp)
                 Set_message_f("%s got paralysed by %s's stun laser.%s",
-                              pl->name, kp->name,
+                              pl->name.c_str(), kp->name.c_str(),
                               pl->id == kp->id ? " How strange!" : "");
             else
-                Set_message_f("%s got paralysed by a stun laser.", pl->name);
+                Set_message_f("%s got paralysed by a stun laser.", pl->name.c_str());
 
             CLR_BIT(pl->used,
                     HAS_SHIELD | HAS_LASER | OBJ_SHOT);
@@ -219,17 +219,17 @@ void Laser_pulse_hits_player2(player_t *pl, pulseobject_t *pulse)
             if (kp)
             {
                 Set_message_f("%s got roasted alive by %s's laser.%s",
-                              pl->name, kp->name,
+                              pl->name.c_str(), kp->name.c_str(),
                               pl->id == kp->id ? " How strange!" : "");
             }
             else if (cannon != nullptr)
             {
-                Set_message_f("%s got roasted alive by cannonfire.", pl->name);
+                Set_message_f("%s got roasted alive by cannonfire.", pl->name.c_str());
             }
             else
             {
                 assert(pulse->id == NO_ID);
-                Set_message_f("%s got roasted alive.", pl->name);
+                Set_message_f("%s got roasted alive.", pl->name.c_str());
             }
 
             sound_play_sensors(pl->pos, PLAYER_ROASTED_SOUND);

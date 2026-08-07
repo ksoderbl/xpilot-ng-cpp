@@ -32,12 +32,12 @@
 
 #include "audio.h"
 
-int sound_player_init(player_t *);
-void sound_player_on(player_t *pl, int on);
-void sound_play_player(player_t *, int);
+int sound_player_init(Player *);
+void sound_player_on(Player *pl, int on);
+void sound_play_player(Player *, int);
 void sound_play_all(int);
 void sound_play_sensors(clpos_t, int);
-void sound_play_queued(player_t *pl);
-void sound_close(player_t *pl);
+void sound_play_queued(Player *pl);
+void sound_close(Player *pl);
 
 #endif /* SAUDIO_H */

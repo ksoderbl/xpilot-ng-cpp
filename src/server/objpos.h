@@ -32,7 +32,7 @@ void Object_position_set_clpos(object_t *obj, clpos_t pos);
 void Object_position_init_clpos(object_t *obj, clpos_t pos);
 void Object_position_restore(object_t *obj);
 void Object_position_limit(object_t *obj);
-void Player_position_debug(player_t *pl, const char *msg);
+void Player_position_debug(Player *pl, const char *msg);
 
 static inline void Object_position_remember(object_t *obj)
 {

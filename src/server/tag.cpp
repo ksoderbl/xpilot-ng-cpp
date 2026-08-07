@@ -29,7 +29,7 @@
 
 int tagItPlayerId = NO_ID; /* player who is 'it' */
 
-void Transfer_tag(player_t *oldtag_pl, player_t *newtag_pl)
+void Transfer_tag(Player *oldtag_pl, Player *newtag_pl)
 {
     char msg[MSG_LEN];
 
@@ -38,11 +38,11 @@ void Transfer_tag(player_t *oldtag_pl, player_t *newtag_pl)
 
     tagItPlayerId = newtag_pl->id;
     sprintf(msg, " < %s killed %s and gets to be 'it' now. >",
-            newtag_pl->name, oldtag_pl->name);
+            newtag_pl->name.c_str(), oldtag_pl->name.c_str());
     Set_message(msg);
 }
 
-static inline bool Player_can_be_tagged(player_t *pl)
+static inline bool Player_can_be_tagged(Player *pl)
 {
     if (Player_is_tank(pl))
         return false;
@@ -58,7 +58,7 @@ static inline bool Player_can_be_tagged(player_t *pl)
 void Check_tag(void)
 {
     int num = 0, i, candidate;
-    player_t *tag_pl = Player_by_id(tagItPlayerId);
+    Player *tag_pl = Player_by_id(tagItPlayerId);
 
     if (tag_pl && Player_can_be_tagged(tag_pl))
         return;
@@ -66,7 +66,7 @@ void Check_tag(void)
     /* Find number of players that might get the tag */
     for (i = 0; i < NumPlayers; i++)
     {
-        player_t *pl = Player_by_index(i);
+        Player *pl = Player_by_index(i);
         if (Player_can_be_tagged(pl))
             num++;
     }
@@ -81,7 +81,7 @@ void Check_tag(void)
     candidate = (int)(rfrac() * num);
     for (i = candidate; i < NumPlayers; i++)
     {
-        player_t *pl = Player_by_index(i);
+        Player *pl = Player_by_index(i);
         if (Player_can_be_tagged(pl))
         {
             tagItPlayerId = pl->id;
@@ -93,7 +93,7 @@ void Check_tag(void)
     {
         for (i = 0; i < candidate; i++)
         {
-            player_t *pl = Player_by_index(i);
+            Player *pl = Player_by_index(i);
             if (Player_can_be_tagged(pl))
             {
                 tagItPlayerId = pl->id;

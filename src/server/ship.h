@@ -25,15 +25,15 @@
 
 #include "player.h"
 
-void Make_thrust_sparks(player_t *pl);
-void Record_shove(player_t *pl, player_t *pusher, long shove_time);
+void Make_thrust_sparks(Player *pl);
+void Record_shove(Player *pl, Player *pusher, long shove_time);
 void Delta_mv(object_t *ship, object_t *obj);
 void Delta_mv_elastic(object_t *obj1, object_t *obj2);
 void Delta_mv_partly_elastic(object_t *obj1, object_t *obj2, double elastic);
 void Obj_repel(object_t *obj1, object_t *obj2, int repel_dist);
 /*void Add_fuel(pl_fuel_t *ft, double fuel);*/
 void Update_tanks(pl_fuel_t *ft);
-void Tank_handle_detach(player_t *pl);
+void Tank_handle_detach(Player *pl);
 void Make_debris(clpos_t pos,
                  vector_t vel,
                  int owner_id,
@@ -58,4 +58,4 @@ void Make_wreckage(clpos_t pos,
                    int min_dir, int max_dir,
                    double min_speed, double max_speed,
                    double min_life, double max_life);
-void Explode_fighter(player_t *pl);
+void Explode_fighter(Player *pl);

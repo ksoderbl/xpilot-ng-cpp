@@ -203,7 +203,7 @@ void Meta_update(bool change)
 
     for (i = 0; i < NumPlayers; i++)
     {
-        player_t *pl = Player_by_index(i);
+        Player *pl = Player_by_index(i);
 
         if (!Player_is_human(pl))
             /*|| Player_is_paused(pl)) // reporting paused players,
@@ -281,7 +281,7 @@ void Meta_update(bool change)
 
     for (i = 0; i < NumPlayers; i++)
     {
-        player_t *pl = Player_by_index(i);
+        Player *pl = Player_by_index(i);
         char str[4 * MAX_CHARS];
         char tstr[32];
 
@@ -294,9 +294,9 @@ void Meta_update(bool change)
         snprintf(str, sizeof(str),
                  "%s%s=%s@%s",
                  first ? "add players " : ",",
-                 pl->name,
-                 pl->username,
-                 pl->hostname);
+                 pl->name.c_str(),
+                 pl->username.c_str(),
+                 pl->hostname.c_str());
 
         if (Team_play(world))
         {

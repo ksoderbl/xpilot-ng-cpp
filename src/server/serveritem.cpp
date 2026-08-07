@@ -53,7 +53,7 @@
 #include "robot.h"
 #include "walls2.h"
 
-static void Item_update_flags(player_t *pl)
+static void Item_update_flags(Player *pl)
 {
     if (pl->item[ITEM_CLOAK] <= 0 && BIT(pl->have, HAS_CLOAKING_DEVICE))
     {
@@ -99,7 +99,7 @@ static void Item_update_flags(player_t *pl)
  * The 'prob' parameter gives the chance that items are lost
  * and, if they are lost, what percentage.
  */
-void Item_damage(player_t *pl, double prob)
+void Item_damage(Player *pl, double prob)
 {
     if (prob < 1.0)
     {
@@ -152,7 +152,7 @@ int Choose_random_item(void)
     return i;
 }
 
-void Place_item(player_t *pl, int item)
+void Place_item(Player *pl, int item)
 {
     world_t *world = &World;
     int num_lose, num_per_pack, place_count, dist;
@@ -365,7 +365,7 @@ void Make_item(clpos_t pos, vector_t vel,
     Cell_add_object(OBJ_PTR(item));
 }
 
-void Throw_items(player_t *pl)
+void Throw_items(Player *pl)
 {
     int num_items_to_throw, remain, item;
 
@@ -394,9 +394,9 @@ void Throw_items(player_t *pl)
  * a random direction with a small life time (ie. magazine has
  * gone off).
  */
-void Detonate_items(player_t *pl)
+void Detonate_items(Player *pl)
 {
-    player_t *owner_pl;
+    Player *owner_pl;
     int i;
     modifiers_t mods;
 
@@ -483,10 +483,10 @@ void Detonate_items(player_t *pl)
     }
 }
 
-void Tractor_beam(player_t *pl)
+void Tractor_beam(Player *pl)
 {
     double maxdist, percent, cost;
-    player_t *locked_pl = Player_by_id(pl->lock.pl_id);
+    Player *locked_pl = Player_by_id(pl->lock.pl_id);
 
     maxdist = TRACTOR_MAX_RANGE(pl->item[ITEM_TRACTOR_BEAM]);
     if (BIT(pl->lock.tagged, LOCK_PLAYER | LOCK_VISIBLE) != (LOCK_PLAYER | LOCK_VISIBLE) || !Player_is_alive(locked_pl) || pl->lock.distance >= maxdist || Player_is_phasing(pl) || Player_is_phasing(locked_pl))
@@ -506,13 +506,13 @@ void Tractor_beam(player_t *pl)
 }
 
 void General_tractor_beam(int id, clpos_t pos,
-                          int items, player_t *victim, bool pressor)
+                          int items, Player *victim, bool pressor)
 {
     world_t *world = &World;
     double maxdist = TRACTOR_MAX_RANGE(items);
     double maxforce = TRACTOR_MAX_FORCE(items), percent, force, dist, cost, a;
     int theta;
-    player_t *pl = Player_by_id(id);
+    Player *pl = Player_by_id(id);
     /*cannon_t *cannon = Cannon_by_id(id);*/
 
     dist = World_wrap_length(
@@ -549,7 +549,7 @@ void General_tractor_beam(int id, clpos_t pos,
     victim->vel.y -= tsin(theta) * (force / victim->mass);
 }
 
-void Do_deflector(player_t *pl)
+void Do_deflector(Player *pl)
 {
     world_t *world = &World;
     double range = (pl->item[ITEM_DEFLECTOR] * 0.5 + 1) * BLOCK_CLICKS;
@@ -624,10 +624,10 @@ void Do_deflector(player_t *pl)
     }
 }
 
-void Do_transporter(player_t *pl)
+void Do_transporter(Player *pl)
 {
     world_t *world = &World;
-    player_t *victim = nullptr;
+    Player *victim = nullptr;
     int i;
     double dist, closest = TRANSPORTER_DISTANCE * CLICK;
 
@@ -638,7 +638,7 @@ void Do_transporter(player_t *pl)
     /* find victim */
     for (i = 0; i < NumPlayers; i++)
     {
-        player_t *pl_i = Player_by_index(i);
+        Player *pl_i = Player_by_index(i);
 
         if (pl_i == pl || !Player_is_active(pl_i) || Team_immune(pl->id, pl_i->id) || Player_is_tank(pl_i) || Player_is_phasing(pl_i))
             continue;
@@ -667,14 +667,14 @@ void Do_transporter(player_t *pl)
 }
 
 void Do_general_transporter(int id, clpos_t pos,
-                            player_t *victim, int *itemp, double *amountp)
+                            Player *victim, int *itemp, double *amountp)
 {
     world_t *world = &World;
     char msg[MSG_LEN];
     const char *what = nullptr;
     int i, item = ITEM_FUEL;
     double amount;
-    player_t *pl = Player_by_id(id);
+    Player *pl = Player_by_id(id);
     /*cannon_t *cannon = Cannon_by_id(id);*/
 
     /* choose item type to steal */
@@ -726,10 +726,10 @@ void Do_general_transporter(int id, clpos_t pos,
         amount = (double)MIN(victim->item[item], 3);
         if (amount == 1.0)
             sprintf(msg, "%s stole a missile from %s.",
-                    (pl ? pl->name : "A cannon"), victim->name);
+                    (pl ? pl->name.c_str() : "A cannon"), victim->name.c_str());
         else
             sprintf(msg, "%s stole %d missiles from %s",
-                    (pl ? pl->name : "A cannon"), (int)amount, victim->name);
+                    (pl ? pl->name.c_str() : "A cannon"), (int)amount, victim->name.c_str());
         break;
     case ITEM_CLOAK:
         what = "a cloaking device";
@@ -836,8 +836,8 @@ void Do_general_transporter(int id, clpos_t pos,
         double percent = 10.0 + 40.0 * rfrac();
         amount = victim->fuel.sum * percent / 100.0;
         sprintf(msg, "%s stole %.1f units (%.1f%%) of fuel from %s.",
-                (pl ? pl->name : "A cannon"),
-                amount, percent, victim->name);
+                (pl ? pl->name.c_str() : "A cannon"),
+                amount, percent, victim->name.c_str());
     }
         Player_add_fuel(victim, -amount);
         break;
@@ -848,8 +848,8 @@ void Do_general_transporter(int id, clpos_t pos,
 
     /* inform the world about the robbery */
     if (!msg[0])
-        sprintf(msg, "%s stole %s from %s.", (pl ? pl->name : "A cannon"),
-                what, victim->name);
+        sprintf(msg, "%s stole %s from %s.", (pl ? pl->name.c_str() : "A cannon"),
+                what, victim->name.c_str());
     Set_message(msg);
 
     /* cannons take care of themselves */
@@ -919,7 +919,7 @@ void Do_general_transporter(int id, clpos_t pos,
     LIMIT(pl->item[item], 0, World.items[item].limit);
 }
 
-void do_lose_item(player_t *pl)
+void do_lose_item(Player *pl)
 {
     int item;
 
@@ -956,7 +956,7 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
     double closest_mine_range = World.hypotenuse;
     int i, j, ecm_ind;
     double range, perim, damage;
-    player_t *p, *pl = Player_by_id(id);
+    Player *p, *pl = Player_by_id(id);
     ecm_t t;
     /*cannon_t *cannon = Cannon_by_id(id);*/
 
@@ -1000,7 +1000,7 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
          */
         if (shot->id != NO_ID)
         {
-            player_t *owner_pl = Player_by_id(shot->id);
+            Player *owner_pl = Player_by_id(shot->id);
 
             if (pl == owner_pl)
             {
@@ -1220,7 +1220,7 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
     }
 }
 
-void Fire_ecm(player_t *pl)
+void Fire_ecm(Player *pl)
 {
     if (pl->item[ITEM_ECM] == 0 || pl->fuel.sum <= -ED_ECM || pl->ecmcount >= MAX_PLAYER_ECMS || Player_is_phasing(pl))
         return;
@@ -1306,14 +1306,14 @@ int IsDefensiveItem(enum Item i)
     return false;
 }
 
-int CountOffensiveItems(player_t *pl)
+int CountOffensiveItems(Player *pl)
 {
     return (pl->item[ITEM_WIDEANGLE] + pl->item[ITEM_REARSHOT] +
             pl->item[ITEM_MINE] + pl->item[ITEM_MISSILE] +
             pl->item[ITEM_LASER]);
 }
 
-int CountDefensiveItems(player_t *pl)
+int CountDefensiveItems(Player *pl)
 {
     int count;
 

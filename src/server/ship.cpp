@@ -51,7 +51,7 @@
  * Functions for ship movement.
  */
 
-void Make_thrust_sparks(player_t *pl)
+void Make_thrust_sparks(Player *pl)
 {
     static int min_dir, max_dir;
     static double max_speed; /* kps - why are these static ? */
@@ -117,7 +117,7 @@ void Make_thrust_sparks(player_t *pl)
                 3.0, max_life);
 }
 
-void Record_shove(player_t *pl, player_t *pusher, long shove_time)
+void Record_shove(Player *pl, Player *pusher, long shove_time)
 {
     shove_t *shove = &pl->shove_record[pl->shove_next];
 
@@ -142,8 +142,8 @@ void Delta_mv(object_t *ship, object_t *obj)
     vy = (ship->vel.y * ship->mass + obj->vel.y * obj->mass) / m;
     if (ship->type == OBJ_PLAYER && obj->id != NO_ID && BIT(obj->obj_status, COLLISIONSHOVE))
     {
-        player_t *pl = (player_t *)ship;
-        player_t *pusher = Player_by_id(obj->id);
+        Player *pl = (Player *)ship;
+        Player *pusher = Player_by_id(obj->id);
         if (pusher != pl)
             Record_shove(pl, pusher, frame_loops);
     }
@@ -173,8 +173,8 @@ void Delta_mv_elastic(object_t *obj1, object_t *obj2)
     obj2->vel.y = 2 * m1 / ms * v1y + (m2 - m1) / ms * v2y;
     if (obj1->type == OBJ_PLAYER && obj2->id != NO_ID && BIT(obj2->obj_status, COLLISIONSHOVE))
     {
-        player_t *pl = (player_t *)obj1;
-        player_t *pusher = Player_by_id(obj2->id);
+        Player *pl = (Player *)obj1;
+        Player *pusher = Player_by_id(obj2->id);
         if (pusher != pl)
             Record_shove(pl, pusher, frame_loops);
     }
@@ -224,8 +224,8 @@ void Delta_mv_partly_elastic(object_t *obj1, object_t *obj2, double elastic)
 
     if (obj1->type == OBJ_PLAYER && obj2->id != NO_ID && BIT(obj2->obj_status, COLLISIONSHOVE))
     {
-        player_t *pl = (player_t *)obj1;
-        player_t *pusher = Player_by_id(obj2->id);
+        Player *pl = (Player *)obj1;
+        Player *pusher = Player_by_id(obj2->id);
         if (pusher != pl)
             Record_shove(pl, pusher, frame_loops);
     }
@@ -258,16 +258,16 @@ void Obj_repel(object_t *obj1, object_t *obj2, int repel_dist)
 
     if (obj1->type == OBJ_PLAYER && obj2->id != NO_ID)
     {
-        player_t *pl = (player_t *)obj1;
-        player_t *pusher = Player_by_id(obj2->id);
+        Player *pl = (Player *)obj1;
+        Player *pusher = Player_by_id(obj2->id);
         if (pusher != pl)
             Record_shove(pl, pusher, frame_loops);
     }
 
     if (obj2->type == OBJ_PLAYER && obj1->id != NO_ID)
     {
-        player_t *pl = (player_t *)obj2;
-        player_t *pusher = Player_by_id(obj1->id);
+        Player *pl = (Player *)obj2;
+        Player *pusher = Player_by_id(obj1->id);
         if (pusher != pl)
             Record_shove(pl, pusher, frame_loops);
     }
@@ -400,9 +400,9 @@ void Update_tanks(pl_fuel_t *ft)
 /*
  * Use current tank as dummy target for heat seeking missles.
  */
-void Tank_handle_detach(player_t *pl)
+void Tank_handle_detach(Player *pl)
 {
-    player_t *tank;
+    Player *tank;
     int i, ct;
 
     if (Player_is_phasing(pl))
@@ -450,10 +450,13 @@ void Tank_handle_detach(player_t *pl)
     tank->turnacc = pl->turnacc;
     tank->power = pl->power;
 
-    strlcpy(tank->name, pl->name, MAX_CHARS);
-    strlcat(tank->name, "'s tank", MAX_CHARS);
-    strlcpy(tank->username, options.tankUserName, MAX_CHARS);
-    strlcpy(tank->hostname, options.tankHostName, MAX_CHARS);
+    // strlcpy(tank->name.c_str(), pl->name.c_str(), MAX_CHARS);
+    // strlcat(tank->name.c_str(), "'s tank", MAX_CHARS);
+    tank->name = pl->name + "'s tank";
+    // strlcpy(tank->username, options.tankUserName, MAX_CHARS);
+    tank->username = options.tankUserName;
+    // strlcpy(tank->hostname, options.tankHostName, MAX_CHARS);
+    tank->hostname = options.tankHostName;
     tank->home_base = pl->home_base;
     tank->team = pl->team;
     tank->pseudo_team = pl->pseudo_team;
@@ -527,7 +530,7 @@ void Tank_handle_detach(player_t *pl)
 
     for (i = 0; i < NumPlayers - 1; i++)
     {
-        player_t *pl_i = Player_by_index(i);
+        Player *pl_i = Player_by_index(i);
 
         if (pl_i->conn != nullptr)
         {
@@ -539,7 +542,7 @@ void Tank_handle_detach(player_t *pl)
 
     for (i = 0; i < NumSpectators - 1; i++)
     {
-        player_t *pl_i = Player_by_index(i + spectatorStart);
+        Player *pl_i = Player_by_index(i + spectatorStart);
 
         Send_player(pl_i->conn, tank->id);
         Send_score(pl_i->conn, tank->id, tank->score,
@@ -745,7 +748,7 @@ void Make_wreckage(clpos_t pos,
     }
 }
 
-void Explode_fighter(player_t *pl)
+void Explode_fighter(Player *pl)
 {
     int min_debris;
     double debris_range;

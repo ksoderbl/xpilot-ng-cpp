@@ -44,13 +44,13 @@
 
 /* score.c */
 
-void Score(player_t *pl, double points, clpos_t pos, const char *msg);
+void Score(Player *pl, double points, clpos_t pos, std::string msg);
 double Rate(double winner, double loser);
-void Score_players(player_t *winner_pl, double winner_score,
-                   char *winner_msg, player_t *loser_pl,
-                   double loser_score, char *loser_msg, bool transfer_tag);
+void Score_players(Player *winner_pl, double winner_score,
+                   std::string winner_msg, Player *loser_pl,
+                   double loser_score, std::string loser_msg, bool transfer_tag);
 
-double Get_Score(player_t *pl);
+double Get_Score(Player *pl);
 
 typedef enum
 {
@@ -72,5 +72,5 @@ typedef enum
     SCORE_SHOVE_DEATH
 } scoretype_t;
 
-void Handle_Scoring(scoretype_t st, player_t *killer, player_t *victim,
+void Handle_Scoring(scoretype_t st, Player *killer, Player *victim,
                     void *extra, const char *somemsg);

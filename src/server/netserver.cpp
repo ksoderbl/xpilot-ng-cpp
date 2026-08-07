@@ -90,6 +90,9 @@
  * if the acknowledgement timer expires.
  */
 
+#include <string>
+#include <vector>
+
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -146,32 +149,32 @@
 #include "walls2.h"
 
 static int Init_setup(void);
-static int Handle_listening(connection_t *connp);
-static int Handle_setup(connection_t *connp);
-static int Handle_login(connection_t *connp, char *errmsg, size_t errsize);
+static int Handle_listening(Connection *connp);
+static int Handle_setup(Connection *connp);
+static int Handle_login(Connection *connp, char *errmsg, size_t errsize);
 static void Handle_input(int fd, void *arg);
 
-static int Receive_keyboard(connection_t *connp);
-static int Receive_quit(connection_t *connp);
-static int Receive_play(connection_t *connp);
-static int Receive_power(connection_t *connp);
-static int Receive_ack(connection_t *connp);
-static int Receive_ack_cannon(connection_t *connp);
-static int Receive_ack_fuel(connection_t *connp);
-static int Receive_ack_target(connection_t *connp);
-static int Receive_ack_polystyle(connection_t *connp);
-static int Receive_discard(connection_t *connp);
-static int Receive_undefined(connection_t *connp);
-static int Receive_talk(connection_t *connp);
-static int Receive_display(connection_t *connp);
-static int Receive_modifier_bank(connection_t *connp);
-static int Receive_motd(connection_t *connp);
-static int Receive_shape(connection_t *connp);
-static int Receive_pointer_move(connection_t *connp);
-static int Receive_audio_request(connection_t *connp);
-static int Receive_fps_request(connection_t *connp);
+static int Receive_keyboard(Connection *connp);
+static int Receive_quit(Connection *connp);
+static int Receive_play(Connection *connp);
+static int Receive_power(Connection *connp);
+static int Receive_ack(Connection *connp);
+static int Receive_ack_cannon(Connection *connp);
+static int Receive_ack_fuel(Connection *connp);
+static int Receive_ack_target(Connection *connp);
+static int Receive_ack_polystyle(Connection *connp);
+static int Receive_discard(Connection *connp);
+static int Receive_undefined(Connection *connp);
+static int Receive_talk(Connection *connp);
+static int Receive_display(Connection *connp);
+static int Receive_modifier_bank(Connection *connp);
+static int Receive_motd(Connection *connp);
+static int Receive_shape(Connection *connp);
+static int Receive_pointer_move(Connection *connp);
+static int Receive_audio_request(Connection *connp);
+static int Receive_fps_request(Connection *connp);
 
-static int Send_motd(connection_t *connp);
+static int Send_motd(Connection *connp);
 
 #define MAX_SELECT_FD (sizeof(int) * 8 - 1)
 #define MAX_RELIABLE_DATA_PACKET_SIZE 1024
@@ -180,17 +183,17 @@ static int Send_motd(connection_t *connp);
 #define MAX_MOTD_SIZE (30 * 1024)
 #define MAX_MOTD_LOOPS (10 * FPS)
 
-static connection_t *Conn = nullptr;
+static std::vector<Connection> connections;
 static int max_connections = 0;
 static setup_t *Setup = nullptr;
 static setup_t *Oldsetup = nullptr;
-static int (*playing_receive[256])(connection_t *connp),
-    (*login_receive[256])(connection_t *connp),
-    (*drain_receive[256])(connection_t *connp);
+static int (*playing_receive[256])(Connection *connp),
+    (*login_receive[256])(Connection *connp),
+    (*drain_receive[256])(Connection *connp);
 int login_in_progress;
 static int num_logins, num_logouts;
 
-static void Feature_init(connection_t *connp)
+static void Feature_init(Connection *connp)
 {
     int v = connp->version;
     int features = 0;
@@ -249,6 +252,7 @@ static void Feature_init(connection_t *connp)
  */
 static int Init_setup(void)
 {
+    world_t *world = &World;
     size_t size;
     uint8_t *mapdata;
 
@@ -277,12 +281,12 @@ static int Init_setup(void)
     free(mapdata);
     Setup->setup_size = ((char *)&Setup->map_data[0] - (char *)Setup) + size;
     Setup->map_data_len = size;
-    Setup->lives = World.rules.lives;
-    Setup->mode = World.rules.mode;
-    Setup->width = World.width;
-    Setup->height = World.height;
-    strlcpy(Setup->name, World.name, sizeof(Setup->name));
-    strlcpy(Setup->author, World.author, sizeof(Setup->author));
+    Setup->lives = world->rules.lives;
+    Setup->mode = world->rules.mode;
+    Setup->width = world->width;
+    Setup->height = world->height;
+    strlcpy(Setup->name, world->name, sizeof(Setup->name));
+    strlcpy(Setup->author, world->author, sizeof(Setup->author));
     strlcpy(Setup->data_url, options.dataURL, sizeof(Setup->data_url));
 
     return 0;
@@ -368,16 +372,12 @@ int Setup_net_server(void)
      */
     max_connections = MIN((int)MAX_SELECT_FD - 5,
                           options.playerLimit_orig + MAX_SPECTATORS * !!rplayback);
-    if ((Conn = XCALLOC(connection_t, max_connections)) == nullptr)
-    {
-        error("Cannot allocate memory for connections");
-        return -1;
-    }
+    connections.resize(max_connections);
 
     return 0;
 }
 
-static void Conn_set_state(connection_t *connp, int state, int drain_state)
+static void Conn_set_state(Connection *connp, int state, int drain_state)
 {
     static int num_conn_busy;
     static int num_conn_playing;
@@ -423,7 +423,7 @@ static void Conn_set_state(connection_t *connp, int state, int drain_state)
  * Since 3.0.6 the client receives a short message
  * explaining why the connection was terminated.
  */
-void Destroy_connection(connection_t *connp, const char *reason)
+void Destroy_connection(Connection *connp, const char *reason)
 {
     int id, len;
     sock_t *sock;
@@ -448,17 +448,17 @@ void Destroy_connection(connection_t *connp, const char *reason)
     }
     printf("%s Goodbye %s=%s@%s|%s (\"%s\")\n",
            showtime(),
-           connp->nick ? connp->nick : "",
-           connp->user ? connp->user : "",
-           connp->host ? connp->host : "",
-           connp->dpy ? connp->dpy : "",
+           connp->nick.c_str(),
+           connp->user.c_str(),
+           connp->host.c_str(),
+           connp->dpy.c_str(),
            reason);
 
     Conn_set_state(connp, CONN_FREE, CONN_FREE);
 
     if (connp->id != NO_ID)
     {
-        player_t *pl;
+        Player *pl;
 
         id = connp->id;
         connp->id = NO_ID;
@@ -470,11 +470,11 @@ void Destroy_connection(connection_t *connp, const char *reason)
             Delete_spectator(pl);
     }
 
-    XFREE(connp->user);
-    XFREE(connp->nick);
-    XFREE(connp->dpy);
-    XFREE(connp->addr);
-    XFREE(connp->host);
+    connp->user.clear();
+    connp->nick.clear();
+    connp->dpy.clear();
+    connp->addr.clear();
+    connp->host.clear();
 
     Sockbuf_cleanup(&connp->w);
     Sockbuf_cleanup(&connp->r);
@@ -495,16 +495,18 @@ void Destroy_connection(connection_t *connp, const char *reason)
 int Check_connection(char *user, char *nick, char *dpy, char *addr)
 {
     int i;
-    connection_t *connp;
+    Connection *connp;
 
     for (i = 0; i < max_connections; i++)
     {
-        connp = &Conn[i];
+        connp = &connections[i];
         if (connp->state == CONN_LISTENING)
         {
-            if (strcasecmp(connp->nick, nick) == 0)
+            if (strcasecmp(connp->nick.c_str(), nick) == 0)
             {
-                if (!strcmp(user, connp->user) && !strcmp(dpy, connp->dpy) && !strcmp(addr, connp->addr))
+                if (!strcmp(user, connp->user.c_str()) &&
+                    !strcmp(dpy, connp->dpy.c_str()) &&
+                    !strcmp(addr, connp->addr.c_str()))
                     return connp->my_port;
                 return -1;
             }
@@ -690,7 +692,7 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
 {
     int i, free_conn_index = max_connections, my_port;
     sock_t sock;
-    connection_t *connp;
+    Connection *connp;
 
     if (rrecord)
     {
@@ -723,16 +725,19 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
         }
         else if (rplayback && i < options.playerLimit_orig)
             continue;
-        connp = &Conn[i];
+        connp = &connections[i];
         if (connp->state == CONN_FREE)
         {
             if (free_conn_index == max_connections)
                 free_conn_index = i;
             continue;
         }
-        if (strcasecmp(connp->nick, nick) == 0)
+        if (strcasecmp(connp->nick.c_str(), nick) == 0)
         {
-            if (connp->state == CONN_LISTENING && strcmp(user, connp->user) == 0 && strcmp(dpy, connp->dpy) == 0 && version == connp->version)
+            if (connp->state == CONN_LISTENING &&
+                strcmp(user, connp->user.c_str()) == 0 &&
+                strcmp(dpy, connp->dpy.c_str()) == 0 &&
+                version == connp->version)
                 /*
                  * May happen for multi-homed hosts
                  * and if previous packet got lost.
@@ -752,7 +757,7 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
                showtime(), user, nick, host, dpy);
         return -1;
     }
-    connp = &Conn[free_conn_index];
+    connp = &connections[free_conn_index];
 
     if (!playback)
     {
@@ -784,14 +789,15 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
 
     connp->ind = free_conn_index;
     connp->my_port = my_port;
-    connp->user = strdup(user);
-    connp->nick = strdup(nick);
-    connp->dpy = strdup(dpy);
-    connp->addr = strdup(addr);
-    connp->host = strdup(host);
+    connp->user = user;
+    connp->nick = nick;
+    connp->dpy = dpy;
+    connp->addr = addr;
+    connp->host = host;
     connp->ship = nullptr;
     connp->team = team;
     connp->version = version;
+
     Feature_init(connp);
     if (FEATURE(connp, F_POLY))
         printf("Have F_POLY\n");
@@ -843,7 +849,9 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
     connp->last_mouse_pos = 0;
     connp->rectype = rplayback ? 2 - playback : 0;
     Conn_set_state(connp, CONN_LISTENING, CONN_FREE);
-    if (connp->w.buf == nullptr || connp->r.buf == nullptr || connp->c.buf == nullptr || connp->user == nullptr || connp->nick == nullptr || connp->dpy == nullptr || connp->addr == nullptr || connp->host == nullptr)
+    if (connp->w.buf == nullptr ||
+        connp->r.buf == nullptr ||
+        connp->c.buf == nullptr)
     {
         error("Not enough memory for connection");
         /* socket is not yet connected, but it doesn't matter much. */
@@ -859,7 +867,7 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
 /*
  * Handle a connection that is in the listening state.
  */
-static int Handle_listening(connection_t *connp)
+static int Handle_listening(Connection *connp)
 {
     uint8_t type;
     int n;
@@ -886,7 +894,7 @@ static int Handle_listening(connection_t *connp)
     if (sock_connectRec(&connp->w.sock, connp->addr, connp->his_port) == -1)
     {
         error("Cannot connect datagram socket (%s,%d,%d,%d,%d)",
-              connp->addr, connp->his_port,
+              connp->addr.c_str(), connp->his_port,
               connp->w.sock.error.error,
               connp->w.sock.error.call,
               connp->w.sock.error.line);
@@ -900,7 +908,7 @@ static int Handle_listening(connection_t *connp)
         if (sock_connectRec(&connp->w.sock, connp->addr, connp->his_port) == -1)
         {
             error("Still cannot connect datagram socket (%s,%d,%d,%d,%d)",
-                  connp->addr, connp->his_port,
+                  connp->addr.c_str(), connp->his_port,
                   connp->w.sock.error.error,
                   connp->w.sock.error.call,
                   connp->w.sock.error.line);
@@ -910,8 +918,8 @@ static int Handle_listening(connection_t *connp)
     }
 
     printf("%s Welcome %s=%s@%s|%s (%s/%d)", showtime(),
-           connp->nick, connp->user, connp->host, connp->dpy,
-           connp->addr, connp->his_port);
+           connp->nick.c_str(), connp->user.c_str(), connp->host.c_str(), connp->dpy.c_str(),
+           connp->addr.c_str(), connp->his_port);
     printf(" (version %04x)\n", connp->version);
 
     if (connp->r.ptr[0] != PKT_VERIFY)
@@ -931,10 +939,10 @@ static int Handle_listening(connection_t *connp)
     }
     Fix_user_name(user);
     Fix_nick_name(nick);
-    if (strcmp(user, connp->user) || strcmp(nick, connp->nick))
+    if (strcmp(user, connp->user.c_str()) || strcmp(nick, connp->nick.c_str()))
     {
         printf("%s Client verified incorrectly (%s,%s)(%s,%s)\n",
-               showtime(), user, nick, connp->user, connp->nick);
+               showtime(), user, nick, connp->user.c_str(), connp->nick.c_str());
         Send_reply(connp, PKT_VERIFY, PKT_FAILURE);
         Send_reliable(connp);
         Destroy_connection(connp, "verify incorrect");
@@ -955,7 +963,7 @@ static int Handle_listening(connection_t *connp)
 /*
  * Handle a connection that is in the transmit-server-configuration-data state.
  */
-static int Handle_setup(connection_t *connp)
+static int Handle_setup(Connection *connp)
 {
     char *buf;
     int n, len;
@@ -1037,11 +1045,11 @@ static int Handle_setup(connection_t *connp)
     if (connp->setup >= S->setup_size)
         Conn_set_state(connp, CONN_DRAIN, CONN_LOGIN);
 #if 0
-    if (CheckBanned(connp->user, connp->nick, connp->addr, connp->host)) {
+    if (CheckBanned(connp->user.c_str(), connp->nick.c_str(), connp->addr.c_str(), connp->host.c_str())) {
     Destroy_connection(connp, "Banned from server, contact " LOCALGURU);
     return -1;
     }
-    if (!CheckAllowed(connp->user, connp->nick, connp->addr, connp->host)) {
+    if (!CheckAllowed(connp->user.c_str(), connp->nick.c_str(), connp->addr.c_str(), connp->host.c_str())) {
     Destroy_connection(connp, "Restricted nick, contact " LOCALGURU);
     return -1;
     }
@@ -1114,10 +1122,10 @@ static void LegalizeHost(char *string)
  * and if this succeeds update the player information
  * to all connected players.
  */
-static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
+static int Handle_login(Connection *connp, char *errmsg, size_t errsize)
 {
     world_t *world = &World;
-    player_t *pl;
+    Player *pl;
     int i, conn_bit;
     const char sender[] = "[*Server notice*]";
 
@@ -1125,12 +1133,12 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
     {
         if (connp->team < 0 || connp->team >= MAX_TEAMS || (options.reserveRobotTeam && (connp->team == options.robotTeam)))
             connp->team = TEAM_NOT_SET;
-        else if (World.teams[connp->team].NumBases <= 0)
+        else if (world->teams[connp->team].NumBases <= 0)
             connp->team = TEAM_NOT_SET;
         else
         {
             Check_team_members(connp->team);
-            if (World.teams[connp->team].NumMembers - World.teams[connp->team].NumRobots >= World.teams[connp->team].NumBases)
+            if (world->teams[connp->team].NumMembers - world->teams[connp->team].NumRobots >= world->teams[connp->team].NumBases)
                 connp->team = TEAM_NOT_SET;
         }
         if (connp->team == TEAM_NOT_SET)
@@ -1141,9 +1149,9 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
 
     for (i = 0; i < NumPlayers; i++)
     {
-        if (strcasecmp(Player_by_index(i)->name, connp->nick) == 0)
+        if (strcasecmp(Player_by_index(i)->name.c_str(), connp->nick.c_str()) == 0)
         {
-            warn("Name already in use %s", connp->nick);
+            warn("Name already in use %s", connp->nick.c_str());
             strlcpy(errmsg, "Name already in use", errsize);
             return -1;
         }
@@ -1167,13 +1175,16 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
     }
     pl->rectype = connp->rectype;
 
-    strlcpy(pl->name, connp->nick, MAX_CHARS);
-    strlcpy(pl->username, connp->user, MAX_CHARS);
-    strlcpy(pl->hostname, connp->host, MAX_CHARS);
+    // strlcpy(pl->name, connp->nick, MAX_CHARS);
+    pl->name = connp->nick;
+    // strlcpy(pl->username, connp->user, MAX_CHARS);
+    pl->username = connp->user;
+    // strlcpy(pl->hostname, connp->host, MAX_CHARS);
+    pl->hostname = connp->host;
 
-    LegalizeName(pl->name, true);
-    LegalizeName(pl->username, false);
-    LegalizeHost(pl->hostname);
+    // LegalizeName(pl->name, true);
+    // LegalizeName(pl->username, false);
+    // LegalizeHost(pl->hostname);
 
     pl->team = connp->team;
     pl->version = connp->version;
@@ -1223,9 +1234,9 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
 
     if (pl->rectype < 2)
         printf("%s %s (%d) starts at startpos %d.\n", showtime(),
-               pl->name, NumPlayers, pl->home_base ? pl->home_base->ind : -1);
+               pl->name.c_str(), NumPlayers, pl->home_base ? pl->home_base->ind : -1);
     else
-        printf("%s spectator %s (%d) starts.\n", showtime(), pl->name,
+        printf("%s spectator %s (%d) starts.\n", showtime(), pl->name.c_str(),
                NumSpectators);
 
     /*
@@ -1241,7 +1252,7 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
      */
     for (i = 0; i < spectatorStart + NumSpectators - 1; i++)
     {
-        player_t *pl_i;
+        Player *pl_i;
 
         if (i == NumPlayers - 1 && pl->rectype != 2)
             break;
@@ -1262,7 +1273,7 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
      */
     for (i = 0; i < spectatorStart + NumSpectators - 1; i++)
     {
-        player_t *pl_i;
+        Player *pl_i;
 
         if (i == NumPlayers - 1)
         {
@@ -1286,14 +1297,14 @@ static int Handle_login(connection_t *connp, char *errmsg, size_t errsize)
     {
         if (NumPlayers == 1)
             Set_message_f("Welcome to \"%s\", made by %s.",
-                          World.name, World.author);
+                          world->name, world->author);
         else if (Team_play(world))
             Set_message_f("%s (%s, team %d) has entered \"%s\", made by %s.",
-                          pl->name, pl->username, pl->team,
-                          World.name, World.author);
+                          pl->name.c_str(), pl->username.c_str(), pl->team,
+                          world->name, world->author);
         else
             Set_message_f("%s (%s) has entered \"%s\", made by %s.",
-                          pl->name, pl->username, World.name, World.author);
+                          pl->name.c_str(), pl->username.c_str(), world->name, world->author);
     }
 
     if (options.greeting)
@@ -1421,8 +1432,8 @@ int recSpecial;
 
 static void Handle_input(int fd, void *arg)
 {
-    connection_t *connp = (connection_t *)arg;
-    int type, result, (**receive_tbl)(connection_t *);
+    Connection *connp = (Connection *)arg;
+    int type, result, (**receive_tbl)(Connection *);
     short *pbscheck = nullptr;
     char *pbdcheck = nullptr;
 
@@ -1539,12 +1550,12 @@ static void Handle_input(int fd, void *arg)
 int Input(void)
 {
     int i, num_reliable = 0;
-    connection_t *input_reliable[MAX_SELECT_FD], *connp;
+    Connection *input_reliable[MAX_SELECT_FD], *connp;
     char msg[MSG_LEN];
 
     for (i = 0; i < max_connections; i++)
     {
-        connp = &Conn[i];
+        connp = &connections[i];
         playback = (connp->rectype == 1);
         if (connp->state == CONN_FREE)
             continue;
@@ -1562,7 +1573,7 @@ int Input(void)
              * from him for a long time.
              */
             if (connp->state & (CONN_PLAYING | CONN_READY))
-                Set_message_f("%s mysteriously disappeared!?", connp->nick);
+                Set_message_f("%s mysteriously disappeared!?", connp->nick.c_str());
 
             snprintf(msg, sizeof(msg), "timeout %02x", connp->state);
             Destroy_connection(connp, msg);
@@ -1613,7 +1624,7 @@ int Input(void)
  * It could be used to setup some form of reliable
  * communication from the client to the server.
  */
-int Send_reply(connection_t *connp, int replyto, int result)
+int Send_reply(Connection *connp, int replyto, int result)
 {
     int n;
 
@@ -1626,7 +1637,7 @@ int Send_reply(connection_t *connp, int replyto, int result)
     return n;
 }
 
-static int Send_modifiers(connection_t *connp, char *mods)
+static int Send_modifiers(Connection *connp, char *mods)
 {
     return Packet_printf(&connp->w, "%c%s", PKT_MODIFIERS, mods);
 }
@@ -1639,7 +1650,7 @@ static int Send_modifiers(connection_t *connp, char *mods)
  * receives counts for items it doesn't know about.
  * This is new since pack version 4203.
  */
-static int Send_self_items(connection_t *connp, player_t *pl)
+static int Send_self_items(Connection *connp, Player *pl)
 {
     unsigned item_mask = 0;
     int i, n, item_count = 0;
@@ -1679,8 +1690,8 @@ static int Send_self_items(connection_t *connp, player_t *pl)
 /*
  * Send all frame data related to the player self and his HUD.
  */
-int Send_self(connection_t *connp,
-              player_t *pl,
+int Send_self(Connection *connp,
+              Player *pl,
               int lock_id,
               int lock_dist,
               int lock_dir,
@@ -1731,7 +1742,7 @@ int Send_self(connection_t *connp,
 /*
  * Somebody is leaving the game.
  */
-int Send_leave(connection_t *connp, int id)
+int Send_leave(Connection *connp, int id)
 {
     if (!BIT(connp->state, CONN_PLAYING | CONN_READY))
     {
@@ -1745,9 +1756,9 @@ int Send_leave(connection_t *connp, int id)
 /*
  * Somebody is joining the game.
  */
-int Send_player(connection_t *connp, int id)
+int Send_player(Connection *connp, int id)
 {
-    player_t *pl = Player_by_id(id);
+    Player *pl = Player_by_id(id);
     int n, sbuf_len = connp->c.len, himself = (pl->conn == connp);
     char buf[MSG_LEN], ext[MSG_LEN];
 
@@ -1765,7 +1776,7 @@ int Send_player(connection_t *connp, int id)
                       "%S",
                       PKT_PLAYER, pl->id,
                       pl->team, pl->mychar,
-                      pl->name, pl->username, pl->hostname,
+                      pl->name.c_str(), pl->username.c_str(), pl->hostname.c_str(),
                       buf);
     if (n > 0)
     {
@@ -1779,7 +1790,7 @@ int Send_player(connection_t *connp, int id)
     return n;
 }
 
-int Send_team(connection_t *connp, int id, int team)
+int Send_team(Connection *connp, int id, int team)
 {
     /*
      * No way to send only team to old clients, all player info has to be
@@ -1801,7 +1812,7 @@ int Send_team(connection_t *connp, int id, int team)
 /*
  * Send the new score for some player to a client.
  */
-int Send_score(connection_t *connp, int id, double score,
+int Send_score(Connection *connp, int id, double score,
                int life, int mychar, int alliance)
 {
     if (!BIT(connp->state, CONN_PLAYING | CONN_READY))
@@ -1838,7 +1849,7 @@ int Send_score(connection_t *connp, int id, double score,
 /*
  * Send the new race info for some player to a client.
  */
-int Send_timing(connection_t *connp, int id, int check, int round)
+int Send_timing(Connection *connp, int id, int check, int round)
 {
     int num_checks = OLD_MAX_CHECKS;
 
@@ -1857,7 +1868,7 @@ int Send_timing(connection_t *connp, int id, int check, int round)
 /*
  * Send info about a player having which base.
  */
-int Send_base(connection_t *connp, int id, int num)
+int Send_base(Connection *connp, int id, int num)
 {
     if (!BIT(connp->state, CONN_PLAYING | CONN_READY))
     {
@@ -1871,13 +1882,13 @@ int Send_base(connection_t *connp, int id, int num)
 /*
  * Send the amount of fuel in a fuelstation.
  */
-int Send_fuel(connection_t *connp, int num, double fuel)
+int Send_fuel(Connection *connp, int num, double fuel)
 {
     return Packet_printf(&connp->w, "%c%hu%hu", PKT_FUEL,
                          num, (int)(fuel + 0.5));
 }
 
-int Send_score_object(connection_t *connp, double score, clpos_t pos,
+int Send_score_object(Connection *connp, double score, clpos_t pos,
                       const char *string)
 {
     blkpos_t bpos = Clpos_to_blkpos(pos);
@@ -1899,40 +1910,40 @@ int Send_score_object(connection_t *connp, double score, clpos_t pos,
                              bpos.bx, bpos.by, string);
 }
 
-int Send_cannon(connection_t *connp, int num, int dead_ticks)
+int Send_cannon(Connection *connp, int num, int dead_ticks)
 {
     if (FEATURE(connp, F_POLY))
         return 0;
     return Packet_printf(&connp->w, "%c%hu%hu", PKT_CANNON, num, dead_ticks);
 }
 
-int Send_destruct(connection_t *connp, int count)
+int Send_destruct(Connection *connp, int count)
 {
     return Packet_printf(&connp->w, "%c%hd", PKT_DESTRUCT, count);
 }
 
-int Send_shutdown(connection_t *connp, int count, int delay)
+int Send_shutdown(Connection *connp, int count, int delay)
 {
     return Packet_printf(&connp->w, "%c%hd%hd", PKT_SHUTDOWN,
                          count, delay);
 }
 
-int Send_thrusttime(connection_t *connp, int count, int max)
+int Send_thrusttime(Connection *connp, int count, int max)
 {
     return Packet_printf(&connp->w, "%c%hd%hd", PKT_THRUSTTIME, count, max);
 }
 
-int Send_shieldtime(connection_t *connp, int count, int max)
+int Send_shieldtime(Connection *connp, int count, int max)
 {
     return Packet_printf(&connp->w, "%c%hd%hd", PKT_SHIELDTIME, count, max);
 }
 
-int Send_phasingtime(connection_t *connp, int count, int max)
+int Send_phasingtime(Connection *connp, int count, int max)
 {
     return Packet_printf(&connp->w, "%c%hd%hd", PKT_PHASINGTIME, count, max);
 }
 
-int Send_debris(connection_t *connp, int type, uint8_t *p, unsigned n)
+int Send_debris(Connection *connp, int type, uint8_t *p, unsigned n)
 {
     int avail;
     sockbuf_t *w = &connp->w;
@@ -1958,7 +1969,7 @@ int Send_debris(connection_t *connp, int type, uint8_t *p, unsigned n)
     return n;
 }
 
-int Send_wreckage(connection_t *connp, clpos_t pos,
+int Send_wreckage(Connection *connp, clpos_t pos,
                   int wrtype, int size, int rot)
 {
     if (options.wreckageCollisionMayKill)
@@ -1972,7 +1983,7 @@ int Send_wreckage(connection_t *connp, clpos_t pos,
                          wrtype, size, rot);
 }
 
-int Send_asteroid(connection_t *connp, clpos_t pos,
+int Send_asteroid(Connection *connp, clpos_t pos,
                   int type, int size, int rot)
 {
     uint8_t type_size;
@@ -1987,7 +1998,7 @@ int Send_asteroid(connection_t *connp, clpos_t pos,
                          x, y, type_size, rot);
 }
 
-int Send_fastshot(connection_t *connp, int type, uint8_t *p, unsigned n)
+int Send_fastshot(Connection *connp, int type, uint8_t *p, unsigned n)
 {
     int avail;
     sockbuf_t *w = &connp->w;
@@ -2014,14 +2025,14 @@ int Send_fastshot(connection_t *connp, int type, uint8_t *p, unsigned n)
     return n;
 }
 
-int Send_missile(connection_t *connp, clpos_t pos, int len, int dir)
+int Send_missile(Connection *connp, clpos_t pos, int len, int dir)
 {
     return Packet_printf(&connp->w, "%c%hd%hd%c%c", PKT_MISSILE,
                          CLICK_TO_PIXEL(pos.cx), CLICK_TO_PIXEL(pos.cy),
                          len, dir);
 }
 
-int Send_ball(connection_t *connp, clpos_t pos, int id, int style)
+int Send_ball(Connection *connp, clpos_t pos, int id, int style)
 {
     if (FEATURE(connp, F_BALLSTYLE))
         return Packet_printf(&connp->w, "%c%hd%hd%hd%c", PKT_BALL,
@@ -2032,14 +2043,14 @@ int Send_ball(connection_t *connp, clpos_t pos, int id, int style)
                          CLICK_TO_PIXEL(pos.cx), CLICK_TO_PIXEL(pos.cy), id);
 }
 
-int Send_mine(connection_t *connp, clpos_t pos, int teammine, int id)
+int Send_mine(Connection *connp, clpos_t pos, int teammine, int id)
 {
     return Packet_printf(&connp->w, "%c%hd%hd%c%hd", PKT_MINE,
                          CLICK_TO_PIXEL(pos.cx), CLICK_TO_PIXEL(pos.cy),
                          teammine, id);
 }
 
-int Send_target(connection_t *connp, int num, int dead_ticks, double damage)
+int Send_target(Connection *connp, int num, int dead_ticks, double damage)
 {
     if (FEATURE(connp, F_POLY))
         return 0;
@@ -2047,7 +2058,7 @@ int Send_target(connection_t *connp, int num, int dead_ticks, double damage)
                          num, dead_ticks, (int)(damage * 256.0));
 }
 
-int Send_polystyle(connection_t *connp, int polyind, int newstyle)
+int Send_polystyle(Connection *connp, int polyind, int newstyle)
 {
     if (!FEATURE(connp, F_POLYSTYLE))
         return 0;
@@ -2055,7 +2066,7 @@ int Send_polystyle(connection_t *connp, int polyind, int newstyle)
                          polyind, newstyle);
 }
 
-int Send_wormhole(connection_t *connp, clpos_t pos)
+int Send_wormhole(Connection *connp, clpos_t pos)
 {
     int x = CLICK_TO_PIXEL(pos.cx), y = CLICK_TO_PIXEL(pos.cy);
 
@@ -2064,20 +2075,20 @@ int Send_wormhole(connection_t *connp, clpos_t pos)
     return Packet_printf(&connp->w, "%c%hd%hd", PKT_WORMHOLE, x, y);
 }
 
-int Send_item(connection_t *connp, clpos_t pos, int type)
+int Send_item(Connection *connp, clpos_t pos, int type)
 {
     return Packet_printf(&connp->w, "%c%hd%hd%c", PKT_ITEM,
                          CLICK_TO_PIXEL(pos.cx), CLICK_TO_PIXEL(pos.cy), type);
 }
 
-int Send_paused(connection_t *connp, clpos_t pos, int count)
+int Send_paused(Connection *connp, clpos_t pos, int count)
 {
     return Packet_printf(&connp->w, "%c%hd%hd%hd", PKT_PAUSED,
                          CLICK_TO_PIXEL(pos.cx), CLICK_TO_PIXEL(pos.cy),
                          count);
 }
 
-int Send_appearing(connection_t *connp, clpos_t pos, int id, int count)
+int Send_appearing(Connection *connp, clpos_t pos, int id, int count)
 {
     if (!FEATURE(connp, F_SHOW_APPEARING))
         return 0;
@@ -2087,20 +2098,20 @@ int Send_appearing(connection_t *connp, clpos_t pos, int id, int count)
                          id, count);
 }
 
-int Send_ecm(connection_t *connp, clpos_t pos, int size)
+int Send_ecm(Connection *connp, clpos_t pos, int size)
 {
     return Packet_printf(&connp->w, "%c%hd%hd%hd", PKT_ECM,
                          CLICK_TO_PIXEL(pos.cx), CLICK_TO_PIXEL(pos.cy), size);
 }
 
-int Send_trans(connection_t *connp, clpos_t pos1, clpos_t pos2)
+int Send_trans(Connection *connp, clpos_t pos1, clpos_t pos2)
 {
     return Packet_printf(&connp->w, "%c%hd%hd%hd%hd", PKT_TRANS,
                          CLICK_TO_PIXEL(pos1.cx), CLICK_TO_PIXEL(pos1.cy),
                          CLICK_TO_PIXEL(pos2.cx), CLICK_TO_PIXEL(pos2.cy));
 }
 
-int Send_ship(connection_t *connp, clpos_t pos, int id, int dir,
+int Send_ship(Connection *connp, clpos_t pos, int id, int dir,
               int shield, int cloak, int emergency_shield, int phased,
               int deflector)
 {
@@ -2116,7 +2127,7 @@ int Send_ship(connection_t *connp, clpos_t pos, int id, int dir,
                          (shield != 0) | ((cloak != 0) << 1) | ((emergency_shield != 0) << 2) | ((phased != 0) << 3) | ((deflector != 0) << 4));
 }
 
-int Send_refuel(connection_t *connp, clpos_t pos1, clpos_t pos2)
+int Send_refuel(Connection *connp, clpos_t pos1, clpos_t pos2)
 {
     return Packet_printf(&connp->w,
                          "%c%hd%hd%hd%hd",
@@ -2125,7 +2136,7 @@ int Send_refuel(connection_t *connp, clpos_t pos1, clpos_t pos2)
                          CLICK_TO_PIXEL(pos2.cx), CLICK_TO_PIXEL(pos2.cy));
 }
 
-int Send_connector(connection_t *connp, clpos_t pos1, clpos_t pos2,
+int Send_connector(Connection *connp, clpos_t pos1, clpos_t pos2,
                    int tractor)
 {
     return Packet_printf(&connp->w,
@@ -2136,14 +2147,14 @@ int Send_connector(connection_t *connp, clpos_t pos1, clpos_t pos2,
                          tractor);
 }
 
-int Send_laser(connection_t *connp, int color, clpos_t pos, int len, int dir)
+int Send_laser(Connection *connp, int color, clpos_t pos, int len, int dir)
 {
     return Packet_printf(&connp->w, "%c%c%hd%hd%hd%c", PKT_LASER,
                          color, CLICK_TO_PIXEL(pos.cx), CLICK_TO_PIXEL(pos.cy),
                          len, dir);
 }
 
-int Send_radar(connection_t *connp, int x, int y, int size)
+int Send_radar(Connection *connp, int x, int y, int size)
 {
     if (!FEATURE(connp, F_TEAMRADAR))
         size &= ~0x80;
@@ -2151,7 +2162,7 @@ int Send_radar(connection_t *connp, int x, int y, int size)
     return Packet_printf(&connp->w, "%c%hd%hd%c", PKT_RADAR, x, y, size);
 }
 
-int Send_fastradar(connection_t *connp, uint8_t *buf, unsigned n)
+int Send_fastradar(Connection *connp, uint8_t *buf, unsigned n)
 {
     int avail;
     sockbuf_t *w = &connp->w;
@@ -2177,29 +2188,29 @@ int Send_fastradar(connection_t *connp, uint8_t *buf, unsigned n)
     return (2 + (n * 3));
 }
 
-int Send_damaged(connection_t *connp, int damaged)
+int Send_damaged(Connection *connp, int damaged)
 {
     return Packet_printf(&connp->w, "%c%c", PKT_DAMAGED, damaged);
 }
 
-int Send_audio(connection_t *connp, int type, int vol)
+int Send_audio(Connection *connp, int type, int vol)
 {
     if (connp->w.size - connp->w.len <= 32)
         return 0;
     return Packet_printf(&connp->w, "%c%c%c", PKT_AUDIO, type, vol);
 }
 
-int Send_time_left(connection_t *connp, long sec)
+int Send_time_left(Connection *connp, long sec)
 {
     return Packet_printf(&connp->w, "%c%ld", PKT_TIME_LEFT, sec);
 }
 
-int Send_eyes(connection_t *connp, int id)
+int Send_eyes(Connection *connp, int id)
 {
     return Packet_printf(&connp->w, "%c%hd", PKT_EYES, id);
 }
 
-int Send_message(connection_t *connp, const char *msg)
+int Send_message(Connection *connp, const char *msg)
 {
     if (!BIT(connp->state, CONN_PLAYING | CONN_READY))
     {
@@ -2210,12 +2221,12 @@ int Send_message(connection_t *connp, const char *msg)
     return Packet_printf(&connp->c, "%c%S", PKT_MESSAGE, msg);
 }
 
-int Send_loseitem(connection_t *connp, int lose_item_index)
+int Send_loseitem(Connection *connp, int lose_item_index)
 {
     return Packet_printf(&connp->w, "%c%c", PKT_LOSEITEM, lose_item_index);
 }
 
-int Send_start_of_frame(connection_t *connp)
+int Send_start_of_frame(Connection *connp)
 {
     if (connp->state != CONN_PLAYING)
     {
@@ -2241,7 +2252,7 @@ int Send_start_of_frame(connection_t *connp)
     return 0;
 }
 
-int Send_end_of_frame(connection_t *connp)
+int Send_end_of_frame(Connection *connp)
 {
     int n;
 
@@ -2281,9 +2292,9 @@ int Send_end_of_frame(connection_t *connp)
     return 0;
 }
 
-static int Receive_keyboard(connection_t *connp)
+static int Receive_keyboard(Connection *connp)
 {
-    player_t *pl;
+    Player *pl;
     long change;
     uint8_t ch;
     size_t size = KEYBOARD_SIZE;
@@ -2318,14 +2329,14 @@ static int Receive_keyboard(connection_t *connp)
     return 1;
 }
 
-static int Receive_quit(connection_t *connp)
+static int Receive_quit(Connection *connp)
 {
     Destroy_connection(connp, "client quit");
 
     return -1;
 }
 
-static int Receive_play(connection_t *connp)
+static int Receive_play(Connection *connp)
 {
     uint8_t ch;
     int n;
@@ -2371,9 +2382,9 @@ static int Receive_play(connection_t *connp)
     return 2;
 }
 
-static int Receive_power(connection_t *connp)
+static int Receive_power(Connection *connp)
 {
-    player_t *pl;
+    Player *pl;
     uint8_t ch;
     short tmp;
     int n, autopilot;
@@ -2444,7 +2455,7 @@ static int Receive_power(connection_t *connp)
  *
  * This thing still is not finished, but it works better than in 3.0.0 I hope.
  */
-int Send_reliable(connection_t *connp)
+int Send_reliable(Connection *connp)
 {
     char *read_buf;
     int i, n, len, todo, max_todo;
@@ -2555,7 +2566,7 @@ int Send_reliable(connection_t *connp)
     return (max_todo - todo);
 }
 
-static int Receive_ack(connection_t *connp)
+static int Receive_ack(Connection *connp)
 {
     int n;
     uint8_t ch;
@@ -2656,7 +2667,7 @@ static int Receive_ack(connection_t *connp)
     return 1;
 }
 
-static int Receive_discard(connection_t *connp)
+static int Receive_discard(Connection *connp)
 {
     warn("Discarding packet %d while in state %02x",
          connp->r.ptr[0], connp->state);
@@ -2665,14 +2676,14 @@ static int Receive_discard(connection_t *connp)
     return 0;
 }
 
-static int Receive_undefined(connection_t *connp)
+static int Receive_undefined(Connection *connp)
 {
     warn("Unknown packet type (%d,%02x)", connp->r.ptr[0], connp->state);
     Destroy_connection(connp, "undefined packet");
     return -1;
 }
 
-static int Receive_ack_cannon(connection_t *connp)
+static int Receive_ack_cannon(Connection *connp)
 {
     long loops_ack;
     uint8_t ch;
@@ -2699,7 +2710,7 @@ static int Receive_ack_cannon(connection_t *connp)
     return 1;
 }
 
-static int Receive_ack_fuel(connection_t *connp)
+static int Receive_ack_fuel(Connection *connp)
 {
     long loops_ack;
     uint8_t ch;
@@ -2725,7 +2736,7 @@ static int Receive_ack_fuel(connection_t *connp)
     return 1;
 }
 
-static int Receive_ack_target(connection_t *connp)
+static int Receive_ack_target(Connection *connp)
 {
     long loops_ack;
     uint8_t ch;
@@ -2766,7 +2777,7 @@ static int Receive_ack_target(connection_t *connp)
     return 1;
 }
 
-static int Receive_ack_polystyle(connection_t *connp)
+static int Receive_ack_polystyle(Connection *connp)
 {
     long loops_ack;
     uint8_t ch;
@@ -2798,9 +2809,9 @@ static int Receive_ack_polystyle(connection_t *connp)
  * If the string does not match one team or one player the message is not sent.
  * If no colon, the message is general.
  */
-static void Handle_talk(connection_t *connp, char *str)
+static void Handle_talk(Connection *connp, char *str)
 {
-    player_t *pl = Player_by_id(connp->id);
+    Player *pl = Player_by_id(connp->id);
     int i, sent, team;
     unsigned int len;
     char *cp, msg[MSG_LEN * 2];
@@ -2811,14 +2822,14 @@ static void Handle_talk(connection_t *connp, char *str)
     if ((cp = strchr(str, ':')) == nullptr || cp == str || strchr("-_~)(/\\}{[]", cp[1]) /* smileys are smileys */
     )
     {
-        sprintf(msg, "%s [%s]", str, pl->name);
+        sprintf(msg, "%s [%s]", str, pl->name.c_str());
         if (!(mute_baseless && pl->home_base == nullptr) && !pl->muted)
             Set_message(msg);
         else
         {
             for (sent = i = 0; i < NumPlayers; i++)
             {
-                player_t *pl_i = Player_by_index(i);
+                Player *pl_i = Player_by_index(i);
 
                 if (pl_i->home_base == nullptr)
                     Set_player_message(pl_i, msg);
@@ -2830,7 +2841,7 @@ static void Handle_talk(connection_t *connp, char *str)
     if (*cp == ' ')
         cp++;
     len = strlen(str);
-    sprintf(msg, "%s [%s]", cp, pl->name);
+    sprintf(msg, "%s [%s]", cp, pl->name.c_str());
 
     if (strspn(str, "0123456789") == len)
     { /* Team message */
@@ -2841,7 +2852,7 @@ static void Handle_talk(connection_t *connp, char *str)
         {
             for (i = 0; i < NumPlayers; i++)
             {
-                player_t *pl_i = Player_by_index(i);
+                Player *pl_i = Player_by_index(i);
 
                 if (pl_i->team == team)
                 {
@@ -2870,7 +2881,7 @@ static void Handle_talk(connection_t *connp, char *str)
     else
     { /* Player message */
         const char *errmsg;
-        player_t *other_pl = Get_player_by_name(str, nullptr, &errmsg);
+        Player *other_pl = Get_player_by_name(str, nullptr, &errmsg);
 
         if (!other_pl)
         {
@@ -2886,7 +2897,7 @@ static void Handle_talk(connection_t *connp, char *str)
             if (!(mute_baseless && pl->home_base == nullptr &&
                   other_pl->home_base != nullptr))
             {
-                sprintf(msg + strlen(msg), ":[%s]", other_pl->name);
+                sprintf(msg + strlen(msg), ":[%s]", other_pl->name.c_str());
                 Set_player_message(other_pl, msg);
             }
             else
@@ -2899,7 +2910,7 @@ static void Handle_talk(connection_t *connp, char *str)
     }
 }
 
-static int Receive_talk(connection_t *connp)
+static int Receive_talk(Connection *connp)
 {
     uint8_t ch;
     int n;
@@ -2929,7 +2940,7 @@ static int Receive_talk(connection_t *connp)
     return 1;
 }
 
-static int Receive_display(connection_t *connp)
+static int Receive_display(Connection *connp)
 {
     uint8_t ch, debris_colors, spark_rand;
     short width, height;
@@ -2960,9 +2971,9 @@ static int Receive_display(connection_t *connp)
     return 1;
 }
 
-static int Receive_modifier_bank(connection_t *connp)
+static int Receive_modifier_bank(Connection *connp)
 {
-    player_t *pl;
+    Player *pl;
     uint8_t bank, ch;
     char str[MAX_CHARS];
     int n;
@@ -2979,7 +2990,7 @@ static int Receive_modifier_bank(connection_t *connp)
     return 1;
 }
 
-void Get_display_parameters(connection_t *connp, int *width, int *height,
+void Get_display_parameters(Connection *connp, int *width, int *height,
                             int *debris_colors, int *spark_rand)
 {
     *width = connp->view_width;
@@ -2988,26 +2999,26 @@ void Get_display_parameters(connection_t *connp, int *width, int *height,
     *spark_rand = connp->spark_rand;
 }
 
-int Get_player_id(connection_t *connp)
+int Get_player_id(Connection *connp)
 {
     return connp->id;
 }
 
-const char *Player_get_addr(player_t *pl)
+std::string Player_get_addr(Player *pl)
 {
     if (pl->conn != nullptr)
         return pl->conn->addr;
-    return nullptr;
+    return "";
 }
 
-const char *Player_get_dpy(player_t *pl)
+std::string Player_get_dpy(Player *pl)
 {
     if (pl->conn != nullptr)
         return pl->conn->dpy;
-    return nullptr;
+    return "";
 }
 
-static int Receive_shape(connection_t *connp)
+static int Receive_shape(Connection *connp)
 {
     int n;
     char ch, str[2 * MSG_LEN];
@@ -3029,7 +3040,7 @@ static int Receive_shape(connection_t *connp)
     return 1;
 }
 
-static int Receive_motd(connection_t *connp)
+static int Receive_motd(Connection *connp)
 {
     uint8_t ch;
     long offset, nbytes;
@@ -3148,7 +3159,7 @@ static int Get_motd(char *buf, int offset, int maxlen, int *size_ptr)
  * The last time we send a motd packet it should
  * have datalength zero to mean EOMOTD.
  */
-static int Send_motd(connection_t *connp)
+static int Send_motd(Connection *connp)
 {
     int len, off = connp->motd_offset, size = 0;
     char buf[MAX_MOTD_CHUNK];
@@ -3184,9 +3195,9 @@ static int Send_motd(connection_t *connp)
     return 1;
 }
 
-static int Receive_pointer_move(connection_t *connp)
+static int Receive_pointer_move(Connection *connp)
 {
-    player_t *pl;
+    Player *pl;
     uint8_t ch;
     short movement;
     int n;
@@ -3245,9 +3256,9 @@ static int Receive_pointer_move(connection_t *connp)
     return 1;
 }
 
-static int Receive_fps_request(connection_t *connp)
+static int Receive_fps_request(Connection *connp)
 {
-    player_t *pl;
+    Player *pl;
     int n;
     uint8_t ch, fps;
 
@@ -3274,9 +3285,9 @@ static int Receive_fps_request(connection_t *connp)
     return 1;
 }
 
-static int Receive_audio_request(connection_t *connp)
+static int Receive_audio_request(Connection *connp)
 {
-    player_t *pl;
+    Player *pl;
     int n;
     uint8_t ch, on;
 
@@ -3295,18 +3306,19 @@ static int Receive_audio_request(connection_t *connp)
     return 1;
 }
 
-int Check_max_clients_per_IP(char *host_addr)
+int Check_max_clients_per_IP(std::string host_addr)
 {
     int i, clients_per_ip = 0;
-    connection_t *connp;
+    Connection *connp;
 
     if (options.maxClientsPerIP <= 0)
         return 0;
 
     for (i = 0; i < max_connections; i++)
     {
-        connp = &Conn[i];
-        if (connp->state != CONN_FREE && !strcasecmp(connp->addr, host_addr))
+        connp = &connections[i];
+        if (connp->state != CONN_FREE &&
+            !strcasecmp(connp->addr.c_str(), host_addr.c_str()))
             clients_per_ip++;
     }
 

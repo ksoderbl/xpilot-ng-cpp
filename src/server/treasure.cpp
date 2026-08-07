@@ -105,7 +105,7 @@ void Treasure_init(void)
  */
 void Ball_is_replaced(ballobject_t *ball)
 {
-    player_t *pl = Player_by_id(ball->ball_owner);
+    Player *pl = Player_by_id(ball->ball_owner);
 
     ball->obj_life = 0.0;
     SET_BIT(ball->obj_status, (NOEXPLOSION | RECREATE));
@@ -113,7 +113,7 @@ void Ball_is_replaced(ballobject_t *ball)
     if (!options.zeroSumScoring)
         Score(pl, 2.0, ball->pos, "Treasure: ");
     Set_message_f(" < %s (team %d) has replaced the treasure >",
-                  pl->name, pl->team);
+                  pl->name.c_str(), pl->team);
     Rank_saved_ball(pl);
 }
 
@@ -123,7 +123,7 @@ void Ball_is_replaced(ballobject_t *ball)
  */
 void Ball_is_destroyed(ballobject_t *ball)
 {
-    player_t *pl = Player_by_id(ball->ball_owner);
+    Player *pl = Player_by_id(ball->ball_owner);
     double ticks = ball->ball_loose_ticks;
     int frames = (int)(ticks / timeStep + .5);
     double seconds = ticks / options.gameSpeed;
@@ -135,7 +135,7 @@ void Ball_is_destroyed(ballobject_t *ball)
 }
 
 // Punish_team1 = xpilot 4.5.5, Punish_team2 = NG
-static int Punish_team2(player_t *pl, treasure_t *td, clpos_t pos)
+static int Punish_team2(Player *pl, treasure_t *td, clpos_t pos)
 {
     world_t *world = &World;
     double win_score = 0.0, lose_score = 0.0;
@@ -152,7 +152,7 @@ static int Punish_team2(player_t *pl, treasure_t *td, clpos_t pos)
     {
         for (i = 0; i < NumPlayers; i++)
         {
-            player_t *pl_i = Player_by_index(i);
+            Player *pl_i = Player_by_index(i);
 
             if (Player_is_tank(pl_i) ||
                 (Player_is_paused(pl_i) && pl_i->pause_count <= 0) ||
@@ -179,7 +179,7 @@ static int Punish_team2(player_t *pl, treasure_t *td, clpos_t pos)
     }
     sound_play_all(DESTROY_BALL_SOUND);
     Set_message_f(" < %s's (%d) team has destroyed team %d treasure >",
-                  pl->name, pl->team, td->team);
+                  pl->name.c_str(), pl->team, td->team);
     updateScores = true;
 
     return 1;
@@ -188,7 +188,7 @@ static int Punish_team2(player_t *pl, treasure_t *td, clpos_t pos)
 void Ball_hits_goal2(ballobject_t *ball, group_t *gp)
 {
     world_t *world = &World;
-    player_t *owner;
+    Player *owner;
     treasure_t *td;
     int i;
 
@@ -360,7 +360,7 @@ bool Balltarget_hitfunc(group_t *gp, const move_t *move)
 // pl = player who cashed ball
 // td  = destroyed treasure
 // pos = ball position
-int Punish_team1(player_t *pl, treasure_t *td, clpos_t pos)
+int Punish_team1(Player *pl, treasure_t *td, clpos_t pos)
 {
     world_t *world = &World;
     static char msg[MSG_LEN];
@@ -378,7 +378,7 @@ int Punish_team1(player_t *pl, treasure_t *td, clpos_t pos)
     {
         for (i = 0; i < NumPlayers; i++)
         {
-            player_t *pl_i = Player_by_index(i);
+            Player *pl_i = Player_by_index(i);
 
             if (Player_is_tank(pl_i) ||
                 (Player_is_paused(pl_i) && pl_i->pause_count <= 0) ||
@@ -401,7 +401,7 @@ int Punish_team1(player_t *pl, treasure_t *td, clpos_t pos)
 
     sound_play_all(DESTROY_BALL_SOUND);
     Set_message_f(" < %s's (%d) team has destroyed team %d treasure >",
-                  pl->name, pl->team, td->team);
+                  pl->name.c_str(), pl->team, td->team);
 
     if (!somebody)
     {
@@ -418,7 +418,7 @@ int Punish_team1(player_t *pl, treasure_t *td, clpos_t pos)
 
     for (i = 0; i < NumPlayers; i++)
     {
-        player_t *pl_i = Player_by_index(i);
+        Player *pl_i = Player_by_index(i);
 
         if (Player_is_tank(pl_i) ||
             (Player_is_paused(pl_i) && pl_i->pause_count <= 0) ||

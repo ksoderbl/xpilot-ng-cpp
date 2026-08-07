@@ -130,7 +130,7 @@ static inline bool clpos_inview(click_visibility_t &v, clpos_t pos)
     return true;
 }
 
-static void fastshot_end(connection_t *conn)
+static void fastshot_end(Connection *conn)
 {
     int i;
 
@@ -146,7 +146,7 @@ static void fastshot_end(connection_t *conn)
     }
 }
 
-static void debris_end(connection_t *conn)
+static void debris_end(Connection *conn)
 {
     int i;
 
@@ -263,7 +263,7 @@ static void Frame_radar_buffer_add(clpos_t pos, int s)
     radarVector.push_back(t);
 }
 
-static void Frame_radar_buffer_send(connection_t *conn, player_t *pl)
+static void Frame_radar_buffer_send(Connection *conn, Player *pl)
 {
     int i, dest, tmp;
     radar_t *p;
@@ -342,7 +342,7 @@ static void Frame_radar_buffer_free(void)
     radarVector.clear();
 }
 
-static int Frame_status(connection_t *conn, player_t *pl)
+static int Frame_status(Connection *conn, Player *pl)
 {
     world_t *world = &World;
     static char modsstr[MAX_CHARS];
@@ -362,7 +362,7 @@ static int Frame_status(connection_t *conn, player_t *pl)
     CLR_BIT(pl->lock.tagged, LOCK_VISIBLE);
     if (BIT(pl->lock.tagged, LOCK_PLAYER) && Player_uses_compass(pl))
     {
-        player_t *lock_pl = Player_by_id(pl->lock.pl_id);
+        Player *lock_pl = Player_by_id(pl->lock.pl_id);
 
         lock_id = pl->lock.pl_id;
         lock_ind = GetInd(lock_id);
@@ -428,7 +428,7 @@ static int Frame_status(connection_t *conn, player_t *pl)
     return 1;
 }
 
-static void Frame_map(connection_t *conn, player_t *pl)
+static void Frame_map(Connection *conn, Player *pl)
 {
     int i, k, conn_bit = (1 << conn->ind);
     const int fuel_packet_size = 5;
@@ -594,7 +594,7 @@ static void Frame_shuffle(void)
     }
 }
 
-static void Frame_shots(connection_t *conn, player_t *pl)
+static void Frame_shots(Connection *conn, Player *pl)
 {
     world_t *world = &World;
     clpos_t pos;
@@ -836,7 +836,7 @@ static void Frame_shots(connection_t *conn, player_t *pl)
     }
 }
 
-static void Frame_ships(connection_t *conn, player_t *pl)
+static void Frame_ships(Connection *conn, Player *pl)
 {
     int i, k;
 
@@ -851,8 +851,8 @@ static void Frame_ships(connection_t *conn, player_t *pl)
     for (i = 0; i < Num_transporters(); i++)
     {
         transporter_t *trans = Transporter_by_index(i);
-        player_t *victim = Player_by_id(trans->victim_id);
-        player_t *tpl = Player_by_id(trans->id);
+        Player *victim = Player_by_id(trans->victim_id);
+        Player *tpl = Player_by_id(trans->id);
         clpos_t pos = (tpl ? tpl->pos : trans->pos);
 
         /* Player_by_id() can return nullptr if the player quit the game. */
@@ -869,7 +869,7 @@ static void Frame_ships(connection_t *conn, player_t *pl)
 
         if (cannon->tractor_count > 0)
         {
-            player_t *t = Player_by_id(cannon->tractor_target_id);
+            Player *t = Player_by_id(cannon->tractor_target_id);
 
             /* Player_by_id() can return nullptr if the player quit the game. */
             if (t == nullptr)
@@ -898,7 +898,7 @@ static void Frame_ships(connection_t *conn, player_t *pl)
 
     for (k = 0; k < num_player_shuffle; k++)
     {
-        player_t *pl_i;
+        Player *pl_i;
 
         i = playerShuffleVector[k];
 
@@ -964,7 +964,7 @@ static void Frame_ships(connection_t *conn, player_t *pl)
 
         if (Player_uses_tractor_beam(pl_i))
         {
-            player_t *t = Player_by_id(pl_i->lock.pl_id);
+            Player *t = Player_by_id(pl_i->lock.pl_id);
 
             if (clpos_inview(cv, t->pos))
             {
@@ -987,7 +987,7 @@ static void Frame_ships(connection_t *conn, player_t *pl)
     }
 }
 
-static void Frame_radar(connection_t *conn, player_t *pl)
+static void Frame_radar(Connection *conn, Player *pl)
 {
     world_t *world = &World;
     int i, k, mask, shownuke, size;
@@ -1063,7 +1063,7 @@ static void Frame_radar(connection_t *conn, player_t *pl)
 
         for (k = 0; k < num_player_shuffle; k++)
         {
-            player_t *pl_i;
+            Player *pl_i;
 
             i = playerShuffleVector[k];
 
@@ -1100,7 +1100,7 @@ static void Frame_radar(connection_t *conn, player_t *pl)
     Frame_radar_buffer_send(conn, pl);
 }
 
-static void Frame_lose_item_state(player_t *pl)
+static void Frame_lose_item_state(Player *pl)
 {
     if (pl->lose_item_state != 0)
     {
@@ -1112,7 +1112,7 @@ static void Frame_lose_item_state(player_t *pl)
     }
 }
 
-static void Frame_parameters(connection_t *conn, player_t *pl)
+static void Frame_parameters(Connection *conn, Player *pl)
 {
     world_t *world = &World;
 
@@ -1144,8 +1144,8 @@ static void Frame_parameters(connection_t *conn, player_t *pl)
 void Frame_update(void)
 {
     int i, ind, player_fps;
-    connection_t *conn;
-    player_t *pl, *pl2;
+    Connection *conn;
+    Player *pl, *pl2;
     time_t newTimeLeft = 0;
     static time_t oldTimeLeft;
     static bool game_over_called = false;
@@ -1275,7 +1275,7 @@ void Frame_update(void)
 
 void Set_message(const char *message)
 {
-    player_t *pl;
+    Player *pl;
     int i;
     const char *msg;
     char tmp[MSG_LEN];
@@ -1305,7 +1305,7 @@ void Set_message(const char *message)
     }
 }
 
-void Set_player_message(player_t *pl, const char *message)
+void Set_player_message(Player *pl, const char *message)
 {
     int i;
     const char *msg;
@@ -1330,7 +1330,7 @@ void Set_player_message(player_t *pl, const char *message)
 
 void Set_message_f(const char *fmt, ...)
 {
-    player_t *pl;
+    Player *pl;
     int i;
     size_t len;
     static char msg[2 * MSG_LEN];
@@ -1363,7 +1363,7 @@ void Set_message_f(const char *fmt, ...)
     }
 }
 
-void Set_player_message_f(player_t *pl, const char *fmt, ...)
+void Set_player_message_f(Player *pl, const char *fmt, ...)
 {
     size_t len;
     static char msg[2 * MSG_LEN];

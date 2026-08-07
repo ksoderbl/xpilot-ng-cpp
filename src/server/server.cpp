@@ -352,7 +352,7 @@ void Main_loop(void)
  */
 void End_game(void)
 {
-    player_t *pl;
+    Player *pl;
     char msg[MSG_LEN];
 
     if (termsig != 0)
@@ -443,7 +443,7 @@ int Pick_team(int pick_for_type)
 {
     int i, least_players, num_available_teams = 0, playing_teams = 0;
     int losing_team;
-    player_t *pl;
+    Player *pl;
     int playing[MAX_TEAMS], free_bases[MAX_TEAMS], available_teams[MAX_TEAMS];
     double team_score[MAX_TEAMS], losing_score;
 
@@ -569,7 +569,7 @@ const char *Describe_game_status(void)
 void Server_info(char *str, size_t max_size)
 {
     int i, j, k;
-    player_t *pl, **order;
+    Player *pl, **order;
     char name[MAX_CHARS], lblstr[MAX_CHARS], msg[MSG_LEN];
 
     snprintf(str, max_size,
@@ -605,7 +605,7 @@ void Server_info(char *str, size_t max_size)
 
     strlcat(str, msg, max_size);
 
-    if ((order = (player_t **)malloc(NumPlayers * sizeof(player_t *))) == nullptr)
+    if ((order = (Player **)malloc(NumPlayers * sizeof(Player *))) == nullptr)
     {
         error("No memory for order");
         return;
@@ -628,12 +628,12 @@ void Server_info(char *str, size_t max_size)
     for (i = 0; i < NumPlayers; i++)
     {
         pl = order[i];
-        strlcpy(name, pl->name, MAX_CHARS);
+        strlcpy(name, pl->name.c_str(), MAX_CHARS);
         snprintf(lblstr, sizeof(lblstr), "%c%c %-19s%03d%6.0f",
                  pl->mychar, pl->team == TEAM_NOT_SET ? ' ' : (pl->team + '0'),
                  name, pl->pl_life, Get_Score(pl));
         snprintf(msg, sizeof(msg), "%2d... %-36s%s@%s\n",
-                 i + 1, lblstr, pl->username, pl->hostname);
+                 i + 1, lblstr, pl->username.c_str(), pl->hostname.c_str());
         if (strlen(msg) + strlen(str) >= max_size)
             break;
         strlcat(str, msg, max_size);
@@ -677,7 +677,7 @@ void Game_Over(void)
     double maxsc, minsc;
     int i, win_team = TEAM_NOT_SET, lose_team = TEAM_NOT_SET;
     char msg[MSG_LEN];
-    player_t *win_pl = nullptr, *lose_pl = nullptr;
+    Player *win_pl = nullptr, *lose_pl = nullptr;
 
     Set_message("Game over...");
 
@@ -697,7 +697,7 @@ void Game_Over(void)
 
         for (i = 0; i < NumPlayers; i++)
         {
-            player_t *pl = Player_by_index(i);
+            Player *pl = Player_by_index(i);
             int team;
 
             if (Player_is_paused(pl))
@@ -754,7 +754,7 @@ void Game_Over(void)
 
     for (i = 0; i < NumPlayers; i++)
     {
-        player_t *pl_i = Player_by_index(i);
+        Player *pl_i = Player_by_index(i);
 
         if (Player_is_paused(pl_i))
             continue;
@@ -776,13 +776,13 @@ void Game_Over(void)
     }
     if (win_pl)
     {
-        snprintf(msg, sizeof(msg), "Best human player: %s", win_pl->name);
+        snprintf(msg, sizeof(msg), "Best human player: %s", win_pl->name.c_str());
         Set_message(msg);
         printf("%s\n", msg);
     }
     if (lose_pl && lose_pl != win_pl)
     {
-        snprintf(msg, sizeof(msg), "Worst human player: %s", lose_pl->name);
+        snprintf(msg, sizeof(msg), "Worst human player: %s", lose_pl->name.c_str());
         Set_message(msg);
         printf("%s\n", msg);
     }
@@ -804,7 +804,7 @@ void Server_shutdown(const char *user_name, int delay, const char *reason)
         ShutdownServer = -1;
 }
 
-void Server_log_admin_message(player_t *pl, const char *str)
+void Server_log_admin_message(Player *pl, const char *str)
 {
     /*
      * Only log the message if logfile already exists,
@@ -829,13 +829,13 @@ void Server_log_admin_message(player_t *pl, const char *str)
                 "%s[%s]{%s@%s(%s)|%s}:\n"
                 "\t%s\n",
                 showtime(),
-                pl->name,
-                pl->username, pl->hostname,
+                pl->name.c_str(),
+                pl->username.c_str(), pl->hostname.c_str(),
                 Player_get_addr(pl),
                 Player_get_dpy(pl),
                 str);
         fclose(fp);
-        snprintf(msg, sizeof(msg), "%s [%s]:[%s]", str, pl->name, "GOD");
+        snprintf(msg, sizeof(msg), "%s [%s]:[%s]", str, pl->name.c_str(), "GOD");
         Set_player_message(pl, msg);
     }
     else

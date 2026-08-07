@@ -252,7 +252,7 @@ static void SortRankings(void)
 static const char *Rank_get_logout_message(ranknode_t *rank)
 {
     static char msg[MSG_LEN];
-    player_t *pl;
+    Player *pl;
 
     assert(strlen(rank->name) > 0);
     pl = Get_player_by_name(rank->name, nullptr, nullptr);
@@ -533,7 +533,7 @@ static void Init_ranknode(ranknode_t *rank,
 ranknode_t *Rank_get_by_name(const char *name)
 {
     int i;
-    player_t *pl;
+    Player *pl;
 
     assert(name != nullptr);
 
@@ -612,7 +612,7 @@ void Rank_init_saved_scores(void)
  * A player has logged in. Find his info or create new info by kicking
  * the player who hasn't played for the longest time.
  */
-void Rank_get_saved_score(player_t *pl)
+void Rank_get_saved_score(Player *pl)
 {
     ranknode_t *rank, *unused = nullptr;
     int i;
@@ -622,7 +622,7 @@ void Rank_get_saved_score(player_t *pl)
     for (i = 0; i < MAX_SCORES; i++)
     {
         rank = &ranknodes[i];
-        if (!strcasecmp(pl->name, rank->name))
+        if (!strcasecmp(pl->name.c_str(), rank->name))
         {
             if (rank->pl == nullptr)
             {
@@ -675,7 +675,7 @@ void Rank_get_saved_score(player_t *pl)
     rank = unused;
     /*warn("timestamp of lru node = %u", rank->timestamp);*/
 
-    Init_ranknode(rank, pl->name, pl->username, pl->hostname);
+    Init_ranknode(rank, pl->name.c_str(), pl->username.c_str(), pl->hostname.c_str());
     rank->pl = pl;
     rank->timestamp = time(nullptr);
     Player_set_score(pl, 0);
@@ -683,7 +683,7 @@ void Rank_get_saved_score(player_t *pl)
 }
 
 /* A player has quit, save his info and mark him as not playing. */
-void Rank_save_score(player_t *pl)
+void Rank_save_score(Player *pl)
 {
     ranknode_t *rank = pl->rank;
 

@@ -146,7 +146,7 @@ void Object_hits_wormhole2(object_t *obj, int ind)
 /*
  * Warp balls connected to warped player.
  */
-static void Warp_balls(player_t *pl, clpos_t dest)
+static void Warp_balls(Player *pl, clpos_t dest)
 {
     world_t *world = &World;
 
@@ -214,7 +214,7 @@ static int Find_wormhole_dest(int wh_hit_ind)
 /*
  * Move player trough wormhole.
  */
-static void Traverse_wormhole(player_t *pl)
+static void Traverse_wormhole(Player *pl)
 {
     clpos_t dest;
     int wh_dest;
@@ -247,7 +247,7 @@ static void Traverse_wormhole(player_t *pl)
 /*
  * Returns true if warp status was achieved.
  */
-bool Initiate_hyperjump(player_t *pl)
+bool Initiate_hyperjump(Player *pl)
 {
     if (pl->item[ITEM_HYPERJUMP] <= 0)
         return false;
@@ -266,7 +266,7 @@ bool Initiate_hyperjump(player_t *pl)
 /*
  * Player has used hyperjump item.
  */
-static void Hyperjump(player_t *pl)
+static void Hyperjump(Player *pl)
 {
     world_t *world = &World;
     clpos_t dest;
@@ -302,7 +302,7 @@ static void Hyperjump(player_t *pl)
     CLR_BIT(pl->obj_status, WARPING);
 }
 
-void Player_warp(player_t *pl)
+void Player_warp(Player *pl)
 {
     if (pl->wormHoleHit == NO_IND)
         Hyperjump(pl);
@@ -310,7 +310,7 @@ void Player_warp(player_t *pl)
         Traverse_wormhole(pl);
 }
 
-void Player_finish_warp(player_t *pl)
+void Player_finish_warp(Player *pl)
 {
     int group;
     hitmask_t hitmask = NONBALL_BIT | HITMASK(pl->team);

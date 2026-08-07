@@ -136,11 +136,11 @@ static int Kick_robot_players(int team)
         {
             /* kick robot with lowest score from any team but robot team */
             double low_score = FLT_MAX;
-            player_t *low_pl = nullptr;
+            Player *low_pl = nullptr;
 
             for (i = 0; i < NumPlayers; i++)
             {
-                player_t *pl_i = Player_by_index(i);
+                Player *pl_i = Player_by_index(i);
 
                 if (!Player_is_robot(pl_i) || pl_i->team == options.robotTeam)
                     continue;
@@ -170,11 +170,11 @@ static int Kick_robot_players(int team)
         {
             /* kick robot with lowest score from this team */
             double low_score = FLT_MAX;
-            player_t *low_pl = nullptr;
+            Player *low_pl = nullptr;
 
             for (i = 0; i < NumPlayers; i++)
             {
-                player_t *pl_i = Player_by_index(i);
+                Player *pl_i = Player_by_index(i);
 
                 if (!Player_is_robot(pl_i) || pl_i->team != team)
                     continue;
@@ -206,7 +206,7 @@ static int do_kick(int team, int nonlast)
 
     for (i = NumPlayers - 1; i >= 0; i--)
     {
-        player_t *pl_i = Player_by_index(i);
+        Player *pl_i = Player_by_index(i);
 
         if (pl_i->conn != nullptr && Player_is_paused(pl_i) && (team == TEAM_NOT_SET || (pl_i->team == team && pl_i->home_base != nullptr)) && !(pl_i->privs & PRIV_NOAUTOKICK) && (!nonlast || !(pl_i->privs & PRIV_AUTOKICKLAST)))
         {
@@ -215,14 +215,14 @@ static int do_kick(int team, int nonlast)
             {
                 Set_message_f("The paused \"%s\" was kicked because the "
                               "game is full.",
-                              pl_i->name);
+                              pl_i->name.c_str());
                 Destroy_connection(pl_i->conn, "no pause with full game");
             }
             else
             {
                 Set_message_f("The paused \"%s\" was kicked because team %d "
                               "is full.",
-                              pl_i->name, team);
+                              pl_i->name.c_str(), team);
                 Destroy_connection(pl_i->conn, "no pause with full team");
             }
             num_unpaused++;
@@ -284,11 +284,11 @@ static int Check_names(char *nick_name, char *user_name, char *host_name)
     }
     for (i = 0; i < NumPlayers; i++)
     {
-        player_t *pl_i = Player_by_index(i);
+        Player *pl_i = Player_by_index(i);
 
-        if (strcasecmp(pl_i->name, nick_name) == 0)
+        if (strcasecmp(pl_i->name.c_str(), nick_name) == 0)
         {
-            D(printf("%s %s\n", pl_i->name, nick_name));
+            D(printf("%s %s\n", pl_i->name.c_str(), nick_name));
             return E_IN_USE;
         }
     }
@@ -540,7 +540,7 @@ void Contact(int fd, void *arg)
             status = E_INVAL;
         else
         {
-            player_t *pl_found = Get_player_by_name(str, nullptr, nullptr);
+            Player *pl_found = Get_player_by_name(str, nullptr, nullptr);
 
             if (!pl_found)
                 status = E_NOT_FOUND;
@@ -548,7 +548,7 @@ void Contact(int fd, void *arg)
             {
                 Set_message_f("\"%s\" upset the gods and was kicked out "
                               "of the game.",
-                              pl_found->name);
+                              pl_found->name.c_str());
                 if (pl_found->conn == nullptr)
                     Delete_player(pl_found);
                 else
