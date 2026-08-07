@@ -330,7 +330,7 @@ int Bitmap_add(std::string filename, int count, bool scalable)
 {
     image_t img;
 
-    img.filename = xp_strdup(filename);
+    img.filename = filename;
     img.num_frames = ABS(count);
     img.rotate = count > 1;
     img.state = IMG_STATE_UNINITIALIZED;

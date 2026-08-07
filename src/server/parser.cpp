@@ -489,7 +489,7 @@ int Tune_option(char *name, char *val)
         return 1;
     case valString:
     {
-        char *s = xp_strdup(val);
+        char *s = strdup(val);
 
         if (!s)
             return 0;

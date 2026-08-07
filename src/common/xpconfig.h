@@ -110,16 +110,6 @@
 
 #define CONF_UPDATES_PR_FRAME 1
 
-/*
- * If COMPRESSED_MAPS is defined, the server will attempt to uncompress
- * maps on the fly (but only if neccessary). CONF_ZCAT_FORMAT should produce
- * a command that will unpack the given .gz file to stdout (for use in popen).
- * CONF_ZCAT_EXT should define the proper compressed file extension.
- */
-#define CONF_COMPRESSED_MAPS
-#define CONF_ZCAT_EXT ".gz"
-#define CONF_ZCAT_FORMAT "gzip -d -c < %s"
-
 void Conf_print(void);
 char *Conf_datadir(void);
 char *Conf_defaults_file_name(void);
@@ -137,5 +127,3 @@ char *Conf_sounddir(void);
 char *Conf_soundfile(void);
 char *Conf_localguru(void);
 char *Conf_robotfile(void);
-char *Conf_zcat_ext(void);
-char *Conf_zcat_format(void);

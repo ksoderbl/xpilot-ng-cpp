@@ -784,11 +784,11 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
 
     connp->ind = free_conn_index;
     connp->my_port = my_port;
-    connp->user = xp_strdup(user);
-    connp->nick = xp_strdup(nick);
-    connp->dpy = xp_strdup(dpy);
-    connp->addr = xp_strdup(addr);
-    connp->host = xp_strdup(host);
+    connp->user = strdup(user);
+    connp->nick = strdup(nick);
+    connp->dpy = strdup(dpy);
+    connp->addr = strdup(addr);
+    connp->host = strdup(host);
     connp->ship = nullptr;
     connp->team = team;
     connp->version = version;

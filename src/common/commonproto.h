@@ -41,7 +41,6 @@ extern double tcos(double x);
 extern double tsin(double x);
 
 /* xpstrdup.cpp */
-extern char *xp_strdup(const char *);
 extern char *xp_safe_strdup(const char *old_string);
 
 /* xpstrlcpy.ccp */
