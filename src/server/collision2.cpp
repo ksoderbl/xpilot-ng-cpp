@@ -51,7 +51,7 @@
 #include "map.h"
 #include "score.h"
 #include "saudio.h"
-#include "item.h"
+#include "serveritem.h"
 #include "netserver.h"
 #include "serverpack.h"
 #include "xperror.h"
@@ -947,26 +947,26 @@ static void Player_collides_with_mine(Player *pl, mineobject_t *mine)
     }
     else if (mine->mine_owner == NO_ID)
     {
-        const char *reprogrammer_name = "some jerk";
+        std::string reprogrammer_name = "some jerk";
 
         if (mine->id != NO_ID)
         {
             kp = Player_by_id(mine->id);
-            reprogrammer_name = kp->name.c_str();
+            reprogrammer_name = kp->name;
         }
         Set_message_f("%s hit %s reprogrammed by %s.",
                       pl->name.c_str(),
                       Describe_shot(mine->type, mine->obj_status, mine->mods, 1),
-                      reprogrammer_name);
+                      reprogrammer_name.c_str());
     }
     else
     {
-        const char *reprogrammer_name = "some jerk";
+        std::string reprogrammer_name = "some jerk";
 
         if (mine->id != NO_ID)
         {
             kp = Player_by_id(mine->id);
-            reprogrammer_name = kp->name.c_str();
+            reprogrammer_name = kp->name;
         }
         Set_message_f("%s hit %s %s by %s and reprogrammed by %s.",
                       pl->name.c_str(),
@@ -974,7 +974,7 @@ static void Player_collides_with_mine(Player *pl, mineobject_t *mine)
                                     mine->mods, 1),
                       BIT(mine->obj_status, GRAVITY) ? "thrown " : "dropped ",
                       Player_by_id(mine->mine_owner)->name.c_str(),
-                      reprogrammer_name);
+                      reprogrammer_name.c_str());
     }
     if (kp)
     {

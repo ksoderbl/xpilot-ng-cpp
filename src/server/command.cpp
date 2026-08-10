@@ -119,7 +119,7 @@ Player *Get_player_by_name(const char *str,
 
         pl = Player_by_index(i);
 
-        for (j = 0; j < 1 + (int)strlen(pl->name.c_str()) - (int)len; j++)
+        for (j = 0; j < 1 + (int)pl->name.length() - (int)len; j++)
         {
             if (!strncasecmp(pl->name.c_str() + j, str, len))
             {
@@ -469,7 +469,7 @@ static int Cmd_addr(char *arg, Player *pl, bool oper, char *msg, size_t size)
         if (addr.empty())
             snprintf(msg, size, "Unable to get address for %s.", pl2->name.c_str());
         else
-            snprintf(msg, size, "%s plays from: %s.", pl2->name.c_str(), addr);
+            snprintf(msg, size, "%s plays from: %s.", pl2->name.c_str(), addr.c_str());
     }
     else
     {

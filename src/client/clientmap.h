@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -255,7 +253,6 @@ public:
     std::vector<target_t> targets;
     std::vector<fuelstation_t> fuels;
     std::vector<homebase_t> bases;
-
     std::vector<refuel_t> refuels;
     std::vector<connector_t> connectors;
     std::vector<laser_t> lasers;
@@ -318,7 +315,6 @@ int Handle_score_object(double score, int x, int y, char *msg);
 int Handle_team_score(int team, double score);
 int Handle_timing(int id, int check, int round, long loops);
 int Handle_seek(int programmer_id, int robot_id, int sought_id);
-
 int Handle_start(long server_loops);
 int Handle_end(long server_loops);
 int Handle_self(int x, int y, int vx, int vy, int newHeading,
@@ -370,6 +366,5 @@ void Map_dots(void);
 void Map_restore(int startx, int starty, int width, int height);
 void Map_blue(int startx, int starty, int width, int height);
 bool Using_score_decimals(void);
-
 int Map_init(void);
 int Map_cleanup(void);

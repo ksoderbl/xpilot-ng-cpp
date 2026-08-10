@@ -31,7 +31,7 @@ typedef enum
     xp_bool_option,
     xp_int_option,
     xp_double_option,
-    xp_string_option,
+    xp_const_char_star_option,
     xp_key_option
 } xp_option_type_t;
 
@@ -50,8 +50,8 @@ typedef enum
 typedef bool (*xp_bool_option_setfunc_t)(xp_option_t *opt, bool val);
 typedef bool (*xp_int_option_setfunc_t)(xp_option_t *opt, int val);
 typedef bool (*xp_double_option_setfunc_t)(xp_option_t *opt, double val);
-typedef bool (*xp_string_option_setfunc_t)(xp_option_t *opt, const char *val);
-typedef const char *(*xp_string_option_getfunc_t)(xp_option_t *opt);
+typedef bool (*xp_const_char_star_option_setfunc_t)(xp_option_t *opt, const char *val);
+typedef const char *(*xp_const_char_star_option_getfunc_t)(xp_option_t *opt);
 
 typedef int xp_option_flags_t;
 
@@ -129,8 +129,8 @@ struct xp_option
     const char *str_defval;
     char *str_ptr;
     size_t str_size;
-    xp_string_option_setfunc_t str_setfunc;
-    xp_string_option_getfunc_t str_getfunc;
+    xp_const_char_star_option_setfunc_t str_setfunc;
+    xp_const_char_star_option_getfunc_t str_getfunc;
 
     /* key option stuff */
 
@@ -315,24 +315,24 @@ static inline xp_option_t *Option_by_index(int ind)
         XP_KEY_OPTION_DUMMY,                                                         \
     }
 
-#define XP_STRING_OPTION(name, defval, valptr, size, setfunc, private_data, getfunc, flags, help) \
-    {                                                                                             \
-        xp_string_option,                                                                         \
-        name,                                                                                     \
-        flags,                                                                                    \
-        xp_option_origin_default,                                                                 \
-        help,                                                                                     \
-        private_data,                                                                             \
-        XP_NOARG_OPTION_DUMMY,                                                                    \
-        XP_BOOL_OPTION_DUMMY,                                                                     \
-        XP_INT_OPTION_DUMMY,                                                                      \
-        XP_DOUBLE_OPTION_DUMMY,                                                                   \
-        defval,                                                                                   \
-        valptr,                                                                                   \
-        size,                                                                                     \
-        setfunc,                                                                                  \
-        getfunc,                                                                                  \
-        XP_KEY_OPTION_DUMMY,                                                                      \
+#define XP_CONST_CHAR_STAR_OPTION(name, defval, valptr, size, setfunc, private_data, getfunc, flags, help) \
+    {                                                                                                      \
+        xp_const_char_star_option,                                                                         \
+        name,                                                                                              \
+        flags,                                                                                             \
+        xp_option_origin_default,                                                                          \
+        help,                                                                                              \
+        private_data,                                                                                      \
+        XP_NOARG_OPTION_DUMMY,                                                                             \
+        XP_BOOL_OPTION_DUMMY,                                                                              \
+        XP_INT_OPTION_DUMMY,                                                                               \
+        XP_DOUBLE_OPTION_DUMMY,                                                                            \
+        defval,                                                                                            \
+        valptr,                                                                                            \
+        size,                                                                                              \
+        setfunc,                                                                                           \
+        getfunc,                                                                                           \
+        XP_KEY_OPTION_DUMMY,                                                                               \
     }
 
 #define XP_KEY_OPTION(name, defval, key, help) \

@@ -141,7 +141,6 @@ static int Kick_robot_players(int team)
             for (i = 0; i < NumPlayers; i++)
             {
                 Player *pl_i = Player_by_index(i);
-
                 if (!Player_is_robot(pl_i) || pl_i->team == options.robotTeam)
                     continue;
                 if (Get_Score(pl_i) < low_score)
@@ -175,7 +174,6 @@ static int Kick_robot_players(int team)
             for (i = 0; i < NumPlayers; i++)
             {
                 Player *pl_i = Player_by_index(i);
-
                 if (!Player_is_robot(pl_i) || pl_i->team != team)
                     continue;
                 if (Get_Score(pl_i) < low_score)
@@ -285,7 +283,6 @@ static int Check_names(char *nick_name, char *user_name, char *host_name)
     for (i = 0; i < NumPlayers; i++)
     {
         Player *pl_i = Player_by_index(i);
-
         if (strcasecmp(pl_i->name.c_str(), nick_name) == 0)
         {
             D(printf("%s %s\n", pl_i->name.c_str(), nick_name));
@@ -401,7 +398,6 @@ void Contact(int fd, void *arg)
         }
         if (Packet_scanf(&ibuf, "%ld", &key) <= 0)
             return;
-
         if (!Owner((int)reply_to, user_name, host_addr, port,
                    key == credentials))
         {
@@ -650,7 +646,6 @@ void Contact(int fd, void *arg)
             }
             if (change && Reply(host_addr, port) == -1)
                 bad = true;
-
         } while (!bad);
     }
         return;
@@ -796,8 +791,10 @@ void Queue_loop(void)
                                    : Num_bases(world));
 
             /* is there a homebase available? */
-            if (NumPlayers - NumPseudoPlayers + login_in_progress < lim || !game_lock && ((Kick_robot_players(TEAM_NOT_SET) && NumPlayers - NumPseudoPlayers + login_in_progress < lim) || (Kick_paused_players(TEAM_NOT_SET) &&
-                                                                                                                                                                                            NumPlayers - NumPseudoPlayers + login_in_progress < lim)))
+            if (NumPlayers - NumPseudoPlayers + login_in_progress < lim ||
+                !game_lock && ((Kick_robot_players(TEAM_NOT_SET) && NumPlayers - NumPseudoPlayers + login_in_progress < lim) ||
+                               (Kick_paused_players(TEAM_NOT_SET) &&
+                                NumPlayers - NumPseudoPlayers + login_in_progress < lim)))
             {
 
                 /* find a team for this fellow. */
@@ -893,7 +890,9 @@ static int Queue_player(char *user, char *nick, char *disp, int team,
         if (!strcasecmp(nick, qp->nick_name))
         {
             /* same screen? */
-            if (!strcmp(addr, qp->host_addr) && !strcmp(user, qp->user_name) && !strcmp(disp, qp->disp_name))
+            if (!strcmp(addr, qp->host_addr) &&
+                !strcmp(user, qp->user_name) &&
+                !strcmp(disp, qp->disp_name))
             {
                 qp->last_ack_recv = main_loops;
                 qp->port = port;
@@ -1068,7 +1067,6 @@ static int Check_address(char *str)
     addr = sock_get_inet_by_addr(str);
     if (addr == (unsigned long)-1 && strcmp(str, "255.255.255.255"))
         return -1;
-
     for (i = 0; i < num_addr_mask; i++)
     {
         if ((addr_mask_list[i].addr & addr_mask_list[i].mask) ==
@@ -1092,7 +1090,6 @@ void Set_deny_hosts(void)
 
     for (tok = strtok(list, list_sep); tok; tok = strtok(nullptr, list_sep))
         n++;
-
     addr_mask_list = (struct addr_plus_mask *)
         malloc(n * sizeof(*addr_mask_list));
     num_addr_mask = n;
@@ -1114,7 +1111,6 @@ void Set_deny_hosts(void)
         }
         else
             mask = 0xFFFFFFFF;
-
         addr = sock_get_inet_by_addr(tok);
         if (addr == (unsigned long)-1 && strcmp(tok, "255.255.255.255"))
         {

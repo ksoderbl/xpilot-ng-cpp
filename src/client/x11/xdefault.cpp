@@ -272,7 +272,7 @@ xp_option_t xdefault_options[] = {
         "fullColor must be on for this to work.\n"
         "You may also need to enable multibuffering or double-buffering.\n"),
 
-    XP_STRING_OPTION(
+    XP_CONST_CHAR_STAR_OPTION(
         "geometry",
         "1280x1024",
         nullptr, 0,
@@ -280,7 +280,7 @@ xp_option_t xdefault_options[] = {
         XP_OPTFLAG_DEFAULT,
         "Set the window size and position in standard X geometry format.\n"),
 
-    XP_STRING_OPTION(
+    XP_CONST_CHAR_STAR_OPTION(
         "display",
         "",
         displayName,
@@ -289,7 +289,7 @@ xp_option_t xdefault_options[] = {
         XP_OPTFLAG_KEEP,
         "Set the X display.\n"),
 
-    XP_STRING_OPTION(
+    XP_CONST_CHAR_STAR_OPTION(
         "keyboard",
         "",
         keyboardName,
@@ -300,7 +300,7 @@ xp_option_t xdefault_options[] = {
         "another display.  The default is to use the keyboard input from\n"
         "the X display.\n"),
 
-    XP_STRING_OPTION(
+    XP_CONST_CHAR_STAR_OPTION(
         "visual",
         "",
         visualName,
@@ -341,7 +341,7 @@ xp_option_t xdefault_options[] = {
         "Also sometimes window managers may interfere when switching\n"
         "colormaps. This option may prevent that.\n"),
 
-    XP_STRING_OPTION(
+    XP_CONST_CHAR_STAR_OPTION(
         "gameFont",
         GAME_FONT,
         gameFontName,
@@ -350,7 +350,7 @@ xp_option_t xdefault_options[] = {
         XP_OPTFLAG_DEFAULT,
         "The font used on the HUD and for most other text.\n"),
 
-    XP_STRING_OPTION(
+    XP_CONST_CHAR_STAR_OPTION(
         "scoreListFont",
         SCORE_LIST_FONT,
         scoreListFontName,
@@ -360,7 +360,7 @@ xp_option_t xdefault_options[] = {
         "The font used on the score list.\n"
         "This must be a non-proportional font.\n"),
 
-    XP_STRING_OPTION(
+    XP_CONST_CHAR_STAR_OPTION(
         "buttonFont",
         BUTTON_FONT,
         buttonFontName,
@@ -369,7 +369,7 @@ xp_option_t xdefault_options[] = {
         XP_OPTFLAG_DEFAULT,
         "The font used on all buttons.\n"),
 
-    XP_STRING_OPTION(
+    XP_CONST_CHAR_STAR_OPTION(
         "textFont",
         TEXT_FONT,
         textFontName,
@@ -378,7 +378,7 @@ xp_option_t xdefault_options[] = {
         XP_OPTFLAG_DEFAULT,
         "The font used in the help and about windows.\n"),
 
-    XP_STRING_OPTION(
+    XP_CONST_CHAR_STAR_OPTION(
         "talkFont",
         TALK_FONT,
         talkFontName,
@@ -387,7 +387,7 @@ xp_option_t xdefault_options[] = {
         XP_OPTFLAG_DEFAULT,
         "The font used in the talk window.\n"),
 
-    XP_STRING_OPTION(
+    XP_CONST_CHAR_STAR_OPTION(
         "motdFont",
         MOTD_FONT,
         motdFontName,
@@ -397,7 +397,7 @@ xp_option_t xdefault_options[] = {
         "The font used in the MOTD window and key list window.\n"
         "This must be a non-proportional font.\n"),
 
-    XP_STRING_OPTION(
+    XP_CONST_CHAR_STAR_OPTION(
         "messageFont",
         MESSAGE_FONT,
         messageFontName,
