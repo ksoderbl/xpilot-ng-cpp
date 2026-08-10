@@ -70,7 +70,7 @@ void Race_compute_game_status(void)
      * fastest lap get points.
      */
 
-    world_t *world = &World;
+    world_t *world = &theWorld;
     Player *alive = nullptr, *pl;
     int num_alive_players = 0, num_active_players = 0,
         num_finished_players = 0, num_race_over_players = 0,
@@ -85,7 +85,7 @@ void Race_compute_game_status(void)
 #if 0
     /* Handle finishing of laps */
     for (i = 0; i < NumPlayers; i++) {
-    pl = Player_by_index(i);
+    pl = Player_by_index( i);
     if (!BIT(pl->pl_status, FINISH))
         continue;
     pl->last_lap_time = pl->time - pl->last_lap;
@@ -123,7 +123,7 @@ void Race_compute_game_status(void)
         Player *pl_i;
 
         for (i = 0; i < NumPlayers; i++) {
-        pl = Player_by_index(i);
+        pl = Player_by_index( i);
         if (BIT(pl->pl_status, FINISH) && pl->round < lap) {
             lap = pl->round;
             pli = i;
@@ -131,11 +131,11 @@ void Race_compute_game_status(void)
         }
         if (lap == INT_MAX)
         break;
-        pl_i = Player_by_index(pli);
+        pl_i = Player_by_index( pli);
         CLR_BIT(pl_i->pl_status, FINISH);
         lap = 0;
         for (i = 0; i < NumPlayers; i++) {
-        pl = Player_by_index(i);
+        pl = Player_by_index( i);
         if (!Player_is_active(pl))
             continue;
         if (pl->round < pl_i->round) {
@@ -147,7 +147,7 @@ void Race_compute_game_status(void)
         if (pl_i->round < lap + count)
         continue;
         for (i = 0; i < NumPlayers; i++) {
-        pl = Player_by_index(i);
+        pl = Player_by_index( i);
         if (!Player_is_active(pl))
             continue;
         if (pl->round < pl_i->round) {
@@ -300,6 +300,7 @@ void Race_compute_game_status(void)
 
 void Race_game_over(void)
 {
+    world_t *world = &theWorld;
     Player *pl;
     int i, j, k,
         bestlap = 0, num_best_players = 0,
@@ -341,7 +342,7 @@ void Race_game_over(void)
             pl = Player_by_index(order[i]);
             if (pl->home_base->ind != i)
             {
-                pl->home_base = Base_by_index(i);
+                pl->home_base = Base_by_index(world, i);
                 for (j = 0; j < spectatorStart + NumSpectators; j++)
                 {
                     if (j == NumPlayers)
@@ -434,6 +435,7 @@ void Player_reset_timing(Player *pl)
 
 void Player_pass_checkpoint(Player *pl)
 {
+    world_t *world = &theWorld;
     int j;
 
     if (pl->check == 0)
@@ -491,7 +493,7 @@ void Player_pass_checkpoint(Player *pl)
 #endif
     }
 
-    if (++pl->check == Num_checks())
+    if (++pl->check == Num_checks(world))
         pl->check = 0;
     pl->last_check_dir = pl->dir;
 
@@ -500,14 +502,14 @@ void Player_pass_checkpoint(Player *pl)
 
 void PlayerCheckpointCollision(Player *pl)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
 
     if (!Timing(world))
         return;
 
     if (Player_is_active(pl))
     {
-        check_t *check = Check_by_index(pl->check);
+        check_t *check = Check_by_index(world, pl->check);
 
         if (pl->round != 0)
             pl->time++;

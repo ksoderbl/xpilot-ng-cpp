@@ -182,7 +182,7 @@ void Delta_mv_elastic(object_t *obj1, object_t *obj2)
 
 void Delta_mv_partly_elastic(object_t *obj1, object_t *obj2, double elastic)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     double m1 = (double)obj1->mass,
            m2 = (double)obj2->mass,
            ms = m1 + m2;
@@ -233,7 +233,7 @@ void Delta_mv_partly_elastic(object_t *obj1, object_t *obj2, double elastic)
 
 void Obj_repel(object_t *obj1, object_t *obj2, int repel_dist)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     double xd, yd, force, dm, dvx1, dvy1, dvx2, dvy2, a;
     int obj_theta;
 
@@ -569,7 +569,7 @@ void Make_debris(clpos_t pos,
                  double min_speed, double max_speed,
                  double min_life, double max_life)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     object_t *debris;
     int i;
     double life;
@@ -655,7 +655,7 @@ void Make_wreckage(clpos_t pos,
                    double min_speed, double max_speed,
                    double min_life, double max_life)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     wireobject_t *wreckage;
     int i, size;
     double life, mass, sum_mass = 0.0;

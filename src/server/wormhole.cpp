@@ -57,12 +57,13 @@ void Wormhole_line_init(void)
 
 bool Verify_wormhole_consistency(void)
 {
+    world_t *world = &theWorld;
     int i, worm_in = 0, worm_out = 0, worm_norm = 0;
 
     /* count wormhole types */
-    for (i = 0; i < Num_wormholes(); i++)
+    for (i = 0; i < Num_wormholes(world); i++)
     {
-        int type = Wormhole_by_index(i)->type;
+        int type = Wormhole_by_index(world, i)->type;
 
         if (type == WORM_NORMAL)
             worm_norm++;
@@ -122,8 +123,9 @@ hitmask_t Wormhole_hitmask(wormhole_t *wormhole)
 
 bool Wormhole_hitfunc(group_t *gp, const move_t *move)
 {
+    world_t *world = &theWorld;
     const object_t *obj = move->obj;
-    wormhole_t *wormhole = Wormhole_by_index(gp->mapobj_ind);
+    wormhole_t *wormhole = Wormhole_by_index(world, gp->mapobj_ind);
 
     if (wormhole->type == WORM_OUT)
         return false;
@@ -148,7 +150,7 @@ void Object_hits_wormhole2(object_t *obj, int ind)
  */
 static void Warp_balls(Player *pl, clpos_t dest)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
 
     /*
      * Don't connect to balls while warping.
@@ -193,8 +195,9 @@ static void Warp_balls(Player *pl, clpos_t dest)
 
 static int Find_wormhole_dest(int wh_hit_ind)
 {
+    world_t *world = &theWorld;
     int wh_ind;
-    wormhole_t *wh, *wh_hit = Wormhole_by_index(wh_hit_ind);
+    wormhole_t *wh, *wh_hit = Wormhole_by_index(world, wh_hit_ind);
 
     if (wh_hit->type == WORM_FIXED)
         return wh_hit_ind;
@@ -204,8 +207,8 @@ static int Find_wormhole_dest(int wh_hit_ind)
 
     do
     {
-        wh_ind = (int)(rfrac() * Num_wormholes());
-        wh = Wormhole_by_index(wh_ind);
+        wh_ind = (int)(rfrac() * Num_wormholes(world));
+        wh = Wormhole_by_index(world, wh_ind);
     } while (wh->type == WORM_IN || wh->type == WORM_FIXED || wh_hit_ind == wh_ind);
 
     return wh_ind;
@@ -216,14 +219,15 @@ static int Find_wormhole_dest(int wh_hit_ind)
  */
 static void Traverse_wormhole(Player *pl)
 {
+    world_t *world = &theWorld;
     clpos_t dest;
     int wh_dest;
-    wormhole_t *wh_hit = Wormhole_by_index(pl->wormHoleHit);
+    wormhole_t *wh_hit = Wormhole_by_index(world, pl->wormHoleHit);
 
     wh_dest = Find_wormhole_dest(pl->wormHoleHit);
     /*assert(wh_dest != pl->wormHoleHit);*/
     sound_play_sensors(pl->pos, WORM_HOLE_SOUND);
-    dest = Wormhole_by_index(wh_dest)->pos;
+    dest = Wormhole_by_index(world, wh_dest)->pos;
     Warp_balls(pl, dest);
     pl->wormHoleDest = wh_dest;
     Object_position_init_clpos(OBJ_PTR(pl), dest);
@@ -268,7 +272,7 @@ bool Initiate_hyperjump(Player *pl)
  */
 static void Hyperjump(Player *pl)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     clpos_t dest;
     int counter;
     hitmask_t hitmask = NONBALL_BIT | HITMASK(pl->team); /* kps - ok ? */
@@ -332,13 +336,14 @@ void Player_finish_warp(Player *pl)
 
 void Object_warp(object_t *obj)
 {
+    world_t *world = &theWorld;
     clpos_t dest;
     int wh_dest;
-    wormhole_t *wh_hit = Wormhole_by_index(obj->wormHoleHit);
+    wormhole_t *wh_hit = Wormhole_by_index(world, obj->wormHoleHit);
 
     wh_dest = Find_wormhole_dest(obj->wormHoleHit);
     /*assert(wh_dest != obj->wormHoleHit);*/
-    dest = Wormhole_by_index(wh_dest)->pos;
+    dest = Wormhole_by_index(world, wh_dest)->pos;
     obj->wormHoleDest = wh_dest;
     Object_position_init_clpos(obj, dest);
     /*assert(obj->wormHoleHit != NO_IND);*/

@@ -31,7 +31,7 @@
 
 void Object_position_set_clpos(object_t *obj, clpos_t pos)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
 
     if (!World_contains_clpos(world, pos))
     {
@@ -69,10 +69,11 @@ void Object_position_restore(object_t *obj)
 
 void Object_position_limit(object_t *obj)
 {
+    world_t *world = &theWorld;
     clpos_t pos = obj->pos, oldpos = pos;
 
-    LIMIT(pos.cx, 0, World.cwidth - 1);
-    LIMIT(pos.cy, 0, World.cheight - 1);
+    LIMIT(pos.cx, 0, world->cwidth - 1);
+    LIMIT(pos.cy, 0, world->cheight - 1);
     if (pos.cx != oldpos.cx || pos.cy != oldpos.cy)
         Object_position_set_clpos(obj, pos);
 }

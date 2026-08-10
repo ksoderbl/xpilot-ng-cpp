@@ -64,8 +64,10 @@ void tuner_ballmass(void)
 
 void tuner_maxrobots(void)
 {
+    world_t *world = &theWorld;
+
     if (options.maxRobots < 0)
-        options.maxRobots = Num_bases();
+        options.maxRobots = Num_bases(world);
 
     if (options.maxRobots < options.minRobots)
         options.minRobots = options.maxRobots;
@@ -126,7 +128,7 @@ void tuner_playerstartsshielded(void)
 
 void tuner_worldlives(void)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
 
     if (options.worldLives < 0)
         options.worldLives = 0;
@@ -148,14 +150,15 @@ void tuner_cannonsmartness(void)
 
 void tuner_teamcannons(void)
 {
+    world_t *world = &theWorld;
     int i;
     int team;
 
     if (options.teamCannons)
     {
-        for (i = 0; i < Num_cannons(); i++)
+        for (i = 0; i < Num_cannons(world); i++)
         {
-            cannon_t *cannon = Cannon_by_index(i);
+            cannon_t *cannon = Cannon_by_index(world, i);
 
             team = Find_closest_team(cannon->pos);
             if (team == TEAM_NOT_SET)
@@ -165,8 +168,8 @@ void tuner_teamcannons(void)
     }
     else
     {
-        for (i = 0; i < Num_cannons(); i++)
-            Cannon_by_index(i)->team = TEAM_NOT_SET;
+        for (i = 0; i < Num_cannons(world); i++)
+            Cannon_by_index(world, i)->team = TEAM_NOT_SET;
     }
 }
 
@@ -184,14 +187,15 @@ void tuner_maxcannonshotlife(void)
 
 void tuner_wormhole_stable_ticks(void)
 {
+    world_t *world = &theWorld;
     int i;
 
     if (options.wormholeStableTicks < 1.0)
         options.wormholeStableTicks = 1.0;
 
     /* Make sure all wormholes get a new destination */
-    for (i = 0; i < Num_wormholes(); i++)
-        Wormhole_by_index(i)->countdown = 0.0;
+    for (i = 0; i < Num_wormholes(world); i++)
+        Wormhole_by_index(world, i)->countdown = 0.0;
 }
 
 void tuner_modifiers(void)
@@ -214,7 +218,7 @@ void tuner_gameduration(void)
 
 void tuner_racelaps(void)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
 
     if (Timing(world))
     {
@@ -226,11 +230,12 @@ void tuner_racelaps(void)
 
 void tuner_allowalliances(void)
 {
-    world_t *world = &World;
-    if (Team_play(world))
-        CLR_BIT(World.rules.mode, ALLIANCES);
+    world_t *world = &theWorld;
 
-    if (!BIT(World.rules.mode, ALLIANCES) && NumAlliances > 0)
+    if (Team_play(world))
+        CLR_BIT(world->rules.mode, ALLIANCES);
+
+    if (!BIT(world->rules.mode, ALLIANCES) && NumAlliances > 0)
         Dissolve_all_alliances();
 }
 

@@ -135,7 +135,7 @@ void Add_Score(Player *pl, double score)
 void Handle_Scoring(scoretype_t st, Player *killer, Player *victim,
                     void *extra, const char *somemsg)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     double sc = 0.0, sc2 = 0.0, factor = 0.0;
     int i_tank_owner = 0, j = 0;
     Player *true_killer;
@@ -444,9 +444,9 @@ void Handle_Scoring(scoretype_t st, Player *killer, Player *victim,
         }
         if (somebody)
         {
-            for (j = 0; j < Num_targets(); j++)
+            for (j = 0; j < Num_targets(world); j++)
             {
-                target_t *t = Target_by_index(j);
+                target_t *t = Target_by_index(world, j);
 
                 if (t->team == targ->team)
                 {
@@ -541,8 +541,8 @@ void Handle_Scoring(scoretype_t st, Player *killer, Player *victim,
         }
 
         treasure->destroyed++;
-        World.teams[treasure->team].TreasuresLeft--;
-        World.teams[killer->team].TreasuresDestroyed++;
+        world->teams[treasure->team].TreasuresLeft--;
+        world->teams[killer->team].TreasuresDestroyed++;
 
         sc = 3 * Rate(win_score, lose_score);
         por = (sc * lose_team_members) / (2 * win_team_members + 1);

@@ -249,28 +249,29 @@ static inline void Set_laser_modifier(modifiers_t *mods, int value)
  */
 int Mods_set(modifiers_t *mods, modifier_t modifier, int val)
 {
+    world_t *world = &theWorld;
     bool allow = false;
 
     if (val == 0)
         allow = true;
     else if (modifier == ModsNuclear)
     {
-        if (BIT(World.rules.mode, ALLOW_NUKES))
+        if (BIT(world->rules.mode, ALLOW_NUKES))
             allow = true;
     }
     else if (modifier == ModsCluster)
     {
-        if (BIT(World.rules.mode, ALLOW_CLUSTERS))
+        if (BIT(world->rules.mode, ALLOW_CLUSTERS))
             allow = true;
     }
     else if (modifier == ModsLaser)
     {
-        if (BIT(World.rules.mode, ALLOW_LASER_MODIFIERS))
+        if (BIT(world->rules.mode, ALLOW_LASER_MODIFIERS))
             allow = true;
     }
     else
     {
-        if (BIT(World.rules.mode, ALLOW_MODIFIERS))
+        if (BIT(world->rules.mode, ALLOW_MODIFIERS))
             allow = true;
     }
 
@@ -465,13 +466,15 @@ std::string Mods_to_string2(modifiers_t mods)
 
 void Mods_filter(modifiers_t *mods)
 {
-    if (!BIT(World.rules.mode, ALLOW_NUKES))
+    world_t *world = &theWorld;
+
+    if (!BIT(world->rules.mode, ALLOW_NUKES))
         Mods_set(mods, ModsNuclear, 0);
 
-    if (!BIT(World.rules.mode, ALLOW_CLUSTERS))
+    if (!BIT(world->rules.mode, ALLOW_CLUSTERS))
         Mods_set(mods, ModsCluster, 0);
 
-    if (!BIT(World.rules.mode, ALLOW_MODIFIERS))
+    if (!BIT(world->rules.mode, ALLOW_MODIFIERS))
     {
         Mods_set(mods, ModsImplosion, 0);
         Mods_set(mods, ModsVelocity, 0);
@@ -480,7 +483,7 @@ void Mods_filter(modifiers_t *mods)
         Mods_set(mods, ModsPower, 0);
     }
 
-    if (!BIT(World.rules.mode, ALLOW_LASER_MODIFIERS))
+    if (!BIT(world->rules.mode, ALLOW_LASER_MODIFIERS))
         Mods_set(mods, ModsLaser, 0);
 }
 

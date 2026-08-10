@@ -139,10 +139,11 @@ static inline double Cannon_get_shot_speed(cannon_t *cannon)
 
 static inline cannon_t *Cannon_by_id(int id)
 {
+    world_t *world = &theWorld;
     int ind;
 
     if (id < MIN_CANNON_ID || id > MAX_CANNON_ID)
         return nullptr;
     ind = id - MIN_CANNON_ID;
-    return Cannon_by_index(ind);
+    return Cannon_by_index(world, ind);
 }

@@ -252,7 +252,7 @@ static void Feature_init(Connection *connp)
  */
 static int Init_setup(void)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     size_t size;
     uint8_t *mapdata;
 
@@ -1124,7 +1124,7 @@ static void LegalizeHost(char *string)
  */
 static int Handle_login(Connection *connp, char *errmsg, size_t errsize)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     Player *pl;
     int i, conn_bit;
     const char sender[] = "[*Server notice*]";
@@ -1205,7 +1205,7 @@ static int Handle_login(Connection *connp, char *errmsg, size_t errsize)
         Rank_get_saved_score(pl);
         if (pl->team != TEAM_NOT_SET && pl->home_base != nullptr)
         {
-            team_t *teamp = Team_by_index(pl->team);
+            team_t *teamp = Team_by_index(world, pl->team);
 
             teamp->NumMembers++;
         }
@@ -1338,9 +1338,9 @@ static int Handle_login(Connection *connp, char *errmsg, size_t errsize)
     }
 
     conn_bit = (1 << connp->ind);
-    for (i = 0; i < Num_cannons(); i++)
+    for (i = 0; i < Num_cannons(world); i++)
     {
-        cannon_t *cannon = Cannon_by_index(i);
+        cannon_t *cannon = Cannon_by_index(world, i);
         /*
          * The client assumes at startup that all cannons are active.
          */
@@ -1349,9 +1349,9 @@ static int Handle_login(Connection *connp, char *errmsg, size_t errsize)
         else
             CLR_BIT(cannon->conn_mask, conn_bit);
     }
-    for (i = 0; i < Num_fuels(); i++)
+    for (i = 0; i < Num_fuels(world); i++)
     {
-        fuel_t *fs = Fuel_by_index(i);
+        fuel_t *fs = Fuel_by_index(world, i);
         /*
          * The client assumes at startup that all fuelstations are filled.
          */
@@ -1360,9 +1360,9 @@ static int Handle_login(Connection *connp, char *errmsg, size_t errsize)
         else
             CLR_BIT(fs->conn_mask, conn_bit);
     }
-    for (i = 0; i < Num_targets(); i++)
+    for (i = 0; i < Num_targets(world); i++)
     {
-        target_t *targ = Target_by_index(i);
+        target_t *targ = Target_by_index(world, i);
         /*
          * The client assumes at startup that all targets are not damaged.
          */
@@ -1851,6 +1851,7 @@ int Send_score(Connection *connp, int id, double score,
  */
 int Send_timing(Connection *connp, int id, int check, int round)
 {
+    world_t *world = &theWorld;
     int num_checks = OLD_MAX_CHECKS;
 
     if (!BIT(connp->state, CONN_PLAYING | CONN_READY))
@@ -1860,7 +1861,7 @@ int Send_timing(Connection *connp, int id, int check, int round)
         return 0;
     }
     if (is_polygon_map)
-        num_checks = Num_checks();
+        num_checks = Num_checks(world);
     return Packet_printf(&connp->c, "%c%hd%hu", PKT_TIMING,
                          id, round * num_checks + check);
 }
@@ -2685,6 +2686,7 @@ static int Receive_undefined(Connection *connp)
 
 static int Receive_ack_cannon(Connection *connp)
 {
+    world_t *world = &theWorld;
     long loops_ack;
     uint8_t ch;
     int n;
@@ -2698,12 +2700,12 @@ static int Receive_ack_cannon(Connection *connp)
             Destroy_connection(connp, "read error");
         return n;
     }
-    if (num >= Num_cannons())
+    if (num >= Num_cannons(world))
     {
         Destroy_connection(connp, "bad cannon ack");
         return -1;
     }
-    cannon = Cannon_by_index(num);
+    cannon = Cannon_by_index(world, num);
     if (loops_ack > cannon->last_change)
         SET_BIT(cannon->conn_mask, 1 << connp->ind);
 
@@ -2712,6 +2714,7 @@ static int Receive_ack_cannon(Connection *connp)
 
 static int Receive_ack_fuel(Connection *connp)
 {
+    world_t *world = &theWorld;
     long loops_ack;
     uint8_t ch;
     int n;
@@ -2725,12 +2728,12 @@ static int Receive_ack_fuel(Connection *connp)
             Destroy_connection(connp, "read error");
         return n;
     }
-    if (num >= Num_fuels())
+    if (num >= Num_fuels(world))
     {
         Destroy_connection(connp, "bad fuel ack");
         return -1;
     }
-    fs = Fuel_by_index(num);
+    fs = Fuel_by_index(world, num);
     if (loops_ack > fs->last_change)
         SET_BIT(fs->conn_mask, 1 << connp->ind);
     return 1;
@@ -2738,6 +2741,7 @@ static int Receive_ack_fuel(Connection *connp)
 
 static int Receive_ack_target(Connection *connp)
 {
+    world_t *world = &theWorld;
     long loops_ack;
     uint8_t ch;
     int n;
@@ -2751,7 +2755,7 @@ static int Receive_ack_target(Connection *connp)
             Destroy_connection(connp, "read error");
         return n;
     }
-    if (num >= Num_targets())
+    if (num >= Num_targets(world))
     {
         Destroy_connection(connp, "bad target ack");
         return -1;
@@ -2768,7 +2772,7 @@ static int Receive_ack_target(Connection *connp)
      * destroyed targets could have been displayed with
      * a diagonal cross through them.
      */
-    targ = Target_by_index(num);
+    targ = Target_by_index(world, num);
     if (loops_ack > targ->last_change)
     {
         SET_BIT(targ->conn_mask, 1 << connp->ind);

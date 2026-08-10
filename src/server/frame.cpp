@@ -164,15 +164,16 @@ static void debris_end(Connection *conn)
 
 static void fastshot_store(int cx, int cy, int color, int offset)
 {
+    world_t *world = &theWorld;
     int xf = CLICK_TO_PIXEL(cx),
         yf = CLICK_TO_PIXEL(cy);
     int i;
 
     if (xf < 0)
-        xf += World.width;
+        xf += world->width;
 
     if (yf < 0)
-        yf += World.height;
+        yf += world->height;
 
     if ((unsigned)xf >= (unsigned)view_width || (unsigned)yf >= (unsigned)view_height)
         /*
@@ -207,16 +208,17 @@ static void fastshot_store(int cx, int cy, int color, int offset)
 
 static void debris_store(int cx, int cy, int color)
 {
+    world_t *world = &theWorld;
     int xf = CLICK_TO_PIXEL(cx),
         yf = CLICK_TO_PIXEL(cy);
     int i;
     int offset = 0;
 
     if (xf < 0)
-        xf += World.width;
+        xf += world->width;
 
     if (yf < 0)
-        yf += World.height;
+        yf += world->height;
 
     if ((unsigned)xf >= (unsigned)view_width || (unsigned)yf >= (unsigned)view_height)
         /*
@@ -265,6 +267,7 @@ static void Frame_radar_buffer_add(clpos_t pos, int s)
 
 static void Frame_radar_buffer_send(Connection *conn, Player *pl)
 {
+    world_t *world = &theWorld;
     int i, dest, tmp;
     radar_t *p;
     const int radar_width = 256;
@@ -272,7 +275,7 @@ static void Frame_radar_buffer_send(Connection *conn, Player *pl)
     std::vector<shuffle_t> radarShuffleVector;
     size_t shuffle_bufsize;
 
-    radar_height = (radar_width * World.height) / World.width;
+    radar_height = (radar_width * world->height) / world->width;
 
     int num_radar = radarVector.size();
     if (num_radar > MIN(256, MAX_SHUFFLE_INDEX))
@@ -299,10 +302,10 @@ static void Frame_radar_buffer_send(Connection *conn, Player *pl)
         for (i = 0; i < num_radar; i++)
         {
             p = &radarVector[radarShuffleVector[i]];
-            radar_x = (radar_width * p->x) / World.width;
-            radar_y = (radar_height * p->y) / World.height;
-            send_x = (World.width * radar_x) / radar_width;
-            send_y = (World.height * radar_y) / radar_height;
+            radar_x = (radar_width * p->x) / world->width;
+            radar_y = (radar_height * p->y) / world->height;
+            send_x = (world->width * radar_x) / radar_width;
+            send_y = (world->height * radar_y) / radar_height;
             Send_radar(conn, send_x, send_y, p->size);
         }
     }
@@ -317,8 +320,8 @@ static void Frame_radar_buffer_send(Connection *conn, Player *pl)
         for (i = 0; i < num_radar; i++)
         {
             p = &radarVector[radarShuffleVector[i]];
-            radar_x = (radar_width * p->x) / World.width;
-            radar_y = (radar_height * p->y) / World.height;
+            radar_x = (radar_width * p->x) / world->width;
+            radar_y = (radar_height * p->y) / world->height;
             if (radar_y >= 1024)
                 continue;
             buf[buf_index++] = (uint8_t)(radar_x);
@@ -344,7 +347,7 @@ static void Frame_radar_buffer_free(void)
 
 static int Frame_status(Connection *conn, Player *pl)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     static char modsstr[MAX_CHARS];
     int n, lock_ind, lock_id = NO_ID, lock_dist = 0, lock_dir = 0;
     int showautopilot;
@@ -367,7 +370,7 @@ static int Frame_status(Connection *conn, Player *pl)
         lock_id = pl->lock.pl_id;
         lock_ind = GetInd(lock_id);
 
-        if ((!BIT(World.rules.mode, LIMITED_VISIBILITY) || pl->lock.distance <= pl->sensor_range) &&
+        if ((!BIT(world->rules.mode, LIMITED_VISIBILITY) || pl->lock.distance <= pl->sensor_range) &&
             (pl->visibility[lock_ind].canSee ||
              Player_owns_tank(pl, lock_pl) ||
              Players_are_teammates(pl, lock_pl) ||
@@ -430,6 +433,7 @@ static int Frame_status(Connection *conn, Player *pl)
 
 static void Frame_map(Connection *conn, Player *pl)
 {
+    world_t *world = &theWorld;
     int i, k, conn_bit = (1 << conn->ind);
     const int fuel_packet_size = 5;
     const int cannon_packet_size = 5;
@@ -440,13 +444,13 @@ static void Frame_map(Connection *conn, Player *pl)
     packet_count = 0;
     max_packet = MAX(5, bytes_left / target_packet_size);
     i = MAX(0, pl->last_target_update);
-    for (k = 0; k < Num_targets(); k++)
+    for (k = 0; k < Num_targets(world); k++)
     {
         target_t *targ;
 
-        if (++i >= Num_targets())
+        if (++i >= Num_targets(world))
             i = 0;
-        targ = Target_by_index(i);
+        targ = Target_by_index(world, i);
         if (BIT(targ->update_mask, conn_bit) ||
             (BIT(targ->conn_mask, conn_bit) == 0 && clpos_inview(cv, targ->pos)))
         {
@@ -461,13 +465,13 @@ static void Frame_map(Connection *conn, Player *pl)
     packet_count = 0;
     max_packet = MAX(5, bytes_left / cannon_packet_size);
     i = MAX(0, pl->last_cannon_update);
-    for (k = 0; k < Num_cannons(); k++)
+    for (k = 0; k < Num_cannons(world); k++)
     {
         cannon_t *cannon;
 
-        if (++i >= Num_cannons())
+        if (++i >= Num_cannons(world))
             i = 0;
-        cannon = Cannon_by_index(i);
+        cannon = Cannon_by_index(world, i);
         if (clpos_inview(cv, cannon->pos))
         {
             if (BIT(cannon->conn_mask, conn_bit) == 0)
@@ -484,19 +488,19 @@ static void Frame_map(Connection *conn, Player *pl)
     packet_count = 0;
     max_packet = MAX(5, bytes_left / fuel_packet_size);
     i = MAX(0, pl->last_fuel_update);
-    for (k = 0; k < Num_fuels(); k++)
+    for (k = 0; k < Num_fuels(world); k++)
     {
         fuel_t *fs;
 
-        if (++i >= Num_fuels())
+        if (++i >= Num_fuels(world))
             i = 0;
 
-        fs = Fuel_by_index(i);
+        fs = Fuel_by_index(world, i);
         if (BIT(fs->conn_mask, conn_bit) == 0)
         {
-            if ((CENTER_XCLICK(fs->pos.cx - pl->pos.cx) <
+            if ((CENTER_XCLICK(world, fs->pos.cx - pl->pos.cx) <
                  (view_width << CLICK_SHIFT) + BLOCK_CLICKS) &&
-                (CENTER_YCLICK(fs->pos.cy - pl->pos.cy) <
+                (CENTER_YCLICK(world, fs->pos.cy - pl->pos.cy) <
                  (view_height << CLICK_SHIFT) + BLOCK_CLICKS))
             {
                 Send_fuel(conn, i, fs->fuel);
@@ -596,7 +600,7 @@ static void Frame_shuffle(void)
 
 static void Frame_shots(Connection *conn, Player *pl)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     clpos_t pos;
     int ldir = 0, i, k, color, fuzz = 0, teamshot, len, obj_count;
     object_t *shot, **obj_list;
@@ -838,19 +842,20 @@ static void Frame_shots(Connection *conn, Player *pl)
 
 static void Frame_ships(Connection *conn, Player *pl)
 {
+    world_t *world = &theWorld;
     int i, k;
 
-    for (i = 0; i < Num_ecms(); i++)
+    for (i = 0; i < Num_ecms(world); i++)
     {
-        ecm_t *ecm = Ecm_by_index(i);
+        ecm_t *ecm = Ecm_by_index(world, i);
 
         if (clpos_inview(cv, ecm->pos))
             Send_ecm(conn, ecm->pos, (int)ecm->size);
     }
 
-    for (i = 0; i < Num_transporters(); i++)
+    for (i = 0; i < Num_transporters(world); i++)
     {
-        transporter_t *trans = Transporter_by_index(i);
+        transporter_t *trans = Transporter_by_index(world, i);
         Player *victim = Player_by_id(trans->victim_id);
         Player *tpl = Player_by_id(trans->id);
         clpos_t pos = (tpl ? tpl->pos : trans->pos);
@@ -863,9 +868,9 @@ static void Frame_ships(Connection *conn, Player *pl)
             Send_trans(conn, victim->pos, pos);
     }
 
-    for (i = 0; i < Num_cannons(); i++)
+    for (i = 0; i < Num_cannons(world); i++)
     {
-        cannon_t *cannon = Cannon_by_index(i);
+        cannon_t *cannon = Cannon_by_index(world, i);
 
         if (cannon->tractor_count > 0)
         {
@@ -947,7 +952,7 @@ static void Frame_ships(Connection *conn, Player *pl)
 
         if (Player_is_refueling(pl_i))
         {
-            fuel_t *fs = Fuel_by_index(pl_i->fs);
+            fuel_t *fs = Fuel_by_index(world, pl_i->fs);
 
             if (clpos_inview(cv, fs->pos))
                 Send_refuel(conn, fs->pos, pl_i->pos);
@@ -955,7 +960,7 @@ static void Frame_ships(Connection *conn, Player *pl)
 
         if (Player_is_repairing(pl_i))
         {
-            target_t *targ = Target_by_index(pl_i->repair_target);
+            target_t *targ = Target_by_index(world, pl_i->repair_target);
 
             if (clpos_inview(cv, targ->pos))
                 /* same packet as refuel */
@@ -989,7 +994,7 @@ static void Frame_ships(Connection *conn, Player *pl)
 
 static void Frame_radar(Connection *conn, Player *pl)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     int i, k, mask, shownuke, size;
     object_t *shot;
     clpos_t pos;
@@ -1079,7 +1084,7 @@ static void Frame_radar(Connection *conn, Player *pl)
                 || (!Players_are_teammates(pl_i, pl) && !Players_are_allies(pl, pl_i) && !Player_owns_tank(pl, pl_i) && (!options.playersOnRadar || !pl->visibility[i].canSee)))
                 continue;
             pos = pl_i->pos;
-            if (BIT(World.rules.mode, LIMITED_VISIBILITY) &&
+            if (BIT(world->rules.mode, LIMITED_VISIBILITY) &&
                 World_wrap_length(
                     world,
                     pl->pos.cx - pos.cx,
@@ -1114,7 +1119,7 @@ static void Frame_lose_item_state(Player *pl)
 
 static void Frame_parameters(Connection *conn, Player *pl)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
 
     Get_display_parameters(conn, &view_width, &view_height,
                            &debris_colors, &spark_rand);
@@ -1130,14 +1135,14 @@ static void Frame_parameters(Connection *conn, Player *pl)
     cv.realWorld = cv.unrealWorld;
     if (Wrap_play(world))
     {
-        if (cv.unrealWorld.cx < 0 && cv.unrealWorld.cx + view_cwidth < World.cwidth)
-            cv.unrealWorld.cx += World.cwidth;
-        else if (cv.unrealWorld.cx > 0 && cv.unrealWorld.cx + view_cwidth >= World.cwidth)
-            cv.realWorld.cx -= World.cwidth;
-        if (cv.unrealWorld.cy < 0 && cv.unrealWorld.cy + view_cheight < World.cheight)
-            cv.unrealWorld.cy += World.cheight;
-        else if (cv.unrealWorld.cy > 0 && cv.unrealWorld.cy + view_cheight >= World.cheight)
-            cv.realWorld.cy -= World.cheight;
+        if (cv.unrealWorld.cx < 0 && cv.unrealWorld.cx + view_cwidth < world->cwidth)
+            cv.unrealWorld.cx += world->cwidth;
+        else if (cv.unrealWorld.cx > 0 && cv.unrealWorld.cx + view_cwidth >= world->cwidth)
+            cv.realWorld.cx -= world->cwidth;
+        if (cv.unrealWorld.cy < 0 && cv.unrealWorld.cy + view_cheight < world->cheight)
+            cv.unrealWorld.cy += world->cheight;
+        else if (cv.unrealWorld.cy > 0 && cv.unrealWorld.cy + view_cheight >= world->cheight)
+            cv.realWorld.cy -= world->cheight;
     }
 }
 

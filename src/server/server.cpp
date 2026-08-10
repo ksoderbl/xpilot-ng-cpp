@@ -125,6 +125,8 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    world_t *world = &theWorld;
+
     /*
      * Make output always linebuffered.  By default pipes
      * and remote shells cause stdout to be fully buffered.
@@ -160,8 +162,8 @@ int main(int argc, char **argv)
     Walls_init2();
 
     /* Allocate memory for players, shots and messages */
-    Alloc_players(Num_bases() + MAX_PSEUDO_PLAYERS + MAX_SPECTATORS);
-    spectatorStart = Num_bases() + MAX_PSEUDO_PLAYERS;
+    Alloc_players(Num_bases(world) + MAX_PSEUDO_PLAYERS + MAX_SPECTATORS);
+    spectatorStart = Num_bases(world) + MAX_PSEUDO_PLAYERS;
     Alloc_shots(MAX_TOTAL_SHOTS);
     Alloc_cells();
 
@@ -441,6 +443,7 @@ void End_game(void)
  */
 int Pick_team(int pick_for_type)
 {
+    world_t *world = &theWorld;
     int i, least_players, num_available_teams = 0, playing_teams = 0;
     int losing_team;
     Player *pl;
@@ -454,7 +457,7 @@ int Pick_team(int pick_for_type)
 
     for (i = 0; i < MAX_TEAMS; i++)
     {
-        free_bases[i] = World.teams[i].NumBases - World.teams[i].NumMembers;
+        free_bases[i] = world->teams[i].NumBases - world->teams[i].NumMembers;
         playing[i] = 0;
         team_score[i] = 0;
         available_teams[i] = 0;
@@ -568,6 +571,7 @@ const char *Describe_game_status(void)
  */
 void Server_info(char *str, size_t max_size)
 {
+    world_t *world = &theWorld;
     int i, j, k;
     Player *pl, **order;
     char name[MAX_CHARS], lblstr[MAX_CHARS], msg[MSG_LEN];
@@ -587,8 +591,8 @@ void Server_info(char *str, size_t max_size)
              VERSION,
              Describe_game_status(),
              FPS,
-             World.name, World.author, World.width, World.height,
-             NumPlayers, Num_bases());
+             world->name, world->author, world->width, world->height,
+             NumPlayers, Num_bases(world));
 
     assert(strlen(str) < max_size);
 
@@ -644,6 +648,7 @@ void Server_info(char *str, size_t max_size)
 /* kps - is this useful??? */
 void Log_game(const char *heading)
 {
+    world_t *world = &theWorld;
     char str[1024];
     FILE *fp;
     char timenow[81];
@@ -659,7 +664,7 @@ void Log_game(const char *heading)
 
     snprintf(str, sizeof(str),
              "%-50.50s\t%10.10s@%-15.15s\tWorld: %-25.25s\t%10.10s\n",
-             timenow, Server.owner, Server.host, World.name, heading);
+             timenow, Server.owner, Server.host, world->name, heading);
 
     if ((fp = fopen(Conf_logfile(), "a")) == nullptr)
     {
@@ -673,7 +678,7 @@ void Log_game(const char *heading)
 
 void Game_Over(void)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     double maxsc, minsc;
     int i, win_team = TEAM_NOT_SET, lose_team = TEAM_NOT_SET;
     char msg[MSG_LEN];
@@ -908,6 +913,7 @@ bool Friction_area_hitfunc(group_t *groupptr, const move_t *move)
  */
 void Team_immunity_init(void)
 {
+    world_t *world = &theWorld;
     int groupInd = 0;
 
     // for (group = 0; group < num_groups; group++)
@@ -915,7 +921,7 @@ void Team_immunity_init(void)
     {
         if (gp.type == CANNON)
         {
-            cannon_t *cannon = Cannon_by_index(gp.mapobj_ind);
+            cannon_t *cannon = Cannon_by_index(world, gp.mapobj_ind);
 
             assert(cannon->group == groupInd);
             Cannon_set_hitmask(groupInd, cannon);

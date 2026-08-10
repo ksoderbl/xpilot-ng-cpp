@@ -59,7 +59,7 @@
 
 void Fire_laser(Player *pl)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     clpos_t m_gun, pos;
 
     if (frame_time <= pl->laser_time + options.laserRepeatRate - timeStep + 1e-3)
@@ -87,7 +87,7 @@ void Fire_laser(Player *pl)
 void Fire_general_laser(int id, int team, clpos_t pos, int dir,
                         modifiers_t mods)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     double life;
     pulseobject_t *pulse;
     Player *pl = Player_by_id(id);
@@ -149,7 +149,7 @@ void Fire_general_laser(int id, int team, clpos_t pos, int dir,
  */
 void Laser_pulse_hits_player2(Player *pl, pulseobject_t *pulse)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     Player *kp = Player_by_id(pulse->id);
     cannon_t *cannon = nullptr;
 

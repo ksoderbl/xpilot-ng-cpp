@@ -71,12 +71,12 @@ long CANNON_USE_ITEM = (ITEM_BIT_FUEL | ITEM_BIT_WIDEANGLE | ITEM_BIT_REARSHOT |
 
 void Cannon_update(bool tick)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     int i;
 
-    for (i = 0; i < Num_cannons(); i++)
+    for (i = 0; i < Num_cannons(world); i++)
     {
-        cannon_t *c = Cannon_by_index(i);
+        cannon_t *c = Cannon_by_index(world, i);
 
         if (c->dead_ticks > 0)
         {
@@ -100,7 +100,7 @@ void Cannon_update(bool tick)
             {
                 int item = (int)(rfrac() * NUM_ITEMS);
                 /* this gives the cannon an item about once every minute */
-                if (World.items[item].cannonprob > 0 && options.cannonItemProbMult > 0 && (int)(rfrac() * (60 * 12)) < (options.cannonItemProbMult * World.items[item].cannonprob))
+                if (world->items[item].cannonprob > 0 && options.cannonItemProbMult > 0 && (int)(rfrac() * (60 * 12)) < (options.cannonItemProbMult * world->items[item].cannonprob))
                     Cannon_add_item(c, item, (item == ITEM_FUEL ? ENERGY_PACK_FUEL : 1));
             }
         }
@@ -155,38 +155,42 @@ void Cannon_update(bool tick)
    fuel is given in 'units', but is stored in fuelpacks. */
 void Cannon_add_item(cannon_t *c, int item_type, int amount)
 {
+    world_t *world = &theWorld;
+
     switch (item_type)
     {
     case ITEM_TANK:
         c->item[ITEM_TANK] += amount;
-        LIMIT(c->item[ITEM_TANK], 0, World.items[ITEM_TANK].limit);
+        LIMIT(c->item[ITEM_TANK], 0, world->items[ITEM_TANK].limit);
     /* FALLTHROUGH */
     case ITEM_FUEL:
         c->item[ITEM_FUEL] += (int)(amount / ENERGY_PACK_FUEL + 0.5);
         LIMIT(c->item[ITEM_FUEL],
               0,
-              (int)(World.items[ITEM_FUEL].limit / ENERGY_PACK_FUEL + 0.5));
+              (int)(world->items[ITEM_FUEL].limit / ENERGY_PACK_FUEL + 0.5));
         break;
     default:
         c->item[item_type] += amount;
-        LIMIT(c->item[item_type], 0, World.items[item_type].limit);
+        LIMIT(c->item[item_type], 0, world->items[item_type].limit);
         break;
     }
 }
 
 static inline int Cannon_get_initial_item(cannon_t *c, Item_t i)
 {
+    world_t *world = &theWorld;
     int init_amount;
 
     init_amount = c->initial_items[i];
     if (init_amount < 0)
-        init_amount = World.items[i].cannon_initial;
+        init_amount = world->items[i].cannon_initial;
 
     return init_amount;
 }
 
 void Cannon_throw_items(cannon_t *c)
 {
+    world_t *world = &theWorld;
     int i, dir;
     itemobject_t *item;
     double velocity;
@@ -198,7 +202,7 @@ void Cannon_throw_items(cannon_t *c)
         c->item[i] -= Cannon_get_initial_item(c, (Item_t)i);
         while (c->item[i] > 0)
         {
-            int amount = World.items[i].max_per_pack - (int)(rfrac() * (1 + World.items[i].max_per_pack - World.items[i].min_per_pack));
+            int amount = world->items[i].max_per_pack - (int)(rfrac() * (1 + world->items[i].max_per_pack - world->items[i].min_per_pack));
             LIMIT(amount, 0, c->item[i]);
             if (rfrac() < (options.dropItemOnKillProb * CANNON_DROP_ITEM_PROB) && (item = ITEM_PTR(Object_allocate())) != nullptr)
             {
@@ -222,7 +226,7 @@ void Cannon_throw_items(cannon_t *c)
                 item->item_count = amount;
                 item->pl_range = ITEM_SIZE / 2;
                 item->pl_radius = ITEM_SIZE / 2;
-                World.items[i].num++;
+                world->items[i].num++;
                 Cell_add_object(OBJ_PTR(item));
             }
             c->item[i] -= amount;
@@ -303,7 +307,7 @@ static int Cannon_select_defense(cannon_t *c)
    modes 1 - 3 use progressively more accurate detection. */
 static int Cannon_in_danger(cannon_t *c)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     const int range = 4 * BLOCK_SZ;
     const uint32_t kill_shots = (KILLING_SHOTS) | OBJ_MINE_BIT | OBJ_SHOT_BIT | OBJ_PULSE_BIT | OBJ_SMART_SHOT_BIT | OBJ_HEAT_SHOT_BIT | OBJ_TORPEDO_BIT | OBJ_ASTEROID_BIT;
     object_t *shot, **obj_list;
@@ -422,7 +426,7 @@ static int Cannon_select_weapon(cannon_t *c)
  */
 static void Cannon_aim(cannon_t *c, int weapon, Player **pl_p, int *dir)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     double speed = Cannon_get_shot_speed(c);
     double range = Cannon_get_max_shot_life(c) * speed;
     double visualrange = (CANNON_DISTANCE + 2 * c->item[ITEM_SENSOR] * BLOCK_SZ);
@@ -575,7 +579,7 @@ static void Cannon_aim(cannon_t *c, int weapon, Player **pl_p, int *dir)
    have more than one possible use. */
 static void Cannon_fire(cannon_t *c, int weapon, Player *pl, int dir)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     modifiers_t mods;
     bool played = false;
     int i, smartness = Cannon_get_smartness(c);
@@ -813,7 +817,7 @@ void Object_hits_cannon2(object_t *obj, cannon_t *c)
 
 void Cannon_dies(cannon_t *c, Player *pl)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     vector_t zero_vel = {0.0, 0.0};
 
     World_remove_cannon(world, c);
@@ -853,7 +857,7 @@ void Cannon_dies(cannon_t *c, Player *pl)
 
 hitmask_t Cannon_hitmask(cannon_t *cannon)
 {
-    world_t *world = &World;
+    world_t *world = &theWorld;
     if (cannon->dead_ticks > 0)
         return ALL_BITS;
     if (Team_play(world) && options.teamImmunity)
@@ -922,8 +926,9 @@ void World_remove_cannon(world_t *world, cannon_t *cannon)
  */
 bool Cannon_hitfunc(group_t *gp, const move_t *move)
 {
+    world_t *world = &theWorld;
     const object_t *obj = move->obj;
-    cannon_t *cannon = Cannon_by_index(gp->mapobj_ind);
+    cannon_t *cannon = Cannon_by_index(world, gp->mapobj_ind);
     unsigned long cannon_mask;
 
     /* this should never happen if hitmasks are ok */
