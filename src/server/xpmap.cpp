@@ -1747,5 +1747,5 @@ void Xpmap_blocks_to_polygons(void)
     for (i = 0; i < Num_frictionAreas(world); i++)
         Xpmap_friction_area_to_polygon(i);
 
-    warn("Created %d polygons.\n", pdata.size());
+    /*printf("Created %d polygons.\n", num_polys);*/
 }

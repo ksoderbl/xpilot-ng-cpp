@@ -778,10 +778,9 @@ static inline bool is_noarg_option(const char *name)
 void Parse_options(int *argcp, char **argvp)
 {
     int arg_ind, num_remaining_args, num_servers = 0, i;
-    char path[PATH_MAX + 1];
 
-    Xpilotrc_get_filename(path, sizeof(path));
-    Xpilotrc_read(path);
+    std::string path = Xpilotrc_get_filename();
+    Xpilotrc_read(path.c_str());
 
     /*
      * Here we step trough argc - 1 arguments, leaving
@@ -883,21 +882,6 @@ const char *Get_keyHelpString(keys_t key)
                 *nl = '\0';
             return buf;
         }
-    }
-
-    return nullptr;
-}
-
-const char *Get_keyResourceString(keys_t key)
-{
-    int i;
-
-    for (i = 0; i < optionsVector.size(); i++)
-    {
-        xp_option_t *opt = Option_by_index(i);
-
-        if (opt->key == key)
-            return opt->name;
     }
 
     return nullptr;

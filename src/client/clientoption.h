@@ -123,7 +123,7 @@ struct xp_option
 
     /* string option stuff */
 
-#define XP_STRING_OPTION_DUMMY \
+#define XP_CONST_CHAR_STAR_OPTION_DUMMY \
     nullptr, nullptr, 0, nullptr, nullptr
 
     const char *str_defval;
@@ -170,7 +170,6 @@ extern void Get_command(const char *command);
 
 extern void Usage(void);
 extern const char *Get_keyHelpString(keys_t key);
-extern const char *Get_keyResourceString(keys_t key);
 extern const char *Option_value_to_string(xp_option_t *opt);
 
 void Store_option(xp_option_t *);
@@ -247,7 +246,7 @@ static inline xp_option_t *Option_by_index(int ind)
         XP_BOOL_OPTION_DUMMY,                      \
         XP_INT_OPTION_DUMMY,                       \
         XP_DOUBLE_OPTION_DUMMY,                    \
-        XP_STRING_OPTION_DUMMY,                    \
+        XP_CONST_CHAR_STAR_OPTION_DUMMY,           \
         XP_KEY_OPTION_DUMMY,                       \
     }
 
@@ -265,7 +264,7 @@ static inline xp_option_t *Option_by_index(int ind)
         setfunc,                                                   \
         XP_INT_OPTION_DUMMY,                                       \
         XP_DOUBLE_OPTION_DUMMY,                                    \
-        XP_STRING_OPTION_DUMMY,                                    \
+        XP_CONST_CHAR_STAR_OPTION_DUMMY,                           \
         XP_KEY_OPTION_DUMMY,                                       \
     }
 
@@ -285,7 +284,7 @@ static inline xp_option_t *Option_by_index(int ind)
         valptr,                                                                   \
         setfunc,                                                                  \
         XP_DOUBLE_OPTION_DUMMY,                                                   \
-        XP_STRING_OPTION_DUMMY,                                                   \
+        XP_CONST_CHAR_STAR_OPTION_DUMMY,                                          \
         XP_KEY_OPTION_DUMMY,                                                      \
     }
 
@@ -311,7 +310,7 @@ static inline xp_option_t *Option_by_index(int ind)
         maxval,                                                                      \
         valptr,                                                                      \
         setfunc,                                                                     \
-        XP_STRING_OPTION_DUMMY,                                                      \
+        XP_CONST_CHAR_STAR_OPTION_DUMMY,                                             \
         XP_KEY_OPTION_DUMMY,                                                         \
     }
 
@@ -347,7 +346,7 @@ static inline xp_option_t *Option_by_index(int ind)
         XP_BOOL_OPTION_DUMMY,                  \
         XP_INT_OPTION_DUMMY,                   \
         XP_DOUBLE_OPTION_DUMMY,                \
-        XP_STRING_OPTION_DUMMY,                \
+        XP_CONST_CHAR_STAR_OPTION_DUMMY,       \
         defval,                                \
         nullptr,                               \
         key,                                   \
