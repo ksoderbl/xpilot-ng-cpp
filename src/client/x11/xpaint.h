@@ -107,7 +107,7 @@ static inline void SET_FG(unsigned long fg)
         XSetForeground(dpy, gameGC, current_foreground = fg);
 }
 
-static inline void Check_name_string(other_t *other)
+static inline void Check_name_string(Other *other)
 {
     if (other && other->max_chars_in_names != maxCharsInNames)
     {

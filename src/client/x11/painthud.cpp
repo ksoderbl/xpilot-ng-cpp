@@ -310,7 +310,7 @@ static void Paint_lock(int hud_pos_x, int hud_pos_y)
 {
     const int BORDER = 2;
     int x, y;
-    other_t *target;
+    Other *target;
     char str[50];
     static int mapdiag = 0;
 

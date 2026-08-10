@@ -330,7 +330,7 @@ void Gui_paint_base(int x, int y, int id, int team, int type)
     int color = 0;
     const int BORDER = 4; /* in pixels */
     int size = 0, size2 = 0;
-    other_t *other;
+    Other *other;
     char s[3];
     char info[6];
     homebase_t *base = nullptr;
