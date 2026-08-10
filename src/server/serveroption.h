@@ -34,14 +34,23 @@ typedef struct options
 {
     std::vector<std::string> expandList; /* List of predefined settings. */
 
+    // How many robots should enter the game?
     int maxRobots;
     int minRobots;
     char *robotFile;
     int robotsTalk;
+
+    // Do robots leave at all?
     int robotsLeave;
+
+    // Max life per robot (0=off)
     int robotLeaveLife;
     int robotTeam;
+
+    // Restrict robots to robotTeam?
     bool restrictRobots;
+
+    // Allow only robots in robotTeam?
     bool reserveRobotTeam;
     int robotTicksPerSecond;
     double shotMass;
@@ -55,6 +64,8 @@ typedef struct options
     double pulseSpeed;
     double pulseLength;
     double pulseLife;
+
+    // Shots affected by gravity
     bool shotsGravity;
     bool shotHitFuelDrainUsesKineticEnergy;
     double ballCollisionFuelDrain;
@@ -63,67 +74,171 @@ typedef struct options
     double fireRepeatRate;
     double laserRepeatRate;
     bool Log;
+
+    // Let robots live even if there  are no players logged in
     bool RawMode;
+
+    // Don't quit even if there are no human players playing
     bool NoQuit;
+
+    // log robots coming and going
     bool logRobots;
     int framesPerSecond;
+
+    // Name of mapfile
     char *mapFileName;
+
+    // Raw map data
     char *mapData;
+
+    // Width of the universe
     int mapWidth;
+
+    // Height of the universe
     int mapHeight;
+
+    // Name of the universe
     char *mapName;
+
+    // Name of the creator
     char *mapAuthor;
+
+    // Contact port number
     int contactPort;
+
+    // Host name (for multihomed hosts)
     char *serverHost;
+
+    // Server greeting message to players
     char *greeting;
+
+    // Can players overrun other players?
     bool allowPlayerCrashes;
+
+    // Can players bounce other players?
     bool allowPlayerBounces;
+
+    // Can players kill each other?
     bool allowPlayerKilling;
+
+    // Can players use shields?
     bool allowShields;
+
+    // Players start with shields up?
     bool playerStartsShielded;
+
+    // Do shots bounce off walls?
     bool shotsWallBounce;
+
+    // Do balls bounce off walls?
     bool ballsWallBounce;
     bool ballCollisionDetaches;
+
+    // Do balls participate in colls.?
     bool ballCollisions;
+
+    // Do sparks push balls around?
     bool ballSparkCollisions;
+
+    // Do mines bounce off walls?
     bool minesWallBounce;
+
+    // Do items bounce off walls?
     bool itemsWallBounce;
+
+    // Do missiles bounce off walls?
     bool missilesWallBounce;
+
+    // Do sparks bounce off walls?
     bool sparksWallBounce;
+
+    // Do sparks bounce off walls?
     bool debrisWallBounce;
+
+    // Do asteroids bounce off walls?
     bool asteroidsWallBounce;
+
+    // Do laser pulses bounce off walls?
     bool pulsesWallBounce;
+
+    // Generate exhaust when cloaked?
     bool cloakedExhaust;
+
+    // Do ecms reprogram mines?
     bool ecmsReprogramMines;
+
+    // Do ecms reprogram robots?
     bool ecmsReprogramRobots;
+
+    // max object bounce speed
     double maxObjectWallBounceSpeed;
+
     double maxSparkWallBounceSpeed;
+
+    // max shielded bounce speed
     double maxShieldedWallBounceSpeed;
+
+    // max unshielded bounce speed
+
     double maxUnshieldedWallBounceSpeed;
+
+    // wall lowers speed if less than 1
     int playerWallBounceType;
     double playerWallBounceBrakeFactor;
     double playerBallBounceBrakeFactor;
     double playerWallFriction;
+
+    // wall lowers speed if less than 1
     double objectWallBounceBrakeFactor;
+
+    // reduce object life
     double objectWallBounceLifeFactor;
     double wallBounceDestroyItemProb;
     double afterburnerPowerMult;
 
+    // Is visibility limited?
     bool limitedVisibility;
+
+    // Minimum visibility when starting
     double minVisibilityDistance;
+
+    // Maximum visibility
     double maxVisibilityDistance;
+
+    // Are lives limited?
     bool limitedLives;
+
+    // If so, what's the max?
     int worldLives;
+
+    // Reset the world when round ends?
     bool endOfRoundReset;
+
+    // Last human to reset round for
     int resetOnHuman;
+
+    // Are alliances allowed?
     bool allowAlliances;
+
+    // Are changes in alliances broadcast?
     bool announceAlliances;
+
+    // Are teams allowed?
     bool teamPlay;
+
+    // Do fuelstations belong to teams?
     bool teamFuel;
+
+    // Do cannons belong to teams?
     bool teamCannons;
+
+    // Accuracy of cannonfire
     int cannonSmartness;
     bool cannonsPickupItems;
+
+    // Do cannons fire flak?
     bool cannonFlak;
+
     double cannonDeadTicks;
     double minCannonShotLife;
     double maxCannonShotLife;
@@ -132,31 +247,80 @@ typedef struct options
     bool keepShots;
     bool teamImmunity;
     bool tagGame;
+
+    // Is this a race?
     bool timing;
+
+    // Do we race with balls?
     bool ballrace;
+
+    // Need to be connected to ball to pass checkpoints?
     bool ballrace_connect;
+
+    // Do objects wrap when they cross the edge of the Universe?
     bool edgeWrap;
+
+    // Do objects bounce when they hit the edge of the Universe?
     bool edgeBounce;
+
+    // Give map an extra border?
     bool extraBorder;
+
+    // Where does gravity originate?
     ipos_t gravityPoint;
+
+    // If gravity is along a uniform line, at what angle is that line?
     double gravityAngle;
+
+    // Is gravity a point source?
     bool gravityPointSource;
+
+    // If so, is it clockwise?
     bool gravityClockwise;
+
+    // If not clockwise, anticlockwise?
     bool gravityAnticlockwise;
+
+    // Is gravity visible?
     bool gravityVisible;
+
+    // Are wormholes visible?
     bool wormholeVisible;
+
+    // Are itemconcentrators visible?
     bool itemConcentratorVisible;
+
+    // Are asteroid concentrators visible?
     bool asteroidConcentratorVisible;
     double wormholeStableTicks;
+
+    // Name of defaults file
     char *defaultsFileName;
+
+    // Name of password file
     char *passwordFileName;
+
+    // Name of motd file
+
+    // Name of score table file
+
+    // Name of admin message file
+
+    // Limit on admin message file size
+
+    // minimum smarts for a nuke
     int nukeMinSmarts;
+
+    // minimum number of mines for nuke
     int nukeMinMines;
+
+    // multiplier for damage from nuke cluster debris, reduces number of particles by similar amount
     double nukeClusterDamage;
     double nukeDebrisLife;
     double mineFuseTicks;
     double mineLife;
     double minMineSpeed;
+
     double missileLife;
     double baseMineRange;
     double mineShotDetonateDistance;
@@ -203,17 +367,36 @@ typedef struct options
     bool searchDomainForXPilot;
     char *denyHosts;
 
+    // Are players visible on radar?
     bool playersOnRadar;
+
+    // Are missiles visible on radar?
     bool missilesOnRadar;
+
+    // Are mines visible on radar?
     bool minesOnRadar;
+
+    // Are nuke weapons radar visible?
     bool nukesOnRadar;
+
+    // Are treasure balls radar visible?
     bool treasuresOnRadar;
+
+    // Are asteroids radar visible?
     bool asteroidsOnRadar;
     bool identifyMines;
     bool distinguishMissiles;
+
+    // Number of missiles per item.
     int maxMissilesPerPack;
+
+    // Number of mines per item.
     int maxMinesPerPack;
+
+    // Does team collide with target?
     bool targetTeamCollision;
+
+    // die if treasure is destroyed?
     bool treasureKillTeam;
     bool captureTheFlag;
     int specialBallTeam;
@@ -260,22 +443,42 @@ typedef struct options
     char *rankFileName;
     char *rankWebpageFileName;
     char *rankWebpageCSS;
+
+    // friction only affects ships
     double frictionSetting;
+
+    // friction in friction blocks
     double blockFriction;
+
+    // if yes, friction blocks are decor
+    // if no, friction blocks are space
     bool blockFrictionVisible;
+
     double coriolis;
+
+    // in blocks
     double checkpointRadius;
+
+    // how many laps per race
     int raceLaps;
+
+    // lock ply from other teams when dead?
     bool lockOtherTeam;
+
+    // destroy item on loseItem?
     bool loseItemDestroys;
+
+    // how many offensive and defensive items can player carry
     int maxOffensiveItems;
     int maxDefensiveItems;
 
+    // how many objects a player can see
     int maxVisibleObject;
     bool pLockServer;
     bool sound;
     int timerResolution;
 
+    // max. duration of each round
     int maxRoundTime;
     int roundsToPlay;
 
@@ -284,21 +487,32 @@ typedef struct options
     bool ignore20MaxFPS;
     char *password;
 
+    // Real name for robot
     char *robotUserName;
+
+    // Host name for robot
     char *robotHostName;
 
+    // Real name for tank
     char *tankUserName;
+
+    // Host name for tank
     char *tankHostName;
     double tankScoreDecrement;
 
+    // Are players immune to their own weapons?
     bool selfImmunity;
 
+    // What ship shape is used for players who do not define their own?
     char *defaultShipShape;
+
+    // What ship shape is used for tanks?
     char *tankShipShape;
 
     int clientPortStart;
     int clientPortEnd;
 
+    // Max. time you can stay paused for
     int maxPauseTime;
     int maxIdleTime;
     int maxClientsPerIP;
