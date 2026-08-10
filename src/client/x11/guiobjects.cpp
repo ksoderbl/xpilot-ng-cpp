@@ -829,7 +829,7 @@ static int Gui_calculate_ship_color(int id, Other *other)
 }
 
 static void Gui_paint_marking_lights(int id, int x, int y,
-                                     shipshape_t *ship, int dir)
+                                     ShipShape *ship, int dir)
 {
     int lcnt;
 
@@ -979,7 +979,7 @@ static void Set_drawstyle_dashed(int ship_color)
 }
 
 static int set_shipshape(int world_x, int world_y,
-                         int dir, shipshape_t *ship, XPoint *points)
+                         int dir, ShipShape *ship, XPoint *points)
 {
     int cnt;
     position_t ship_point_pos;
@@ -1005,7 +1005,7 @@ void Gui_paint_ship(int x, int y, int dir, int id, int cloak, int phased,
 {
     int cnt, ship_color;
     Other *other;
-    shipshape_t *ship;
+    ShipShape *ship;
     XPoint points[64];
     int ship_shape;
 

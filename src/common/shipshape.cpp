@@ -43,60 +43,70 @@
 #include "xperror.h"
 
 static int Get_shape_keyword(char *keyw);
-static int shape2wire(char *ship_shape_str, shipshape_t *ship);
-static void Rotate_ship(shipshape_t *ship);
+static int shape2wire(char *ship_shape_str, ShipShape *ship);
+static void Rotate_ship(ShipShape *ship);
 
-bool debugShapeParsing = false;
-bool verboseShapeParsing = false;
+bool debugShapeParsing = true;
+bool verboseShapeParsing = true;
 bool shapeLimits = true;
 extern bool is_server;
 
-static void Ship_set_point_ipos(shipshape_t *ship, int i, ipos_t pos)
+ShipShape::ShipShape()
+{
+    warn("ShipShape::ShipShape: Hello world!");
+}
+
+ShipShape::~ShipShape()
+{
+    warn("ShipShape::~ShipShape: Goodbye cruel world!");
+}
+
+static void Ship_set_point_ipos(ShipShape *ship, int i, ipos_t pos)
 {
     ship->pts[i][0] = ipos2clpos(pos);
 }
 
-static void Ship_set_engine_ipos(shipshape_t *ship, ipos_t pos)
+static void Ship_set_engine_ipos(ShipShape *ship, ipos_t pos)
 {
     ship->engine[0] = ipos2clpos(pos);
 }
 
-static void Ship_set_m_gun_ipos(shipshape_t *ship, ipos_t pos)
+static void Ship_set_m_gun_ipos(ShipShape *ship, ipos_t pos)
 {
     ship->m_gun[0] = ipos2clpos(pos);
 }
 
-static void Ship_set_l_gun_ipos(shipshape_t *ship, int i, ipos_t pos)
+static void Ship_set_l_gun_ipos(ShipShape *ship, int i, ipos_t pos)
 {
     ship->l_gun[i][0] = ipos2clpos(pos);
 }
 
-static void Ship_set_r_gun_ipos(shipshape_t *ship, int i, ipos_t pos)
+static void Ship_set_r_gun_ipos(ShipShape *ship, int i, ipos_t pos)
 {
     ship->r_gun[i][0] = ipos2clpos(pos);
 }
 
-static void Ship_set_l_rgun_ipos(shipshape_t *ship, int i, ipos_t pos)
+static void Ship_set_l_rgun_ipos(ShipShape *ship, int i, ipos_t pos)
 {
     ship->l_rgun[i][0] = ipos2clpos(pos);
 }
 
-static void Ship_set_r_rgun_ipos(shipshape_t *ship, int i, ipos_t pos)
+static void Ship_set_r_rgun_ipos(ShipShape *ship, int i, ipos_t pos)
 {
     ship->r_rgun[i][0] = ipos2clpos(pos);
 }
 
-static void Ship_set_l_light_ipos(shipshape_t *ship, int i, ipos_t pos)
+static void Ship_set_l_light_ipos(ShipShape *ship, int i, ipos_t pos)
 {
     ship->l_light[i][0] = ipos2clpos(pos);
 }
 
-static void Ship_set_r_light_ipos(shipshape_t *ship, int i, ipos_t pos)
+static void Ship_set_r_light_ipos(ShipShape *ship, int i, ipos_t pos)
 {
     ship->r_light[i][0] = ipos2clpos(pos);
 }
 
-static void Ship_set_m_rack_ipos(shipshape_t *ship, int i, ipos_t pos)
+static void Ship_set_m_rack_ipos(ShipShape *ship, int i, ipos_t pos)
 {
     ship->m_rack[i][0] = ipos2clpos(pos);
 }
@@ -138,7 +148,7 @@ void Rotate_position(position_t pt[ANGLE_RESOLUTION])
     }
 }
 
-void Rotate_ship(shipshape_t *ship)
+void Rotate_ship(ShipShape *ship)
 {
     int i;
 
@@ -168,9 +178,9 @@ void Rotate_ship(shipshape_t *ship)
  * This function should always succeed,
  * therefore no malloc()ed memory is used.
  */
-shipshape_t *Default_ship(void)
+ShipShape *Default_ship(void)
 {
-    static shipshape_t sh;
+    static ShipShape sh{};
     static clpos_t pts[6][ANGLE_RESOLUTION];
 
     if (!sh.num_points)
@@ -323,8 +333,10 @@ static void Grid_print(grid_t *grid_p)
 }
 #endif
 
-static int shape2wire(char *ship_shape_str, shipshape_t *ship)
+static int shape2wire(char *ship_shape_str, ShipShape *ship)
 {
+    warn("shape2wire: %s", ship_shape_str);
+
     grid_t grid;
     int i, j, x, y, dx, dy, max, shape_version = 0;
     ipos_t pt[MAX_SHIP_PTS2], in, old_in, engine, m_gun;
@@ -336,14 +348,11 @@ static int shape2wire(char *ship_shape_str, shipshape_t *ship)
     char keyw[20], buf[MSG_LEN];
     bool remove_edge = false;
 
-    memset(ship, 0, sizeof(shipshape_t));
-
     if (debugShapeParsing)
         warn("parsing shape: %s", ship_shape_str);
 
     for (str = ship_shape_str; (str = strchr(str, '(')) != nullptr;)
     {
-
         str++;
 
         if (shape_version == 0)
@@ -386,6 +395,9 @@ static int shape2wire(char *ship_shape_str, shipshape_t *ship)
             }
         }
         str += i;
+
+        warn("keyw = %s", keyw);
+        warn("ship->num_points = %d", ship->num_points);
 
         switch (Get_shape_keyword(keyw))
         {
@@ -1223,9 +1235,9 @@ static int shape2wire(char *ship_shape_str, shipshape_t *ship)
     return 0;
 }
 
-static shipshape_t *do_parse_shape(char *str)
+static ShipShape *do_parse_shape(char *str)
 {
-    shipshape_t *ship;
+    warn("do_parse_shape: str: %s", str);
 
     if (!str || !*str)
     {
@@ -1233,14 +1245,12 @@ static shipshape_t *do_parse_shape(char *str)
             warn("shape str not set");
         return Default_ship();
     }
-    if (!(ship = XMALLOC(shipshape_t, 1)))
-    {
-        error("No mem for ship shape");
-        return Default_ship();
-    }
+
+    ShipShape *ship = new ShipShape{};
     if (shape2wire(str, ship) != 0)
     {
-        free(ship);
+        delete ship;
+
         if (debugShapeParsing)
             warn("shape2wire failed");
         return Default_ship();
@@ -1251,7 +1261,7 @@ static shipshape_t *do_parse_shape(char *str)
     return (ship);
 }
 
-void Free_ship_shape(shipshape_t *ship)
+void Free_ship_shape(ShipShape *ship)
 {
     if (ship != nullptr && ship != Default_ship())
     {
@@ -1277,11 +1287,11 @@ void Free_ship_shape(shipshape_t *ship)
         if (ship->author)
             free(ship->author);
 #endif
-        free(ship);
+        delete ship;
     }
 }
 
-shipshape_t *Parse_shape_str(char *str)
+ShipShape *Parse_shape_str(char *str)
 {
     if (is_server)
         verboseShapeParsing = debugShapeParsing;
@@ -1291,7 +1301,7 @@ shipshape_t *Parse_shape_str(char *str)
     return do_parse_shape(str);
 }
 
-shipshape_t *Convert_shape_str(char *str)
+ShipShape *Convert_shape_str(char *str)
 {
     verboseShapeParsing = debugShapeParsing;
     shapeLimits = debugShapeParsing;
@@ -1303,7 +1313,7 @@ shipshape_t *Convert_shape_str(char *str)
  */
 int Validate_shape_str(char *str)
 {
-    shipshape_t *ship;
+    ShipShape *ship;
 
     verboseShapeParsing = true;
     shapeLimits = true;
@@ -1312,7 +1322,7 @@ int Validate_shape_str(char *str)
     return (ship && ship != Default_ship());
 }
 
-void Convert_ship_2_string(shipshape_t *ship, char *buf, char *ext,
+void Convert_ship_2_string(ShipShape *ship, char *buf, char *ext,
                            unsigned shape_version)
 {
     char tmp[MSG_LEN];
@@ -1596,7 +1606,7 @@ static int Get_shape_keyword(char *keyw)
     return (i);
 }
 
-int Calculate_shield_radius(shipshape_t *ship)
+int Calculate_shield_radius(ShipShape *ship)
 {
     int i;
     int radius2, max_radius = 0;
