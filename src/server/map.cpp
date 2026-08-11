@@ -263,10 +263,11 @@ static void alloc_old_checks(void)
 
     t.pos = pos;
 
-    for (i = 0; i < OLD_MAX_CHECKS; i++)
-        STORE(check_t, world->checks, world->NumChecks, world->MaxChecks, t);
+    // TODO: use std::vector
+    // for (i = 0; i < OLD_MAX_CHECKS; i++)
+    //     STORE(check_t, world->checks, world->NumChecks, world->MaxChecks, t);
 
-    SHRINK(check_t, world->checks, world->NumChecks, world->MaxChecks);
+    // SHRINK(check_t, world->checks, world->NumChecks, world->MaxChecks);
     world->NumChecks = 0;
 }
 
@@ -315,7 +316,8 @@ int World_place_check(world_t *world, clpos_t pos, int ind)
 
     ind = world->NumChecks;
     t.pos = pos;
-    STORE(check_t, world->checks, world->NumChecks, world->MaxChecks, t);
+    // TODO: Use std::vector
+    // STORE(check_t, world->checks, world->NumChecks, world->MaxChecks, t);
     return ind;
 }
 

@@ -26,12 +26,10 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#ifndef CLICK_H
-#define CLICK_H
+#pragma once
 
-#ifndef CONST_H
 #include "const.h"
-#endif
+#include "types.h"
 
 /*
  * The wall collision detection routines depend on repeatability
@@ -78,6 +76,29 @@ static inline blkpos_t Clpos_to_blkpos(clpos_t pos)
     return bpos;
 }
 
+/*
+ * Return the pixel position this click position is in.
+ */
+static inline position_t Clpos_to_position(clpos_t pos)
+{
+    position_t ppos;
+
+    ppos.x = CLICK_TO_FLOAT(pos.cx);
+    ppos.y = CLICK_TO_FLOAT(pos.cy);
+
+    return ppos;
+}
+
+// static inline blkpos_t Clicks_to_blkpos(int cx, int cy)
+// {
+//     blkpos_t bpos;
+
+//     bpos.bx = CLICK_TO_BLOCK(cx);
+//     bpos.by = CLICK_TO_BLOCK(cy);
+
+//     return bpos;
+// }
+
 #define BLOCK_CENTER(B) ((int)((B) * BLOCK_CLICKS) + BLOCK_CLICKS / 2)
 
 /* calculate the clpos of the center of a block */
@@ -91,4 +112,32 @@ static inline clpos_t Block_get_center_clpos(blkpos_t bpos)
     return pos;
 }
 
-#endif
+static inline clpos_t ipos2clpos(ipos_t pos)
+{
+    clpos_t pt;
+
+    pt.cx = PIXEL_TO_CLICK(pos.x);
+    pt.cy = PIXEL_TO_CLICK(pos.y);
+
+    return pt;
+}
+
+static inline position_t clpos2position(clpos_t pt)
+{
+    position_t pos;
+
+    pos.x = CLICK_TO_FLOAT(pt.cx);
+    pos.y = CLICK_TO_FLOAT(pt.cy);
+
+    return pos;
+}
+
+static inline clpos_t position2clpos(position_t pt)
+{
+    clpos_t pos;
+
+    pos.cx = FLOAT_TO_CLICK(pt.x);
+    pos.cy = FLOAT_TO_CLICK(pt.y);
+
+    return pos;
+}
