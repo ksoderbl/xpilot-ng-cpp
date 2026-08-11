@@ -69,107 +69,107 @@ static inline clpos_t My_rotate_clpos(clpos_t pos, int dir)
     return ret;
 }
 
-// void ShipShape::rotateShip(int dir)
-// {
-//     if (dir == currentDir)
-//     {
-//         // currentDirCacheHits++;
-//         // double cacheHitRatio = 100.0 * (double)currentDirCacheHits / (double)(currentDirCacheMisses + currentDirCacheHits);
-//         // warn("rotate, dir is already %d (cache hits %d/%d =  %f%%)",
-//         //      dir, currentDirCacheHits, (currentDirCacheMisses + currentDirCacheHits), cacheHitRatio);
+void ShipShape::rotateShip(int dir)
+{
+    if (dir == currentDir)
+    {
+        // currentDirCacheHits++;
+        // double cacheHitRatio = 100.0 * (double)currentDirCacheHits / (double)(currentDirCacheMisses + currentDirCacheHits);
+        // warn("rotate, dir is already %d (cache hits %d/%d =  %f%%)",
+        //      dir, currentDirCacheHits, (currentDirCacheMisses + currentDirCacheHits), cacheHitRatio);
 
-//         return;
-//     }
+        return;
+    }
 
-// clpos_t pos;
+    clpos_t pos;
 
-// // pts
-// points.clear();
-// for (int i = 0; i < this->num_points; i++)
-// {
-//     pos = this->pts[i][0];
-//     pos = My_rotate_clpos(pos, dir);
-//     points.push_back(pos);
-// }
+    // pts
+    points.clear();
+    for (int i = 0; i < this->num_points; i++)
+    {
+        pos = this->pts[i][0];
+        pos = My_rotate_clpos(pos, dir);
+        points.push_back(pos);
+    }
 
-// // engine
-// pos = this->engine[0];
-// engineClickPosition = My_rotate_clpos(pos, dir);
+    // engine
+    pos = this->engine[0];
+    engineClickPosition = My_rotate_clpos(pos, dir);
 
-// // main gun
-// pos = this->mainGun[0];
-// mainGunClickPosition = My_rotate_clpos(pos, dir);
+    // main gun
+    pos = this->mainGun[0];
+    mainGunClickPosition = My_rotate_clpos(pos, dir);
 
-// // left guns
-// leftGunClickPositions.clear();
-// for (int i = 0; i < this->num_l_gun; i++)
-// {
-//     pos = this->leftGuns[i][0];
-//     pos = My_rotate_clpos(pos, dir);
-//     leftGunClickPositions.push_back(pos);
-// }
+    // left guns
+    leftGunClickPositions.clear();
+    for (int i = 0; i < this->num_l_gun; i++)
+    {
+        pos = this->leftGuns[i][0];
+        pos = My_rotate_clpos(pos, dir);
+        leftGunClickPositions.push_back(pos);
+    }
 
-// // right guns
-// rightGunClickPositions.clear();
-// for (int i = 0; i < this->num_r_gun; i++)
-// {
-//     pos = this->rightGuns[i][0];
-//     pos = My_rotate_clpos(pos, dir);
-//     rightGunClickPositions.push_back(pos);
-// }
+    // right guns
+    rightGunClickPositions.clear();
+    for (int i = 0; i < this->num_r_gun; i++)
+    {
+        pos = this->rightGuns[i][0];
+        pos = My_rotate_clpos(pos, dir);
+        rightGunClickPositions.push_back(pos);
+    }
 
-// // left rear guns
-// leftRearGunClickPositions.clear();
-// for (int i = 0; i < this->num_l_rgun; i++)
-// {
-//     pos = this->leftRearGuns[i][0];
-//     pos = My_rotate_clpos(pos, dir);
-//     leftRearGunClickPositions.push_back(pos);
-// }
+    // left rear guns
+    leftRearGunClickPositions.clear();
+    for (int i = 0; i < this->num_l_rgun; i++)
+    {
+        pos = this->leftRearGuns[i][0];
+        pos = My_rotate_clpos(pos, dir);
+        leftRearGunClickPositions.push_back(pos);
+    }
 
-// // right rear guns
-// rightRearGunClickPositions.clear();
-// for (int i = 0; i < this->num_r_rgun; i++)
-// {
-//     pos = this->rightRearGuns[i][0];
-//     pos = My_rotate_clpos(pos, dir);
-//     rightRearGunClickPositions.push_back(pos);
-// }
+    // right rear guns
+    rightRearGunClickPositions.clear();
+    for (int i = 0; i < this->num_r_rgun; i++)
+    {
+        pos = this->rightRearGuns[i][0];
+        pos = My_rotate_clpos(pos, dir);
+        rightRearGunClickPositions.push_back(pos);
+    }
 
-// // left lights
-// leftLightClickPositions.clear();
-// for (int i = 0; i < this->num_l_light; i++)
-// {
-//     pos = this->leftLights[i][0];
-//     pos = My_rotate_clpos(pos, dir);
-//     leftLightClickPositions.push_back(pos);
-// }
+    // left lights
+    leftLightClickPositions.clear();
+    for (int i = 0; i < this->num_l_light; i++)
+    {
+        pos = this->leftLights[i][0];
+        pos = My_rotate_clpos(pos, dir);
+        leftLightClickPositions.push_back(pos);
+    }
 
-// // right lights
-// rightLightClickPositions.clear();
-// for (int i = 0; i < this->num_r_light; i++)
-// {
-//     pos = this->rightLights[i][0];
-//     pos = My_rotate_clpos(pos, dir);
-//     rightLightClickPositions.push_back(pos);
-// }
+    // right lights
+    rightLightClickPositions.clear();
+    for (int i = 0; i < this->num_r_light; i++)
+    {
+        pos = this->rightLights[i][0];
+        pos = My_rotate_clpos(pos, dir);
+        rightLightClickPositions.push_back(pos);
+    }
 
-// // missile racks
-// missileRackClickPositions.clear();
-// for (int i = 0; i < this->num_m_rack; i++)
-// {
-//     pos = this->missileRacks[i][0];
-//     pos = My_rotate_clpos(pos, dir);
-//     missileRackClickPositions.push_back(pos);
-// }
+    // missile racks
+    missileRackClickPositions.clear();
+    for (int i = 0; i < this->num_m_rack; i++)
+    {
+        pos = this->missileRacks[i][0];
+        pos = My_rotate_clpos(pos, dir);
+        missileRackClickPositions.push_back(pos);
+    }
 
-// currentDir = dir;
+    currentDir = dir;
 
-// currentDirCacheMisses++;
-// double cacheHitRatio = 100.0 * (double)currentDirCacheHits / (double)(currentDirCacheMisses + currentDirCacheHits);
-// warn("rotate, new dir is %d (cache hits %d/%d =  %f%%)",
-//      dir, currentDirCacheHits, (currentDirCacheMisses + currentDirCacheHits), cacheHitRatio);
-// }
+    currentDirCacheMisses++;
+    double cacheHitRatio = 100.0 * (double)currentDirCacheHits / (double)(currentDirCacheMisses + currentDirCacheHits);
+    warn("rotate, new dir is %d (cache hits %d/%d =  %f%%)",
+         dir, currentDirCacheHits, (currentDirCacheMisses + currentDirCacheHits), cacheHitRatio);
+}
 
 static void Ship_set_point_ipos(ShipShape *ship, int i, ipos_t pos)
 {

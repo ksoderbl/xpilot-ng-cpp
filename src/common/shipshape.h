@@ -59,76 +59,6 @@ public:
     ShipShape();
     ~ShipShape();
 
-    // std::vector<clpos_t> &getPoints(int dir)
-    // {
-    //     // warn("getPoints, dir %d", dir);
-    //     rotateShip(dir);
-    //     return points;
-    // }
-
-    // clpos_t getEngineClickPosition(int dir)
-    // {
-    //     rotateShip(dir);
-    //     return engineClickPosition;
-    // }
-    // clpos_t getMainGunClickPosition(int dir)
-    // {
-    //     rotateShip(dir);
-    //     return mainGunClickPosition;
-    // }
-    // std::vector<clpos_t> &getLeftGunClickPositions(int dir)
-    // {
-    //     rotateShip(dir);
-    //     return leftGunClickPositions;
-    // }
-    // std::vector<clpos_t> &getRightGunClickPositions(int dir)
-    // {
-    //     rotateShip(dir);
-    //     return rightGunClickPositions;
-    // }
-    // std::vector<clpos_t> &getLeftRearGunClickPositions(int dir)
-    // {
-    //     rotateShip(dir);
-    //     return leftRearGunClickPositions;
-    // }
-    // std::vector<clpos_t> &getRightRearGunClickPositions(int dir)
-    // {
-    //     rotateShip(dir);
-    //     return rightRearGunClickPositions;
-    // }
-    // std::vector<clpos_t> &getLeftLightClickPositions(int dir)
-    // {
-    //     rotateShip(dir);
-    //     return leftLightClickPositions;
-    // }
-    // std::vector<clpos_t> &getRightLightClickPositions(int dir)
-    // {
-    //     rotateShip(dir);
-    //     return rightLightClickPositions;
-    // }
-    // std::vector<clpos_t> &getMissileRackClickPositions(int dir)
-    // {
-    //     rotateShip(dir);
-    //     return missileRackClickPositions;
-    // }
-
-    // void rotateShip(int dir);
-
-    // std::vector<clpos_t> points;
-    // clpos_t engineClickPosition;
-    // clpos_t mainGunClickPosition;
-    // std::vector<clpos_t> leftGunClickPositions;
-    // std::vector<clpos_t> rightGunClickPositions;
-    // std::vector<clpos_t> leftRearGunClickPositions;
-    // std::vector<clpos_t> rightRearGunClickPositions;
-    // std::vector<clpos_t> leftLightClickPositions;
-    // std::vector<clpos_t> rightLightClickPositions;
-    // std::vector<clpos_t> missileRackClickPositions;
-
-    // int currentDir = -1; // current rotated direction
-    // int currentDirCacheHits = 0;
-    // int currentDirCacheMisses = 0;
-
     clpos_t *pts[MAX_SHIP_PTS2]; /* the shape rotated many ways */
     int num_points = 0;          /* total points in object */
     int num_orig_points = 0;     /* points before SSHACK */
@@ -157,6 +87,76 @@ public:
     char *name;
     char *author;
 #endif
+
+    std::vector<clpos_t> &getPoints(int dir)
+    {
+        // warn("getPoints, dir %d", dir);
+        rotateShip(dir);
+        return points;
+    }
+
+    clpos_t getEngineClickPosition(int dir)
+    {
+        rotateShip(dir);
+        return engineClickPosition;
+    }
+    clpos_t getMainGunClickPosition(int dir)
+    {
+        rotateShip(dir);
+        return mainGunClickPosition;
+    }
+    std::vector<clpos_t> &getLeftGunClickPositions(int dir)
+    {
+        rotateShip(dir);
+        return leftGunClickPositions;
+    }
+    std::vector<clpos_t> &getRightGunClickPositions(int dir)
+    {
+        rotateShip(dir);
+        return rightGunClickPositions;
+    }
+    std::vector<clpos_t> &getLeftRearGunClickPositions(int dir)
+    {
+        rotateShip(dir);
+        return leftRearGunClickPositions;
+    }
+    std::vector<clpos_t> &getRightRearGunClickPositions(int dir)
+    {
+        rotateShip(dir);
+        return rightRearGunClickPositions;
+    }
+    std::vector<clpos_t> &getLeftLightClickPositions(int dir)
+    {
+        rotateShip(dir);
+        return leftLightClickPositions;
+    }
+    std::vector<clpos_t> &getRightLightClickPositions(int dir)
+    {
+        rotateShip(dir);
+        return rightLightClickPositions;
+    }
+    std::vector<clpos_t> &getMissileRackClickPositions(int dir)
+    {
+        rotateShip(dir);
+        return missileRackClickPositions;
+    }
+
+    void rotateShip(int dir);
+
+    std::vector<clpos_t> points;
+    clpos_t engineClickPosition;
+    clpos_t mainGunClickPosition;
+    std::vector<clpos_t> leftGunClickPositions;
+    std::vector<clpos_t> rightGunClickPositions;
+    std::vector<clpos_t> leftRearGunClickPositions;
+    std::vector<clpos_t> rightRearGunClickPositions;
+    std::vector<clpos_t> leftLightClickPositions;
+    std::vector<clpos_t> rightLightClickPositions;
+    std::vector<clpos_t> missileRackClickPositions;
+
+    int currentDir = -1; // current rotated direction
+    int currentDirCacheHits = 0;
+    int currentDirCacheMisses = 0;
 };
 
 extern ShipShape *Default_ship(void);
