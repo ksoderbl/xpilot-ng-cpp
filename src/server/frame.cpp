@@ -882,13 +882,13 @@ static void Frame_ships(Connection *conn, Player *pl)
 
             if (clpos_inview(cv, t->pos))
             {
-                int j;
+                std::vector<clpos_t> &points = t->ship->getPoints(t->dir);
 
-                for (j = 0; j < 3; j++)
+                for (int j = 0; j < 3; j++)
                 {
                     clpos_t pts, pos;
 
-                    pts = Ship_get_point_clpos(t->ship, j, t->dir);
+                    pts = points[j];
                     pos.cx = t->pos.cx + pts.cx;
                     pos.cy = t->pos.cy + pts.cy;
                     Send_connector(conn, pos, cannon->pos, 1);

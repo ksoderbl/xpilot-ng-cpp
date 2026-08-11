@@ -165,10 +165,10 @@ void ShipShape::rotateShip(int dir)
 
     currentDir = dir;
 
-    currentDirCacheMisses++;
-    double cacheHitRatio = 100.0 * (double)currentDirCacheHits / (double)(currentDirCacheMisses + currentDirCacheHits);
-    warn("rotate, new dir is %d (cache hits %d/%d =  %f%%)",
-         dir, currentDirCacheHits, (currentDirCacheMisses + currentDirCacheHits), cacheHitRatio);
+    // currentDirCacheMisses++;
+    // double cacheHitRatio = 100.0 * (double)currentDirCacheHits / (double)(currentDirCacheMisses + currentDirCacheHits);
+    // warn("rotate, new dir is %d (cache hits %d/%d =  %f%%)",
+    //      dir, currentDirCacheHits, (currentDirCacheMisses + currentDirCacheHits), cacheHitRatio);
 }
 
 static void Ship_set_point_ipos(ShipShape *ship, int i, ipos_t pos)
@@ -1435,6 +1435,8 @@ int Validate_shape_str(char *str)
 void Convert_ship_2_string(ShipShape *ship, char *buf, char *ext,
                            unsigned shape_version)
 {
+    warn("Convert_ship_2_string!");
+
     char tmp[MSG_LEN];
     int i, buflen = 0, extlen, tmplen;
 
@@ -1446,15 +1448,17 @@ void Convert_ship_2_string(ShipShape *ship, char *buf, char *ext,
 
         strcpy(buf, "(SH:");
         buflen = strlen(&buf[0]);
+        std::vector<clpos_t> &points = ship->getPoints(0);
+        // for (i = 0; i < points.size() && i < MAX_SHIP_PTS; i++)
         for (i = 0; i < ship->num_orig_points && i < MAX_SHIP_PTS; i++)
         {
-            position_t pt = Ship_get_point_position(ship, i, 0);
+            position_t pt = clpos2position(points[i]);
 
             sprintf(&buf[buflen], " %d,%d", (int)pt.x, (int)pt.y);
             buflen += strlen(&buf[buflen]);
         }
-        engine = Ship_get_engine_position(ship, 0);
-        m_gun = Ship_get_m_gun_position(ship, 0);
+        engine = clpos2position(ship->getEngineClickPosition(0));
+        m_gun = clpos2position(ship->getMainGunClickPosition(0));
         sprintf(&buf[buflen], ")(EN: %d,%d)(MG: %d,%d)",
                 (int)engine.x, (int)engine.y,
                 (int)m_gun.x, (int)m_gun.y);
@@ -1475,9 +1479,10 @@ void Convert_ship_2_string(ShipShape *ship, char *buf, char *ext,
         {
             strcpy(&tmp[0], "(LG:");
             tmplen = strlen(&tmp[0]);
-            for (i = 0; i < ship->num_l_gun && i < MAX_GUN_PTS; i++)
+            std::vector<clpos_t> l_guns = ship->getLeftGunClickPositions(0);
+            for (i = 0; i < l_guns.size() && i < MAX_GUN_PTS; i++)
             {
-                position_t l_gun = Ship_get_l_gun_position(ship, i, 0);
+                position_t l_gun = clpos2position(l_guns[i]);
 
                 sprintf(&tmp[tmplen], " %d,%d",
                         (int)l_gun.x, (int)l_gun.y);
@@ -1500,9 +1505,10 @@ void Convert_ship_2_string(ShipShape *ship, char *buf, char *ext,
         {
             strcpy(&tmp[0], "(RG:");
             tmplen = strlen(&tmp[0]);
-            for (i = 0; i < ship->num_r_gun && i < MAX_GUN_PTS; i++)
+            std::vector<clpos_t> r_guns = ship->getRightGunClickPositions(0);
+            for (i = 0; i < r_guns.size() && i < MAX_GUN_PTS; i++)
             {
-                position_t r_gun = Ship_get_r_gun_position(ship, i, 0);
+                position_t r_gun = clpos2position(r_guns[i]);
 
                 sprintf(&tmp[tmplen], " %d,%d",
                         (int)r_gun.x, (int)r_gun.y);
@@ -1525,9 +1531,10 @@ void Convert_ship_2_string(ShipShape *ship, char *buf, char *ext,
         {
             strcpy(&tmp[0], "(LR:");
             tmplen = strlen(&tmp[0]);
-            for (i = 0; i < ship->num_l_rgun && i < MAX_GUN_PTS; i++)
+            std::vector<clpos_t> l_rguns = ship->getLeftRearGunClickPositions(0);
+            for (i = 0; i < l_rguns.size() && i < MAX_GUN_PTS; i++)
             {
-                position_t l_rgun = Ship_get_l_rgun_position(ship, i, 0);
+                position_t l_rgun = clpos2position(l_rguns[i]);
 
                 sprintf(&tmp[tmplen], " %d,%d",
                         (int)l_rgun.x, (int)l_rgun.y);
@@ -1550,9 +1557,10 @@ void Convert_ship_2_string(ShipShape *ship, char *buf, char *ext,
         {
             strcpy(&tmp[0], "(RR:");
             tmplen = strlen(&tmp[0]);
-            for (i = 0; i < ship->num_r_rgun && i < MAX_GUN_PTS; i++)
+            std::vector<clpos_t> r_rguns = ship->getRightRearGunClickPositions(0);
+            for (i = 0; i < r_rguns.size() && i < MAX_GUN_PTS; i++)
             {
-                position_t r_rgun = Ship_get_r_rgun_position(ship, i, 0);
+                position_t r_rgun = clpos2position(r_rguns[i]);
 
                 sprintf(&tmp[tmplen], " %d,%d",
                         (int)r_rgun.x, (int)r_rgun.y);
@@ -1575,9 +1583,10 @@ void Convert_ship_2_string(ShipShape *ship, char *buf, char *ext,
         {
             strcpy(&tmp[0], "(LL:");
             tmplen = strlen(&tmp[0]);
-            for (i = 0; i < ship->num_l_light && i < MAX_LIGHT_PTS; i++)
+            std::vector<clpos_t> l_lights = ship->getLeftLightClickPositions(0);
+            for (i = 0; i < l_lights.size() && i < MAX_LIGHT_PTS; i++)
             {
-                position_t l_light = Ship_get_l_light_position(ship, i, 0);
+                position_t l_light = clpos2position(l_lights[i]);
 
                 sprintf(&tmp[tmplen], " %d,%d",
                         (int)l_light.x, (int)l_light.y);
@@ -1600,9 +1609,10 @@ void Convert_ship_2_string(ShipShape *ship, char *buf, char *ext,
         {
             strcpy(&tmp[0], "(RL:");
             tmplen = strlen(&tmp[0]);
-            for (i = 0; i < ship->num_r_light && i < MAX_LIGHT_PTS; i++)
+            std::vector<clpos_t> r_lights = ship->getRightLightClickPositions(0);
+            for (i = 0; i < r_lights.size() && i < MAX_LIGHT_PTS; i++)
             {
-                position_t r_light = Ship_get_r_light_position(ship, i, 0);
+                position_t r_light = clpos2position(r_lights[i]);
 
                 sprintf(&tmp[tmplen], " %d,%d",
                         (int)r_light.x, (int)r_light.y);
@@ -1625,9 +1635,10 @@ void Convert_ship_2_string(ShipShape *ship, char *buf, char *ext,
         {
             strcpy(&tmp[0], "(MR:");
             tmplen = strlen(&tmp[0]);
-            for (i = 0; i < ship->num_m_rack && i < MAX_RACK_PTS; i++)
+            std::vector<clpos_t> m_racks = ship->getMissileRackClickPositions(0);
+            for (i = 0; i < m_racks.size() && i < MAX_RACK_PTS; i++)
             {
-                position_t m_rack = Ship_get_m_rack_position(ship, i, 0);
+                position_t m_rack = clpos2position(m_racks[i]);
 
                 sprintf(&tmp[tmplen], " %d,%d",
                         (int)m_rack.x, (int)m_rack.y);
@@ -1721,9 +1732,11 @@ int Calculate_shield_radius(ShipShape *ship)
     int i;
     int radius2, max_radius = 0;
 
-    for (i = 0; i < ship->num_points; i++)
+    std::vector<clpos_t> &points = ship->getPoints(0);
+
+    for (auto &pos : points)
     {
-        position_t pti = Ship_get_point_position(ship, i, 0);
+        position_t pti = clpos2position(pos);
         radius2 = (int)(sqr(pti.x) + sqr(pti.y));
         if (radius2 > max_radius)
             max_radius = radius2;

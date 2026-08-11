@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -24,6 +22,9 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
+
+#include <string>
+#include <vector>
 
 #include <cstdlib>
 #include <cstring>
@@ -62,7 +63,7 @@
 #include "wreckshape.h"
 #include "astershape.h"
 #include "guiobjects.h"
-// #include "pack.h"
+#include "clientpack.h"
 
 static bool texturedShips = false; /* Turned this off because the images drawn
                                     * don't match the actual shipshape used
@@ -835,9 +836,13 @@ static void Gui_paint_marking_lights(int id, int x, int y,
 
     if (((loopsSlow + id) & 0xF) == 0)
     {
-        for (lcnt = 0; lcnt < ship->num_l_light; lcnt++)
+        std::vector<clpos_t> &l_lights = ship->getLeftLightClickPositions(dir);
+
+        // for (lcnt = 0; lcnt < ship->num_l_light; lcnt++)
+        for (auto &pos : l_lights)
         {
-            position_t l_light = Ship_get_l_light_position(ship, lcnt, dir);
+            // position_t l_light = Ship_get_l_light_position(ship, lcnt, dir);
+            position_t l_light = clpos2position(pos);
             Rectangle_add(RED,
                           X(x + l_light.x) - 2,
                           Y(y + l_light.y) - 2,
@@ -856,10 +861,14 @@ static void Gui_paint_marking_lights(int id, int x, int y,
     }
     else if (((loopsSlow + id) & 0xF) == 2)
     {
-        for (lcnt = 0; lcnt < ship->num_r_light; lcnt++)
+        std::vector<clpos_t> &r_lights = ship->getRightLightClickPositions(dir);
+
+        // for (lcnt = 0; lcnt < ship->num_r_light; lcnt++)
+        for (auto &pos : r_lights)
         {
             int rightLightColor = maxColors > 4 ? 4 : BLUE;
-            position_t r_light = Ship_get_r_light_position(ship, lcnt, dir);
+            // position_t r_light = Ship_get_r_light_position(ship, lcnt, dir);
+            position_t r_light = clpos2position(pos);
             Rectangle_add(rightLightColor,
                           X(x + r_light.x) - 2,
                           Y(y + r_light.y) - 2,
@@ -927,8 +936,7 @@ static void Gui_paint_shields_deflectors(int x, int y, int radius, int shield,
 
 static void Set_drawstyle_dashed(int ship_color);
 
-static void Gui_paint_ship_cloaked(int ship_color, XPoint *points,
-                                   int point_count)
+static void Gui_paint_ship_cloaked(int ship_color, XPoint *points, int point_count)
 {
     Set_drawstyle_dashed(ship_color);
     rd.drawLines(dpy, drawPixmap, gameGC, points, point_count, 0);
@@ -981,19 +989,23 @@ static void Set_drawstyle_dashed(int ship_color)
 static int set_shipshape(int world_x, int world_y,
                          int dir, ShipShape *ship, XPoint *points)
 {
-    int cnt;
-    position_t ship_point_pos;
+    int cnt = 0;
     XPoint *xpts = points;
+    int window_x;
+    int window_y;
     double x, y;
 
-    for (cnt = 0; cnt < ship->num_points; cnt++)
+    std::vector<clpos_t> &p = ship->getPoints(dir);
+
+    for (clpos_t &pos : p)
     {
-        ship_point_pos = Ship_get_point_position(ship, cnt, dir);
+        position_t ship_point_pos = clpos2position(pos);
         x = (world_x - world.x + ship_point_pos.x) / clData.scaleFactor;
         y = (world.y + ext_view_height - world_y - ship_point_pos.y) / clData.scaleFactor;
         xpts->x = (short)rint(x);
         xpts->y = (short)rint(y);
         xpts++;
+        cnt++;
     }
     points[cnt++] = points[0];
 
