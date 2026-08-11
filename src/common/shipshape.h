@@ -126,8 +126,8 @@ public:
     // std::vector<clpos_t> missileRackClickPositions;
 
     // int currentDir = -1; // current rotated direction
-    // // int currentDirCacheHits = 0;
-    // // int currentDirCacheMisses = 0;
+    // int currentDirCacheHits = 0;
+    // int currentDirCacheMisses = 0;
 
     clpos_t *pts[MAX_SHIP_PTS2]; /* the shape rotated many ways */
     int num_points = 0;          /* total points in object */
@@ -135,22 +135,22 @@ public:
     clpos_t cashed_pts[MAX_SHIP_PTS2];
     int cashed_dir = 0;
 
-    clpos_t engine[ANGLE_RESOLUTION]; /* Engine position */
-    clpos_t m_gun[ANGLE_RESOLUTION];  /* Main gun position */
+    clpos_t engine[ANGLE_RESOLUTION];  /* Engine position */
+    clpos_t mainGun[ANGLE_RESOLUTION]; /* Main gun position */
     int num_l_gun = 0,
         num_r_gun = 0,
         num_l_rgun = 0,
-        num_r_rgun = 0;          /* number of additional cannons */
-    clpos_t *l_gun[MAX_GUN_PTS], /* Additional cannon positions, left*/
-        *r_gun[MAX_GUN_PTS],     /* Additional cannon positions, right*/
-        *l_rgun[MAX_GUN_PTS],    /* Additional rear cannon positions, left*/
-        *r_rgun[MAX_GUN_PTS];    /* Additional rear cannon positions, right*/
-    int num_l_light = 0,         /* Number of lights */
+        num_r_rgun = 0;              /* number of additional cannons */
+    clpos_t *leftGuns[MAX_GUN_PTS],  /* Additional cannon positions, left*/
+        *rightGuns[MAX_GUN_PTS],     /* Additional cannon positions, right*/
+        *leftRearGuns[MAX_GUN_PTS],  /* Additional rear cannon positions, left*/
+        *rightRearGuns[MAX_GUN_PTS]; /* Additional rear cannon positions, right*/
+    int num_l_light = 0,             /* Number of lights */
         num_r_light = 0;
-    clpos_t *l_light[MAX_LIGHT_PTS], /* Left and right light positions */
-        *r_light[MAX_LIGHT_PTS];
+    clpos_t *leftLights[MAX_LIGHT_PTS], /* Left and right light positions */
+        *rightLights[MAX_LIGHT_PTS];
     int num_m_rack = 0; /* Number of missile racks */
-    clpos_t *m_rack[MAX_RACK_PTS];
+    clpos_t *missileRacks[MAX_RACK_PTS];
     int shield_radius = 0; /* Radius of shield used by client. */
 
 #ifdef _NAMEDSHIPS
@@ -184,42 +184,42 @@ Ship_get_engine_clpos(ShipShape *ship, int dir)
 static inline clpos_t
 Ship_get_m_gun_clpos(ShipShape *ship, int dir)
 {
-    return ship->m_gun[dir];
+    return ship->mainGun[dir];
 }
 static inline clpos_t
 Ship_get_l_gun_clpos(ShipShape *ship, int gun, int dir)
 {
-    return ship->l_gun[gun][dir];
+    return ship->leftGuns[gun][dir];
 }
 static inline clpos_t
 Ship_get_r_gun_clpos(ShipShape *ship, int gun, int dir)
 {
-    return ship->r_gun[gun][dir];
+    return ship->rightGuns[gun][dir];
 }
 static inline clpos_t
 Ship_get_l_rgun_clpos(ShipShape *ship, int gun, int dir)
 {
-    return ship->l_rgun[gun][dir];
+    return ship->leftRearGuns[gun][dir];
 }
 static inline clpos_t
 Ship_get_r_rgun_clpos(ShipShape *ship, int gun, int dir)
 {
-    return ship->r_rgun[gun][dir];
+    return ship->rightRearGuns[gun][dir];
 }
 static inline clpos_t
 Ship_get_l_light_clpos(ShipShape *ship, int l, int dir)
 {
-    return ship->l_light[l][dir];
+    return ship->leftLights[l][dir];
 }
 static inline clpos_t
 Ship_get_r_light_clpos(ShipShape *ship, int l, int dir)
 {
-    return ship->r_light[l][dir];
+    return ship->rightLights[l][dir];
 }
 static inline clpos_t
 Ship_get_m_rack_clpos(ShipShape *ship, int rack, int dir)
 {
-    return ship->m_rack[rack][dir];
+    return ship->missileRacks[rack][dir];
 }
 
 static inline position_t
