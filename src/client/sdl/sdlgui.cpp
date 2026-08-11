@@ -1520,10 +1520,13 @@ void Gui_paint_ship(int x, int y, int dir, int id, int cloak, int phased,
             glLineStipple(3, 0xAAAA);
         }
 
+        std::vector<clpos_t> &p = ship->getPoints(dir);
         glBegin(GL_LINE_LOOP);
-        for (i = 0; i < ship->num_points; i++)
+        // for (i = 0; i < ship->num_points; i++)
+        for (clpos_t &pos : p)
         {
-            point = Ship_get_point_position(ship, i, dir);
+            // point = Ship_get_point_position(ship, i, dir);
+            point = clpos2position(pos);
             glVertex2d(x + point.x, y + point.y);
         }
         glEnd();
@@ -1846,7 +1849,7 @@ static void Paint_hudradar_dot(int x, int y, Uint32 col, int shape, int sz)
 static void Paint_hudradar(double hrscale, double xlimit, double ylimit, int sz)
 {
     Uint32 c;
-    int i, x, y, shape, size;
+    int x, y, shape, size;
     int hrw = (int)(hrscale * RadarWidth);
     int hrh = (int)(hrscale * RadarHeight);
     double xf = (double)hrw / (double)Setup->width;
@@ -2011,7 +2014,7 @@ void Paint_HUD(void)
     char str[50];
     int hud_pos_x, hud_pos_y, size;
     int did_fuel = 0;
-    int i, j, tex_index, modlen = 0;
+    int i, j, tex_index;
     static char autopilot[] = "Autopilot";
     int tempx, tempy, tempw, temph;
     static hud_text_t hud_texts[MAX_HUD_TEXS + MAX_SCORE_OBJECTS];
@@ -2195,7 +2198,6 @@ void Paint_HUD(void)
         }
 
         /* Update the modifiers */
-        modlen = strlen(mods);
         tex_index = 4;
         if (strcmp(mods, hud_texts[tex_index]) != 0)
         {
@@ -2464,17 +2466,6 @@ void Paint_messages(void)
                         break;
                     }
                 }
-            }
-
-            /* kps ugly hack */
-            if (newbie && msg->txt)
-            {
-                const char *help = "[*Newbie help*]";
-                size_t sz = strlen(msg->txt);
-                size_t hsz = strlen(help);
-
-                if (sz > hsz && !strcmp(help, &msg->txt[sz - hsz]))
-                    msg_color = &whiteRGBA;
             }
 
             if (tmp2)
