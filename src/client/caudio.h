@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -22,7 +20,6 @@
  * along with this program; if not, see
  * <https://www.gnu.org/licenses/>.
  */
-
 /* This piece of code was provided by Greg Renda (greg@ncd.com). */
 /* 961112 - Bucko - Header file */
 /*
@@ -30,6 +27,8 @@
  */
 
 #pragma once
+
+#define SOUND
 
 #ifdef SOUND
 
