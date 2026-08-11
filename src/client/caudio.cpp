@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -27,6 +25,12 @@
  * client audio
  */
 
+#define SOUND
+
+#ifdef SOUND
+
+#define MAX_RANDOM_SOUNDS 6
+
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -45,10 +49,6 @@
 #include "client.h"
 
 #include "audio.h"
-
-#ifdef SOUND
-
-#define MAX_RANDOM_SOUNDS 6
 
 /* options */
 static bool audioEnabled = false;
@@ -83,9 +83,10 @@ void audioInit(char *display)
 
 #if 0
     /* kps - let's not do this, otherwise sounds can't be enabled ingame */
-    if (!maxVolume) {
-    xpinfo("maxVolume is 0: no sound.\n");
-    return;
+    if (!maxVolume)
+    {
+        xpinfo("maxVolume is 0: no sound.\n");
+        return;
     }
 #endif
     if (!(fp = fopen(soundFile, "r")))
@@ -108,7 +109,6 @@ void audioInit(char *display)
             {
                 size_t filename_ptrs_size = sizeof(char *) * MAX_RANDOM_SOUNDS;
                 size_t private_ptrs_size = sizeof(void *) * MAX_RANDOM_SOUNDS;
-
                 table[i].filenames = (char **)malloc(filename_ptrs_size);
                 table[i].priv = (void **)malloc(private_ptrs_size);
                 memset(table[i].priv, 0, private_ptrs_size);
@@ -204,4 +204,5 @@ int Handle_audio(int type, int volume)
 
     return 0;
 }
+
 #endif /* SOUND */
