@@ -55,7 +55,10 @@ void Make_thrust_sparks(Player *pl)
 {
     static int min_dir, max_dir;
     static double max_speed; /* kps - why are these static ? */
-    clpos_t engine = Ship_get_engine_clpos(pl->ship, pl->dir), pos;
+    clpos_t pos;
+    clpos_t engine_pos = pl->ship->getEngineClickPosition(pl->dir);
+    pos.cx = pl->pos.cx + engine_pos.cx;
+    pos.cy = pl->pos.cy + engine_pos.cy;
     int afterburners;
     double max_life, tot_sparks, alt_sparks, power;
 
@@ -80,9 +83,6 @@ void Make_thrust_sparks(Player *pl)
     max_dir = (int)(pl->dir + ANGLE_RESOLUTION / 2 + (ANGLE_RESOLUTION * 0.2 + 1) * options.thrustWidth);
     max_speed = (1 + (power * 0.14)) * options.sparkSpeed;
     alt_sparks = tot_sparks * afterburners * (1. / (MAX_AFTERBURNER + 1));
-
-    pos.cx = pl->pos.cx + engine.cx;
-    pos.cy = pl->pos.cy + engine.cy;
 
     sound_play_sensors(pl->pos, THRUST_SOUND);
 

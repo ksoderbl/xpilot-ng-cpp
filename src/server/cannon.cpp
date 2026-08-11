@@ -107,14 +107,14 @@ void Cannon_update(bool tick)
 
         if ((c->damaged -= timeStep) <= 0)
             c->damaged = 0;
-        if (c->tractor_count > 0)
+        if (c->tractor_count > 0.0)
         {
             Player *tpl = Player_by_id(c->tractor_target_id);
 
             if (tpl == nullptr)
             {
                 c->tractor_target_id = NO_ID;
-                c->tractor_count = 0;
+                c->tractor_count = 0.0;
             }
             else if ((World_wrap_length(
                           world,
@@ -126,10 +126,10 @@ void Cannon_update(bool tick)
                                      c->item[ITEM_TRACTOR_BEAM],
                                      tpl, c->tractor_is_pressor);
                 if ((c->tractor_count -= timeStep) <= 0)
-                    c->tractor_count = 0;
+                    c->tractor_count = 0.0;
             }
             else
-                c->tractor_count = 0;
+                c->tractor_count = 0.0;
         }
         if (c->emergency_shield_left > 0)
         {
@@ -242,7 +242,7 @@ void Cannon_init(cannon_t *c)
     c->last_change = frame_loops;
     c->damaged = 0;
     c->tractor_target_id = NO_ID;
-    c->tractor_count = 0;
+    c->tractor_count = 0.0;
     c->tractor_is_pressor = false;
     c->used = 0;
     c->emergency_shield_left = 0;
@@ -380,7 +380,7 @@ static void Cannon_defend(cannon_t *c, int defense)
     case CD_PHASING:
         c->phasing_left += 4 * 12;
         SET_BIT(c->used, USES_PHASING_DEVICE);
-        c->tractor_count = 0;
+        c->tractor_count = 0.0;
         c->item[ITEM_PHASING]--;
         sound_play_sensors(c->pos, PHASING_ON_SOUND);
         break;

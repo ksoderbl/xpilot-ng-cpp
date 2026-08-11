@@ -359,7 +359,7 @@ void Player_crash2(Player *pl, int crashtype, int mapobj_ind, int pt)
                                   : (i < num_pushers - 1) ? ", "
                                                           : " and ";
                 size_t sep_len = strlen(sep);
-                size_t name_len = strlen(pusher->name.c_str());
+                size_t name_len = pusher->name.length();
 
                 if (msg_len + sep_len + name_len + 2 < sizeof msg)
                 {

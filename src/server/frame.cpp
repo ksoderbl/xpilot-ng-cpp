@@ -336,7 +336,6 @@ static void Frame_radar_buffer_send(Connection *conn, Player *pl)
         if (fast_count > 0)
             Send_fastradar(conn, buf, fast_count);
     }
-
     // free(radar_shuffle);
 }
 
@@ -872,7 +871,7 @@ static void Frame_ships(Connection *conn, Player *pl)
     {
         cannon_t *cannon = Cannon_by_index(world, i);
 
-        if (cannon->tractor_count > 0)
+        if (cannon->tractor_count > 0.0)
         {
             Player *t = Player_by_id(cannon->tractor_target_id);
 

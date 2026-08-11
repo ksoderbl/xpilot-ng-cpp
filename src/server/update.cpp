@@ -1011,28 +1011,28 @@ static void Update_players(void)
             if (pl->rank != nullptr)
                 pl->rank->score = Get_Score(pl);
 
-        if (pl->pause_count > 0)
+        if (pl->pause_count > 0.0)
         {
             /*assert(Player_is_paused(pl)
               || Player_is_hoverpaused(pl));*/
 
             /* kps - this is because of bugs elsewhere */
             if (!(Player_is_paused(pl) || Player_is_hoverpaused(pl)))
-                pl->pause_count = 0;
+                pl->pause_count = 0.0;
 
             pl->pause_count -= timeStep;
             if (pl->pause_count <= 0)
-                pl->pause_count = 0;
+                pl->pause_count = 0.0;
         }
 
-        if (pl->recovery_count > 0)
+        if (pl->recovery_count > 0.0)
         {
             if (!(Player_is_dead(pl) || Player_is_appearing(pl)))
             {
                 /* happens when the only present team is the robot */
                 /* team and a new player enters -> player cannot   */
                 /* appear => pause such players                    */
-                pl->recovery_count = 0;
+                pl->recovery_count = 0.0;
                 Pause_player(pl, true);
                 continue;
             }
@@ -1040,7 +1040,7 @@ static void Update_players(void)
             if (pl->recovery_count <= 0)
             {
                 /* Player has recovered (unless he is already dead). */
-                pl->recovery_count = 0;
+                pl->recovery_count = 0.0;
                 if (Limited_lives(world))
                 {
                     if (!Player_is_dead(pl))
@@ -1239,7 +1239,7 @@ static void Update_players(void)
                     olddist = dist;
                 }
                 else
-                    pl->snafu_count = 0;
+                    pl->snafu_count = 0.0;
             }
             else
             {
@@ -1261,7 +1261,7 @@ static void Update_players(void)
                     olddist = dist;
                 }
                 else
-                    pl->snafu_count = 0;
+                    pl->snafu_count = 0.0;
             }
         }
 

@@ -423,7 +423,7 @@ void Fire_main_shot(Player *pl, int type, int dir)
     if (!Player_can_fire_shot(pl))
         return;
 
-    m_gun = Ship_get_m_gun_clpos(pl->ship, pl->dir);
+    m_gun = pl->ship->getMainGunClickPosition(pl->dir);
     pos.cx = pl->pos.cx + m_gun.cx;
     pos.cy = pl->pos.cy + m_gun.cy;
 
@@ -447,7 +447,14 @@ void Fire_left_shot(Player *pl, int type, int dir, int gun)
     if (!Player_can_fire_shot(pl))
         return;
 
-    l_gun = Ship_get_l_gun_clpos(pl->ship, gun, pl->dir);
+    std::vector<clpos_t> &l_guns = pl->ship->getLeftGunClickPositions(pl->dir);
+
+    // warn("Fire_left_shot: l_guns.size() = %d, gun = %d", l_guns.size(), gun);
+
+    if (l_guns.size() <= gun)
+        return;
+    l_gun = l_guns[gun];
+
     pos.cx = pl->pos.cx + l_gun.cx;
     pos.cy = pl->pos.cy + l_gun.cy;
 
@@ -462,7 +469,14 @@ void Fire_right_shot(Player *pl, int type, int dir, int gun)
     if (!Player_can_fire_shot(pl))
         return;
 
-    r_gun = Ship_get_r_gun_clpos(pl->ship, gun, pl->dir);
+    std::vector<clpos_t> &r_guns = pl->ship->getRightGunClickPositions(pl->dir);
+
+    // warn("Fire_right_shot: r_guns.size() = %d, gun = %d", r_guns.size(), gun);
+
+    if (r_guns.size() <= gun)
+        return;
+    r_gun = r_guns[gun];
+
     pos.cx = pl->pos.cx + r_gun.cx;
     pos.cy = pl->pos.cy + r_gun.cy;
 
@@ -477,7 +491,14 @@ void Fire_left_rshot(Player *pl, int type, int dir, int gun)
     if (!Player_can_fire_shot(pl))
         return;
 
-    l_rgun = Ship_get_l_rgun_clpos(pl->ship, gun, pl->dir);
+    std::vector<clpos_t> &l_rguns = pl->ship->getLeftRearGunClickPositions(pl->dir);
+
+    // warn("Fire_left_rshot: l_rguns.size() = %d, gun = %d", l_rguns.size(), gun);
+
+    if (l_rguns.size() <= gun)
+        return;
+    l_rgun = l_rguns[gun];
+
     pos.cx = pl->pos.cx + l_rgun.cx;
     pos.cy = pl->pos.cy + l_rgun.cy;
 
@@ -492,7 +513,14 @@ void Fire_right_rshot(Player *pl, int type, int dir, int gun)
     if (!Player_can_fire_shot(pl))
         return;
 
-    r_rgun = Ship_get_r_rgun_clpos(pl->ship, gun, pl->dir);
+    std::vector<clpos_t> &r_rguns = pl->ship->getRightRearGunClickPositions(pl->dir);
+
+    // warn("Fire_right_rshot: r_rguns.size() = %d, gun = %d", r_rguns.size(), gun);
+
+    if (r_rguns.size() <= gun)
+        return;
+    r_rgun = r_rguns[gun];
+
     pos.cx = pl->pos.cx + r_rgun.cx;
     pos.cy = pl->pos.cy + r_rgun.cy;
 
@@ -942,14 +970,14 @@ void Fire_general_shot(int id, int team, bool cannon,
         switch (shot->type)
         {
         case OBJ_TORPEDO:
-            TORP_PTR(shot)->torp_count = 0;
+            TORP_PTR(shot)->torp_count = 0.0;
             break;
         case OBJ_HEAT_SHOT:
-            HEAT_PTR(shot)->heat_count = 0;
+            HEAT_PTR(shot)->heat_count = 0.0;
             HEAT_PTR(shot)->heat_lock_id = lock;
             break;
         case OBJ_SMART_SHOT:
-            SMART_PTR(shot)->smart_count = 0;
+            SMART_PTR(shot)->smart_count = 0.0;
             SMART_PTR(shot)->smart_lock_id = lock;
             break;
         default:
@@ -973,12 +1001,24 @@ void Fire_general_shot(int id, int team, bool cannon,
                     rack_no = 0;
                 r = 0;
             }
-            m_rack = Ship_get_m_rack_clpos(pl->ship, rack_no, pl->dir);
+            // m_rack = Ship_get_m_rack_clpos(pl->ship, rack_no, pl->dir);
+            std::vector<clpos_t> &m_racks = pl->ship->getMissileRackClickPositions(pl->dir);
+
+            if (m_racks.size() <= rack_no)
+            {
+                warn("Fire_general_shot: m_racks.size() = %d, rack_no = %d", m_racks.size(), rack_no);
+                continue;
+            }
+            m_rack = m_racks[rack_no];
+
             shotpos.cx += m_rack.cx;
             shotpos.cy += m_rack.cy;
             /*side = CLICK_TO_PIXEL(pl->ship->m_rack[rack_no][0].cy);*/
-            side = CLICK_TO_PIXEL(
-                Ship_get_m_rack_clpos(pl->ship, rack_no, 0).cy);
+            // side = CLICK_TO_PIXEL(
+            //     Ship_get_m_rack_clpos(pl->ship, rack_no, 0).cy);
+            // TODO: this can be optimized, the rotation to dir = 0 is a bit stupid here.
+            std::vector<clpos_t> &m_racks0 = pl->ship->getMissileRackClickPositions(0);
+            side = CLICK_TO_PIXEL(m_racks0[rack_no].cy);
         }
         shotpos = World_wrap_clpos(world, shotpos);
         Object_position_init_clpos(shot, shotpos);
@@ -1611,18 +1651,20 @@ void Update_missile(missileobject_t *missile)
         heatobject_t *heat = HEAT_PTR(missile);
 
         acc = SMART_SHOT_ACC * HEAT_SPEED_FACT;
+        // TODO: Use NO_ID
         if (heat->heat_lock_id >= 0)
         {
             clpos_t engine;
 
             /* Get player and set min to distance */
             pl = Player_by_id(heat->heat_lock_id);
-            /* kps - bandaid since Player_by_id can return nullptr. */
             if (!pl)
                 return;
-            engine = Ship_get_engine_clpos(pl->ship, pl->dir);
-            range = World_wrap_length(world, pl->pos.cx + engine.cx - heat->pos.cx,
-                                      pl->pos.cy + engine.cy - heat->pos.cy) /
+            engine = pl->ship->getEngineClickPosition(pl->dir);
+            range = World_wrap_length(
+                        world,
+                        pl->pos.cx + engine.cx - heat->pos.cx,
+                        pl->pos.cy + engine.cy - heat->pos.cy) /
                     CLICK;
         }
         else
@@ -1648,7 +1690,9 @@ void Update_missile(missileobject_t *missile)
         {
             heat->heat_count += timeStep;
             /* Look for new target */
-            if ((range < HEAT_CLOSE_RANGE && heat->heat_count > HEAT_CLOSE_TIMEOUT + HEAT_CLOSE_ERROR) || (range < HEAT_MID_RANGE && heat->heat_count > HEAT_MID_TIMEOUT + HEAT_MID_ERROR) || heat->heat_count > HEAT_WIDE_TIMEOUT + HEAT_WIDE_ERROR)
+            if ((range < HEAT_CLOSE_RANGE && heat->heat_count > HEAT_CLOSE_TIMEOUT + HEAT_CLOSE_ERROR) ||
+                (range < HEAT_MID_RANGE && heat->heat_count > HEAT_MID_TIMEOUT + HEAT_MID_ERROR) ||
+                heat->heat_count > HEAT_WIDE_TIMEOUT + HEAT_WIDE_ERROR)
             {
                 double l;
                 int i;
@@ -1662,9 +1706,11 @@ void Update_missile(missileobject_t *missile)
                     if (!Player_is_thrusting(pl_i))
                         continue;
 
-                    engine = Ship_get_engine_clpos(pl_i->ship, pl_i->dir);
-                    l = World_wrap_length(world, pl_i->pos.cx + engine.cx - heat->pos.cx,
-                                          pl_i->pos.cy + engine.cy - heat->pos.cy) /
+                    engine = pl_i->ship->getEngineClickPosition(pl_i->dir);
+                    l = World_wrap_length(
+                            world,
+                            pl_i->pos.cx + engine.cx - heat->pos.cx,
+                            pl_i->pos.cy + engine.cy - heat->pos.cy) /
                         CLICK;
                     /*
                      * After burners can be detected easier;
@@ -1714,14 +1760,14 @@ void Update_missile(missileobject_t *missile)
         if (BIT(smart->obj_status, CONFUSED) && (!(frame_loops % CONFUSED_UPDATE_GRANULARITY) || smart->smart_count == CONFUSED_TIME))
         {
 
-            if (smart->smart_count > 0)
+            if (smart->smart_count > 0.0)
             {
                 smart->smart_lock_id = Player_by_index((int)(rfrac() * NumPlayers))->id;
                 smart->smart_count -= timeStep;
             }
             else
             {
-                smart->smart_count = 0;
+                smart->smart_count = 0.0;
                 CLR_BIT(smart->obj_status, CONFUSED);
 
                 /* range is percentage from center to periphery of ecm burst */
@@ -1936,7 +1982,7 @@ void Update_mine(mineobject_t *mine)
         if ((mine->mine_count -= timeStep) <= 0)
         {
             CLR_BIT(mine->obj_status, CONFUSED);
-            mine->mine_count = 0;
+            mine->mine_count = 0.0;
         }
     }
 

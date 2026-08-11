@@ -60,7 +60,6 @@
 void Fire_laser(Player *pl)
 {
     world_t *world = &theWorld;
-    clpos_t m_gun, pos;
 
     if (frame_time <= pl->laser_time + options.laserRepeatRate - timeStep + 1e-3)
         return;
@@ -72,14 +71,14 @@ void Fire_laser(Player *pl)
             CLR_BIT(pl->used, HAS_LASER);
         else
         {
-            m_gun = Ship_get_m_gun_clpos(pl->ship, pl->dir);
+            clpos_t pos;
+            clpos_t m_gun = pl->ship->getMainGunClickPosition(pl->dir);
             pos.cx = pl->pos.cx + m_gun.cx + FLOAT_TO_CLICK(pl->vel.x * timeStep);
             pos.cy = pl->pos.cy + m_gun.cy + FLOAT_TO_CLICK(pl->vel.y * timeStep);
             pos = World_wrap_clpos(world, pos);
             if (is_inside(pos.cx, pos.cy, NONBALL_BIT | NOTEAM_BIT, nullptr) != NO_GROUP)
                 return;
-            Fire_general_laser(pl->id, pl->team, pos,
-                               pl->dir, pl->mods);
+            Fire_general_laser(pl->id, pl->team, pos, pl->dir, pl->mods);
         }
     }
 }

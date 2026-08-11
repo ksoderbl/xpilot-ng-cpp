@@ -536,7 +536,7 @@ void Pause_player(Player *pl, bool on)
         /* Minimum pause time is 10 seconds at gamespeed 12. */
         pl->pause_count = 10 * 12;
         /* player might have paused when recovering */
-        pl->recovery_count = 0;
+        pl->recovery_count = 0.0;
         pl->updateVisibility = true;
         Player_set_state(pl, PL_STATE_PAUSED);
         pl->pauseTime = 0;
@@ -590,7 +590,7 @@ void Pause_player(Player *pl, bool on)
         pl->emergency_thrust_left = 0;
         pl->emergency_shield_left = 0;
         pl->phasing_left = 0;
-        pl->self_destruct_count = 0;
+        pl->self_destruct_count = 0.0;
         pl->damaged = 0;
         pl->stunned = 0;
         pl->lock.distance = 0;
@@ -605,7 +605,7 @@ void Pause_player(Player *pl, bool on)
     else if (!on && Player_is_paused(pl))
     { /* Turn pause mode off */
 
-        if (pl->pause_count > 0)
+        if (pl->pause_count > 0.0)
         {
             Set_player_message(pl, "You can't unpause so soon after pausing. "
                                    "[*Server notice*]");

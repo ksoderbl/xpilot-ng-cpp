@@ -838,20 +838,22 @@ static void Robotdef_fire_laser(Player *pl)
     double x2, y2, x3, y3, x4, y4, x5, y5;
     double ship_dist, dir3, dir4, dir5;
     clpos_t m_gun;
-    Player *ship;
+    Player *ship = nullptr;
 
     if (BIT(my_data->robot_lock, LOCK_PLAYER) && Player_is_active(Player_by_id(my_data->robot_lock_id)))
         ship = Player_by_id(my_data->robot_lock_id);
     else if (BIT(pl->lock.tagged, LOCK_PLAYER))
         ship = Player_by_id(pl->lock.pl_id);
-    else
+
+    if (!ship)
         return;
 
     /* kps - this should be Player_is_alive() ? */
     if (!Player_is_active(ship))
         return;
 
-    m_gun = Ship_get_m_gun_clpos(pl->ship, pl->dir);
+    m_gun = pl->ship->getMainGunClickPosition(pl->dir);
+
     x2 = CLICK_TO_FLOAT(pl->pos.cx) + pl->vel.x + CLICK_TO_FLOAT(m_gun.cx);
     y2 = CLICK_TO_FLOAT(pl->pos.cy) + pl->vel.y + CLICK_TO_FLOAT(m_gun.cy);
     x3 = CLICK_TO_FLOAT(ship->pos.cx) + ship->vel.x;
@@ -866,7 +868,10 @@ static void Robotdef_fire_laser(Player *pl)
     if (ship_dist >= options.pulseSpeed * options.pulseLife + SHIP_SZ)
         return;
 
-    dir3 = World_wrap_findDir(world, x3 - x2, y3 - y2);
+    dir3 = World_wrap_findDir(
+        world,
+        x3 - x2,
+        y3 - y2);
     x4 = x3 + tcos(MOD2((int)(dir3 - ANGLE_RESOLUTION / 4), ANGLE_RESOLUTION)) * SHIP_SZ;
     y4 = y3 + tsin(MOD2((int)(dir3 - ANGLE_RESOLUTION / 4), ANGLE_RESOLUTION)) * SHIP_SZ;
     x5 = x3 + tcos(MOD2((int)(dir3 + ANGLE_RESOLUTION / 4), ANGLE_RESOLUTION)) * SHIP_SZ;
