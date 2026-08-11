@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -27,12 +25,10 @@
 
 void block_timer(void);
 void allow_timer(void);
-
+void install_timer_tick(void (*func)(void), int freq);
+void install_timeout(void (*func)(void *), int offset, void *arg);
+void remove_timeout(void (*func)(void *), void *arg);
 void install_input(void (*func)(int, void *), int fd, void *arg);
 void remove_input(int fd);
 void sched(void);
 void stop_sched(void);
-
-void install_timer_tick(void (*func)(void), int freq);
-void install_timeout(void (*func)(void *), int offset, void *arg);
-void remove_timeout(void (*func)(void *), void *arg);

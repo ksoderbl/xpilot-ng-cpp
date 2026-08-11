@@ -90,7 +90,9 @@ void Score_players(Player *winner_pl, double winner_score,
                    std::string winner_msg, Player *loser_pl,
                    double loser_score, std::string loser_msg, bool transfer_tag)
 {
-    if (Players_are_teammates(winner_pl, loser_pl) || Players_are_allies(winner_pl, loser_pl) || (Player_is_tank(loser_pl) && loser_pl->lock.pl_id == winner_pl->id))
+    if (Players_are_teammates(winner_pl, loser_pl) ||
+        Players_are_allies(winner_pl, loser_pl) ||
+        (Player_is_tank(loser_pl) && loser_pl->lock.pl_id == winner_pl->id))
     {
         if (winner_score > 0)
             winner_score = -winner_score;
