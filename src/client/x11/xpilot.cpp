@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -42,7 +40,7 @@
 #include "xpconfig.h"
 #include "const.h"
 #include "types.h"
-#include "pack.h"
+#include "clientpack.h"
 #include "bit.h"
 #include "xperror.h"
 #include "socklib.h"
@@ -80,7 +78,7 @@ static void printfile(const char *filename)
     fclose(fp);
 }
 
-const char *Program_name(void)
+std::string Program_name(void)
 {
     return "xpilot-ng-cpp-x11";
 }
@@ -93,6 +91,8 @@ int main(int argc, char *argv[])
     int result, retval = 1;
     bool auto_shutdown = false;
     Connect_param_t *conpar = &connectParam;
+
+    warn("main => calling Conf_print");
 
     /*
      * --- Output copyright notice ---
@@ -110,14 +110,20 @@ int main(int argc, char *argv[])
     Argc = argc;
     Argv = argv;
 
+    warn("main => calling init_error");
+
     /*
      * --- Miscellaneous initialization ---
      */
     init_error(argv[0]);
 
+    warn("main => calling seed MT");
+
     seedMT((unsigned)time(nullptr) ^ Get_process_id());
 
     memset(conpar, 0, sizeof(Connect_param_t));
+
+    warn("main => calling create global option array");
 
     /*
      * --- Create global option array ---
@@ -134,6 +140,8 @@ int main(int argc, char *argv[])
     Store_record_options();
     Store_color_options();
 
+    warn("main => calling parse options");
+
     /*
      * --- Check commandline arguments and resource files ---
      */
@@ -141,7 +149,12 @@ int main(int argc, char *argv[])
     Parse_options(&argc, argv);
     /*strcpy(clientname,connectParam.nick_name); */
 
+    warn("main => calling config init");
+
     Config_init();
+
+    warn("main => calling handle x options");
+
     Handle_X_options();
 
     /* CLIENTRANK */
@@ -161,8 +174,14 @@ int main(int argc, char *argv[])
      */
     printfile(Conf_localmotdfile());
 
+    warn("main => simulate");
+
+    // Simulate(false);
+
     if (xpArgs.text || xpArgs.auto_connect || argv[1])
     {
+        warn("main => calling contact servers");
+
         if (xpArgs.list_servers)
             printf("LISTING AVAILABLE SERVERS:\n");
 
@@ -173,10 +192,16 @@ int main(int argc, char *argv[])
                                  conpar);
     }
     else
+    {
+        warn("main => calling welcome screen");
         result = Welcome_screen(conpar);
+    }
 
     if (result == 1)
+    {
+        warn("main => calling join");
         retval = Join(conpar);
+    }
 
     if (instruments.clientRanker)
         Print_saved_scores();

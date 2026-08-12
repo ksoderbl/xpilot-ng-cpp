@@ -240,25 +240,26 @@ void Gui_paint_ball_connector(int x1, int y1, int x2, int y2)
     Segment_add(connColor, x1, y1, x2, y2);
 }
 
-static void Gui_paint_mine_name(int x, int y, char *name)
+/* used by Paint_mine */
+static void Gui_paint_mine_name(int x, int y, std::string name)
 {
     int name_len, name_width;
 
-    if (!name || !mineNameColor)
+    if (name.empty())
         return;
 
     SET_FG(colors[mineNameColor].pixel);
 
-    name_len = strlen(name);
-    name_width = XTextWidth(gameFont, name, name_len);
+    name_len = name.length();
+    name_width = XTextWidth(gameFont, name.c_str(), name_len);
 
     rd.drawString(dpy, drawPixmap, gameGC,
                   WINSCALE(x) - name_width / 2,
                   WINSCALE(y + 4) + gameFont->ascent + 1,
-                  name, name_len);
+                  name.c_str(), name_len);
 }
 
-void Gui_paint_mine(int x, int y, int teammine, char *name)
+void Gui_paint_mine(int x, int y, int teammine, std::string name)
 {
     if (!texturedObjects)
     {
@@ -314,7 +315,7 @@ void Gui_paint_mine(int x, int y, int teammine, char *name)
         rd.drawLines(dpy, drawPixmap, gameGC,
                      mine_points, 21, CoordModePrevious);
 
-        if (name)
+        if (!name.empty())
             Gui_paint_mine_name(x, y, name);
     }
     else
@@ -334,7 +335,7 @@ void Gui_paint_mine(int x, int y, int teammine, char *name)
                          WINSCALE(y - 7), 0);
         }
 
-        if (name)
+        if (!name.empty())
             Gui_paint_mine_name(x, y, name);
     }
 }
@@ -738,7 +739,7 @@ static void Gui_paint_ship_name(int x, int y, Other *other)
         rd.drawString(dpy, drawPixmap, gameGC,
                       WINSCALE(X(x)) - other->name_width / 2,
                       WINSCALE(Y(y) + 16) + gameFont->ascent,
-                      other->id_string, other->name_len);
+                      other->id_string.c_str(), other->name_len);
     }
     else
         SET_FG(colors[BLUE].pixel);
@@ -755,22 +756,22 @@ static void Gui_paint_ship_name(int x, int y, Other *other)
     }
 }
 
-static int Gui_is_my_tank(Other *other)
+static bool Gui_is_my_tank(Other *other)
 {
-    char tank_name[MAX_NAME_LEN];
+    std::string tank_name;
 
-    if (self == nullptr || other == nullptr || other->mychar != 'T' || (BIT(Setup->mode, TEAM_PLAY) && self->team != other->team))
-    {
-        return 0;
-    }
+    if (self == nullptr ||
+        other == nullptr ||
+        other->mychar != 'T' ||
+        (BIT(Setup->mode, TEAM_PLAY) && self->team != other->team))
+        return false;
 
-    if (strlcpy(tank_name, self->nick_name, MAX_NAME_LEN) < MAX_NAME_LEN)
-        strlcat(tank_name, "'s tank", MAX_NAME_LEN);
+    tank_name = self->nick_name + "'s tank";
 
-    if (strcmp(tank_name, other->nick_name))
-        return 0;
+    if (tank_name != other->nick_name)
+        return false;
 
-    return 1;
+    return true;
 }
 
 static int Gui_calculate_ship_color(int id, Other *other)

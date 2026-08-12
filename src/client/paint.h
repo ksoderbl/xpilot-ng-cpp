@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -140,12 +138,12 @@ void Paint_score_start(void);
 void Paint_score_objects(void);
 void Paint_meters(void);
 void Paint_HUD(void);
-int Get_message(int *pos, char *message, int req_length, int key);
 void Paint_messages(void);
 void Paint_recording(void);
 void Paint_HUD_values(void);
 void Paint_frame(void);
 void Paint_frame_start(void);
+void Paint_score_table(void);
 int Team_color(int);
 int Life_color(Other *other);
 int Life_color_by_life(int life);

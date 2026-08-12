@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -146,15 +144,14 @@ static void Paint_balls(void)
 
 static void Paint_mines(void)
 {
-    int i, x, y;
     char *name = nullptr;
 
     if (clMap.mines.size() > 0)
     {
         for (const auto &mine : clMap.mines)
         {
-            x = mine.x;
-            y = mine.y;
+            int x = mine.x;
+            int y = mine.y;
 
             if (wrap(&x, &y))
             {
@@ -174,7 +171,7 @@ static void Paint_mines(void)
                         name = expired_name;
                     }
                     else if ((other = Other_by_id(mine.id)) != nullptr)
-                        name = other->id_string;
+                        name = const_cast<char *>(other->nick_name.c_str());
                     else
                     {
                         static char unknown_name[] = "Not of this world!";
@@ -193,11 +190,9 @@ static inline int Debris_color(int color)
     return ((num_spark_colors > 4) ? ((((color & 1) << 2) | (color >> 1))) : (color));
 }
 
-static void Paint_debris(int x_areas, int y_areas, int areas, int max_)
+static void Paint_debris(int x_areas, int y_areas, int areas, int max_i)
 {
-    int color, i, j, x, y;
-
-    for (int i = 0; i < max_; i++)
+    for (int i = 0; i < max_i; i++)
     {
         auto &debrisList = clMap.debrisTypes[i];
 
@@ -221,23 +216,19 @@ static void Paint_debris(int x_areas, int y_areas, int areas, int max_)
 
 static void Paint_wreckages(void)
 {
-    int i, x, y;
-    int wtype, size, rot;
-    bool deadly;
-
     if (clMap.wreckages.size() > 0)
     {
         for (const auto &wreckage : clMap.wreckages)
         {
-            x = wreckage.x;
-            y = wreckage.y;
+            int x = wreckage.x;
+            int y = wreckage.y;
             if (wrap(&x, &y))
             {
-                deadly = (wreckage.wrecktype & 0x80);
+                bool deadly = (wreckage.wrecktype & 0x80);
 
-                wtype = (wreckage.wrecktype & 0x7F) % NUM_WRECKAGE_SHAPES;
-                rot = wreckage.rotation;
-                size = wreckage.size;
+                int wtype = (wreckage.wrecktype & 0x7F) % NUM_WRECKAGE_SHAPES;
+                int rot = wreckage.rotation;
+                int size = wreckage.size;
 
                 Gui_paint_wreck(x, y, deadly, wtype, rot, size);
             }
@@ -248,21 +239,18 @@ static void Paint_wreckages(void)
 
 static void Paint_asteroids(void)
 {
-    int i, x, y;
-    int type, size, rot;
-
     if (clMap.asteroids.size() > 0)
     {
         Gui_paint_asteroids_begin();
         for (const auto &asteroid : clMap.asteroids)
         {
-            x = asteroid.x;
-            y = asteroid.y;
+            int x = asteroid.x;
+            int y = asteroid.y;
             if (wrap(&x, &y))
             {
-                type = asteroid.type;
-                rot = asteroid.rotation;
-                size = asteroid.size;
+                int type = asteroid.type;
+                int rot = asteroid.rotation;
+                int size = asteroid.size;
 
                 Gui_paint_asteroid(x, y, type, rot, size);
             }
@@ -274,14 +262,12 @@ static void Paint_asteroids(void)
 
 static void Paint_wormholes(void)
 {
-    int i, x, y;
-
     if (clMap.wormholes.size() > 0)
     {
         for (const auto &wormhole : clMap.wormholes)
         {
-            x = wormhole.x;
-            y = wormhole.y;
+            int x = wormhole.x;
+            int y = wormhole.y;
             if (wrap(&x, &y))
                 Gui_paint_setup_worm(x, y);
         }
@@ -291,19 +277,16 @@ static void Paint_wormholes(void)
 
 static void Paint_missiles(void)
 {
-    int i, x, y;
-    int len, dir;
-
     if (clMap.missiles.size() > 0)
     {
         Gui_paint_missiles_begin();
 
         for (const auto &missile : clMap.missiles)
         {
-            x = missile.x;
-            y = missile.y;
-            dir = missile.dir;
-            len = MISSILE_LEN;
+            int x = missile.x;
+            int y = missile.y;
+            int dir = missile.dir;
+            int len = MISSILE_LEN;
             if (missile.len > 0)
                 len = missile.len;
 
@@ -317,19 +300,17 @@ static void Paint_missiles(void)
 
 static void Paint_lasers(void)
 {
-    int color, i, x1, y1, len, dir;
-
     if (clMap.lasers.size() > 0)
     {
         Gui_paint_lasers_begin();
 
         for (const auto &laser : clMap.lasers)
         {
-            x1 = laser.x;
-            y1 = laser.y;
-            len = laser.len;
-            dir = laser.dir;
-            color = laser.color;
+            int x1 = laser.x;
+            int y1 = laser.y;
+            int len = laser.len;
+            int dir = laser.dir;
+            int color = laser.color;
 
             if (wrap(&x1, &y1))
                 Gui_paint_laser(color, x1, y1, len, dir);
@@ -349,7 +330,6 @@ static void Paint_fastshots(int i, int x_areas, int y_areas, int areas)
     const int x = BASE_X(i);
     const int y = BASE_Y(i);
     int color = COLOR(i);
-
     if (color != WHITE && color != BLUE)
         color = WHITE;
 
@@ -384,25 +364,27 @@ static void Paint_teamshots(int i, int x_areas, int y_areas, int areas)
 
 void Paint_shots(void)
 {
-    int i, t_;
-    int x_areas, y_areas, areas, max_;
-
     Paint_items();
     Paint_balls();
     Paint_mines();
 
-    x_areas = (active_view_width + 255) >> 8;
-    y_areas = (active_view_height + 255) >> 8;
-    areas = x_areas * y_areas;
-    max_ = areas * (num_spark_colors >= 3 ? num_spark_colors : 4);
+    int x_areas = (active_view_width + 255) >> 8;
+    int y_areas = (active_view_height + 255) >> 8;
+    int areas = x_areas * y_areas;
+    int max_i = areas * (num_spark_colors >= 3 ? num_spark_colors : 4);
 
-    Paint_debris(x_areas, y_areas, areas, max_);
+    // warn("Paint_shots: x_areas: %d", x_areas);
+    // warn("Paint_shots: y_areas: %d", y_areas);
+    // warn("Paint_shots: areas_: %d", areas);
+    // warn("Paint_shots: max_i: %d", max_i);
+
+    Paint_debris(x_areas, y_areas, areas, max_i);
 
     Paint_wreckages();
     Paint_asteroids();
     Paint_wormholes();
 
-    for (i = 0; i < max_; i++)
+    for (int i = 0; i < max_i; i++)
     {
         Paint_fastshots(i, x_areas, y_areas, areas);
         Paint_teamshots(i, x_areas, y_areas, areas);
@@ -414,14 +396,12 @@ void Paint_shots(void)
 
 static void Paint_paused(void)
 {
-    int i, x, y;
-
     if (clMap.pausers.size() > 0)
     {
         for (const auto &paused : clMap.pausers)
         {
-            x = paused.x;
-            y = paused.y;
+            int x = paused.x;
+            int y = paused.y;
             if (wrap(&x, &y))
                 Gui_paint_paused(x, y, paused.count);
         }
@@ -431,14 +411,12 @@ static void Paint_paused(void)
 
 static void Paint_appearing(void)
 {
-    int i, x, y;
-
     if (clMap.appearers.size() > 0)
     {
         for (const auto &appearing : clMap.appearers)
         {
-            x = appearing.x;
-            y = appearing.y;
+            int x = appearing.x;
+            int y = appearing.y;
             if (wrap(&x, &y))
                 Gui_paint_appearing(x, y, appearing.id,
                                     appearing.count);
@@ -449,16 +427,16 @@ static void Paint_appearing(void)
 
 static void Paint_ecm(void)
 {
-    int i, x, y, size;
-
     if (clMap.ecms.size() > 0)
     {
         for (const auto &ecm : clMap.ecms)
         {
-            if ((size = ecm.size) > 0)
+            int size = ecm.size;
+
+            if (size > 0)
             {
-                x = ecm.x;
-                y = ecm.y;
+                int x = ecm.x;
+                int y = ecm.y;
                 if (wrap(&x, &y))
                     Gui_paint_ecm(x, y, size);
             }
@@ -469,14 +447,12 @@ static void Paint_ecm(void)
 
 static void Paint_all_ships(void)
 {
-    int i, x, y;
-
     if (clMap.ships.size() > 0)
     {
         for (const auto &ship : clMap.ships)
         {
-            x = ship.x;
-            y = ship.y;
+            int x = ship.x;
+            int y = ship.y;
             if (!wrap(&x, &y))
                 continue;
 
@@ -503,16 +479,14 @@ static void Paint_all_ships(void)
 
 static void Paint_refuel(void)
 {
-    int i, x0, y0, x1, y1;
-
     if (clMap.refuels.size() > 0)
     {
         for (const auto &refuel : clMap.refuels)
         {
-            x0 = refuel.x0;
-            y0 = refuel.y0;
-            x1 = refuel.x1;
-            y1 = refuel.y1;
+            int x0 = refuel.x0;
+            int y0 = refuel.y0;
+            int x1 = refuel.x1;
+            int y1 = refuel.y1;
             if (wrap(&x0, &y0) && wrap(&x1, &y1))
                 Gui_paint_refuel(x0, y0, x1, y1);
         }
@@ -522,16 +496,14 @@ static void Paint_refuel(void)
 
 static void Paint_connectors(void)
 {
-    int i, x0, y0, x1, y1;
-
     if (clMap.connectors.size() > 0)
     {
         for (const auto &connector : clMap.connectors)
         {
-            x0 = connector.x0;
-            y0 = connector.y0;
-            x1 = connector.x1;
-            y1 = connector.y1;
+            int x0 = connector.x0;
+            int y0 = connector.y0;
+            int x1 = connector.x1;
+            int y1 = connector.y1;
             if (wrap(&x0, &y0) && wrap(&x1, &y1))
                 Gui_paint_connector(x0, y0, x1, y1,
                                     connector.tractor);
@@ -542,16 +514,14 @@ static void Paint_connectors(void)
 
 static void Paint_transporters(void)
 {
-    int i, x0, y0, x1, y1;
-
     if (clMap.transporters.size() > 0)
     {
         for (const auto &transporter : clMap.transporters)
         {
-            x0 = transporter.x1;
-            y0 = transporter.y1;
-            x1 = transporter.x2;
-            y1 = transporter.y2;
+            int x0 = transporter.x1;
+            int y0 = transporter.y1;
+            int x1 = transporter.x2;
+            int y1 = transporter.y2;
             if (wrap(&x0, &y0) && wrap(&x1, &y1))
                 Gui_paint_transporter(x0, y0, x1, y1);
         }

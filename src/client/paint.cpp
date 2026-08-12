@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -23,6 +21,8 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <string>
+
 #include <cstdio>
 #include <cstring>
 #include <cstdlib>
@@ -30,9 +30,9 @@
 #include "bit.h"
 #include "const.h"
 #include "rules.h"
-#include "clientsetup.h"
 #include "xperror.h"
 
+#include "clientsetup.h"
 #include "netclient.h"
 #include "paint.h"
 
@@ -309,6 +309,7 @@ static void Determine_team_order(struct team_score *team_order[],
     int i, j, k;
 
     num_playing_teams = 0;
+
     for (i = 0; i < MAX_TEAMS; i++)
     {
         if (team[i].playing)
@@ -330,14 +331,13 @@ static void Determine_team_order(struct team_score *team_order[],
     }
 }
 
-static void Determine_order(Other **order, struct team_score team[])
+static void Determine_order(std::vector<Other *> &order, struct team_score team[])
 {
-    Other *other;
     int i, j, k;
 
-    for (i = 0; i < num_others; i++)
+    for (i = 0; i < others.size(); i++)
     {
-        other = &Others[i];
+        Other *other = others[i];
         if (BIT(Setup->mode, TIMING))
         {
             /*
@@ -388,7 +388,7 @@ static void Determine_order(Other **order, struct team_score team[])
                     team[other->team].life += other->life + 1;
                 else
                     team[other->team].life += other->life;
-            /*FALLTHROUGH*/
+                /*FALLTHROUGH*/
             default:
                 team[other->team].playing++;
                 team[other->team].score += other->score;
@@ -404,17 +404,20 @@ static void Determine_order(Other **order, struct team_score team[])
 static int Team_heading(int entrynum, int teamnum,
                         int teamlives, double teamscore)
 {
-    Other tmp;
+    // This is static so the Other constructor is not called every
+    // time this function is called.
+    static Other tmp;
+
     tmp.id = -1;
     tmp.team = teamnum;
     tmp.name_width = 0;
     tmp.ship = nullptr;
     if (teamnum != TEAM_PAUSEHACK)
-        sprintf(tmp.nick_name, "TEAM %d", tmp.team);
+        tmp.nick_name = "TEAM " + std::to_string(tmp.team);
     else
-        sprintf(tmp.nick_name, "Pause Wusses");
-    strcpy(tmp.user_name, tmp.nick_name);
-    strcpy(tmp.host_name, "");
+        tmp.nick_name = "Pause Wusses";
+    tmp.user_name = tmp.nick_name;
+    tmp.host_name = "";
 #if 0
     if (BIT(Setup->mode, LIMITED_LIVES) && teamlives == 0)
     tmp.mychar = 'D';
@@ -431,13 +434,13 @@ static int Team_heading(int entrynum, int teamnum,
 }
 
 static int Team_score_table(int entrynum, int teamnum,
-                            struct team_score team, Other **order)
+                            struct team_score team, std::vector<Other *> &order)
 {
     Other *other;
     int i, j;
     bool drawn = false;
 
-    for (i = 0; i < num_others; i++)
+    for (i = 0; i < others.size(); i++)
     {
         other = order[i];
 
@@ -454,7 +457,6 @@ static int Team_score_table(int entrynum, int teamnum,
 
         if (!drawn)
             entrynum = Team_heading(entrynum, teamnum, team.life, team.score);
-        j = other - Others;
         Paint_score_entry(entrynum++, other, false);
         drawn = true;
     }
@@ -466,29 +468,29 @@ static int Team_score_table(int entrynum, int teamnum,
 
 void Paint_score_table(void)
 {
-
     struct team_score team[MAX_TEAMS],
         pausers,
         *team_order[MAX_TEAMS];
-    Other *other,
-        **order;
-    int i, j, entrynum = 0;
+    Other *other;
+    std::vector<Other *> order;
+    int entrynum = 0;
 
     if (!scoresChanged || !players_exposed)
         return;
 
-    if (num_others < 1)
+    if (others.size() < 1)
     {
         Paint_score_start();
         scoresChanged = false;
         return;
     }
 
-    if ((order = (Other **)malloc(num_others * sizeof(Other *))) == nullptr)
-    {
-        error("No memory for score");
-        return;
-    }
+    // if ((order = (Other **)malloc(num_others * sizeof(Other *))) == nullptr)
+    // {
+    //     error("No memory for score");
+    //     return;
+    // }
+    order.resize(others.size());
     if (BIT(Setup->mode, TEAM_PLAY | TIMING) == TEAM_PLAY)
     {
         memset(&team[0], 0, sizeof team);
@@ -498,10 +500,9 @@ void Paint_score_table(void)
     Paint_score_start();
     if (!(BIT(Setup->mode, TEAM_PLAY | TIMING) == TEAM_PLAY))
     {
-        for (i = 0; i < num_others; i++)
+        for (int i = 0; i < others.size(); i++)
         {
             other = order[i];
-            j = other - Others;
             Paint_score_entry(i, other, false);
         }
     }
@@ -511,7 +512,7 @@ void Paint_score_table(void)
 
         /* add an empty line */
         entrynum++;
-        for (i = 0; i < MAX_TEAMS; i++)
+        for (int i = 0; i < MAX_TEAMS; i++)
             entrynum = Team_score_table(entrynum, i, team[i], order);
         /* paint pausers */
         entrynum = Team_score_table(entrynum, TEAM_PAUSEHACK, pausers, order);
@@ -527,8 +528,6 @@ void Paint_score_table(void)
 
     if (roundend)
         Add_roundend_messages(order);
-
-    free(order);
 
     scoresChanged = false;
 }

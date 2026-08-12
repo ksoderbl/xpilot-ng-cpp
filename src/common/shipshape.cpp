@@ -52,6 +52,8 @@ extern bool is_server;
 ShipShape::ShipShape()
 {
     warn("ShipShape::ShipShape: Hello world!");
+    // Assume rotate never gets negative angles like this.
+    currentDir = INT_MIN;
 }
 
 ShipShape::~ShipShape()
@@ -423,10 +425,8 @@ static void Grid_print(grid_t *grid_p)
 }
 #endif
 
-static int shape2wire(char *ship_shape_str, ShipShape *ship)
+static int shape2wire(std::string ship_shape_str, ShipShape *ship)
 {
-    warn("shape2wire: %s", ship_shape_str);
-
     grid_t grid;
     int i, j, x, y, dx, dy, max, shape_version = 0;
     ipos_t pt[MAX_SHIP_PTS2], in, old_in, engine, m_gun;
@@ -441,7 +441,7 @@ static int shape2wire(char *ship_shape_str, ShipShape *ship)
     if (debugShapeParsing)
         warn("parsing shape: %s", ship_shape_str);
 
-    for (str = ship_shape_str; (str = strchr(str, '(')) != nullptr;)
+    for (str = const_cast<char *>(ship_shape_str.c_str()); (str = strchr(str, '(')) != nullptr;)
     {
         str++;
 
@@ -1297,11 +1297,9 @@ static int shape2wire(char *ship_shape_str, ShipShape *ship)
     return 0;
 }
 
-static ShipShape *do_parse_shape(char *str)
+static ShipShape *do_parse_shape(std::string str)
 {
-    warn("do_parse_shape: str: %s", str);
-
-    if (!str || !*str)
+    if (str.empty())
     {
         if (debugShapeParsing)
             warn("shape str not set");
@@ -1333,7 +1331,7 @@ void Free_ship_shape(ShipShape *ship)
     }
 }
 
-ShipShape *Parse_shape_str(char *str)
+ShipShape *Parse_shape_str(std::string str)
 {
     if (is_server)
         verboseShapeParsing = debugShapeParsing;
@@ -1343,7 +1341,7 @@ ShipShape *Parse_shape_str(char *str)
     return do_parse_shape(str);
 }
 
-ShipShape *Convert_shape_str(char *str)
+ShipShape *Convert_shape_str(std::string str)
 {
     verboseShapeParsing = debugShapeParsing;
     shapeLimits = debugShapeParsing;
@@ -1353,7 +1351,7 @@ ShipShape *Convert_shape_str(char *str)
 /*
  * Returns 0 if ships is not valid, 1 if valid.
  */
-int Validate_shape_str(char *str)
+int Validate_shape_str(std::string str)
 {
     ShipShape *ship;
 
@@ -1367,8 +1365,6 @@ int Validate_shape_str(char *str)
 void Convert_ship_2_string(ShipShape *ship, char *buf, char *ext,
                            unsigned shape_version)
 {
-    warn("Convert_ship_2_string!");
-
     char tmp[MSG_LEN];
     int i, buflen = 0, extlen, tmplen;
 

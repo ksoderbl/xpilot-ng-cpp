@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -165,7 +163,6 @@ typedef struct
 
 extern client_data_t clData;
 
-extern bool newbie;
 extern char *geometry;
 extern xp_args_t xpArgs;
 extern Connect_param_t connectParam;
@@ -308,9 +305,8 @@ extern int protocolVersion;
 /*
  * somewhere
  */
-const char *Program_name(void);
+std::string Program_name(void);
 int Bitmap_add(std::string filename, int count, bool scalable);
-void Pointer_control_newbie_message(void);
 
 /*
  * Platform specific code needs to implement these.
@@ -394,7 +390,7 @@ extern void xpilotShutdown(void);
 /*
  * mapdata.c
  */
-extern int Mapdata_setup(const char *);
+extern int Mapdata_setup(const std::string &urlstr);
 
 /*
  * paintdata.c
@@ -411,6 +407,11 @@ extern int Init_asteroids(void);
  * query.c
  */
 extern int Query_all(sock_t *sockfd, int port, char *msg, size_t msglen);
+
+/*
+ * sim.c
+ */
+extern void Simulate(bool on);
 
 /*
  * textinterface.c

@@ -64,7 +64,6 @@ char *geometry;
 xp_args_t xpArgs;
 Connect_param_t connectParam;
 
-bool newbie;
 int baseWarningType; /* Which type of base warning you prefer */
 int maxCharsInNames;
 int hudRadarDotSize;  /* Size for hudradar dot drawing */
@@ -296,16 +295,14 @@ void Client_cleanup(void)
     Platform_specific_cleanup();
     Free_selectionAndHistory();
     Free_msgs();
-    if (max_others > 0)
+    if (others.size() > 0)
     {
-        for (i = 0; i < num_others; i++)
+        for (i = 0; i < others.size(); i++)
         {
-            Other *other = &Others[i];
+            Other *other = others[i];
             Free_ship_shape(other->ship);
         }
-        free(Others);
-        num_others = 0;
-        max_others = 0;
+        others.resize(0);
     }
 
     clMap.refuels.clear();

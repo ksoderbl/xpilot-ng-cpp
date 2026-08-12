@@ -26,7 +26,6 @@
 #include <cerrno>
 #include <cstring>
 #include <cctype>
-#include <cstdint>
 
 #include "commonproto.h"
 

@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2004 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2004 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -62,8 +60,7 @@ int messagesToStdout = 0; /* Send messages to standard output */
 static message_t *MsgBlock = nullptr;
 static message_t *MsgBlock_pending = nullptr;
 
-static void Delete_pending_messages(void);
-
+// TODO: move this to msg-parser.cpp
 /*
  * Checks if the message is sent by someone in your team.
  * In 'bracket' we will store info about where the
@@ -80,14 +77,14 @@ static bool Msg_is_from_our_team(const char *message, const char **msg2)
         return false;
 
     len = strlen(message);
-    for (i = 0; i < num_others; i++)
+    for (i = 0; i < others.size(); i++)
     {
-        other = &Others[i];
+        other = others[i];
         if (other->team != self->team)
             continue;
 
         /* first check if someone in your team sent the message for all */
-        sprintf(buf, "[%s]", other->nick_name);
+        sprintf(buf, "[%s]", other->nick_name.c_str());
         bufstrlen = strlen(buf);
         if (len < bufstrlen)
             continue;
@@ -99,7 +96,7 @@ static bool Msg_is_from_our_team(const char *message, const char **msg2)
         }
 
         /* if not, check if it was sent to your team only */
-        sprintf(buf, "[%s]:[%d]", other->nick_name, other->team);
+        sprintf(buf, "[%s]:[%d]", other->nick_name.c_str(), other->team);
         bufstrlen = strlen(buf);
         if (len < bufstrlen)
             continue;
@@ -203,6 +200,8 @@ void Free_selectionAndHistory(void)
  */
 void Add_message(const char *message)
 {
+    // warn("ADD MESSAGE: %s", message);
+
     int i, last_msg_index;
     message_t *msg, **msg_set;
     msg_bms_t bmsinfo = BmsNone;
@@ -321,22 +320,10 @@ void Add_message(const char *message)
         printf("%s\n", message);
 }
 
-void Add_newbie_message(const char *message)
-{
-    char msg[MSG_LEN];
-
-    if (!newbie)
-        return;
-
-    snprintf(msg, sizeof(msg), "%s [*Newbie help*]", message);
-
-    Add_alert_message(msg, 10.0);
-}
-
 /*
  * clear the buffer for the pending messages
  */
-static void Delete_pending_messages(void)
+void Delete_pending_messages(void)
 {
     message_t *msg;
     int i;

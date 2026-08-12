@@ -339,7 +339,7 @@ static void Paint_lock(int hud_pos_x, int hud_pos_y)
         rd.drawString(dpy, drawPixmap, gameGC,
                       WINSCALE(hud_pos_x) - target->name_width / 2,
                       WINSCALE(hud_pos_y - hudSize + HUD_OFFSET - BORDER) - gameFont->descent,
-                      target->id_string, target->name_len);
+                      target->id_string.c_str(), target->name_len);
 
         /* lives left is a better info than distance in team games MM */
         if (BIT(Setup->mode, LIMITED_LIVES))
@@ -876,17 +876,6 @@ void Paint_messages(void)
                     break;
                 }
             }
-        }
-
-        /* kps ugly hack */
-        if (newbie && msg->txt)
-        {
-            const char *help = "[*Newbie help*]";
-            size_t sz = strlen(msg->txt);
-            size_t hsz = strlen(help);
-
-            if (sz > hsz && !strcmp(help, &msg->txt[sz - hsz]))
-                msg_color = WHITE;
         }
 
         if (msg_color == 0)

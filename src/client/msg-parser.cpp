@@ -22,9 +22,8 @@
 
 #include "msg-parser.h"
 
-#include <assert.h>
+#include <cassert>
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 
 #include "bit.h"
@@ -71,7 +70,7 @@ static int rounds_played = 0;
  */
 
 /* if you want debug messages, use the upper one */
-/*#define DP(x) x*/
+/* #define DP(x) x */
 #define DP(x)
 
 static const char *shottypes[] = {
@@ -106,7 +105,8 @@ const char *client_or_server[] = {
     "*Server reply*",
 };
 
-static bool Msg_match_fmt(const char *msg, const char *fmt, msgnames_t *mn)
+/* parser for messages */
+bool Msg_match_fmt(const char *msg, const char *fmt, msgnames_t *mn)
 {
     const char *fp;
     int i;
@@ -133,11 +133,22 @@ static bool Msg_match_fmt(const char *msg, const char *fmt, msgnames_t *mn)
 
     switch (*(fp + 1))
     {
-        char *nick;
+        const char *nick;
     case 'n': /* nick */
-        for (i = 0; i < num_others; i++)
+        for (i = 0; i < others.size(); i++)
         {
-            nick = Others[i].nick_name;
+            nick = others[i]->nick_name.c_str();
+            len = strlen(nick);
+            if ((strncmp(msg, nick, len) == 0) && Msg_match_fmt(msg + len, fmt, mn))
+            {
+                strncpy(mn->nick_name[mn->index++], nick, len + 1);
+                return true;
+            }
+        }
+        /* The client or server software "sent" the message? */
+        for (i = 0; i < NELEM(client_or_server); i++)
+        {
+            nick = client_or_server[i];
             len = strlen(nick);
             if ((strncmp(msg, nick, len) == 0) && Msg_match_fmt(msg + len, fmt, mn))
             {
@@ -205,16 +216,16 @@ bool Want_scan(void)
     int num_playing = 0;
 
     /* if only player on server, let's not bother */
-    if (num_others < 2)
+    if (others.size() < 2)
         return false;
 
     /* if not playing, don't bother */
     if (!self || strchr("PW", self->mychar))
         return false;
 
-    for (i = 0; i < num_others; i++)
+    for (i = 0; i < others.size(); i++)
     {
-        other = &Others[i];
+        other = others[i];
         /* alive and dead ships and robots are considered playing */
         if (strchr(" DR", other->mychar))
             num_playing++;
@@ -229,7 +240,7 @@ bool Want_scan(void)
  * A total reset is most often done when a new match is starting.
  * If we see a total reset message we clear the statistics.
  */
-static bool Msg_scan_for_total_reset(const char *message)
+bool Msg_scan_for_total_reset(const char *message)
 {
     static char total_reset[] = "Total reset";
 
@@ -251,7 +262,7 @@ static bool Msg_scan_for_total_reset(const char *message)
     return false;
 }
 
-static bool Msg_scan_for_replace_treasure(const char *message)
+bool Msg_scan_for_replace_treasure(const char *message)
 {
     msgnames_t mn;
 
@@ -269,7 +280,7 @@ static bool Msg_scan_for_replace_treasure(const char *message)
         if (replacer_team == self->team)
         {
             Bms_set_state(BmsSafe);
-            if (!strcmp(replacer, self->nick_name))
+            if (!strcmp(replacer, self->nick_name.c_str()))
                 ballstats_replaces++;
             return true;
         }
@@ -289,7 +300,7 @@ static bool Msg_scan_for_replace_treasure(const char *message)
     return false;
 }
 
-static bool Msg_scan_for_ball_destruction(const char *message)
+bool Msg_scan_for_ball_destruction(const char *message)
 {
     msgnames_t mn;
 
@@ -308,7 +319,7 @@ static bool Msg_scan_for_ball_destruction(const char *message)
         if (destroyer_team == self->team)
         {
             ballstats_teamcashes++;
-            if (!strcmp(destroyer, self->nick_name))
+            if (!strcmp(destroyer, self->nick_name.c_str()))
                 ballstats_cashes++;
         }
         if (destroyed_team == self->team)
@@ -319,9 +330,10 @@ static bool Msg_scan_for_ball_destruction(const char *message)
 }
 
 /* Needed by base warning hack */
-static void Msg_scan_death(int id)
+void Msg_scan_death(int id)
 {
-    int i;
+    // warn("Msg_scan_death: id: %d", id);
+
     Other *other;
 
     if (version >= 0x4F12)
@@ -331,15 +343,22 @@ static void Msg_scan_death(int id)
     if (!other)
         return;
 
+    // warn("Msg_scan_death: other: %p", other);
+    // warn("Msg_scan_death: other->nick_name: %s", other->nick_name);
+    // warn("Msg_scan_death: other->life: %d", other->life);
+
     /* don't do base warning for players who lost their last life */
     if (BIT(Setup->mode, LIMITED_LIVES) && other->life == 0)
         return;
 
     for (auto &base : clMap.bases)
     {
+        // warn("Msg_scan_death: i=%d, id=%d, bases[i].id=%d", i, id, bases[i].id);
         if (base.id == id)
         {
+            // warn("Msg_scan_death: i=%d, end_loops=%ld", i, end_loops);
             base.appeartime = (long)(end_loops + 3 * clientFPS);
+            // warn("Msg_scan_death: i=%d, bases[i].appeartime=%ld", i, bases[i].appeartime);
             break;
         }
     }
@@ -388,7 +407,7 @@ void Msg_scan_game_msg(const char *message)
 
     if (!self)
     {
-        warn("Variable 'self' is nullptr!");
+        // warn("Variable 'self' is nullptr!");
         return;
     }
 
@@ -480,21 +499,21 @@ void Msg_scan_game_msg(const char *message)
     if (killer != nullptr)
     {
         DP(printf("Killer is %s.\n", killer));
-        if (strcmp(killer, self->nick_name) == 0)
+        if (strcmp(killer, self->nick_name.c_str()) == 0)
             i_am_killer = true;
     }
 
     if (victim != nullptr)
     {
         DP(printf("Victim is %s.\n", victim));
-        if (strcmp(victim, self->nick_name) == 0)
+        if (strcmp(victim, self->nick_name.c_str()) == 0)
             i_am_victim = true;
     }
 
     if (victim2 != nullptr)
     {
         DP(printf("Second victim is %s.\n", victim2));
-        if (strcmp(victim2, self->nick_name) == 0)
+        if (strcmp(victim2, self->nick_name.c_str()) == 0)
             i_am_victim2 = true;
     }
 
@@ -663,7 +682,7 @@ void Partition_talk_message(char *message,
     }
 }
 
-static void Roundend(void)
+void Roundend(void)
 {
     int i;
 
@@ -671,7 +690,7 @@ static void Roundend(void)
     Bms_set_state(BmsNone);
 }
 
-void Add_roundend_messages(Other **order)
+void Add_roundend_messages(std::vector<Other *> &order)
 {
     static char hackbuf[MSG_LEN];
     static char hackbuf2[MSG_LEN];
@@ -717,7 +736,7 @@ void Add_roundend_messages(Other **order)
     /*
      * Scores are nice to see e.g. in cup recordings.
      */
-    for (i = 0; i < num_others; i++)
+    for (i = 0; i < others.size(); i++)
     {
         other = order[i];
         if (other->mychar == 'P')
@@ -725,7 +744,7 @@ void Add_roundend_messages(Other **order)
 
         if (Using_score_decimals())
         {
-            sprintf(hackbuf2, "%s: %.*f ", other->nick_name,
+            sprintf(hackbuf2, "%s: %.*f ", other->nick_name.c_str(),
                     showScoreDecimals, other->score);
             if ((s - hackbuf) + strlen(hackbuf2) > MSG_LEN)
             {
@@ -738,7 +757,7 @@ void Add_roundend_messages(Other **order)
         {
             double score = other->score;
             int sc = (int)(score >= 0.0 ? score + 0.5 : score - 0.5);
-            sprintf(hackbuf2, "%s: %d ", other->nick_name, sc);
+            sprintf(hackbuf2, "%s: %d ", other->nick_name.c_str(), sc);
             if ((s - hackbuf) + strlen(hackbuf2) > MSG_LEN)
             {
                 Add_message(hackbuf);

@@ -67,7 +67,6 @@
 #define MAX(x, y) ((x) > (y) ? (x) : (y))
 #endif
 #define sqr(x) ((x) * (x))
-#define DELTA(a, b) (((a) >= (b)) ? ((a) - (b)) : ((b) - (a)))
 #define LENGTH(x, y) (hypot((double)(x), (double)(y)))
 #define VECTOR_LENGTH(v) (hypot((double)(v).x, (double)(v).y))
 #define QUICK_LENGTH(x, y) (ABS(x) + ABS(y)) /*-BA Only approx, but v. quick */
@@ -117,7 +116,7 @@ constexpr double SELF_DESTRUCT_DELAY = 150.0;
 
 #define TEAM_NOT_SET 0xffff
 
-#define DEBRIS_TYPES (8 * 4 * 4)
+constexpr std::size_t DEBRIS_TYPES = (8 * 4 * 4);
 
 /*
  * The server supports only 4 colors, except for spark/debris, which
