@@ -633,7 +633,9 @@ void Do_transporter(Player *pl)
     double dist, closest = TRANSPORTER_DISTANCE * CLICK;
 
     /* if not available, fail silently */
-    if (!pl->item[ITEM_TRANSPORTER] || pl->fuel.sum < -ED_TRANSPORTER || Player_is_phasing(pl))
+    if (!pl->item[ITEM_TRANSPORTER] ||
+        pl->fuel.sum < -ED_TRANSPORTER ||
+        Player_is_phasing(pl))
         return;
 
     /* find victim */
@@ -641,7 +643,11 @@ void Do_transporter(Player *pl)
     {
         Player *pl_i = Player_by_index(i);
 
-        if (pl_i == pl || !Player_is_active(pl_i) || Team_immune(pl->id, pl_i->id) || Player_is_tank(pl_i) || Player_is_phasing(pl_i))
+        if (pl_i == pl ||
+            !Player_is_active(pl_i) ||
+            Team_immune(pl->id, pl_i->id) ||
+            Player_is_tank(pl_i) ||
+            Player_is_phasing(pl_i))
             continue;
         dist = World_wrap_length(
             world,
@@ -1097,7 +1103,7 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
     if (options.ecmsReprogramMines && closest_mine != nullptr)
     {
         range = closest_mine_range;
-        if (range <= 0 || (int)(rfrac() * 100.0f) < (100 - (int)(50 * range)))
+        if (range <= 0 || (int)(rfrac() * 100.0) < (100 - (int)(50 * range)))
             closest_mine->id = (pl ? pl->id : NO_ID);
         closest_mine->team = team;
     }
@@ -1147,8 +1153,10 @@ void Fire_general_ecm(int id, int team, clpos_t pos)
 
         if (Player_is_active(p))
         {
-            range = World_wrap_length(world, pos.cx - p->pos.cx,
-                                      pos.cy - p->pos.cy) /
+            range = World_wrap_length(
+                        world,
+                        pos.cx - p->pos.cx,
+                        pos.cy - p->pos.cy) /
                     CLICK;
             if (range > ECM_DISTANCE)
                 continue;
