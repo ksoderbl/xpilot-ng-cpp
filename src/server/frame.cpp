@@ -26,6 +26,9 @@
  * <https://www.gnu.org/licenses/>.
  */
 
+#include <vector>
+
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <cstdio>
@@ -44,7 +47,9 @@
 #include "const.h"
 #include "xperror.h"
 
+#include "cell.h"
 #include "modifiers.h"
+#include "ship.h"
 #include "server.h"
 
 #include "map.h"
@@ -60,7 +65,7 @@
 #include "teamcup.h"
 #include "polygon.h"
 
-#define MAX_SHUFFLE_INDEX 65535
+constexpr int MAX_SHUFFLE_INDEX = UINT16_MAX;
 
 typedef uint16_t shuffle_t;
 
@@ -68,7 +73,7 @@ typedef uint16_t shuffle_t;
  * Structure for calculating if a click position is visible by a player.
  * Used for map state info updating.
  * The following always holds:
- *    (world.cx >= realWorld.cx && world.cy >= realWorld.cy)
+ *     (world.cx >= realWorld.cx && world.cy >= realWorld.cy)
  */
 typedef struct
 {

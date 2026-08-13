@@ -31,6 +31,7 @@
 #include <cstdio>
 #include <cmath>
 
+#include "bit.h"
 #include "click.h"
 #include "xperror.h"
 
@@ -47,10 +48,11 @@
 #include "score.h"
 #include "map.h"
 #include "saudio.h"
-#include "bit.h"
+
 #include "netserver.h"
 #include "modifiers.h"
 #include "wormhole.h"
+#include "shot.h"
 
 bool team_dead(int team)
 {

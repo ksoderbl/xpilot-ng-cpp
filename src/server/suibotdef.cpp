@@ -55,6 +55,7 @@
 #include "xperror.h"
 #include "server.h"
 #include "walls2.h"
+#include "shot.h"
 
 #define ROB_LOOK_AH 2
 

@@ -30,6 +30,7 @@
 #include <cstdio>
 #include <cmath>
 
+#include "bit.h"
 #include "click.h"
 #include "commonproto.h"
 #include "xperror.h"
@@ -46,15 +47,15 @@
 
 #include "map.h"
 #include "score.h"
-#include "bit.h"
 #include "saudio.h"
 #include "object.h"
 #include "cannon.h"
 #include "asteroid.h"
+#include "move.h"
 #include "netserver.h"
 #include "robot.h"
 #include "rank.h"
-#include "move.h"
+#include "shot.h"
 #include "walls.h"
 #include "walls2.h"
 #include "wormhole.h"

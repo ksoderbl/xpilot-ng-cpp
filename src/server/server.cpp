@@ -42,10 +42,16 @@
 #include <pwd.h>
 #include <sys/param.h>
 
+#include "bit.h"
 #include "commonmacros.h"
 #include "commonproto.h"
+#include "version.h"
+#include "xpconfig.h"
+#include "types.h"
 
 #include "cannon.h"
+#include "cell.h"
+#include "cmdline.h"
 #include "contact.h"
 #include "frame.h"
 #include "metaserver.h"
@@ -54,14 +60,10 @@
 #include "server.h"
 #include "update.h"
 #include "robot.h"
-
-#include "version.h"
-#include "xpconfig.h"
-#include "types.h"
+#include "ship.h"
 #include "serverconst.h"
 #include "socklib.h"
 #include "map.h"
-#include "bit.h"
 #include "sched.h"
 #include "netserver.h"
 #include "xperror.h"
@@ -835,7 +837,8 @@ void Server_log_admin_message(Player *pl, const char *str)
                 "\t%s\n",
                 showtime(),
                 pl->name.c_str(),
-                pl->username.c_str(), pl->hostname.c_str(),
+                pl->username.c_str(),
+                pl->hostname.c_str(),
                 Player_get_addr(pl),
                 Player_get_dpy(pl),
                 str);

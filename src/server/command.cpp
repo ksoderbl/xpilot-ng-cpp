@@ -53,7 +53,7 @@
 #include "xperror.h"
 #include "netserver.h"
 #include "score.h"
-
+#include "shot.h"
 #include "teamcup.h"
 #include "srecord.h"
 

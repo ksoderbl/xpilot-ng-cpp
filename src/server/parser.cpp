@@ -30,9 +30,6 @@
 
 #include "commonproto.h"
 
-#include "fileparser.h"
-#include "server.h"
-
 #include "version.h"
 #include "xpconfig.h"
 #include "serverconst.h"
@@ -40,6 +37,10 @@
 #include "xperror.h"
 #include "portability.h"
 #include "checknames.h"
+
+#include "cmdline.h"
+#include "fileparser.h"
+#include "server.h"
 
 /*
  * Print the option list in "-help" format.
@@ -345,8 +346,12 @@ bool Parser(int argc, char **argv)
     options.mapWidth = 0;
     options.mapHeight = 0;
 
+    warn("Parser: Calling Init_options");
+
     if (Init_options() == false)
         return false;
+
+    warn("Parser: Calling Init_options returned");
 
     for (i = 1; i < argc; i++)
     {
@@ -361,7 +366,6 @@ bool Parser(int argc, char **argv)
                 if (desc->type == valBool)
                 {
                     const char *bool_value;
-
                     if (argv[i][0] == '-')
                         bool_value = "true";
                     else
@@ -414,7 +418,7 @@ bool Parser(int argc, char **argv)
     {
         if ((fname = Option_get_value("mapFileName", nullptr)) != nullptr)
         {
-            if (!parseMapFile(fname))
+            if (strcasecmp(fname, "wild") && !parseMapFile(fname))
             {
                 printf("Unable to read %s, trying to open %s\n",
                        fname, Conf_default_map());
@@ -440,7 +444,11 @@ bool Parser(int argc, char **argv)
     /*
      * Construct the World structure from the options.
      */
-    return Grok_map();
+    warn("Parser: Calling Grok_map");
+    bool ok = Grok_map();
+    warn("Parser: Calling Grok_map returned %s", ok ? "OK" : "NOT OK");
+
+    return ok;
 }
 
 /*

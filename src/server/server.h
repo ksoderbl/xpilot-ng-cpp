@@ -126,10 +126,6 @@ void Cell_get_objects(clpos_t pos, int r, int max, object_t ***list, int *count)
  * Prototypes for collision2.cpp
  */
 void Check_collision2(void);
-int IsOffensiveItem(enum Item i);
-int IsDefensiveItem(enum Item i);
-int CountOffensiveItems(Player *pl);
-int CountDefensiveItems(Player *pl);
 
 /*
  * Prototypes for id.c
@@ -194,75 +190,6 @@ bool isXp2MapFile(FILE *ifile);
 bool parseXp2MapFile(char *fname, optOrigin opt_origin);
 
 /*
- * Prototypes for cmdline.c
- */
-void tuner_none(void);
-void tuner_dummy(void);
-void Check_playerlimit(void);
-void Timing_setup(void);
-bool Init_options(void);
-void Free_options(void);
-
-/*
- * Prototypes for player.c
- */
-void Item_damage(Player *pl, double prob);
-
-void Add_fuel(pl_fuel_t *ft, double fuel);
-
-static inline void Player_add_fuel(Player *pl, double amount)
-{
-    Add_fuel(&(pl->fuel), amount);
-}
-
-void Place_item(Player *pl, int type);
-int Choose_random_item(void);
-void Tractor_beam(Player *pl);
-void General_tractor_beam(int id, clpos_t pos,
-                          int items, Player *victim, bool pressor);
-void Place_mine(Player *pl);
-void Place_moving_mine(Player *pl);
-void Place_general_mine(int id, int team, int status,
-                        clpos_t pos, vector_t vel, modifiers_t mods);
-void Detonate_mines(Player *pl);
-char *Describe_shot(int type, int status, modifiers_t mods, int hit);
-void Fire_ecm(Player *pl);
-void Fire_general_ecm(int id, int team, clpos_t pos);
-void Update_connector_force(ballobject_t *ball);
-void Fire_shot(Player *pl, int type, int dir);
-void Fire_general_shot(int id, int team, bool cannon,
-                       clpos_t pos, int type, int dir,
-                       modifiers_t mods, int target_id);
-void Fire_normal_shots(Player *pl);
-void Fire_main_shot(Player *pl, int type, int dir);
-void Fire_left_shot(Player *pl, int type, int dir, int gun);
-void Fire_right_shot(Player *pl, int type, int dir, int gun);
-void Fire_left_rshot(Player *pl, int type, int dir, int gun);
-void Fire_right_rshot(Player *pl, int type, int dir, int gun);
-
-bool Friction_area_hitfunc(group_t *groupptr, const move_t *move);
-
-void Team_immunity_init(void);
-void Hitmasks_init(void);
-
-void Delete_shot(int ind);
-void Do_deflector(Player *pl);
-void Do_transporter(Player *pl);
-void Do_general_transporter(int id, clpos_t pos,
-                            Player *victim, int *item, double *amount);
-void do_lose_item(Player *pl);
-void Update_torpedo(torpobject_t *torp);
-void Update_missile(missileobject_t *shot);
-void Update_mine(mineobject_t *mine);
-void Make_item(clpos_t pos,
-               vector_t vel,
-               int item, int num_per_pack, int status);
-void Throw_items(Player *pl);
-void Detonate_items(Player *pl);
-void add_temp_wormholes(int xin, int yin, int xout, int yout);
-void remove_temp_wormhole(int ind);
-
-/*
  * Prototypes for server.cpp
  */
 void End_game(void);
@@ -275,3 +202,4 @@ void Server_shutdown(const char *user_name, int delay, const char *reason);
 void Server_log_admin_message(Player *pl, const char *str);
 int plock_server(bool on);
 void Main_loop(void);
+bool Friction_area_hitfunc(group_t *groupptr, const move_t *move);

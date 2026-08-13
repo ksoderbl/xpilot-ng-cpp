@@ -28,6 +28,8 @@
 
 /* Options parsing code contributed by Ted Lemon <mellon@ncd.com> */
 
+#include "cmdline.h"
+
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -54,6 +56,7 @@
 #include "target.h"
 #include "move.h"
 #include "walls2.h"
+#include "ship.h"
 
 double friction;
 double coriolisCosine, coriolisSine; /* cos and sin of cor. angle */

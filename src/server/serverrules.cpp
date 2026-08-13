@@ -26,15 +26,14 @@
 #include <cstdlib>
 #include <cstdio>
 
-#include "server.h"
-
-#include "xpconfig.h"
-#include "serverconst.h"
-
-#include "map.h"
-#include "rules.h"
 #include "bit.h"
+#include "xpconfig.h"
+
 #include "cannon.h"
+#include "map.h"
+#include "server.h"
+#include "serverconst.h"
+#include "shot.h"
 
 #define MAX_FUEL 10000
 #define MAX_WIDEANGLE 99

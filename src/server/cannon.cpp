@@ -52,8 +52,8 @@
 // #include "xpmath.h"
 // #include "polygon.h"
 #include "map.h"
-
 #include "move.h"
+#include "shot.h"
 
 static int Cannon_select_weapon(cannon_t *cannon);
 static void Cannon_aim(cannon_t *cannon, int weapon,

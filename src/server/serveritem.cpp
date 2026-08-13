@@ -52,6 +52,7 @@
 #include "commonproto.h"
 #include "robot.h"
 #include "walls2.h"
+#include "shot.h"
 
 static void Item_update_flags(Player *pl)
 {

@@ -58,6 +58,7 @@
 
 #include "target.h"
 #include "treasure.h"
+#include "shot.h"
 
 bool updateScores = true;
 
