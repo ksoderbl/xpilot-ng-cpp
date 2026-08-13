@@ -159,6 +159,7 @@ static bool Key_press_id_mode(void)
 
 static bool Key_press_autoshield_hack(void)
 {
+    warn("Key_press_autoshield_hack");
     if (auto_shield && BITV_ISSET(keyv, KEY_SHIELD))
         BITV_CLR(keyv, KEY_SHIELD);
     return false;
@@ -166,6 +167,7 @@ static bool Key_press_autoshield_hack(void)
 
 static bool Key_press_shield(keys_t key)
 {
+    warn("Key_press_shield, key = %d, shields = %d", key, shields);
     if (toggle_shield)
     {
         shields = !shields;
@@ -419,7 +421,10 @@ void Key_clear_counts(void)
     }
 
     if (change)
+    {
+        warn("Key_clear_counts: calling Net_key_change");
         Net_key_change();
+    }
 }
 
 /* Remember which key we used to exit quit mode. */
@@ -691,6 +696,7 @@ void Reset_shields(void)
                 BITV_ISSET(keyv, KEY_DETACH_MINE))
                 BITV_CLR(keyv, KEY_SHIELD);
         }
+        warn("Reset_shields: calling Net_key_change");
         Net_key_change();
     }
 }
@@ -728,7 +734,10 @@ void Pointer_button_pressed(int button)
         key_change |= Key_press(buttonDefs[b_index][i]);
 
     if (key_change)
+    {
+        // warn("Pointer_button_pressed: calling Net_key_change");
         Net_key_change();
+    }
 }
 
 void Pointer_button_released(int button)
@@ -743,11 +752,16 @@ void Pointer_button_released(int button)
         key_change |= Key_release(buttonDefs[b_index][i]);
 
     if (key_change)
+    {
+        // warn("Pointer_button_released: calling Net_key_change");
         Net_key_change();
+    }
 }
 
 void Keyboard_button_pressed(xp_keysym_t ks)
 {
+    warn("Keyboard_button_pressed: ks = %d", ks);
+
     bool change = false;
     keys_t key;
 
@@ -766,11 +780,16 @@ void Keyboard_button_pressed(xp_keysym_t ks)
         change |= Key_press(key);
 
     if (change)
+    {
+        // warn("Keyboard_button_pressed: calling Net_key_change");
         Net_key_change();
+    }
 }
 
 void Keyboard_button_released(xp_keysym_t ks)
 {
+    warn("Keyboard_button_released: ks = %d", ks);
+
     bool change = false;
     keys_t key;
 
@@ -780,7 +799,10 @@ void Keyboard_button_released(xp_keysym_t ks)
         change |= Key_release(key);
 
     if (change)
+    {
+        // warn("Keyboard_button_released: calling Net_key_change");
         Net_key_change();
+    }
 }
 
 static void Bind_key_to_pointer_button(keys_t key, int ind)
@@ -814,6 +836,8 @@ static bool setPointerButtonBinding(xp_option_t *opt, const char *value)
     assert(value);
     XFREE(pointerButtonBindings[ind]);
 
+    warn("setPointerButtonBinding: option = %s, value = %s, ind = %d", opt->name, value, ind);
+
     Clear_buttonDefs(ind);
 
     pointerButtonBindings[ind] = xp_safe_strdup(value);
@@ -825,17 +849,26 @@ static bool setPointerButtonBinding(xp_option_t *opt, const char *value)
     {
         if (!strncasecmp(ptr, "key", 3))
             ptr += 3;
+
         for (j = 0; j < optionsVector.size(); j++)
         {
             xp_option_t *opt_j = Option_by_index(j);
             const char *opt_j_name;
             keys_t opt_j_key;
 
+            // Ignore options that are not key options.
+            if (opt_j->type != xp_key_option)
+                continue;
+
             assert(opt_j);
             opt_j_name = Option_get_name(opt_j);
             opt_j_key = Option_get_key(opt_j);
+
+            warn("setPointerButtonBinding: name = %s, key = %d", opt_j_name, opt_j_key);
+
             if (opt_j_key != KEY_DUMMY && (!strcasecmp(ptr, opt_j_name + 3)))
             {
+                warn("setPointerButtonBinding: call Bind_key_to_pointer_button for key = %d, ind = %d", opt_j_key, ind);
                 Bind_key_to_pointer_button(opt_j_key, ind);
                 break;
             }

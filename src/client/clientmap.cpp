@@ -1650,11 +1650,11 @@ static int Handle_shot_vector(std::array<std::vector<ShotT>, N> &shotTypes,
                               int type,
                               uint8_t *p,
                               int n,
-                              const char *name)
+                              std::string name)
 {
     if (type < 0 || type >= static_cast<int>(N))
     {
-        error("Invalid %s type %d", name, type);
+        error("Invalid %s type %d", name.c_str(), type);
         return -1;
     }
 
@@ -1663,7 +1663,7 @@ static int Handle_shot_vector(std::array<std::vector<ShotT>, N> &shotTypes,
     if (n <= 0)
     {
         if (n < 0)
-            printf("%s %d < 0\n", name, n);
+            printf("%s %d < 0\n", name.c_str(), n);
 
         shotList.clear();
         return 0;
@@ -1675,7 +1675,7 @@ static int Handle_shot_vector(std::array<std::vector<ShotT>, N> &shotTypes,
     }
     catch (const std::bad_alloc &)
     {
-        error("No memory for %s", name);
+        error("No memory for %s", name.c_str());
         shotList.clear();
         return -1;
     }
@@ -1751,6 +1751,9 @@ int Handle_wreckage(int x, int y, int wrecktype, int size, int rotation)
 
 int Handle_asteroid(int x, int y, int type, int size, int rotation)
 {
+    // warn("Handle_asteroid: x = %d, y = %d, type = %d, size = %d, rotation = %d",
+    //      x, y, type, size, rotation);
+
     asteroid_t t;
 
     t.x = x;
@@ -1784,6 +1787,7 @@ int Handle_polystyle(int polyind, int newstyle)
     poly = &clMap.polygons[polyind];
     poly->style = newstyle;
     /*warn("polygon %d style set to %d", polyind, newstyle);*/
+
     UpdateRadar = true;
     return 0;
 }
@@ -1873,6 +1877,8 @@ int Handle_vcannon(int x, int y, int type)
 
 int Handle_vfuel(int x, int y, double fuel)
 {
+    // warn("Handle_vfuel: x: %d, y: %d, fuel: %f", x, y, fuel);
+
     vfuel_t t;
 
     t.x = x;
