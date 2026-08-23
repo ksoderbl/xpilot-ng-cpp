@@ -2838,13 +2838,8 @@ int Send_pointer_move(int movement)
 
 int Send_audio_request(bool on)
 {
-#ifdef DEBUG_SOUND
-    printf("Send_audio_request %d\n", on ? 1 : 0);
-#endif
+    debugprint("Send_audio_request %d\n", on ? 1 : 0);
 
-#ifndef SOUND
-    on = false;
-#endif
     if (Packet_printf(&wbuf, "%c%c", PKT_REQUEST_AUDIO, (on ? 1 : 0)) == -1)
         return -1;
     return 0;

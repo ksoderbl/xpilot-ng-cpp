@@ -1068,6 +1068,19 @@ void Init_spark_colors(void)
     unsigned col;
     int i;
 
+    // debugprint("Init_spark_colors: original sparkColors %s", sparkColors);
+    // strlcpy(sparkColors, "", sizeof sparkColors);
+    // strlcpy(sparkColors, "1", sizeof sparkColors);
+    // strlcpy(sparkColors, "1,2", sizeof sparkColors);
+    // strlcpy(sparkColors, "1,2,3", sizeof sparkColors);
+    // strlcpy(sparkColors, "1,2,3,4", sizeof sparkColors);
+    // strlcpy(sparkColors, "1,2,3,4,5", sizeof sparkColors);
+    // strlcpy(sparkColors, "1,2,3,4,5,6", sizeof sparkColors);
+    // strlcpy(sparkColors, "1,2,3,4,5,6,7", sizeof sparkColors);
+    // strlcpy(sparkColors, "1,2,3,4,5,6,7,8", sizeof sparkColors);
+    // strlcpy(sparkColors, "1,2,3,4,5,6,7,8,9", sizeof sparkColors);
+    // debugprint("Init_spark_colors: changed  sparkColors %s", sparkColors);
+
     num_spark_colors = 0;
     /*
      * The sparkColors specification may contain

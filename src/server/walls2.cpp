@@ -2637,40 +2637,40 @@ void Walls_init2(void)
     double x, y, l2;
     int i;
 
-    warn("Walls_init2");
+    debugprint("Walls_init2");
 
     mapx = (world->cwidth + B_MASK) >> B_SHIFT;
     mapy = (world->cheight + B_MASK) >> B_SHIFT;
 
-    warn("Walls_init2: calling Poly_to_lines");
+    debugprint("Walls_init2: calling Poly_to_lines");
 
     /* Break polygons down to a list of separate lines. */
     Poly_to_lines();
 
-    warn("Walls_init2: calling Distance_init");
+    debugprint("Walls_init2: calling Distance_init");
 
     /* For each B_CLICKS x B_CLICKS rectangle on the map, find a list of
      * nearby lines that need to be checked for collision when moving
      * in that area. */
     Distance_init();
 
-    warn("Walls_init2: calling Corner_init");
+    debugprint("Walls_init2: calling Corner_init");
 
     /* Like above, except list the map corners that could be hit by the
      * sides of a moving polygon shape. */
     Corner_init();
 
-    warn("Walls_init2: calling Ball_line_init2");
+    debugprint("Walls_init2: calling Ball_line_init2");
 
     Ball_line_init2();
 
-    warn("Walls_init2: calling Inside_init");
+    debugprint("Walls_init2: calling Inside_init");
 
     /* Initialize the data structures used when determining whether a given
      * arbitrary point on the map is inside something. */
     Inside_init();
 
-    warn("Walls_init2: calling precalculate");
+    debugprint("Walls_init2: calling precalculate");
 
     /* Precalculate the .c and .s values used when calculating a bounce
      * from the line. */
@@ -2683,7 +2683,7 @@ void Walls_init2(void)
         linet[i].s = 2 * x * y / l2;
     }
 
-    warn("Walls_init2: create blockmap");
+    debugprint("Walls_init2: create blockmap");
 
     if (is_polygon_map)
     {
@@ -2695,7 +2695,7 @@ void Walls_init2(void)
         Create_blockmap_from_polygons();
     }
 
-    warn("Walls_init2: DONE");
+    debugprint("Walls_init2: DONE");
 }
 
 static void Move_asteroid(object_t *obj)

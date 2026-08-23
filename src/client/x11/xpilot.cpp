@@ -92,7 +92,7 @@ int main(int argc, char *argv[])
     bool auto_shutdown = false;
     ConnectParam *conpar = &clientOptions.connectParam;
 
-    warn("main => calling Conf_print");
+    debugprint("main => calling Conf_print");
 
     /*
      * --- Output copyright notice ---
@@ -110,20 +110,20 @@ int main(int argc, char *argv[])
     Argc = argc;
     Argv = argv;
 
-    warn("main => calling init_error");
+    debugprint("main => calling init_error");
 
     /*
      * --- Miscellaneous initialization ---
      */
     init_error(argv[0]);
 
-    warn("main => calling seed MT");
+    debugprint("main => calling seed MT");
 
     seedMT((unsigned)time(nullptr) ^ Get_process_id());
 
     memset(conpar, 0, sizeof(ConnectParam));
 
-    warn("main => calling create global option array");
+    debugprint("main => calling create global option array");
 
     /*
      * --- Create global option array ---
@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
     Store_record_options();
     Store_color_options();
 
-    warn("main => calling parse options");
+    debugprint("main => calling parse options");
 
     /*
      * --- Check commandline arguments and resource files ---
@@ -149,11 +149,11 @@ int main(int argc, char *argv[])
     Parse_options(&argc, argv);
     /*strcpy(clientname,connectParam.nick_name); */
 
-    warn("main => calling config init");
+    debugprint("main => calling config init");
 
     Config_init();
 
-    warn("main => calling handle x options");
+    debugprint("main => calling handle x options");
 
     Handle_X_options();
 
@@ -174,13 +174,13 @@ int main(int argc, char *argv[])
      */
     printfile(Conf_localmotdfile());
 
-    warn("main => simulate");
+    debugprint("main => simulate");
 
     // Simulate(false);
 
     if (xpArgs.text || xpArgs.auto_connect || argv[1])
     {
-        warn("main => calling contact servers");
+        debugprint("main => calling contact servers");
 
         if (xpArgs.list_servers)
             printf("LISTING AVAILABLE SERVERS:\n");
@@ -193,13 +193,13 @@ int main(int argc, char *argv[])
     }
     else
     {
-        warn("main => calling welcome screen");
+        debugprint("main => calling welcome screen");
         result = Welcome_screen(conpar);
     }
 
     if (result == 1)
     {
-        warn("main => calling join");
+        debugprint("main => calling join");
         retval = Join(conpar);
     }
 

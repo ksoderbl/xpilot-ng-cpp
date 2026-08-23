@@ -1158,7 +1158,7 @@ int Handle_score(int id, double score, int life, int mychar, int alliance)
 
 int Handle_team_score(int team, double score)
 {
-    warn("Handle_team_score: team: %d, score: %f", team, score);
+    // debugprint("Handle_team_score: team: %d, score: %f", team, score);
     return 0;
 }
 

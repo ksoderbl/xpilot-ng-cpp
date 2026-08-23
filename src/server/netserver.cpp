@@ -800,31 +800,31 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
 
     Feature_init(connp);
     if (FEATURE(connp, F_POLY))
-        printf("Have F_POLY\n");
+        debugprint("Have F_POLY\n");
     if (FEATURE(connp, F_FLOATSCORE))
-        printf("Have F_FLOATSCORE\n");
+        debugprint("Have F_FLOATSCORE\n");
     if (FEATURE(connp, F_EXPLICITSELF))
-        printf("Have F_EXPLICITSELF\n");
+        debugprint("Have F_EXPLICITSELF\n");
     if (FEATURE(connp, F_ASTEROID))
-        printf("Have F_ASTEROID\n");
+        debugprint("Have F_ASTEROID\n");
     if (FEATURE(connp, F_TEMPWORM))
-        printf("Have F_TEMPWORM\n");
+        debugprint("Have F_TEMPWORM\n");
     if (FEATURE(connp, F_FASTRADAR))
-        printf("Have F_FASTRADAR\n");
+        debugprint("Have F_FASTRADAR\n");
     if (FEATURE(connp, F_SEPARATEPHASING))
-        printf("Have F_SEPARATEPHASING\n");
+        debugprint("Have F_SEPARATEPHASING\n");
     if (FEATURE(connp, F_TEAMRADAR))
-        printf("Have F_TEAMRADAR\n");
+        debugprint("Have F_TEAMRADAR\n");
     if (FEATURE(connp, F_SHOW_APPEARING))
-        printf("Have F_SHOW_APPEARING\n");
+        debugprint("Have F_SHOW_APPEARING\n");
     if (FEATURE(connp, F_SENDTEAM))
-        printf("Have F_SENDTEAM\n");
+        debugprint("Have F_SENDTEAM\n");
     if (FEATURE(connp, F_CUMULATIVETURN))
-        printf("Have F_CUMULATIVETURN\n");
+        debugprint("Have F_CUMULATIVETURN\n");
     if (FEATURE(connp, F_BALLSTYLE))
-        printf("Have F_BALLSTYLE\n");
+        debugprint("Have F_BALLSTYLE\n");
     if (FEATURE(connp, F_POLYSTYLE))
-        printf("Have F_POLYSTYLE\n");
+        debugprint("Have F_POLYSTYLE\n");
     connp->start = main_loops;
     connp->magic = /*randomMT() +*/ my_port + sock.fd + team + main_loops;
     connp->id = NO_ID;

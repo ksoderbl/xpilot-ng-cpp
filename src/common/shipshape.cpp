@@ -44,21 +44,21 @@ static int Get_shape_keyword(char *keyw);
 static int shape2wire(char *ship_shape_str, ShipShape *ship);
 static void Rotate_ship(ShipShape *ship);
 
-bool debugShapeParsing = true;
-bool verboseShapeParsing = true;
-bool shapeLimits = true;
+static bool debugShapeParsing = false;
+static bool verboseShapeParsing = false;
+static bool shapeLimits = true;
 extern bool is_server;
 
 ShipShape::ShipShape()
 {
-    warn("ShipShape::ShipShape: Hello world!");
+    debugprint("ShipShape::ShipShape: Hello world!");
     // Assume rotate never gets negative angles like this.
     currentDir = INT_MIN;
 }
 
 ShipShape::~ShipShape()
 {
-    warn("ShipShape::~ShipShape: Goodbye cruel world!");
+    debugprint("ShipShape::~ShipShape: Goodbye cruel world!");
 }
 
 static inline clpos_t My_rotate_clpos(clpos_t pos, int dir)
@@ -223,7 +223,6 @@ static void Ship_set_m_rack_ipos(ShipShape *ship, int i, ipos_t pos)
     ship->missileRacks[i] = ipos2clpos(pos);
 }
 
-/* kps - tmp hack */
 clpos_t *Shape_get_points(shape_t *s, int dir)
 {
     int i;
@@ -439,7 +438,7 @@ static int shape2wire(std::string ship_shape_str, ShipShape *ship)
     bool remove_edge = false;
 
     if (debugShapeParsing)
-        warn("parsing shape: %s", ship_shape_str);
+        debugprint("parsing shape: %s", ship_shape_str);
 
     for (str = const_cast<char *>(ship_shape_str.c_str()); (str = strchr(str, '(')) != nullptr;)
     {
@@ -486,8 +485,8 @@ static int shape2wire(std::string ship_shape_str, ShipShape *ship)
         }
         str += i;
 
-        warn("keyw = %s", keyw);
-        warn("ship->num_points = %d", ship->num_points);
+        debugprint("keyw = %s", keyw);
+        debugprint("ship->num_points = %d", ship->num_points);
 
         switch (Get_shape_keyword(keyw))
         {
@@ -523,7 +522,7 @@ static int shape2wire(std::string ship_shape_str, ShipShape *ship)
                         pt[ship->num_points++] = in;
                         old_in = in;
                         if (debugShapeParsing)
-                            warn("ship point at %d,%d", in.x, in.y);
+                            debugprint("ship point at %d,%d", in.x, in.y);
                     }
                 }
                 teststr = strchr(teststr, ' ');
@@ -562,7 +561,7 @@ static int shape2wire(std::string ship_shape_str, ShipShape *ship)
                 m_gun = in;
                 mainGunSet = true;
                 if (debugShapeParsing)
-                    warn("main gun at %d,%d", in.x, in.y);
+                    debugprint("main gun at %d,%d", in.x, in.y);
             }
             break;
 
@@ -587,7 +586,7 @@ static int shape2wire(std::string ship_shape_str, ShipShape *ship)
                 {
                     l_gun[ship->num_l_gun++] = in;
                     if (debugShapeParsing)
-                        warn("left gun at %d,%d", in.x, in.y);
+                        debugprint("left gun at %d,%d", in.x, in.y);
                 }
                 teststr = strchr(teststr, ' ');
             }
@@ -614,7 +613,7 @@ static int shape2wire(std::string ship_shape_str, ShipShape *ship)
                 {
                     r_gun[ship->num_r_gun++] = in;
                     if (debugShapeParsing)
-                        warn("right gun at %d,%d", in.x, in.y);
+                        debugprint("right gun at %d,%d", in.x, in.y);
                 }
                 teststr = strchr(teststr, ' ');
             }
@@ -641,7 +640,7 @@ static int shape2wire(std::string ship_shape_str, ShipShape *ship)
                 {
                     l_light[ship->num_l_light++] = in;
                     if (debugShapeParsing)
-                        warn("left light at %d,%d", in.x, in.y);
+                        debugprint("left light at %d,%d", in.x, in.y);
                 }
                 teststr = strchr(teststr, ' ');
             }
@@ -668,7 +667,7 @@ static int shape2wire(std::string ship_shape_str, ShipShape *ship)
                 {
                     r_light[ship->num_r_light++] = in;
                     if (debugShapeParsing)
-                        warn("right light at %d,%d", in.x, in.y);
+                        debugprint("right light at %d,%d", in.x, in.y);
                 }
                 teststr = strchr(teststr, ' ');
             }
@@ -693,7 +692,7 @@ static int shape2wire(std::string ship_shape_str, ShipShape *ship)
                 engine = in;
                 engineSet = true;
                 if (debugShapeParsing)
-                    warn("engine at %d,%d", in.x, in.y);
+                    debugprint("engine at %d,%d", in.x, in.y);
             }
             break;
 
@@ -720,7 +719,7 @@ static int shape2wire(std::string ship_shape_str, ShipShape *ship)
                 {
                     m_rack[ship->num_m_rack++] = in;
                     if (debugShapeParsing)
-                        warn("missile rack at %d,%d", in.x, in.y);
+                        debugprint("missile rack at %d,%d", in.x, in.y);
                 }
                 teststr = strchr(teststr, ' ');
             }
@@ -761,7 +760,7 @@ static int shape2wire(std::string ship_shape_str, ShipShape *ship)
                 {
                     l_rgun[ship->num_l_rgun++] = in;
                     if (debugShapeParsing)
-                        warn("left rear gun at %d,%d", in.x, in.y);
+                        debugprint("left rear gun at %d,%d", in.x, in.y);
                 }
                 teststr = strchr(teststr, ' ');
             }
@@ -788,7 +787,7 @@ static int shape2wire(std::string ship_shape_str, ShipShape *ship)
                 {
                     r_rgun[ship->num_r_rgun++] = in;
                     if (debugShapeParsing)
-                        warn("right rear gun at %d,%d", in.x, in.y);
+                        debugprint("right rear gun at %d,%d", in.x, in.y);
                 }
                 teststr = strchr(teststr, ' ');
             }
@@ -1302,7 +1301,7 @@ static ShipShape *do_parse_shape(std::string str)
     if (str.empty())
     {
         if (debugShapeParsing)
-            warn("shape str not set");
+            debugprint("shape str not set");
         return Default_ship();
     }
 
@@ -1312,11 +1311,11 @@ static ShipShape *do_parse_shape(std::string str)
         delete ship;
 
         if (debugShapeParsing)
-            warn("shape2wire failed");
+            debugprint("shape2wire failed");
         return Default_ship();
     }
     if (debugShapeParsing)
-        warn("shape2wire succeeded");
+        debugprint("shape2wire succeeded");
 
     return (ship);
 }
@@ -1593,7 +1592,7 @@ void Convert_ship_2_string(ShipShape *ship, char *buf, char *ext,
         warn("BUG: convert ship: buffer overflow (%d,%d)", buflen, extlen);
 
     if (debugShapeParsing)
-        warn("ship 2 str: %s %s", buf, ext);
+        debugprint("ship 2 str: %s %s", buf, ext);
 }
 
 static int Get_shape_keyword(char *keyw)

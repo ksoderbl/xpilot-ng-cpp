@@ -50,7 +50,7 @@ void xpinfo(const char *fmt, ...)
 
     va_start(ap, fmt);
 
-    fprintf(stderr, "%s: INFO: ", progname.c_str());
+    fprintf(stderr, "%s: INFO:  ", progname.c_str());
 
     vfprintf(stderr, fmt, ap);
 
@@ -68,7 +68,7 @@ void warn(const char *fmt, ...)
 
     va_start(ap, fmt);
 
-    fprintf(stderr, "%s: WARNING: ", progname.c_str());
+    fprintf(stderr, "%s: WARN:  ", progname.c_str());
 
     vfprintf(stderr, fmt, ap);
 
@@ -143,6 +143,7 @@ void dumpcore(const char *fmt, ...)
 
 void debugprint(const char *fmt, ...)
 {
+#if 0
     size_t len;
     va_list ap;
 
@@ -157,4 +158,5 @@ void debugprint(const char *fmt, ...)
         fprintf(stderr, "\n");
 
     va_end(ap);
+#endif
 }
