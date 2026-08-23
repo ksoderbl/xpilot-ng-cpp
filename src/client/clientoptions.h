@@ -1,12 +1,12 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
  *      Bert Gijsbers
  *      Dick Balaska
+ *
+ * Copyright (C) 2026 Kristian Söderblom
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,20 +25,33 @@
 
 #pragma once
 
-/* need MAX_..._LEN */
-#include "clientpack.h"
+#include <string>
 
-typedef struct Connect_param
+#include "const.h"
+#include "socklib.h"
+
+#include "clientpack.h"
+#include "netclient.h"
+
+struct ConnectParam
 {
-    int contact_port,
-        server_port,
-        login_port;
-    char nick_name[MAX_NAME_LEN],
-        user_name[MAX_NAME_LEN],
-        host_name[SOCK_HOSTNAME_LENGTH],
-        server_addr[MAX_HOST_LEN],
-        server_name[MAX_HOST_LEN],
-        disp_name[MAX_DISP_LEN];
-    unsigned server_version;
-    int team;
-} Connect_param_t;
+    int contact_port = SERVER_PORT;
+    int server_port = 0;
+    int login_port = 0;
+    char nick_name[MAX_NAME_LEN] = "";
+    char user_name[MAX_NAME_LEN] = "";
+    char host_name[SOCK_HOSTNAME_LENGTH] = "";
+    char server_addr[MAX_HOST_LEN] = "";
+    char server_name[MAX_HOST_LEN] = "";
+    char disp_name[MAX_DISP_LEN] = "";
+    unsigned server_version = 0;
+    int team = TEAM_NOT_SET;
+};
+
+struct ClientOptions
+{
+    // Connection params
+    ConnectParam connectParam;
+};
+
+extern ClientOptions clientOptions;

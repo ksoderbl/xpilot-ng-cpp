@@ -51,7 +51,7 @@
 #include "socklib.h"
 #include "net.h"
 #include "clientpack.h"
-#include "connectparam.h"
+#include "clientoptions.h"
 #include "client.h"
 #include "portability.h"
 #include "socklib.h"
@@ -121,8 +121,8 @@ static int ping_servers_widget = NO_WIDGET;
 /*
  * An array of structures with information to join a local server.
  */
-static Connect_param_t *global_conpar;
-static Connect_param_t *localnet_conpars;
+static ConnectParam *global_conpar;
+static ConnectParam *localnet_conpars;
 static server_info_t *global_sip;
 
 /*
@@ -167,15 +167,15 @@ static char buf[MSG_LEN] = {0};
  * Other prototypes.
  */
 static int Welcome_process_one_event(XEvent *event,
-                                     Connect_param_t *conpar);
-static int Welcome_show_server_list(Connect_param_t *conpar);
+                                     ConnectParam *conpar);
+static int Welcome_show_server_list(ConnectParam *conpar);
 static void Internet_widget_cleanup(void);
 static int Internet_cb(int widget, void *user_data, const char **text);
 
 /*
  * Process only exposure events.
  */
-static void Welcome_process_exposure_events(Connect_param_t *conpar)
+static void Welcome_process_exposure_events(ConnectParam *conpar)
 {
     XEvent event;
 
@@ -195,7 +195,7 @@ static int Welcome_create_label(int pos, const char *label_text)
 {
     int label_x, label_y, label_width, label_height;
 
-    Connect_param_t *conpar = global_conpar;
+    ConnectParam *conpar = global_conpar;
 
     Widget_destroy_children(subform_widget); /*? */
     subform_label_widget = NO_WIDGET;
@@ -251,7 +251,7 @@ static int Local_join_cb(int widget, void *user_data, const char **text)
     (void)widget;
     (void)text;
 
-    auto *conpar = static_cast<Connect_param_t *>(user_data);
+    auto *conpar = static_cast<ConnectParam *>(user_data);
     const int result = Connect_to_server(1, 0, 0, nullptr, conpar);
     if (result)
     {
@@ -269,7 +269,7 @@ static int Local_join_cb(int widget, void *user_data, const char **text)
  */
 static int Local_status_cb(int widget, void *user_data, const char **text)
 {
-    /* Connect_param_t          *conpar = (Connect_param_t *) user_data; */
+    /* ConnectParam          *conpar = (ConnectParam *) user_data; */
 
     return 0;
 }
@@ -310,7 +310,7 @@ static int Localnet_cb(int widget, void *user_data, const char **text)
     (void)widget;
     (void)text;
 
-    auto *conpar = static_cast<Connect_param_t *>(user_data);
+    auto *conpar = static_cast<ConnectParam *>(user_data);
     int i;
     int n = 0;
     int label;
@@ -379,7 +379,7 @@ static int Localnet_cb(int widget, void *user_data, const char **text)
     {
 
         localnet_conpars =
-            static_cast<Connect_param_t *>(malloc(n * sizeof(Connect_param_t)));
+            static_cast<ConnectParam *>(malloc(n * sizeof(ConnectParam)));
         if (!localnet_conpars)
         {
             error("Not enough memory\n");
@@ -459,7 +459,7 @@ static int Internet_server_join_cb(int widget, void *user_data,
     (void)text;
 
     auto *sip = static_cast<server_info_t *>(user_data);
-    Connect_param_t connect_param{};
+    ConnectParam connect_param{};
     auto *conpar = &connect_param;
     int result;
     char *server_addr_ptr = conpar->server_addr;
@@ -813,7 +813,7 @@ static int Internet_next_page_cb(int widget, void *user_data,
     (void)widget;
     (void)text;
 
-    auto *conpar = static_cast<Connect_param_t *>(user_data);
+    auto *conpar = static_cast<ConnectParam *>(user_data);
 
     Welcome_show_server_list(conpar);
 
@@ -829,7 +829,7 @@ static int Internet_first_page_cb(int widget, void *user_data,
     (void)widget;
     (void)text;
 
-    auto *conpar = static_cast<Connect_param_t *>(user_data);
+    auto *conpar = static_cast<ConnectParam *>(user_data);
 
     server_it = server_list.begin();
 
@@ -846,7 +846,7 @@ static int Internet_ping_cb(int widget, void *user_data, const char **text)
     (void)widget;
     (void)text;
 
-    auto *conpar = static_cast<Connect_param_t *>(user_data);
+    auto *conpar = static_cast<ConnectParam *>(user_data);
 
     std::snprintf(buf, sizeof(buf), "Pinging servers...");
 
@@ -870,7 +870,7 @@ static int Internet_ping_cb(int widget, void *user_data, const char **text)
  * Create for each server a row on the subform_widget.
  */
 
-static int Welcome_show_server_list(Connect_param_t *conpar)
+static int Welcome_show_server_list(ConnectParam *conpar)
 {
     const int border = 0;
     const int extra_width = 6;
@@ -1170,7 +1170,7 @@ static int Internet_cb(int widget, void *user_data, const char **text)
     (void)widget;
     (void)text;
 
-    auto *conpar = static_cast<Connect_param_t *>(user_data);
+    auto *conpar = static_cast<ConnectParam *>(user_data);
 
     Welcome_set_mode(ModeInternet);
 
@@ -1265,7 +1265,7 @@ static int Quit_cb(int widget, void *user_data, const char **text)
 /*
  * Create toplevel widgets.
  */
-static int Welcome_create_windows(Connect_param_t *conpar)
+static int Welcome_create_windows(ConnectParam *conpar)
 {
     int i;
     int form_border = 0;
@@ -1433,7 +1433,7 @@ static void Welcome_set_mode(Welcome_mode new_welcome_mode)
  * Process one event.
  */
 static int Welcome_process_one_event(XEvent *event,
-                                     Connect_param_t *conpar)
+                                     ConnectParam *conpar)
 {
     XClientMessageEvent *cmev;
     XConfigureEvent *conf;
@@ -1564,7 +1564,7 @@ static int Welcome_process_one_event(XEvent *event,
 /*
  * Process all events which are in the queue, but don't block.
  */
-static int Welcome_process_pending_events(Connect_param_t *conpar)
+static int Welcome_process_pending_events(ConnectParam *conpar)
 {
     int result;
     XEvent event;
@@ -1582,7 +1582,7 @@ static int Welcome_process_pending_events(Connect_param_t *conpar)
 /*
  * Loop forever processing events.
  */
-static int Welcome_input_loop(Connect_param_t *conpar)
+static int Welcome_input_loop(ConnectParam *conpar)
 {
     int result;
     XEvent event;
@@ -1606,7 +1606,7 @@ static int Welcome_input_loop(Connect_param_t *conpar)
 /*
  * Create the windows.
  */
-static int Welcome_doit(Connect_param_t *conpar)
+static int Welcome_doit(ConnectParam *conpar)
 {
     int result;
 
@@ -1638,7 +1638,7 @@ static int Welcome_doit(Connect_param_t *conpar)
 /*
  * The one and only entry point into this modules.
  */
-int Welcome_screen(Connect_param_t *conpar)
+int Welcome_screen(ConnectParam *conpar)
 {
     int result;
 

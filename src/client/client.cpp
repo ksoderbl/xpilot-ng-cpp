@@ -60,7 +60,6 @@ client_data_t clData = {
 
 char *geometry;
 xp_args_t xpArgs;
-Connect_param_t connectParam;
 
 int baseWarningType; /* Which type of base warning you prefer */
 int maxCharsInNames;

@@ -1,7 +1,12 @@
 /*
- * XPilotNG/SDL, an SDL/OpenGL XPilot client.
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
- * Copyright (C) 2003-2004 Darel Cullen <darelcullen@users.sourceforge.net>
+ *      Bjørn Stabell
+ *      Ken Ronny Schouten
+ *      Bert Gijsbers
+ *      Dick Balaska
+ *
+ * Copyright (C) 2026 Kristian Söderblom
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,8 +23,6 @@
  * <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
-
 #include "clientoptions.h"
 
-int Meta_window(ConnectParam *conpar);
+ClientOptions clientOptions;

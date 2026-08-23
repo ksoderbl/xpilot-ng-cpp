@@ -66,7 +66,7 @@ int main(int argc, char *argv[])
 
     seedMT((unsigned)time(nullptr) ^ Get_process_id());
 
-    memset(&connectParam, 0, sizeof(Connect_param_t));
+    memset(&clientOptions.connectParam, 0, sizeof(ConnectParam));
     connectParam.contact_port = SERVER_PORT;
     connectParam.team = TEAM_NOT_SET;
 
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
                              xpArgs.auto_connect, xpArgs.list_servers,
                              auto_shutdown, xpArgs.shutdown_reason,
                              0, nullptr, nullptr, nullptr, nullptr,
-                             &connectParam))
+                             &clientOptions.connectParam))
             return 0;
         if (Init_window())
         {
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
         }
         while (1)
         {
-            result = Meta_window(&connectParam);
+            result = Meta_window(&clientOptions.connectParam);
             if (result < 0)
                 return 0;
             if (result == 0)

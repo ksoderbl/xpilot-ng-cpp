@@ -1081,7 +1081,7 @@ int Handle_player(int id, int player_team, int mychar,
         other = new Other{};
         others.push_back(other);
     }
-    if (self == nullptr && (myself || (version < 0x4F10 && strcmp(connectParam.nick_name, nick_name.c_str()) == 0)))
+    if (self == nullptr && (myself || (version < 0x4F10 && strcmp(clientOptions.connectParam.nick_name, nick_name.c_str()) == 0)))
     {
         // TODO: There should be code here that swaps 'other' with others[0]
         if (other != others[0])

@@ -45,7 +45,7 @@
 #include "xperror.h"
 #include "socklib.h"
 #include "net.h"
-#include "connectparam.h"
+#include "clientoptions.h"
 #include "portability.h"
 #include "checknames.h"
 
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 {
     int result, retval = 1;
     bool auto_shutdown = false;
-    Connect_param_t *conpar = &connectParam;
+    ConnectParam *conpar = &clientOptions.connectParam;
 
     warn("main => calling Conf_print");
 
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
 
     seedMT((unsigned)time(nullptr) ^ Get_process_id());
 
-    memset(conpar, 0, sizeof(Connect_param_t));
+    memset(conpar, 0, sizeof(ConnectParam));
 
     warn("main => calling create global option array");
 

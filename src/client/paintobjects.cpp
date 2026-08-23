@@ -185,6 +185,7 @@ static void Paint_mines(void)
     }
 }
 
+/* adjusted for "sparkColors" option: */
 static inline int Debris_color(int color)
 {
     return ((num_spark_colors > 4) ? ((((color & 1) << 2) | (color >> 1))) : (color));

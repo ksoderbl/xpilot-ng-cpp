@@ -205,7 +205,7 @@ static void sigcatch(int signum)
     exit(1);
 }
 
-int Join(Connect_param_t *conpar)
+int Join(ConnectParam *conpar)
 {
     signal(SIGINT, sigcatch);
     signal(SIGTERM, sigcatch);

@@ -30,7 +30,7 @@
 #include "socklib.h"
 #include "shipshape.h"
 #include "item.h"
-#include "connectparam.h"
+#include "clientoptions.h"
 #include "clientoption.h"
 #include "types.h"
 #include "clientmap.h"
@@ -165,7 +165,6 @@ extern client_data_t clData;
 
 extern char *geometry;
 extern xp_args_t xpArgs;
-extern Connect_param_t connectParam;
 extern message_t *TalkMsg[];
 extern message_t *GameMsg[];
 extern message_t *TalkMsg_pending[]; /* store incoming messages */
@@ -384,7 +383,7 @@ extern void Store_key_options(void);
 /*
  * join.c
  */
-extern int Join(Connect_param_t *conpar);
+extern int Join(ConnectParam *conpar);
 extern void xpilotShutdown(void);
 
 /*
@@ -418,19 +417,19 @@ extern void Simulate(bool on);
  */
 extern int Connect_to_server(int auto_connect, int list_servers,
                              int auto_shutdown, char *shutdown_reason,
-                             Connect_param_t *conpar);
+                             ConnectParam *conpar);
 extern int Contact_servers(int count, char **servers,
                            int auto_connect, int list_servers,
                            int auto_shutdown, char *shutdown_message,
                            int find_max, int *num_found,
                            char **server_addresses, char **server_names,
                            unsigned *server_versions,
-                           Connect_param_t *conpar);
+                           ConnectParam *conpar);
 
 /*
  * welcome.c
  */
-extern int Welcome_screen(Connect_param_t *conpar);
+extern int Welcome_screen(ConnectParam *conpar);
 
 /*
  * widget.c
