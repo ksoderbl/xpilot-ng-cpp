@@ -56,35 +56,30 @@
 #include "guimap.h"
 #include "guiobjects.h"
 
-static int baseNameColor = BLUE;      /* Color index for base name drawing */
-static int backgroundPointColor = 4;  /* background point drawing */
-static int fuelColor = RED;           /* fuel station drawing */
-static int visibilityBorderColor = 0; /* visibility border drawing */
-
 void Gui_paint_walls(int x, int y, int type)
 {
     if (!texturedObjects)
     {
         if (type & BLUE_LEFT)
-            Segment_add(wallColor,
+            Segment_add(clientOptions.wallColor,
                         X(x),
                         Y(y),
                         X(x),
                         Y(y + BLOCK_SZ));
         if (type & BLUE_DOWN)
-            Segment_add(wallColor,
+            Segment_add(clientOptions.wallColor,
                         X(x),
                         Y(y),
                         X(x + BLOCK_SZ),
                         Y(y));
         if (type & BLUE_RIGHT)
-            Segment_add(wallColor,
+            Segment_add(clientOptions.wallColor,
                         X(x + BLOCK_SZ),
                         Y(y),
                         X(x + BLOCK_SZ),
                         Y(y + BLOCK_SZ));
         if (type & BLUE_UP)
-            Segment_add(wallColor,
+            Segment_add(clientOptions.wallColor,
                         X(x),
                         Y(y + BLOCK_SZ),
                         X(x + BLOCK_SZ),
@@ -92,13 +87,13 @@ void Gui_paint_walls(int x, int y, int type)
         if ((type & BLUE_FUEL) == BLUE_FUEL)
             ;
         else if (type & BLUE_OPEN)
-            Segment_add(wallColor,
+            Segment_add(clientOptions.wallColor,
                         X(x),
                         Y(y),
                         X(x + BLOCK_SZ),
                         Y(y + BLOCK_SZ));
         else if (type & BLUE_CLOSED)
-            Segment_add(wallColor,
+            Segment_add(clientOptions.wallColor,
                         X(x),
                         Y(y + BLOCK_SZ),
                         X(x + BLOCK_SZ),
@@ -134,7 +129,7 @@ void Gui_paint_filled_slice(int bl, int tl, int tr, int br, int y)
 {
     XPoint points[5];
 
-    SET_FG(colors[wallColor].pixel);
+    SET_FG(colors[clientOptions.wallColor].pixel);
 
     points[0].x = WINSCALE(X(bl));
     points[0].y = WINSCALE(Y(y));
@@ -228,7 +223,7 @@ static void Gui_paint_fuel_without_texture(int x, int y, double fuel)
 {
     /* fuel box drawing can be disabled */
     // todo: -1 should mean to not draw?
-    if (fuelColor == BLACK)
+    if (clientOptions.fuelColor == BLACK)
         return;
 
 #define FUEL_BORDER 2
@@ -246,7 +241,7 @@ static void Gui_paint_fuel_without_texture(int x, int y, double fuel)
         text_is_bigger = (text_width + 4 > WINSCALE(BLOCK_SZ) + 1) ||
                          (gameFont->ascent + gameFont->descent) > WINSCALE(BLOCK_SZ) + 2;
     }
-    SET_FG(colors[fuelColor].pixel);
+    SET_FG(colors[clientOptions.fuelColor].pixel);
     size = (int)((BLOCK_SZ - 2 * FUEL_BORDER) * fuel / MAX_STATION_FUEL);
     rd.fillRectangle(dpy, drawPixmap, gameGC,
                      SCALEX(x + FUEL_BORDER),
@@ -256,7 +251,7 @@ static void Gui_paint_fuel_without_texture(int x, int y, double fuel)
 
     /* Draw F in fuel cells */
     XSetFunction(dpy, gameGC, GXxor);
-    SET_FG(colors[BLACK].pixel ^ colors[fuelColor].pixel);
+    SET_FG(colors[BLACK].pixel ^ colors[clientOptions.fuelColor].pixel);
     x = SCALEX(x + BLOCK_SZ / 2) - text_width / 2,
     y = SCALEY(y + BLOCK_SZ / 2) + gameFont->ascent / 2,
     rd.drawString(dpy, drawPixmap, gameGC, x, y, s, 1);
@@ -267,7 +262,7 @@ void Gui_paint_fuel(int x, int y, double fuel)
 {
     /* fuel box drawing can be disabled */
     // todo: -1 should mean to not draw?
-    if (fuelColor == BLACK)
+    if (clientOptions.fuelColor == BLACK)
         return;
 
     if (!texturedObjects)
@@ -339,10 +334,10 @@ void Gui_paint_base(int x, int y, int id, int team, int type)
     other = Other_by_id(id);
     base = Homebase_by_id(id);
 
-    if (baseNameColor)
+    if (clientOptions.baseNameColor)
     {
         if (!(color = Life_color(other)))
-            color = baseNameColor;
+            color = clientOptions.baseNameColor;
     }
     else
         color = WHITE;
@@ -440,7 +435,7 @@ void Gui_paint_base(int x, int y, int id, int team, int type)
     }
 
     /* only draw base teams if base naming is on, Mara 01/12/14  */
-    if (!baseNameColor)
+    if (!clientOptions.baseNameColor)
         return;
 
     /* operate in pixels from here out */
@@ -536,7 +531,7 @@ void Gui_paint_decor(int x, int y, int xi, int yi, int type,
     static uint8_t decor[256];
     static int decorReady = 0;
 
-    SET_FG(colors[decorColor].pixel);
+    SET_FG(colors[clientOptions.decorColor].pixel);
 
     if (!decorReady)
     {
@@ -559,7 +554,7 @@ void Gui_paint_decor(int x, int y, int xi, int yi, int type,
                        !(decor[Setup->map_data[(Setup->x - 1) * Setup->y + yi]] & DECOR_RIGHT))
                     : !(decor[Setup->map_data[(xi - 1) * Setup->y + yi]] & DECOR_RIGHT))
             {
-                Segment_add(decorColor,
+                Segment_add(clientOptions.decorColor,
                             X(x),
                             Y(y),
                             X(x),
@@ -573,7 +568,7 @@ void Gui_paint_decor(int x, int y, int xi, int yi, int type,
                        !(decor[Setup->map_data[xi * Setup->y + Setup->y - 1]] & DECOR_UP))
                     : !(decor[Setup->map_data[xi * Setup->y + (yi - 1)]] & DECOR_UP))
             {
-                Segment_add(decorColor,
+                Segment_add(clientOptions.decorColor,
                             X(x),
                             Y(y),
                             X(x + BLOCK_SZ),
@@ -586,7 +581,7 @@ void Gui_paint_decor(int x, int y, int xi, int yi, int type,
                                                                 ? (!BIT(Setup->mode, WRAP_PLAY) || !(decor[Setup->map_data[yi]] & DECOR_LEFT))
                                                                 : !(decor[Setup->map_data[(xi + 1) * Setup->y + yi]] & DECOR_LEFT)))
             {
-                Segment_add(decorColor,
+                Segment_add(clientOptions.decorColor,
                             X(x + BLOCK_SZ),
                             Y(y),
                             X(x + BLOCK_SZ),
@@ -599,7 +594,7 @@ void Gui_paint_decor(int x, int y, int xi, int yi, int type,
                                                                 ? (!BIT(Setup->mode, WRAP_PLAY) || !(decor[Setup->map_data[xi * Setup->y]] & DECOR_DOWN))
                                                                 : !(decor[Setup->map_data[xi * Setup->y + (yi + 1)]] & DECOR_DOWN)))
             {
-                Segment_add(decorColor,
+                Segment_add(clientOptions.decorColor,
                             X(x),
                             Y(y + BLOCK_SZ),
                             X(x + BLOCK_SZ),
@@ -608,7 +603,7 @@ void Gui_paint_decor(int x, int y, int xi, int yi, int type,
         }
         if (mask & DECOR_OPEN)
         {
-            Segment_add(decorColor,
+            Segment_add(clientOptions.decorColor,
                         X(x),
                         Y(y),
                         X(x + BLOCK_SZ),
@@ -616,7 +611,7 @@ void Gui_paint_decor(int x, int y, int xi, int yi, int type,
         }
         else if (mask & DECOR_CLOSED)
         {
-            Segment_add(decorColor,
+            Segment_add(clientOptions.decorColor,
                         X(x),
                         Y(y + BLOCK_SZ),
                         X(x + BLOCK_SZ),
@@ -720,7 +715,7 @@ void Gui_paint_setup_check(int x, int y, bool isNext)
 
 void Gui_paint_border(int x, int y, int xi, int yi)
 {
-    Segment_add(wallColor,
+    Segment_add(clientOptions.wallColor,
                 X(x), Y(y),
                 X(xi), Y(yi));
 }
@@ -746,8 +741,8 @@ static void Gui_paint_rectangle(int x, int y, int xi, int yi, int color)
 
 void Gui_paint_visible_border(int x, int y, int xi, int yi)
 {
-    if (visibilityBorderColor)
-        Gui_paint_rectangle(x, y, xi, yi, visibilityBorderColor);
+    if (clientOptions.visibilityBorderColor)
+        Gui_paint_rectangle(x, y, xi, yi, clientOptions.visibilityBorderColor);
 }
 
 void Gui_paint_hudradar_limit(int x, int y, int xi, int yi)
@@ -1078,9 +1073,9 @@ void Gui_paint_setup_asteroid_concentrator(int x, int y)
 
 void Gui_paint_decor_dot(int x, int y, int size)
 {
-    if (!backgroundPointColor)
+    if (!clientOptions.backgroundPointColor)
         return;
-    Rectangle_add(backgroundPointColor,
+    Rectangle_add(clientOptions.backgroundPointColor,
                   X(x + BLOCK_SZ / 2) - (backgroundPointSize >> 1),
                   Y(y + BLOCK_SZ / 2) - (backgroundPointSize >> 1),
                   size, size);
@@ -1266,7 +1261,7 @@ void Gui_paint_polygon(const xp_polygon_t &polygon, int i, int xoff, int yoff)
         {
         notexture:
             XSetFillStyle(dpy, gameGC, FillSolid);
-            SET_FG(fullColor ? style.color : colors[wallColor].pixel);
+            SET_FG(fullColor ? style.color : colors[clientOptions.wallColor].pixel);
         }
         did_fill = 1;
         rd.fillPolygon(dpy, drawPixmap, gameGC, points, polygon.num_points,
@@ -1292,7 +1287,7 @@ void Gui_paint_polygon(const xp_polygon_t &polygon, int i, int xoff, int yoff)
             if (fullColor)
                 SET_FG(edge_styles[sindex].color);
             else
-                SET_FG(colors[wallColor].pixel);
+                SET_FG(colors[clientOptions.wallColor].pixel);
 
             rd.drawLines(dpy, drawPixmap, gameGC, points,
                          polygon.num_points + 1, CoordModeOrigin);
@@ -1327,7 +1322,7 @@ void Gui_paint_polygon(const xp_polygon_t &polygon, int i, int xoff, int yoff)
                 if (fullColor)
                     SET_FG(edge_styles[sindex].color);
                 else
-                    SET_FG(colors[wallColor].pixel);
+                    SET_FG(colors[clientOptions.wallColor].pixel);
 
                 rd.drawLines(dpy, drawPixmap, gameGC,
                              points + begin, j + 1 - begin,
@@ -1342,26 +1337,26 @@ xp_option_t guimap_options[] = {
     COLOR_INDEX_OPTION(
         "baseNameColor",
         2,
-        &baseNameColor,
+        &clientOptions.baseNameColor,
         "Which color number to use for drawing names of bases\n"
         "(unless drawn in one of the life colors).\n"),
 
     COLOR_INDEX_OPTION(
         "backgroundPointColor",
         2,
-        &backgroundPointColor,
+        &clientOptions.backgroundPointColor,
         "Which color number to use for drawing background points.\n"),
 
     COLOR_INDEX_OPTION(
         "fuelColor",
         3,
-        &fuelColor,
+        &clientOptions.fuelColor,
         "Which color number to use for drawing fuel stations.\n"),
 
     COLOR_INDEX_OPTION(
         "visibilityBorderColor",
         2,
-        &visibilityBorderColor,
+        &clientOptions.visibilityBorderColor,
         "Which color number to use for drawing the visibility border.\n"),
 };
 

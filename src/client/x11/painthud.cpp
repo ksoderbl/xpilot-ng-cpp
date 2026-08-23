@@ -59,32 +59,6 @@
 #include "bitmaps.h"
 #include "xpaint.h"
 
-int hudColor;                    /* Color index for HUD drawing, has to be global for windoze */
-static int hudHLineColor;        /* Color index for horiz. HUD line drawing */
-static int hudVLineColor;        /* Color index for vert. HUD line drawing */
-static int hudItemsColor;        /* Color index for HUD items drawing */
-static int hudRadarEnemyColor;   /* Color index for enemy hudradar dots */
-static int hudRadarOtherColor;   /* Color index for other hudradar dots */
-static int hudLockColor;         /* Color index for lock on HUD drawing */
-static int fuelGaugeColor;       /* Color index for fuel gauge drawing */
-static int dirPtrColor;          /* Color index for dirptr drawing */
-static int messagesColor;        /* Color index for messages */
-static int oldMessagesColor;     /* Color index for old messages */
-static int msgScanBallColor;     /* Color index for ball msg */
-static int msgScanSafeColor;     /* Color index for safe msg */
-static int msgScanCoverColor;    /* Color index for cover msg */
-static int msgScanPopColor;      /* Color index for pop msg */
-static int fuelMeterColor;       /* Color index for fuel meter */
-static int powerMeterColor;      /* Color index for power meter */
-static int turnSpeedMeterColor;  /* Color index for turnspeed meter */
-static int packetSizeMeterColor; /* Color index for packet size meter */
-static int packetLossMeterColor; /* Color index for packet loss meter */
-static int packetDropMeterColor; /* Color index for packet drop meter */
-static int packetLagMeterColor;  /* Color index for packet lag meter */
-static int temporaryMeterColor;  /* Color index for temporary meter drawing */
-static int meterBorderColor;     /* Color index for meter border drawing */
-static int scoreObjectColor;     /* Color index for map score objects */
-
 radar_t *old_radar_ptr;
 int old_num_radar, old_max_radar;
 
@@ -123,9 +97,9 @@ static void Paint_meter(int xoff, int y, const char *title, int val, int max,
                   (int)(((meterWidth - 3) * val) / (max ? max : 1)), meterHeight - 3);
 
     /* meterBorderColor = 0 obviously means no meter borders are drawn */
-    if (meterBorderColor)
+    if (clientOptions.meterBorderColor)
     {
-        int color = meterBorderColor;
+        int color = clientOptions.meterBorderColor;
 
         SET_FG(colors[color].pixel);
         rd.drawRectangle(dpy, drawPixmap, gameGC,
@@ -140,7 +114,7 @@ static void Paint_meter(int xoff, int y, const char *title, int val, int max,
         Segment_add(color, x + mw3_4, y - 1, x + mw3_4, y + meterHeight + 1);
     }
 
-    if (!meterBorderColor)
+    if (!clientOptions.meterBorderColor)
         SET_FG(colors[meter_color].pixel);
 
     rd.drawString(dpy, drawPixmap, gameGC,
@@ -181,7 +155,7 @@ void Paint_score_objects(void)
 {
     int i, x, y;
 
-    if (!scoreObjectColor)
+    if (!clientOptions.scoreObjectColor)
         return;
 
     for (i = 0; i < MAX_SCORE_OBJECTS; i++)
@@ -198,7 +172,7 @@ void Paint_score_objects(void)
                     if (sobj->msg_width == -1)
                         sobj->msg_width =
                             XTextWidth(gameFont, sobj->msg, sobj->msg_len);
-                    SET_FG(colors[scoreObjectColor].pixel);
+                    SET_FG(colors[clientOptions.scoreObjectColor].pixel);
                     x = WINSCALE(X(x)) - sobj->msg_width / 2,
                     y = WINSCALE(Y(y)) + gameFont->ascent / 2,
                     rd.drawString(dpy, drawPixmap, gameGC,
@@ -221,14 +195,14 @@ void Paint_meters(void)
 {
     int y = 20, color;
 
-    if (fuelMeterColor)
+    if (clientOptions.fuelMeterColor)
         Paint_meter(-10, y += 20, "Fuel",
-                    (int)fuelSum, (int)fuelMax, fuelMeterColor);
+                    (int)fuelSum, (int)fuelMax, clientOptions.fuelMeterColor);
 
-    if (powerMeterColor)
-        color = powerMeterColor;
+    if (clientOptions.powerMeterColor)
+        color = clientOptions.powerMeterColor;
     else if (controlTime > 0.0)
-        color = temporaryMeterColor;
+        color = clientOptions.temporaryMeterColor;
     else
         color = 0;
 
@@ -236,10 +210,10 @@ void Paint_meters(void)
         Paint_meter(-10, y += 20, "Power",
                     (int)displayedPower, (int)MAX_PLAYER_POWER, color);
 
-    if (turnSpeedMeterColor)
-        color = turnSpeedMeterColor;
+    if (clientOptions.turnSpeedMeterColor)
+        color = clientOptions.turnSpeedMeterColor;
     else if (controlTime > 0.0)
-        color = temporaryMeterColor;
+        color = clientOptions.temporaryMeterColor;
     else
         color = 0;
 
@@ -254,21 +228,21 @@ void Paint_meters(void)
             controlTime = 0.0;
     }
 
-    if (packetSizeMeterColor)
+    if (clientOptions.packetSizeMeterColor)
         Paint_meter(-10, y += 20, "Packet",
                     (packet_size >= 4096) ? 4096 : packet_size, 4096,
-                    packetSizeMeterColor);
-    if (packetLossMeterColor)
+                    clientOptions.packetSizeMeterColor);
+    if (clientOptions.packetLossMeterColor)
         Paint_meter(-10, y += 20, "Loss", packet_loss, FPS,
-                    packetLossMeterColor);
-    if (packetDropMeterColor)
+                    clientOptions.packetLossMeterColor);
+    if (clientOptions.packetDropMeterColor)
         Paint_meter(-10, y += 20, "Drop", packet_drop, FPS,
-                    packetDropMeterColor);
-    if (packetLagMeterColor)
+                    clientOptions.packetDropMeterColor);
+    if (clientOptions.packetLagMeterColor)
         Paint_meter(-10, y += 20, "Lag", MIN(packet_lag, 1 * FPS), 1 * FPS,
-                    packetLagMeterColor);
+                    clientOptions.packetLagMeterColor);
 
-    if (temporaryMeterColor)
+    if (clientOptions.temporaryMeterColor)
     {
         if (thrusttime >= 0 && thrusttimemax > 0)
             Paint_meter((ext_view_width - 300) / 2 - 32, 2 * ext_view_height / 3,
@@ -276,7 +250,7 @@ void Paint_meters(void)
                         (thrusttime >= thrusttimemax
                              ? thrusttimemax
                              : thrusttime),
-                        thrusttimemax, temporaryMeterColor);
+                        thrusttimemax, clientOptions.temporaryMeterColor);
 
         if (shieldtime >= 0 && shieldtimemax > 0)
             Paint_meter((ext_view_width - 300) / 2 - 32, 2 * ext_view_height / 3 + 20,
@@ -284,7 +258,7 @@ void Paint_meters(void)
                         (shieldtime >= shieldtimemax
                              ? shieldtimemax
                              : shieldtime),
-                        shieldtimemax, temporaryMeterColor);
+                        shieldtimemax, clientOptions.temporaryMeterColor);
 
         if (phasingtime >= 0 && phasingtimemax > 0)
             Paint_meter((ext_view_width - 300) / 2 - 32, 2 * ext_view_height / 3 + 40,
@@ -292,17 +266,17 @@ void Paint_meters(void)
                         (phasingtime >= phasingtimemax
                              ? phasingtimemax
                              : phasingtime),
-                        phasingtimemax, temporaryMeterColor);
+                        phasingtimemax, clientOptions.temporaryMeterColor);
 
         if (destruct > 0)
             Paint_meter((ext_view_width - 300) / 2 - 32, 2 * ext_view_height / 3 + 60,
                         "Self destructing", destruct, (int)SELF_DESTRUCT_DELAY,
-                        temporaryMeterColor);
+                        clientOptions.temporaryMeterColor);
 
         if (shutdown_count >= 0)
             Paint_meter((ext_view_width - 300) / 2 - 32, 2 * ext_view_height / 3 + 80,
                         "SHUTDOWN", shutdown_count, shutdown_delay,
-                        temporaryMeterColor);
+                        clientOptions.temporaryMeterColor);
     }
 }
 
@@ -327,12 +301,12 @@ static void Paint_lock(int hud_pos_x, int hud_pos_y)
     if ((target = Other_by_id(lock_id)) == nullptr)
         return;
 
-    if (hudColor)
+    if (clientOptions.hudColor)
     {
         int color = Life_color(target);
 
         if (!color)
-            color = hudColor;
+            color = clientOptions.hudColor;
         SET_FG(colors[color].pixel);
 
         Check_name_string(target);
@@ -352,7 +326,7 @@ static void Paint_lock(int hud_pos_x, int hud_pos_y)
             if (BIT(Setup->mode, LIMITED_LIVES) && target->life == 0)
                 SET_FG(colors[RED].pixel);
             else
-                SET_FG(colors[hudColor].pixel);
+                SET_FG(colors[clientOptions.hudColor].pixel);
 
             rd.drawString(dpy, drawPixmap, gameGC,
                           WINSCALE(hud_pos_x + hudSize - HUD_OFFSET + BORDER),
@@ -361,7 +335,7 @@ static void Paint_lock(int hud_pos_x, int hud_pos_y)
         }
     }
 
-    if (lock_dist != 0 && hudLockColor)
+    if (lock_dist != 0 && clientOptions.hudLockColor)
     {
         if (lock_dist > WARNING_DISTANCE || (loopsSlow & 1))
         {
@@ -379,7 +353,7 @@ static void Paint_lock(int hud_pos_x, int hud_pos_y)
             }
             else
             {
-                SET_FG(colors[hudLockColor].pixel);
+                SET_FG(colors[clientOptions.hudLockColor].pixel);
                 x = (int)(hud_pos_x + MIN_HUD_SIZE * 0.6 * tcos(lock_dir) - size * 0.5),
                 y = (int)(hud_pos_y - MIN_HUD_SIZE * 0.6 * tsin(lock_dir) - size * 0.5),
                 rd.fillArc(dpy, drawPixmap, gameGC,
@@ -422,13 +396,13 @@ static void Paint_hudradar(double hrscale, double xlimit, double ylimit,
 
             if (radarObject.type == RadarEnemy)
             {
-                if (hudRadarEnemyColor >= 1)
-                    Arc_add(hudRadarEnemyColor, x, y, sz, sz, 0, 64 * 360);
+                if (clientOptions.hudRadarEnemyColor >= 1)
+                    Arc_add(clientOptions.hudRadarEnemyColor, x, y, sz, sz, 0, 64 * 360);
             }
             else
             {
-                if (hudRadarOtherColor >= 1)
-                    Arc_add(hudRadarOtherColor, x, y, sz, sz, 0, 64 * 360);
+                if (clientOptions.hudRadarOtherColor >= 1)
+                    Arc_add(clientOptions.hudRadarOtherColor, x, y, sz, sz, 0, 64 * 360);
             }
         }
     }
@@ -473,7 +447,7 @@ static void Paint_HUD_items(int hud_pos_x, int hud_pos_y)
            rect_x, rect_y, rect_width = 0, rect_height = 0;
     static int vertSpacing = -1;
 
-    SET_FG(colors[hudItemsColor].pixel);
+    SET_FG(colors[clientOptions.hudItemsColor].pixel);
 
     /* Special itemtypes */
     if (vertSpacing < 0)
@@ -601,14 +575,14 @@ void Paint_HUD(void)
      * Show speed pointer
      */
     if (ptr_move_fact != 0.0 && selfVisible && (selfVel.x != 0 || selfVel.y != 0))
-        Segment_add(hudColor,
+        Segment_add(clientOptions.hudColor,
                     ext_view_width / 2,
                     ext_view_height / 2,
                     (int)(ext_view_width / 2 - ptr_move_fact * selfVel.x),
                     (int)(ext_view_height / 2 + ptr_move_fact * selfVel.y));
 
-    if (selfVisible && dirPtrColor)
-        Segment_add(dirPtrColor,
+    if (selfVisible && clientOptions.dirPtrColor)
+        Segment_add(clientOptions.dirPtrColor,
                     (int)(ext_view_width / 2 +
                           (100 - 15) * tcos(heading)),
                     (int)(ext_view_height / 2 -
@@ -616,7 +590,7 @@ void Paint_HUD(void)
                     (int)(ext_view_width / 2 + 100 * tcos(heading)),
                     (int)(ext_view_height / 2 - 100 * tsin(heading)));
 
-    if (hudRadarEnemyColor || hudRadarOtherColor)
+    if (clientOptions.hudRadarEnemyColor || clientOptions.hudRadarOtherColor)
     {
         double hudRadarMapScale = (double)Setup->width / (double)RadarWidth;
         Paint_hudradar(
@@ -632,11 +606,11 @@ void Paint_HUD(void)
     }
 
     /* message scan hack by mara and jpv */
-    if (Bms_test_state(BmsBall) && msgScanBallColor)
-        Arc_add(msgScanBallColor, ext_view_width / 2 - 5,
+    if (Bms_test_state(BmsBall) && clientOptions.msgScanBallColor)
+        Arc_add(clientOptions.msgScanBallColor, ext_view_width / 2 - 5,
                 ext_view_height / 2 - 5, 10, 10, 0, 64 * 360);
-    if (Bms_test_state(BmsCover) && msgScanCoverColor)
-        Arc_add(msgScanCoverColor, ext_view_width / 2 - 4,
+    if (Bms_test_state(BmsCover) && clientOptions.msgScanCoverColor)
+        Arc_add(clientOptions.msgScanCoverColor, ext_view_width / 2 - 4,
                 ext_view_height / 2 - 4, 8, 8, 0, 64 * 360);
 
     /*
@@ -649,9 +623,9 @@ void Paint_HUD(void)
     gcv.line_style = LineOnOffDash;
     XChangeGC(dpy, gameGC, GCLineStyle | GCDashOffset, &gcv);
 
-    if (hudHLineColor)
+    if (clientOptions.hudHLineColor)
     {
-        SET_FG(colors[hudHLineColor].pixel);
+        SET_FG(colors[clientOptions.hudHLineColor].pixel);
         rd.drawLine(dpy, drawPixmap, gameGC,
                     WINSCALE(hud_pos_x - hudSize),
                     WINSCALE(hud_pos_y - hudSize + HUD_OFFSET),
@@ -663,9 +637,9 @@ void Paint_HUD(void)
                     WINSCALE(hud_pos_x + hudSize),
                     WINSCALE(hud_pos_y + hudSize - HUD_OFFSET));
     }
-    if (hudVLineColor)
+    if (clientOptions.hudVLineColor)
     {
-        SET_FG(colors[hudVLineColor].pixel);
+        SET_FG(colors[clientOptions.hudVLineColor].pixel);
         rd.drawLine(dpy, drawPixmap, gameGC,
                     WINSCALE(hud_pos_x - hudSize + HUD_OFFSET),
                     WINSCALE(hud_pos_y - hudSize),
@@ -680,13 +654,13 @@ void Paint_HUD(void)
     gcv.line_style = LineSolid;
     XChangeGC(dpy, gameGC, GCLineStyle, &gcv);
 
-    if (hudItemsColor)
+    if (clientOptions.hudItemsColor)
         Paint_HUD_items(hud_pos_x, hud_pos_y);
 
     /* Fuel notify, HUD meter on */
-    if (hudColor && (fuelTime > 0.0 || fuelSum < fuelNotify))
+    if (clientOptions.hudColor && (fuelTime > 0.0 || fuelSum < fuelNotify))
     {
-        SET_FG(colors[hudColor].pixel);
+        SET_FG(colors[clientOptions.hudColor].pixel);
         did_fuel = 1;
         sprintf(str, "%04d", (int)fuelSum);
         rd.drawString(dpy, drawPixmap, gameGC,
@@ -723,9 +697,9 @@ void Paint_HUD(void)
     }
 
     /* Draw last score on hud if it is an message attached to it */
-    if (hudColor)
+    if (clientOptions.hudColor)
     {
-        SET_FG(colors[hudColor].pixel);
+        SET_FG(colors[clientOptions.hudColor].pixel);
 
         for (i = 0, j = 0; i < MAX_SCORE_OBJECTS; i++)
         {
@@ -739,7 +713,7 @@ void Paint_HUD(void)
                                    sobj->hud_msg_len);
                 if (j == 0 &&
                     sobj->hud_msg_width > WINSCALE(2 * hudSize - HUD_OFFSET * 2) &&
-                    (did_fuel || hudVLineColor))
+                    (did_fuel || clientOptions.hudVLineColor))
                     ++j;
                 rd.drawString(dpy, drawPixmap, gameGC,
                               WINSCALE(hud_pos_x) - sobj->hud_msg_width / 2,
@@ -786,11 +760,11 @@ void Paint_HUD(void)
     }
 
     /* draw fuel gauge */
-    if (fuelGaugeColor &&
+    if (clientOptions.fuelGaugeColor &&
         ((fuelTime > 0.0) || (fuelSum < fuelNotify && ((fuelSum < fuelCritical && (loopsSlow % 4) < 2) || (fuelSum < fuelWarning && fuelSum > fuelCritical && (loopsSlow % 8) < 4) || (fuelSum > fuelWarning)))))
     {
 
-        SET_FG(colors[fuelGaugeColor].pixel);
+        SET_FG(colors[clientOptions.fuelGaugeColor].pixel);
         rd.drawRectangle(dpy, drawPixmap, gameGC,
                          WINSCALE(hud_pos_x + hudSize - HUD_OFFSET + FUEL_GAUGE_OFFSET) - 1,
                          WINSCALE(hud_pos_y - hudSize + HUD_OFFSET + FUEL_GAUGE_OFFSET) - 1,
@@ -849,30 +823,30 @@ void Paint_messages(void)
         }
 
         if (msg->lifeTime <= MSG_FLASH_TIME)
-            msg_color = oldMessagesColor;
+            msg_color = clientOptions.oldMessagesColor;
         else
         {
             /* If paused, don't bother to paint messages in mscScan* colors. */
             if (self && strchr("P", self->mychar))
-                msg_color = messagesColor;
+                msg_color = clientOptions.messagesColor;
             else
             {
                 switch (msg->bmsinfo)
                 {
                 case BmsBall:
-                    msg_color = msgScanBallColor;
+                    msg_color = clientOptions.msgScanBallColor;
                     break;
                 case BmsSafe:
-                    msg_color = msgScanSafeColor;
+                    msg_color = clientOptions.msgScanSafeColor;
                     break;
                 case BmsCover:
-                    msg_color = msgScanCoverColor;
+                    msg_color = clientOptions.msgScanCoverColor;
                     break;
                 case BmsPop:
-                    msg_color = msgScanPopColor;
+                    msg_color = clientOptions.msgScanPopColor;
                     break;
                 default:
-                    msg_color = messagesColor;
+                    msg_color = clientOptions.messagesColor;
                     break;
                 }
             }
@@ -1053,10 +1027,10 @@ void Paint_HUD_values(void)
     int w, x, y, len, w2, len2, wmax;
     static char buf[32], buf2[32];
 
-    if (!hudColor)
+    if (!clientOptions.hudColor)
         return;
 
-    SET_FG(colors[hudColor].pixel);
+    SET_FG(colors[clientOptions.hudColor].pixel);
 
     sprintf(buf, "FPS    : %.3f", clientFPS);
     sprintf(buf2, "CL.LAG : %.1f ms", clData.clientLag);
@@ -1082,132 +1056,132 @@ xp_option_t hud_options[] = {
     COLOR_INDEX_OPTION(
         "hudColor",
         2,
-        &hudColor,
+        &clientOptions.hudColor,
         "Which color number to use for drawing the HUD.\n"),
 
     COLOR_INDEX_OPTION(
         "hudHLineColor",
         0,
-        &hudHLineColor,
+        &clientOptions.hudHLineColor,
         "Which color number to use for drawing the horizontal lines\n"),
 
     COLOR_INDEX_OPTION(
         "hudVLineColor",
         0,
-        &hudVLineColor,
+        &clientOptions.hudVLineColor,
         "Which color number to use for drawing the vertical lines\n"
         "in the HUD.\n"),
 
     COLOR_INDEX_OPTION(
         "hudItemsColor",
         2,
-        &hudItemsColor,
+        &clientOptions.hudItemsColor,
         "Which color number to use for drawing owned items on the HUD.\n"),
 
     COLOR_INDEX_OPTION(
         "hudRadarEnemyColor",
         3,
-        &hudRadarEnemyColor,
+        &clientOptions.hudRadarEnemyColor,
         "Which color number to use for drawing hudradar dots\n"
         "that represent enemy ships.\n"),
 
     COLOR_INDEX_OPTION(
         "hudRadarOtherColor",
         2,
-        &hudRadarOtherColor,
+        &clientOptions.hudRadarOtherColor,
         "Which color number to use for drawing hudradar dots\n"
         "that represent friendly ships or other objects.\n"),
 
     COLOR_INDEX_OPTION(
         "hudLockColor",
         0,
-        &hudLockColor,
+        &clientOptions.hudLockColor,
         "Which color number to use for drawing the lock on the HUD.\n"),
 
     COLOR_INDEX_OPTION(
         "fuelGaugeColor",
         0,
-        &fuelGaugeColor,
+        &clientOptions.fuelGaugeColor,
         "Which color number to use for drawing the fuel gauge.\n"),
 
     COLOR_INDEX_OPTION(
         "dirPtrColor",
         0,
-        &dirPtrColor,
+        &clientOptions.dirPtrColor,
         "Which color number to use for drawing the direction pointer hack.\n"),
 
     COLOR_INDEX_OPTION(
         "messagesColor",
         12,
-        &messagesColor,
+        &clientOptions.messagesColor,
         "Which color number to use for drawing messages.\n"),
 
     COLOR_INDEX_OPTION(
         "oldMessagesColor",
         13,
-        &oldMessagesColor,
+        &clientOptions.oldMessagesColor,
         "Which color number to use for drawing old messages.\n"),
 
     COLOR_INDEX_OPTION(
         "msgScanBallColor",
         3,
-        &msgScanBallColor,
+        &clientOptions.msgScanBallColor,
         "Which color number to use for drawing ball message warning.\n"),
 
     COLOR_INDEX_OPTION(
         "msgScanSafeColor",
         4,
-        &msgScanSafeColor,
+        &clientOptions.msgScanSafeColor,
         "Which color number to use for drawing safe message.\n"),
 
     COLOR_INDEX_OPTION(
         "msgScanCoverColor",
         2,
-        &msgScanCoverColor,
+        &clientOptions.msgScanCoverColor,
         "Which color number to use for drawing cover message.\n"),
 
     COLOR_INDEX_OPTION(
         "msgScanPopColor",
         11,
-        &msgScanPopColor,
+        &clientOptions.msgScanPopColor,
         "Which color number to use for drawing pop message.\n"),
 
     COLOR_INDEX_OPTION(
         "fuelMeterColor",
         0,
-        &fuelMeterColor,
+        &clientOptions.fuelMeterColor,
         "Which color number to use for drawing the fuel meter.\n"),
 
     COLOR_INDEX_OPTION(
         "powerMeterColor",
         0,
-        &powerMeterColor,
+        &clientOptions.powerMeterColor,
         "Which color number to use for drawing the power meter.\n"),
 
     COLOR_INDEX_OPTION(
         "turnSpeedMeterColor",
         0,
-        &turnSpeedMeterColor,
+        &clientOptions.turnSpeedMeterColor,
         "Which color number to use for drawing the turn speed meter.\n"),
 
     COLOR_INDEX_OPTION(
         "packetSizeMeterColor",
         0,
-        &packetSizeMeterColor,
+        &clientOptions.packetSizeMeterColor,
         "Which color number to use for drawing the packet size meter.\n"
         "Each bar is equavalent to 1024 bytes, for a maximum of 4096 bytes.\n"),
 
     COLOR_INDEX_OPTION(
         "packetLossMeterColor",
         3,
-        &packetLossMeterColor,
+        &clientOptions.packetLossMeterColor,
         "Which color number to use for drawing the packet loss meter.\n"
         "This gives the percentage of lost frames due to network failure.\n"),
 
     COLOR_INDEX_OPTION(
         "packetDropMeterColor",
         3,
-        &packetDropMeterColor,
+        &clientOptions.packetDropMeterColor,
         "Which color number to use for drawing the packet drop meter.\n"
         "This gives the percentage of dropped frames due to display\n"
         "slowness.\n"),
@@ -1215,26 +1189,26 @@ xp_option_t hud_options[] = {
     COLOR_INDEX_OPTION(
         "packetLagMeterColor",
         3,
-        &packetLagMeterColor,
+        &clientOptions.packetLagMeterColor,
         "Which color number to use for drawing the packet lag meter.\n"
         "This gives the amount of lag in frames over the past one second.\n"),
 
     COLOR_INDEX_OPTION(
         "temporaryMeterColor",
         3,
-        &temporaryMeterColor,
+        &clientOptions.temporaryMeterColor,
         "Which color number to use for drawing temporary meters.\n"),
 
     COLOR_INDEX_OPTION(
         "meterBorderColor",
         2,
-        &meterBorderColor,
+        &clientOptions.meterBorderColor,
         "Which color number to use for drawing borders of meters.\n"),
 
     COLOR_INDEX_OPTION(
         "scoreObjectColor",
         4,
-        &scoreObjectColor,
+        &clientOptions.scoreObjectColor,
         "Which color number to use for drawing score objects.\n"),
 
 };

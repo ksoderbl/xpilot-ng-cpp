@@ -65,10 +65,6 @@ int(*radarDrawRectanglePtr) /* Function to draw player on radar */
 static int slidingradar_x; /* sliding radar offsets for windows */
 static int slidingradar_y;
 
-static int wallRadarColor;   /* Color index for walls on radar. */
-static int targetRadarColor; /* Color index for targets on radar. */
-static int decorRadarColor;  /* Color index for decorations on radar. */
-
 static void Copy_static_radar(void)
 {
     if (radarPixmap2 != radarPixmap)
@@ -398,19 +394,19 @@ static void Paint_world_radar_old(void)
                 visibleColor[SETUP_REC_RU] =
                     visibleColor[SETUP_REC_LD] =
                         visibleColor[SETUP_REC_RD] =
-                            visibleColor[SETUP_FUEL] = wallRadarColor;
+                            visibleColor[SETUP_FUEL] = clientOptions.wallRadarColor;
     for (i = 0; i < 10; i++)
-        visibleColor[SETUP_TARGET + i] = targetRadarColor;
+        visibleColor[SETUP_TARGET + i] = clientOptions.targetRadarColor;
 
     for (i = BLUE_BIT; i < (int)sizeof visible; i++)
-        visibleColor[i] = wallRadarColor;
+        visibleColor[i] = clientOptions.wallRadarColor;
 
     if (clientOptions.instruments.showDecor)
         visibleColor[SETUP_DECOR_FILLED] =
             visibleColor[SETUP_DECOR_LU] =
                 visibleColor[SETUP_DECOR_RU] =
                     visibleColor[SETUP_DECOR_LD] =
-                        visibleColor[SETUP_DECOR_RD] = decorRadarColor;
+                        visibleColor[SETUP_DECOR_RD] = clientOptions.decorRadarColor;
 
     /* The following code draws the map on the radar.  Segments and
      * points arrays are use to build lists of things to be drawn.
@@ -646,7 +642,7 @@ static void Paint_world_radar_old(void)
             break;
         if (dead_time)
             continue;
-        Paint_radar_block(xi, yi, targetRadarColor);
+        Paint_radar_block(xi, yi, clientOptions.targetRadarColor);
     }
 }
 
@@ -687,7 +683,7 @@ static void Paint_world_radar_new(void)
     else
         XClearWindow(dpy, radarWindow);
 
-    XSetForeground(dpy, radarGC, colors[wallRadarColor].pixel);
+    XSetForeground(dpy, radarGC, colors[clientOptions.wallRadarColor].pixel);
 
     /* loop through all the polygons */
     for (auto &polygon : clMap.polygons)
@@ -713,7 +709,8 @@ static void Paint_world_radar_new(void)
                     poly[j].y = (int)RadarHeight - ((y * (int)RadarHeight) / Setup->height);
                 }
 
-                XSetForeground(dpy, radarGC, fullColor ? polygon_styles[polygon.style].color : colors[wallRadarColor].pixel);
+                unsigned long foregroundColor = fullColor ? polygon_styles[polygon.style].color : colors[clientOptions.wallRadarColor].pixel;
+                XSetForeground(dpy, radarGC, foregroundColor);
                 XFillPolygon(dpy, radarPixmap2, radarGC, poly,
                              polygon.num_points,
                              Nonconvex, CoordModeOrigin);
@@ -735,7 +732,7 @@ void Paint_world_radar(void)
 
 void Radar_show_target(int x, int y)
 {
-    Paint_radar_block(x, y, targetRadarColor);
+    Paint_radar_block(x, y, clientOptions.targetRadarColor);
 }
 
 void Radar_hide_target(int x, int y)
@@ -745,19 +742,19 @@ void Radar_hide_target(int x, int y)
 
 static bool Set_wallRadarColor(xp_option_t *opt, int value)
 {
-    wallRadarColor = value;
+    clientOptions.wallRadarColor = value;
     return true;
 }
 
 static bool Set_decorRadarColor(xp_option_t *opt, int value)
 {
-    decorRadarColor = value;
+    clientOptions.decorRadarColor = value;
     return true;
 }
 
 static bool Set_targetRadarColor(xp_option_t *opt, int value)
 {
-    targetRadarColor = value;
+    clientOptions.targetRadarColor = value;
     return true;
 }
 
@@ -766,7 +763,7 @@ static xp_option_t paintradar_options[] = {
     COLOR_INDEX_OPTION_WITH_SETFUNC(
         "wallRadarColor",
         BLUE,
-        &wallRadarColor,
+        &clientOptions.wallRadarColor,
         Set_wallRadarColor,
         "Which color number to use for drawing walls on the radar.\n"
         "Valid values all even numbers smaller than maxColors.\n"),
@@ -774,7 +771,7 @@ static xp_option_t paintradar_options[] = {
     COLOR_INDEX_OPTION_WITH_SETFUNC(
         "decorRadarColor",
         6,
-        &decorRadarColor,
+        &clientOptions.decorRadarColor,
         Set_decorRadarColor,
         "Which color number to use for drawing decorations on the radar.\n"
         "Valid values are all even numbers smaller than maxColors.\n"),
@@ -782,7 +779,7 @@ static xp_option_t paintradar_options[] = {
     COLOR_INDEX_OPTION_WITH_SETFUNC(
         "targetRadarColor",
         4,
-        &targetRadarColor,
+        &clientOptions.targetRadarColor,
         Set_targetRadarColor,
         "Which color number to use for drawing targets on the radar.\n"
         "Valid values are all even numbers smaller than maxColors.\n"),

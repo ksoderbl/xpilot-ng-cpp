@@ -169,11 +169,6 @@ int main(int argc, char *argv[])
         xpArgs.auto_connect = true;
     }
 
-    /*
-     * --- Message of the Day ---
-     */
-    printfile(Conf_localmotdfile());
-
     debugprint("main => simulate");
 
     // Simulate(false);

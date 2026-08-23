@@ -92,16 +92,16 @@ Uint32 selfLWColorRGBA;
 Uint32 teamLWColorRGBA;
 Uint32 enemyLWColorRGBA;
 Uint32 teamShipColorRGBA;
-Uint32 team0ColorRGBA;
-Uint32 team1ColorRGBA;
-Uint32 team2ColorRGBA;
-Uint32 team3ColorRGBA;
-Uint32 team4ColorRGBA;
-Uint32 team5ColorRGBA;
-Uint32 team6ColorRGBA;
-Uint32 team7ColorRGBA;
-Uint32 team8ColorRGBA;
-Uint32 team9ColorRGBA;
+Uint32 teamColor0RGBA;
+Uint32 teamColor1RGBA;
+Uint32 teamColor2RGBA;
+Uint32 teamColor3RGBA;
+Uint32 teamColor4RGBA;
+Uint32 teamColor5RGBA;
+Uint32 teamColor6RGBA;
+Uint32 teamColor7RGBA;
+Uint32 teamColor8RGBA;
+Uint32 teamColor9RGBA;
 Uint32 shipNameColorRGBA;
 Uint32 baseNameColorRGBA;
 Uint32 manyLivesColorRGBA;
@@ -1312,25 +1312,25 @@ int Team_color(int team)
     switch (team)
     {
     case 0:
-        return team0ColorRGBA;
+        return teamColor0RGBA;
     case 1:
-        return team1ColorRGBA;
+        return teamColor1RGBA;
     case 2:
-        return team2ColorRGBA;
+        return teamColor2RGBA;
     case 3:
-        return team3ColorRGBA;
+        return teamColor3RGBA;
     case 4:
-        return team4ColorRGBA;
+        return teamColor4RGBA;
     case 5:
-        return team5ColorRGBA;
+        return teamColor5RGBA;
     case 6:
-        return team6ColorRGBA;
+        return teamColor6RGBA;
     case 7:
-        return team7ColorRGBA;
+        return teamColor7RGBA;
     case 8:
-        return team8ColorRGBA;
+        return teamColor8RGBA;
     case 9:
-        return team9ColorRGBA;
+        return teamColor9RGBA;
     default:
         break;
     }
@@ -2552,16 +2552,16 @@ static xp_option_t sdlgui_options[] = {
     COLOR(scoreEnemyTeamColorRGBA, "#ff0000ff", "enemy team score"),
 
     COLOR(teamShipColorRGBA, "#0000ffff", "teammate color"),
-    COLOR(team0ColorRGBA, "#00000000", "team 0"),
-    COLOR(team1ColorRGBA, "#00000000", "team 1"),
-    COLOR(team2ColorRGBA, "#00000000", "team 2"),
-    COLOR(team3ColorRGBA, "#00000000", "team 3"),
-    COLOR(team4ColorRGBA, "#00000000", "team 4"),
-    COLOR(team5ColorRGBA, "#00000000", "team 5"),
-    COLOR(team6ColorRGBA, "#00000000", "team 6"),
-    COLOR(team7ColorRGBA, "#00000000", "team 7"),
-    COLOR(team8ColorRGBA, "#00000000", "team 8"),
-    COLOR(team9ColorRGBA, "#00000000", "team 9"),
+    COLOR(teamColor0RGBA, "#00000000", "team 0"),
+    COLOR(teamColor1RGBA, "#00000000", "team 1"),
+    COLOR(teamColor2RGBA, "#00000000", "team 2"),
+    COLOR(teamColor3RGBA, "#00000000", "team 3"),
+    COLOR(teamColor4RGBA, "#00000000", "team 4"),
+    COLOR(teamColor5RGBA, "#00000000", "team 5"),
+    COLOR(teamColor6RGBA, "#00000000", "team 6"),
+    COLOR(teamColor7RGBA, "#00000000", "team 7"),
+    COLOR(teamColor8RGBA, "#00000000", "team 8"),
+    COLOR(teamColor9RGBA, "#00000000", "team 9"),
 
     COLOR(selfLWColorRGBA, "#ff0000ff", "my ship on last life"),
     COLOR(teamLWColorRGBA, "#ff00ffff", "team ship on last life"),

@@ -283,7 +283,7 @@ void Expose_about_window(void)
             if (about_page == 3 && itemsplit == -1 && box_end >= (ABOUT_WINDOW_HEIGHT - BORDER * 2 - 4 - (2 * BTN_BORDER + buttonFont->ascent + buttonFont->descent)))
             {
                 itemsplit = i - 1;
-                XSetForeground(dpy, textGC, colors[windowColor].pixel);
+                XSetForeground(dpy, textGC, colors[clientOptions.windowColor].pixel);
                 XFillRectangle(dpy, aboutWindow, textGC,
                                BORDER, box_start,
                                ABOUT_WINDOW_WIDTH,
@@ -322,9 +322,9 @@ static void About_create_window(void)
      * Create the window and initialize window name.
      */
     mask = 0;
-    sattr.background_pixel = colors[windowColor].pixel;
+    sattr.background_pixel = colors[clientOptions.windowColor].pixel;
     mask |= CWBackPixel;
-    sattr.border_pixel = colors[borderColor].pixel;
+    sattr.border_pixel = colors[clientOptions.borderColor].pixel;
     mask |= CWBorderPixel;
     if (colormap != 0)
     {
@@ -352,7 +352,7 @@ static void About_create_window(void)
                                         2 * BTN_BORDER + textWidth,
                                         buttonWindowHeight,
                                         0, 0,
-                                        colors[buttonColor].pixel);
+                                        colors[clientOptions.buttonColor].pixel);
 
     /*
      * Create 'buttons' in the window.
@@ -363,7 +363,7 @@ static void About_create_window(void)
                                        (int)(windowHeight - BORDER - buttonWindowHeight - 4),
                                        2 * BTN_BORDER + textWidth, buttonWindowHeight,
                                        0, 0,
-                                       colors[buttonColor].pixel);
+                                       colors[clientOptions.buttonColor].pixel);
 
     textWidth = XTextWidth(buttonFont, "NEXT", 4);
     about_next_b = XCreateSimpleWindow(dpy, aboutWindow,
@@ -371,7 +371,7 @@ static void About_create_window(void)
                                        (int)(windowHeight - BORDER - buttonWindowHeight - 4),
                                        2 * BTN_BORDER + textWidth, buttonWindowHeight,
                                        0, 0,
-                                       colors[buttonColor].pixel);
+                                       colors[clientOptions.buttonColor].pixel);
 
     XSelectInput(dpy, about_close_b,
                  ExposureMask | ButtonPressMask | ButtonReleaseMask);
