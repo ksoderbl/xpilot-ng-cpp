@@ -223,7 +223,7 @@ void Paint_frame(void)
      */
     if (radarPixmap != radarWindow && radar_exposures > 0)
     {
-        if (!instruments.slidingRadar || BIT(Setup->mode, WRAP_PLAY) == 0)
+        if (!clientOptions.instruments.slidingRadar || BIT(Setup->mode, WRAP_PLAY) == 0)
         {
             XCopyArea(dpy, radarPixmap, radarWindow, gameGC,
                       0, 0, RadarWidth, RadarHeight, 0, 0);
@@ -576,7 +576,7 @@ static void Paint_clock(bool redraw)
     hour = m->tm_hour;
     /*warn("drawing clock at %02d:%02d:%02d", hour, minute, second);*/
 
-    if (!instruments.clockAMPM)
+    if (!clientOptions.instruments.clockAMPM)
         sprintf(buf, "%02d:%02d" /*":%02d"*/, hour, minute /*, second*/);
     else
     {

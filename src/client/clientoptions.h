@@ -48,10 +48,38 @@ struct ConnectParam
     int team = TEAM_NOT_SET;
 };
 
+struct InstrumentsOptions
+{
+    bool clientRanker = false;
+    bool clockAMPM = false;
+    bool filledDecor = false;
+    bool filledWorld = false;
+    bool outlineDecor = false;
+    bool outlineWorld = false;
+    bool showDecor = true;
+    bool showItems = true;
+    bool showLivesByShip = false;
+    bool showMessages = true;
+    bool showMyShipShape = true;
+    bool showNastyShots = true;
+    bool showShipShapes = true;
+    bool showShipShapesHack = false;
+    bool slidingRadar = true;
+    bool texturedDecor = false;
+    bool texturedWalls = true;
+};
+
 struct ClientOptions
 {
     // Connection params
     ConnectParam connectParam;
+
+    // Instruments on screen
+    InstrumentsOptions instruments;
+
+    bool sound = false;
+
+    int maxVolume = 100; // maximum volume (in percent)
 };
 
 extern ClientOptions clientOptions;

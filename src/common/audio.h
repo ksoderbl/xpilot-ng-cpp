@@ -199,3 +199,13 @@ static const char *soundNames[] =
         "asteroid_hit",
         "asteroid_break",
 };
+
+extern void audioInit(char *display);
+extern void audioCleanup(void);
+extern int Handle_audio(int type, int volume);
+
+extern int audioDeviceInit(char *display);
+extern void audioDeviceEvents(void);
+extern void audioDevicePlay(char *filename, int type, int volume, void **private_data);
+
+extern void audioEvents(void);

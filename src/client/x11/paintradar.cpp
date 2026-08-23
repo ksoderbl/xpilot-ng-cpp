@@ -253,7 +253,7 @@ void Paint_sliding_radar(void)
     if (radarPixmap != radarPixmap2)
         return;
 
-    if (instruments.slidingRadar)
+    if (clientOptions.instruments.slidingRadar)
     {
         if (radarPixmap2 != radarWindow)
             return;
@@ -378,7 +378,7 @@ static void Paint_world_radar_old(void)
     for (i = BLUE_BIT; i < (int)sizeof visible; i++)
         visible[i] = 1;
 
-    if (instruments.showDecor)
+    if (clientOptions.instruments.showDecor)
     {
         visible[SETUP_DECOR_FILLED] = 1;
         visible[SETUP_DECOR_LU] = 1;
@@ -405,7 +405,7 @@ static void Paint_world_radar_old(void)
     for (i = BLUE_BIT; i < (int)sizeof visible; i++)
         visibleColor[i] = wallRadarColor;
 
-    if (instruments.showDecor)
+    if (clientOptions.instruments.showDecor)
         visibleColor[SETUP_DECOR_FILLED] =
             visibleColor[SETUP_DECOR_LU] =
                 visibleColor[SETUP_DECOR_RU] =

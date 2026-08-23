@@ -432,7 +432,7 @@ void Gui_paint_fastshot(int color, int x, int y)
     {
         int z = shotSize / 2;
 
-        if (instruments.showNastyShots)
+        if (clientOptions.instruments.showNastyShots)
             Gui_paint_nastyshot(color, x, y, z);
         else
         {
@@ -473,7 +473,7 @@ void Gui_paint_teamshot(int x, int y)
     {
         int z = teamShotSize / 2;
 
-        if (instruments.showNastyShots)
+        if (clientOptions.instruments.showNastyShots)
             Gui_paint_nastyshot(color, x, y, z);
         else
         {
@@ -744,7 +744,7 @@ static void Gui_paint_ship_name(int x, int y, Other *other)
     else
         SET_FG(colors[BLUE].pixel);
 
-    if (instruments.showLivesByShip && BIT(Setup->mode, LIMITED_LIVES))
+    if (clientOptions.instruments.showLivesByShip && BIT(Setup->mode, LIMITED_LIVES))
     {
         char keff[4] = "";
 
@@ -1027,9 +1027,9 @@ void Gui_paint_ship(int x, int y, int dir, int id, int cloak, int phased,
     ship_color = WHITE;
 
     /* mara attempts similar behaviour to the kth ss hack */
-    if ((!instruments.showShipShapes) && (self != nullptr) && (self->id != id))
+    if ((!clientOptions.instruments.showShipShapes) && (self != nullptr) && (self->id != id))
         cnt = set_shipshape(x, y, dir, Default_ship(), points);
-    else if ((!instruments.showMyShipShape) && (self != nullptr) && (self->id == id))
+    else if ((!clientOptions.instruments.showMyShipShape) && (self != nullptr) && (self->id == id))
         cnt = set_shipshape(x, y, dir, Default_ship(), points);
     else
         cnt = set_shipshape(x, y, dir, ship, points);
@@ -1056,7 +1056,7 @@ void Gui_paint_ship(int x, int y, int dir, int id, int cloak, int phased,
         {
             Gui_paint_ship_uncloaked(id, points, ship_color, cnt);
             /* shipshapeshack by Mara */
-            if (instruments.showShipShapesHack)
+            if (clientOptions.instruments.showShipShapesHack)
             {
                 Segment_add(ship_color,
                             (X(x + SHIP_SZ * tcos(dir))),

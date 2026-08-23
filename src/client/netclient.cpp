@@ -62,9 +62,7 @@
 #include "netclient.h"
 #include "paint.h"
 
-#ifdef SOUND
 #include "audio.h"
-#endif
 
 #define TALK_RETRY 2
 #define MAX_MAP_ACK_LEN 500
@@ -85,7 +83,7 @@ typedef struct
 bool simulating = false;
 setup_t *Setup = nullptr;
 display_t server_display;
-int receive_window_size = 3;
+int receive_window_size = 3; // Too complicated.  Keep it on 3.
 long last_loops;
 bool packetMeasurement;
 pointer_move_t pointer_moves[MAX_POINTER_MOVES];
@@ -797,11 +795,19 @@ int Net_start(void)
              * Therefore we don't transmit the shipshape when
              * we have had 5 unsuccesful attempts.
              */
-            if ((retries < 5 && Send_shipshape(shipShape) == -1) || Packet_printf(&wbuf, "%c", PKT_PLAY) <= 0 || Client_power() == -1
-#ifdef SOUND
-                || Send_audio_request(1) == -1
-#endif
-                || Client_fps_request() == -1 || Sockbuf_flush(&wbuf) == -1)
+            std::string shipShapeStr;
+            if (shipShape != nullptr)
+            {
+                // warn("shipShape: %s", shipShape);
+                shipShapeStr = shipShape;
+            }
+            // warn("shipShapeStr: %s", shipShapeStr.c_str());
+            if ((retries < 5 && Send_shipshape(shipShapeStr) == -1) ||
+                Packet_printf(&wbuf, "%c", PKT_PLAY) <= 0 ||
+                Client_power() == -1 ||
+                Send_audio_request(1) == -1 ||
+                Client_fps_request() == -1 ||
+                Sockbuf_flush(&wbuf) == -1)
             {
                 error("Can't send start play packet");
                 return -1;
@@ -2572,12 +2578,11 @@ int Send_keyboard(uint8_t *keyboard_vector)
     return 0;
 }
 
-int Send_shipshape(char *str)
+int Send_shipshape(std::string &str)
 {
-    ShipShape *ship;
     char buf[MSG_LEN], ext[MSG_LEN];
 
-    ship = Convert_shape_str(str);
+    ShipShape *ship = Convert_shape_str(str);
     Convert_ship_2_string(ship, buf, ext, 0x3200);
     Free_ship_shape(ship);
     if (Packet_printf(&wbuf, "%c%S", PKT_SHAPE, buf) <= 0)
@@ -2663,10 +2668,8 @@ int Receive_audio(void)
 
     if ((n = Packet_scanf(&rbuf, "%c%c%c", &pkt, &type, &vol)) <= 0)
         return n;
-#ifdef SOUND
     if ((n = Handle_audio(type, vol)) == -1)
         return -1;
-#endif /* SOUND */
     return 1;
 }
 

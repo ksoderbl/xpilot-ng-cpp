@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -35,30 +33,39 @@
 
 #include <unistd.h>
 
+#include "audio.h"
+
+#include "xperror.h"
+
 int audioDeviceInit(char *display)
 {
-    printf("debug audio: init\n");
+    debugprint("debug audio: init\n");
 
     return 0;
 }
 
 void audioDevicePlay(char *filename, int type, int volume, void **private_data)
 {
-    printf("debug audio: play file %s, type %d, vol %d, priv %p\n",
-           filename, type, volume, (void *)private_data);
+    debugprint("debug audio: play file %s, type %d, vol %d, priv %p\n",
+               filename, type, volume, private_data);
 }
 
 void audioDeviceEvents(void)
 {
-    /* printf("debug audio: events\n"); */
+    debugprint("debug audio: events\n");
+}
+
+void audioDeviceUpdate(void)
+{
+    debugprint("debug audio: update\n");
 }
 
 void audioDeviceFree(void *private_data)
 {
-    printf("debug audio: audioDeviceFree\n");
+    debugprint("debug audio: audioDeviceFree\n");
 }
 
 void audioDeviceClose()
 {
-    printf("debug audio: audioDeviceClose\n");
+    debugprint("debug audio: audioDeviceClose\n");
 }

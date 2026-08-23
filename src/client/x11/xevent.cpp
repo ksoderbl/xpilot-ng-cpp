@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -35,7 +33,9 @@
 #include <X11/Xatom.h>
 #include <X11/Xmd.h>
 
-// #include "messages.h"
+#include "audio.h"
+
+#include "messages.h"
 #include "paint.h"
 
 #include "xpconfig.h"
@@ -129,8 +129,6 @@ void Platform_specific_pointer_control_set_state(bool on)
 
 void Platform_specific_talk_set_state(bool on)
 {
-    assert(clData.talking != on);
-
     if (on)
     {
         XSelectInput(dpy, drawWindow,
@@ -138,6 +136,7 @@ void Platform_specific_talk_set_state(bool on)
         Talk_map_window(true);
     }
     else
+        /* Disable talking, enable pointer control if it was enabled. */
         Talk_map_window(false);
 }
 
@@ -145,7 +144,6 @@ void Toggle_radar_and_scorelist(void)
 {
     if (radar_score_mapped)
     {
-
         /* change the draw area to be the size of the window */
         draw_width = top_width;
         draw_height = top_height;
@@ -173,7 +171,6 @@ void Toggle_radar_and_scorelist(void)
     }
     else
     {
-
         /*
          * We need to map the score and radar windows
          * move the window back
@@ -325,9 +322,7 @@ int x_event(int new_input)
     int queued = 0, i, n;
     XEvent event;
 
-#ifdef SOUND
     audioEvents();
-#endif /* SOUND */
 
     mouseMovement = 0;
 

@@ -38,6 +38,7 @@
 #include "rules.h"
 #include "xperror.h"
 
+#include "caudio.h"
 #include "client.h"
 #include "clientcommand.h"
 #include "clientsetup.h"
@@ -243,7 +244,7 @@ int Handle_base(int id, int ind)
 {
     int i;
 
-    if (ind < 0 || ind >= (int)clMap.bases.size())
+    if (ind < 0 || ind >= clMap.bases.size())
     {
         warn("Bad homebase index (%d)", ind);
         return -1;
@@ -355,7 +356,7 @@ void Map_dots(void)
      */
     memset(dot, 0, sizeof dot);
     dot[SETUP_SPACE] = 1;
-    if (!instruments.showDecor)
+    if (!clientOptions.instruments.showDecor)
     {
         dot[SETUP_DECOR_FILLED] = 1;
         dot[SETUP_DECOR_RU] = 1;
@@ -481,9 +482,9 @@ void Map_blue(int startx, int starty, int width, int height)
     uint8_t blue[256];
     bool outline = false;
 
-    if (instruments.outlineWorld ||
-        instruments.filledWorld ||
-        instruments.texturedWalls)
+    if (clientOptions.instruments.outlineWorld ||
+        clientOptions.instruments.filledWorld ||
+        clientOptions.instruments.texturedWalls)
         outline = true;
     /*
      * Optimize the map for blue.
@@ -892,7 +893,7 @@ static int init_polymap(void)
      * kps - hack.
      * Player can disable downloading of textures by having texturedWalls off.
      */
-    if (instruments.texturedWalls && Setup->data_url[0])
+    if (clientOptions.instruments.texturedWalls && Setup->data_url[0])
         Mapdata_setup(Setup->data_url);
     Colors_init_style_colors();
 
@@ -1364,9 +1365,8 @@ int Handle_end(long server_loops)
     snooping = (self && eyesId != self->id) ? true : false;
     update_timing();
     Paint_frame();
-#ifdef SOUND
     audioUpdate();
-#endif
+
     return 0;
 }
 

@@ -32,8 +32,12 @@
 
 #pragma once
 
+#include <string>
+
 #include <cerrno>
 #include <cstdarg>
+
+extern void init_error(std::string prog);
 
 extern void xpinfo(const char *fmt, ...);
 extern void warn(const char *fmt, ...);
@@ -41,4 +45,4 @@ extern void error(const char *fmt, ...);
 extern void fatal(const char *fmt, ...);
 extern void dumpcore(const char *fmt, ...);
 
-extern void init_error(const char *prog);
+extern void debugprint(const char *fmt, ...);

@@ -25,10 +25,6 @@
  * client audio
  */
 
-#define SOUND
-
-#ifdef SOUND
-
 #define MAX_RANDOM_SOUNDS 6
 
 #include <cstdlib>
@@ -52,9 +48,7 @@
 
 /* options */
 static bool audioEnabled = false;
-bool sound;
 char soundFile[PATH_MAX]; /* audio mappings */
-int maxVolume;            /* maximum volume (in percent) */
 /* options end */
 
 static struct
@@ -68,9 +62,9 @@ static bool audioIsEnabled(void)
 {
     if (!audioEnabled)
         return false;
-    if (!sound)
+    if (!clientOptions.sound)
         return false;
-    if (maxVolume <= 0)
+    if (clientOptions.maxVolume <= 0)
         return false;
     return true;
 }
@@ -199,10 +193,8 @@ int Handle_audio(int type, int volume)
             }
     }
 
-    audioDevicePlay(table[type].filenames[pick], type, MIN(volume, maxVolume),
+    audioDevicePlay(table[type].filenames[pick], type, MIN(volume, clientOptions.maxVolume),
                     &table[type].priv[pick]);
 
     return 0;
 }
-
-#endif /* SOUND */

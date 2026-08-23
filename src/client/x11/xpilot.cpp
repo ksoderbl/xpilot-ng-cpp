@@ -203,7 +203,7 @@ int main(int argc, char *argv[])
         retval = Join(conpar);
     }
 
-    if (instruments.clientRanker)
+    if (clientOptions.instruments.clientRanker)
         Print_saved_scores();
 
     return retval;

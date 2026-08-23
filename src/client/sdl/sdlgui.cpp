@@ -1453,7 +1453,7 @@ static void Gui_paint_ship_name(int x, int y, Other *other)
     else
         color = blueRGBA;
 
-    if (instruments.showLivesByShip && BIT(Setup->mode, LIMITED_LIVES))
+    if (clientOptions.instruments.showLivesByShip && BIT(Setup->mode, LIMITED_LIVES))
     {
         if (other->life < 1)
             color = whiteRGBA;
@@ -1476,9 +1476,9 @@ void Gui_paint_ship(int x, int y, int dir, int id, int cloak, int phased,
     if (!(color = Gui_calculate_ship_color(id, other)))
         return;
 
-    if ((!instruments.showShipShapes) && (self != nullptr) && (self->id != id))
+    if ((!clientOptions.instruments.showShipShapes) && (self != nullptr) && (self->id != id))
         ship = Default_ship();
-    else if ((!instruments.showMyShipShape) && (self != nullptr) && (self->id == id))
+    else if ((!clientOptions.instruments.showMyShipShape) && (self != nullptr) && (self->id == id))
         ship = Default_ship();
     else
         ship = Ship_by_id(id);
@@ -1927,7 +1927,7 @@ static void Paint_HUD_items(int hud_pos_x, int hud_pos_y)
         if (i == ITEM_FUEL)
             continue;
 
-        if (instruments.showItems)
+        if (clientOptions.instruments.showItems)
         {
             lastNumItems[i] = num;
             if (num <= 0)
@@ -2346,7 +2346,7 @@ void Paint_messages(void)
 
     if (showMessages != instruments.showMessages)
     {
-        if (!instruments.showMessages)
+        if (!clientOptions.instruments.showMessages)
             DelGLWidgetListItem(&(MainWidget->children), ((WrapperWidget *)(MainWidget->wid_info))->game_msgs);
         else
             AppendGLWidgetList(&(MainWidget->children), ((WrapperWidget *)(MainWidget->wid_info))->game_msgs);

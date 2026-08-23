@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -25,12 +23,14 @@
 
 #pragma once
 
+#include <string>
+
 #include "types.h"
 
 #define MIN_RECEIVE_WINDOW_SIZE 1
 #define MAX_RECEIVE_WINDOW_SIZE 4
 
-#define MAX_SUPPORTED_FPS 255
+constexpr int MAX_SUPPORTED_FPS = 255;
 
 typedef struct
 {
@@ -124,7 +124,7 @@ int Receive_string(void);
 int Receive_reply(int *replyto, int *result);
 int Send_ack(long rel_loops);
 int Send_keyboard(uint8_t *);
-int Send_shipshape(char *);
+int Send_shipshape(std::string &str);
 int Send_power(double pwr);
 int Send_power_s(double pwr_s);
 int Send_turnspeed(double turnspd);

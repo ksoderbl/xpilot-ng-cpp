@@ -159,7 +159,7 @@ static bool Key_press_id_mode(void)
 
 static bool Key_press_autoshield_hack(void)
 {
-    warn("Key_press_autoshield_hack");
+    debugprint("Key_press_autoshield_hack");
     if (auto_shield && BITV_ISSET(keyv, KEY_SHIELD))
         BITV_CLR(keyv, KEY_SHIELD);
     return false;
@@ -275,13 +275,13 @@ static bool Key_press_talk(void)
 
 static bool Key_press_show_items(void)
 {
-    instruments.showItems = !instruments.showItems;
+    clientOptions.instruments.showItems = !clientOptions.instruments.showItems;
     return false; /* server doesn't need to know */
 }
 
 static bool Key_press_show_messages(void)
 {
-    instruments.showMessages = !instruments.showMessages;
+    clientOptions.instruments.showMessages = !clientOptions.instruments.showMessages;
     return false; /* server doesn't need to know */
 }
 
@@ -311,9 +311,7 @@ static bool Key_press_toggle_record(void)
 
 static bool Key_press_toggle_sound(void)
 {
-#ifdef SOUND
-    sound = !sound;
-#endif
+    clientOptions.sound = !clientOptions.sound;
     return false; /* server doesn't need to know */
 }
 
@@ -1302,13 +1300,11 @@ xp_option_t key_options[] = {
         KEY_TOGGLE_RECORD,
         "Toggle recording of session (see recordFile).\n"),
 
-#ifdef SOUND
     XP_KEY_OPTION(
         "keyToggleSound",
         "",
         KEY_TOGGLE_SOUND,
         "Toggle sound. Changes value of option 'sound'.\n"),
-#endif
 
     XP_KEY_OPTION(
         "keyToggleRadarScore",

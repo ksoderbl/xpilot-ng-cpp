@@ -24,7 +24,7 @@
  * OpenAL audio driver.
  */
 
-#ifdef SOUND
+#ifdef USE_ALUT_SOUND
 
 #include <AL/al.h>
 #include <AL/alut.h>

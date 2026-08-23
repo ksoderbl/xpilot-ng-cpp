@@ -1,7 +1,5 @@
 /*
- * XPilot NG CPP, a multiplayer space war game.
- *
- * Copyright (C) 1991-2001 by
+ * XPilot, a multiplayer gravity war game.  Copyright (C) 1991-2001 by
  *
  *      Bjørn Stabell
  *      Ken Ronny Schouten
@@ -39,7 +37,7 @@
 
 #include "const.h"
 
-// #include "messages.h"
+#include "messages.h"
 #include "paint.h"
 
 #include "version.h"
@@ -60,7 +58,7 @@
  * Item structures.
  *
  * If you add an item here then please make sure you also add
- * the item in the proper place in ../replay/xp-replay.c.
+ * the item in the proper place in ../replay/xpilot-replay.c.
  */
 #include "items/itemRocketPack.xbm"
 #include "items/itemCloakingDevice.xbm"

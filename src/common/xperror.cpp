@@ -7,6 +7,8 @@
  * Windows mods and memory leak detection by Dick Balaska <dick@xpilot.org>.
  */
 
+#include "xperror.h"
+
 #include <cstdlib>
 #include <cstdio>
 #include <cstring>
@@ -25,31 +27,22 @@
 /*
  * File local static data.
  */
-#define MAX_PROG_LENGTH 32
-static char progname[MAX_PROG_LENGTH];
+static std::string progname;
 
-static const char *prog_basename(const char *prog)
+static std::string prog_basename(std::string path)
 {
-    const char *p;
-
-    p = strrchr(prog, '/');
-
-    return (p != nullptr) ? (p + 1) : prog;
+    auto pos = path.find_last_of('/');
+    return pos == std::string::npos ? path : path.substr(pos + 1);
 }
 
 /*
  * Functions.
  */
-void init_error(const char *prog)
+void init_error(std::string prog)
 {
-    const char *p = prog_basename(prog); /* Beautify argv[0] */
-
-    strlcpy(progname, p, MAX_PROG_LENGTH);
+    progname = prog_basename(prog); /* Beautify argv[0] */
 }
 
-/*
- * Ok, let's do it the ANSI C way.
- */
 void xpinfo(const char *fmt, ...)
 {
     size_t len;
@@ -57,8 +50,7 @@ void xpinfo(const char *fmt, ...)
 
     va_start(ap, fmt);
 
-    if (progname[0] != '\0')
-        fprintf(stderr, "%s: INFO: ", progname);
+    fprintf(stderr, "%s: INFO: ", progname.c_str());
 
     vfprintf(stderr, fmt, ap);
 
@@ -76,8 +68,7 @@ void warn(const char *fmt, ...)
 
     va_start(ap, fmt);
 
-    if (progname[0] != '\0')
-        fprintf(stderr, "%s: WARNING: ", progname);
+    fprintf(stderr, "%s: WARNING: ", progname.c_str());
 
     vfprintf(stderr, fmt, ap);
 
@@ -96,8 +87,7 @@ void error(const char *fmt, ...)
 
     va_start(ap, fmt);
 
-    if (progname[0] != '\0')
-        fprintf(stderr, "%s: ERROR: ", progname);
+    fprintf(stderr, "%s: ERROR: ", progname.c_str());
 
     vfprintf(stderr, fmt, ap);
 
@@ -118,8 +108,7 @@ void fatal(const char *fmt, ...)
 
     va_start(ap, fmt);
 
-    if (progname[0] != '\0')
-        fprintf(stderr, "%s: FATAL: ", progname);
+    fprintf(stderr, "%s: FATAL: ", progname.c_str());
 
     vfprintf(stderr, fmt, ap);
 
@@ -139,8 +128,7 @@ void dumpcore(const char *fmt, ...)
 
     va_start(ap, fmt);
 
-    if (progname[0] != '\0')
-        fprintf(stderr, "%s: ABORT: ", progname);
+    fprintf(stderr, "%s: DUMPCORE: ", progname.c_str());
 
     vfprintf(stderr, fmt, ap);
 
@@ -151,4 +139,22 @@ void dumpcore(const char *fmt, ...)
     va_end(ap);
 
     abort();
+}
+
+void debugprint(const char *fmt, ...)
+{
+    size_t len;
+    va_list ap;
+
+    va_start(ap, fmt);
+
+    fprintf(stderr, "%s: DEBUG: ", progname.c_str());
+
+    vfprintf(stderr, fmt, ap);
+
+    len = strlen(fmt);
+    if (len == 0 || fmt[len - 1] != '\n')
+        fprintf(stderr, "\n");
+
+    va_end(ap);
 }

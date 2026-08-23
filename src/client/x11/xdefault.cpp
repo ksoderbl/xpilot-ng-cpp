@@ -409,7 +409,7 @@ xp_option_t xdefault_options[] = {
     XP_BOOL_OPTION(
         "showNastyShots",
         false,
-        &instruments.showNastyShots,
+        &clientOptions.instruments.showNastyShots,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Use the Nasty Looking Shots instead of the round shots.\n"
