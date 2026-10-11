@@ -50,7 +50,7 @@ public:
     int name_width;         /* In pixels */
     int name_len;           /* In bytes */
     int max_chars_in_names; /* name_width was calculated
-                     for this value of maxCharsInNames */
+                     for this value of clientOptions.maxCharsInNames */
     int ignorelevel;
     ShipShape *ship;
     std::string nick_name;

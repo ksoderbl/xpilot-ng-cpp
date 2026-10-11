@@ -129,24 +129,24 @@ static bool Set_texturedObjects(xp_option_t *opt, bool val);
 
 static bool Set_fullColor(xp_option_t *opt, bool val)
 {
-    if (val == fullColor)
+    if (val == clientOptions.fullColor)
         return true;
 
     if (val)
     {
-        /* see if we can use fullColor at all. */
-        fullColor = true;
+        /* see if we can use clientOptions.fullColor at all. */
+        clientOptions.fullColor = true;
         if (Colors_init_bitmaps() == -1)
         {
-            /* no we can't have fullColor. */
+            /* no we can't have clientOptions.fullColor. */
             warn("Unable to enable fullColor.");
-            fullColor = false;
+            clientOptions.fullColor = false;
         }
     }
     else
     {
         Colors_free_bitmaps();
-        fullColor = false;
+        clientOptions.fullColor = false;
         Set_texturedObjects(nullptr, false);
     }
     /* Make sure texture on score list is redrawn. */
@@ -156,22 +156,22 @@ static bool Set_fullColor(xp_option_t *opt, bool val)
 
 static bool Set_texturedObjects(xp_option_t *opt, bool val)
 {
-    if (val == texturedObjects)
+    if (val == clientOptions.texturedObjects)
         return true;
 
     if (val)
     {
-        /* Can't use texturedObjects without fullColor */
-        texturedObjects = true;
-        if (!fullColor)
+        /* Can't use clientOptions.texturedObjects without clientOptions.fullColor */
+        clientOptions.texturedObjects = true;
+        if (!clientOptions.fullColor)
         {
-            /* no we can't have texturedObjects. */
+            /* no we can't have clientOptions.texturedObjects. */
             warn("Unable to enable texturedObjects without fullColor on.");
-            texturedObjects = false;
+            clientOptions.texturedObjects = false;
         }
     }
     else
-        texturedObjects = false;
+        clientOptions.texturedObjects = false;
 
     return true;
 }
@@ -254,7 +254,7 @@ xp_option_t xdefault_options[] = {
     XP_BOOL_OPTION(
         "fullColor",
         true,
-        &fullColor,
+        &clientOptions.fullColor,
         Set_fullColor,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Whether to use a colors as close as possible to the specified ones\n"
@@ -264,7 +264,7 @@ xp_option_t xdefault_options[] = {
     XP_BOOL_OPTION(
         "texturedObjects",
         true,
-        &texturedObjects,
+        &clientOptions.texturedObjects,
         Set_texturedObjects,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Whether to draw certain game objects with textures.\n"
@@ -332,7 +332,7 @@ xp_option_t xdefault_options[] = {
     XP_BOOL_OPTION(
         "ignoreWindowManager",
         false,
-        &ignoreWindowManager,
+        &clientOptions.ignoreWindowManager,
         nullptr,
         XP_OPTFLAG_DEFAULT,
         "Ignore the window manager when opening the top level player window.\n"

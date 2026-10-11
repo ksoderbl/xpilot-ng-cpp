@@ -745,7 +745,7 @@ void Add_roundend_messages(std::vector<Other *> &order)
         if (Using_score_decimals())
         {
             sprintf(hackbuf2, "%s: %.*f ", other->nick_name.c_str(),
-                    showScoreDecimals, other->score);
+                    clientOptions.showScoreDecimals, other->score);
             if ((s - hackbuf) + strlen(hackbuf2) > MSG_LEN)
             {
                 Add_message(hackbuf);
@@ -836,7 +836,7 @@ static void Bms_clear(msg_bms_t type)
 {
     int i;
 
-    for (i = 0; i < maxMessages && TalkMsg[i]->len > 0; i++)
+    for (i = 0; i < clientOptions.maxMessages && TalkMsg[i]->len > 0; i++)
         if (TalkMsg[i]->bmsinfo == type)
             TalkMsg[i]->bmsinfo = BmsNone;
 }

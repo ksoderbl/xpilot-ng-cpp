@@ -244,8 +244,8 @@ static void Add_msg_to_history(char *message)
 
     msg_set = HistoryMsg;
     /* pipe the msgs through the buffer, the latest getting into [0] */
-    tmp = msg_set[maxLinesInHistory - 1];
-    for (i = maxLinesInHistory - 1; i > 0; i--)
+    tmp = msg_set[clientOptions.maxLinesInHistory - 1];
+    for (i = clientOptions.maxLinesInHistory - 1; i > 0; i--)
         msg_set[i] = msg_set[i - 1];
     msg_set[0] = tmp; /* memory recycling */
 
@@ -279,7 +279,7 @@ static char *Get_msg_from_history(int *pos, char *message, keys_t direction)
         return nullptr;
     }
 
-    if (direction == KEY_DUMMY && (*pos < 0 || *pos > maxLinesInHistory - 1))
+    if (direction == KEY_DUMMY && (*pos < 0 || *pos > clientOptions.maxLinesInHistory - 1))
         *pos = 0;
 
     msg_set = HistoryMsg;
@@ -293,19 +293,19 @@ static char *Get_msg_from_history(int *pos, char *message, keys_t direction)
     }
 
     /* search for the next message, return it */
-    for (i = 0; i < maxLinesInHistory; i++)
+    for (i = 0; i < clientOptions.maxLinesInHistory; i++)
     {
         if (direction == KEY_TALK_CURSOR_UP)
         {
             (*pos)++;
-            if (*pos >= maxLinesInHistory)
+            if (*pos >= clientOptions.maxLinesInHistory)
                 *pos = 0; /* wrap */
         }
         else if (direction == KEY_TALK_CURSOR_DOWN)
         {
             (*pos)--;
             if (*pos < 0)
-                *pos = maxLinesInHistory - 1; /*wrap*/
+                *pos = clientOptions.maxLinesInHistory - 1; /*wrap*/
         }
         if (strlen(msg_set[*pos]) > 0)
             return (msg_set[*pos]);
@@ -1260,7 +1260,7 @@ bool Talk_cut_area_hit(XButtonEvent *xbutton)
     else
         y /= SPACING;
 
-    if (y < maxMessages)
+    if (y < clientOptions.maxMessages)
         return true;
 
     return false;
@@ -1328,7 +1328,7 @@ void Talk_cut_from_messages(XButtonEvent *xbutton)
     {
         /* how many messages? */
         last_msg_index = 0;
-        while (last_msg_index < maxMessages && TalkMsg[last_msg_index]->len != 0)
+        while (last_msg_index < clientOptions.maxMessages && TalkMsg[last_msg_index]->len != 0)
         {
             last_msg_index++;
         }

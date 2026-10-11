@@ -88,9 +88,9 @@
 
 // extern selection_t selection;
 
-// extern int maxLinesInHistory; /* number of lines to save in history */
-// extern int maxMessages;
-// extern int messagesToStdout;
+// extern int clientOptions.maxLinesInHistory; /* number of lines to save in history */
+// extern int clientOptions.maxMessages;
+// extern int clientOptions.messagesToStdout;
 
 /*
  * messages.cpp

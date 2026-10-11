@@ -322,7 +322,7 @@ void Paint_frame(void)
 
 static void Paint_score_background(void)
 {
-    if (fullColor &&
+    if (clientOptions.fullColor &&
         Bitmap_get(playersWindow, BM_SCORE_BG, 0) != nullptr &&
         Bitmap_get(playersWindow, BM_LOGO, 0) != nullptr)
     {
@@ -447,7 +447,7 @@ void Paint_score_entry(int entry_num, Other *other, bool is_team)
 
         if (Using_score_decimals())
             sprintf(scoreStr, "%*.*f",
-                    9 - showScoreDecimals, showScoreDecimals,
+                    9 - clientOptions.showScoreDecimals, clientOptions.showScoreDecimals,
                     other->score);
         else
         {

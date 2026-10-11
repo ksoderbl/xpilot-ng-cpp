@@ -178,7 +178,7 @@ static void Paint_objects_radar(void)
         color = WHITE;
         if (radarObject.type == RadarFriend)
         {
-            if (maxColors > 4)
+            if (clientOptions.maxColors > 4)
                 color = 4;
             else if (!colorSwitch)
                 color = RED;
@@ -709,7 +709,7 @@ static void Paint_world_radar_new(void)
                     poly[j].y = (int)RadarHeight - ((y * (int)RadarHeight) / Setup->height);
                 }
 
-                unsigned long foregroundColor = fullColor ? polygon_styles[polygon.style].color : colors[clientOptions.wallRadarColor].pixel;
+                unsigned long foregroundColor = clientOptions.fullColor ? polygon_styles[polygon.style].color : colors[clientOptions.wallRadarColor].pixel;
                 XSetForeground(dpy, radarGC, foregroundColor);
                 XFillPolygon(dpy, radarPixmap2, radarGC, poly,
                              polygon.num_points,

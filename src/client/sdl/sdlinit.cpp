@@ -38,6 +38,7 @@
 #include "xpmemory.h"
 
 #include "paint.h"
+#include "clientoptions.h"
 
 #include "text.h"
 #include "console.h"
@@ -81,8 +82,6 @@ SDL_GLContext gGLContext = nullptr;
 
 font_data gamefont;
 font_data mapfont;
-int gameFontSize;
-int mapFontSize;
 char *gamefontname;
 
 /* SDL1.2 compatibility: SDL_FULLSCREEN is not defined in SDL2. We keep it as our own bit. */
@@ -297,7 +296,7 @@ int Init_window(void)
 
     if (gf_exists)
     {
-        if (fontinit(&gamefont, gamefontname, gameFontSize))
+        if (fontinit(&gamefont, gamefontname, clientOptions.gameFontSize))
         {
             error("Font initialization failed with %s", gamefontname);
         }
@@ -306,7 +305,7 @@ int Init_window(void)
     }
     if (!gf_init && df_exists)
     {
-        if (fontinit(&gamefont, defaultfontname, gameFontSize))
+        if (fontinit(&gamefont, defaultfontname, clientOptions.gameFontSize))
         {
             error("Default font initialization failed with %s", defaultfontname);
         }
@@ -322,7 +321,7 @@ int Init_window(void)
 
     if (gf_exists)
     {
-        if (fontinit(&mapfont, gamefontname, mapFontSize))
+        if (fontinit(&mapfont, gamefontname, clientOptions.mapFontSize))
         {
             error("Font initialization failed with %s", gamefontname);
         }
@@ -331,7 +330,7 @@ int Init_window(void)
     }
     if (!mf_init && df_exists)
     {
-        if (fontinit(&mapfont, defaultfontname, mapFontSize))
+        if (fontinit(&mapfont, defaultfontname, clientOptions.mapFontSize))
         {
             error("Default font initialization failed with %s", defaultfontname);
         }
@@ -455,7 +454,7 @@ static xp_option_t sdlinit_options[] = {
     XP_INT_OPTION(
         "gameFontSize",
         16, 12, 32,
-        &gameFontSize,
+        &clientOptions.gameFontSize,
         nullptr,
         XP_OPTFLAG_DEFAULT,
         "Height of font used for game strings.\n"),
@@ -463,7 +462,7 @@ static xp_option_t sdlinit_options[] = {
     XP_INT_OPTION(
         "mapFontSize",
         16, 12, 64,
-        &mapFontSize,
+        &clientOptions.mapFontSize,
         nullptr,
         XP_OPTFLAG_DEFAULT,
         "Height of font used for strings painted on the map.\n"),

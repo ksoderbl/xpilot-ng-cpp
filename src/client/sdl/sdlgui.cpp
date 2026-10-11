@@ -122,19 +122,11 @@ Uint32 scoreEnemyTeamColorRGBA;
 
 Uint32 selectionColorRGBA;
 
-static int meterWidth = 60;
-static int meterHeight = 10;
 
 float hudRadarMapScale;
-int hudRadarEnemyShape;
-int hudRadarOtherShape;
-int hudRadarObjectShape;
 float hudRadarDotScale;
 
 static double shipLineWidth;
-static bool smoothLines;
-static bool texturedBalls;
-static bool texturedShips;
 static GLuint polyListBase = 0;
 static GLuint polyEdgeListBase = 0;
 static GLuint asteroid = 0;
@@ -176,14 +168,14 @@ int GL_Y(int y)
 /* remove this later maybe? to tedious for me to edit them all away now */
 void Segment_add(Uint32 color, int x1, int y1, int x2, int y2)
 {
-    if (smoothLines)
+    if (clientOptions.smoothLines)
         glEnable(GL_LINE_SMOOTH);
     set_alphacolor(color);
     glBegin(GL_LINE_LOOP);
     glVertex2i(x1, y1);
     glVertex2i(x2, y2);
     glEnd();
-    if (smoothLines)
+    if (clientOptions.smoothLines)
         glDisable(GL_LINE_SMOOTH);
 }
 
@@ -522,20 +514,20 @@ void Gui_paint_base(int x, int y, int id, int team, int type)
 
         if (version < 0x4F12 && do_basewarning)
         {
-            if (baseWarningType & 1)
+            if (clientOptions.baseWarningType & 1)
             {
                 /* We assume the ship will appear after 3 seconds. */
                 int count = (int)(360 * (base->appeartime - loops) / (3 * clientFPS));
                 LIMIT(count, 0, 360);
                 /* red box basewarning */
-                if (count > 0 && (baseWarningType & 1))
+                if (count > 0 && (clientOptions.baseWarningType & 1))
                     Gui_paint_appearing(x, y,
                                         id, count);
             }
         }
     }
     /* Mara's flashy basewarning */
-    if (do_basewarning && (baseWarningType & 2))
+    if (do_basewarning && (clientOptions.baseWarningType & 2))
     {
         if (loopsSlow & 1)
         {
@@ -549,16 +541,16 @@ void Gui_paint_base(int x, int y, int id, int team, int type)
     switch (type)
     {
     case SETUP_BASE_UP:
-        mapnprint(&mapfont, color, CENTER, DOWN, (x), (y - BLOCK_SZ / 2), maxCharsInNames, "%s", other->nick_name.c_str());
+        mapnprint(&mapfont, color, CENTER, DOWN, (x), (y - BLOCK_SZ / 2), clientOptions.maxCharsInNames, "%s", other->nick_name.c_str());
         break;
     case SETUP_BASE_DOWN:
-        mapnprint(&mapfont, color, CENTER, UP, (x), (int)(y + BLOCK_SZ / 1.5), maxCharsInNames, "%s", other->nick_name.c_str());
+        mapnprint(&mapfont, color, CENTER, UP, (x), (int)(y + BLOCK_SZ / 1.5), clientOptions.maxCharsInNames, "%s", other->nick_name.c_str());
         break;
     case SETUP_BASE_LEFT:
-        mapnprint(&mapfont, color, RIGHT, UP, (x + BLOCK_SZ / 2), (y), maxCharsInNames, "%s", other->nick_name.c_str());
+        mapnprint(&mapfont, color, RIGHT, UP, (x + BLOCK_SZ / 2), (y), clientOptions.maxCharsInNames, "%s", other->nick_name.c_str());
         break;
     case SETUP_BASE_RIGHT:
-        mapnprint(&mapfont, color, LEFT, UP, (x - BLOCK_SZ / 2), (y), maxCharsInNames, "%s", other->nick_name.c_str());
+        mapnprint(&mapfont, color, LEFT, UP, (x - BLOCK_SZ / 2), (y), clientOptions.maxCharsInNames, "%s", other->nick_name.c_str());
         break;
     default:
         errno = 0;
@@ -947,14 +939,14 @@ void Gui_paint_polygon(const xp_polygon_t &polygon, int i, int xoff, int yoff)
     {
         set_alphacolor((e_style.rgb << 8) | 0xff);
         glLineWidth(width * clData.scale);
-        if (smoothLines)
+        if (clientOptions.smoothLines)
         {
             glEnable(GL_BLEND);
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             glEnable(GL_LINE_SMOOTH);
         }
         glCallList(polyEdgeListBase + i);
-        if (smoothLines)
+        if (clientOptions.smoothLines)
         {
             glDisable(GL_LINE_SMOOTH);
             glDisable(GL_BLEND);
@@ -971,14 +963,14 @@ void Gui_paint_item_object(int type, int x, int y)
     int sz = 16;
     Image_paint(IMG_ALL_ITEMS, x - 8, y - 4, type, whiteRGBA);
     set_alphacolor(blueRGBA);
-    if (smoothLines)
+    if (clientOptions.smoothLines)
         glEnable(GL_LINE_SMOOTH);
     glBegin(GL_LINE_LOOP);
     glVertex2i(x + sz, y + sz);
     glVertex2i(x, y - sz);
     glVertex2i(x - sz, y + sz);
     glEnd();
-    if (smoothLines)
+    if (clientOptions.smoothLines)
         glDisable(GL_LINE_SMOOTH);
 }
 
@@ -989,7 +981,7 @@ void Gui_paint_ball(int x, int y, int style)
     if (style >= 0 && style < num_polygon_styles)
         rgba = (polygon_styles[style].rgb << 8) | 0xff;
 
-    if (texturedBalls)
+    if (clientOptions.texturedBalls)
         Image_paint(IMG_BALL, x - BALL_RADIUS, y - BALL_RADIUS, 0, rgba);
     else
     {
@@ -998,14 +990,14 @@ void Gui_paint_ball(int x, int y, int style)
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         set_alphacolor(ballColorRGBA);
-        if (smoothLines)
+        if (clientOptions.smoothLines)
             glEnable(GL_LINE_SMOOTH);
         glBegin(GL_LINE_LOOP);
         for (i = 0; i < numvert; i++)
             glVertex2d((double)x + tcos(i * ang) * BALL_RADIUS,
                        (double)y + tsin(i * ang) * BALL_RADIUS);
         glEnd();
-        if (smoothLines)
+        if (clientOptions.smoothLines)
             glDisable(GL_LINE_SMOOTH);
     }
 }
@@ -1015,13 +1007,13 @@ void Gui_paint_ball_connector(int x1, int y1, int x2, int y2)
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     set_alphacolor(connColorRGBA);
-    if (smoothLines)
+    if (clientOptions.smoothLines)
         glEnable(GL_LINE_SMOOTH);
     glBegin(GL_LINES);
     glVertex2i(x1, y1);
     glVertex2i(x2, y2);
     glEnd();
-    if (smoothLines)
+    if (clientOptions.smoothLines)
         glDisable(GL_LINE_SMOOTH);
 }
 
@@ -1035,7 +1027,7 @@ void Gui_paint_mine(int x, int y, int teammine, std::string name)
                   teammine ? blueRGBA : whiteRGBA,
                   CENTER, DOWN,
                   x, y - 15,
-                  maxCharsInNames, "%s", name.c_str());
+                  clientOptions.maxCharsInNames, "%s", name.c_str());
     }
 }
 
@@ -1050,7 +1042,7 @@ void Gui_paint_spark(int color, int x, int y)
     glColor3ub(255 * (color + 1) / 8,
                255 * color * color / 64,
                0);
-    glPointSize(sparkSize);
+    glPointSize(clientOptions.sparkSize);
     glBegin(GL_POINTS);
     glVertex2i(x + world.x, world.y + ext_view_height - y);
     glEnd();
@@ -1133,7 +1125,7 @@ void Gui_paint_asteroid(int x, int y, int type, int rot, int size)
  */
 void Gui_paint_fastshot(int color, int x, int y)
 {
-    int size = MIN(shotSize, 16);
+    int size = MIN(clientOptions.shotSize, 16);
 
     Image_paint(IMG_BULLET,
                 x + world.x - size / 2,
@@ -1143,7 +1135,7 @@ void Gui_paint_fastshot(int color, int x, int y)
 
 void Gui_paint_teamshot(int x, int y)
 {
-    int size = MIN(teamShotSize, 16);
+    int size = MIN(clientOptions.teamShotSize, 16);
 
     Image_paint(IMG_BULLET_OWN,
                 x + world.x - size / 2,
@@ -1168,14 +1160,14 @@ void Gui_paint_lasers_begin(void)
 {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    if (smoothLines)
+    if (clientOptions.smoothLines)
         glEnable(GL_LINE_SMOOTH);
 }
 
 void Gui_paint_lasers_end(void)
 {
     glDisable(GL_BLEND);
-    if (smoothLines)
+    if (clientOptions.smoothLines)
         glDisable(GL_LINE_SMOOTH);
 }
 
@@ -1258,13 +1250,13 @@ void Gui_paint_refuel(int x0, int y0, int x1, int y1)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glLineStipple(stipple, 0xAAAA);
     glEnable(GL_LINE_STIPPLE);
-    if (smoothLines)
+    if (clientOptions.smoothLines)
         glEnable(GL_LINE_SMOOTH);
     glBegin(GL_LINES);
     glVertex2i(x0, y0);
     glVertex2i(x1, y1);
     glEnd();
-    if (smoothLines)
+    if (clientOptions.smoothLines)
         glDisable(GL_LINE_SMOOTH);
     glDisable(GL_LINE_STIPPLE);
 }
@@ -1276,13 +1268,13 @@ void Gui_paint_connector(int x0, int y0, int x1, int y1, int tractor)
     set_alphacolor(connColorRGBA);
     glLineStipple(tractor ? 2 : 4, 0xAAAA);
     glEnable(GL_LINE_STIPPLE);
-    if (smoothLines)
+    if (clientOptions.smoothLines)
         glEnable(GL_LINE_SMOOTH);
     glBegin(GL_LINES);
     glVertex2i(x0, y0);
     glVertex2i(x1, y1);
     glEnd();
-    if (smoothLines)
+    if (clientOptions.smoothLines)
         glDisable(GL_LINE_SMOOTH);
     glDisable(GL_LINE_STIPPLE);
     /*glDisable(GL_BLEND);*/
@@ -1448,7 +1440,7 @@ static void Gui_paint_ship_name(int x, int y, Other *other)
         if (!color)
             color = shipNameColorRGBA;
 
-        mapnprint(&mapfont, color, CENTER, DOWN, x, y - SHIP_SZ, maxCharsInNames, "%s", other->id_string.c_str());
+        mapnprint(&mapfont, color, CENTER, DOWN, x, y - SHIP_SZ, clientOptions.maxCharsInNames, "%s", other->id_string.c_str());
     }
     else
         color = blueRGBA;
@@ -1487,7 +1479,7 @@ void Gui_paint_ship(int x, int y, int dir, int id, int cloak, int phased,
     {
         Image_paint(IMG_SHIELD, x - 27, y - 27, 0, (color & 0xffffff00) + ((color & 0x000000ff) / 2));
     }
-    if (texturedShips)
+    if (clientOptions.texturedShips)
     {
         if (BIT(Setup->mode, TEAM_PLAY) && other != nullptr && self != nullptr && self->team == other->team)
         {
@@ -1608,7 +1600,7 @@ void Paint_HUD_values(void)
 
     x = draw_width - 20;
     /* Better make sure it's below the meters */
-    y = draw_height - 9 * (MAX((GLuint)meterHeight, gamefont.h) + 6);
+    y = draw_height - 9 * (MAX((GLuint)clientOptions.meterHeight, gamefont.h) + 6);
 
     HUDprint(&gamefont, hudColorRGBA, RIGHT, DOWN, x, y, "FPS: %.3f", clientFPS);
     HUDprint(&gamefont, hudColorRGBA, RIGHT, DOWN, x, y - 20, "CL.LAG : %.1f ms", clData.clientLag);
@@ -1617,10 +1609,10 @@ void Paint_HUD_values(void)
 static void Paint_meter(int xoff, int y, string_tex_t *tex, int val, int max,
                         int meter_color)
 {
-    int mw1_4 = meterWidth / 4,
-        mw2_4 = meterWidth / 2,
-        mw3_4 = 3 * meterWidth / 4,
-        mw4_4 = meterWidth,
+    int mw1_4 = clientOptions.meterWidth / 4,
+        mw2_4 = clientOptions.meterWidth / 2,
+        mw3_4 = 3 * clientOptions.meterWidth / 4,
+        mw4_4 = clientOptions.meterWidth,
         BORDER = 5;
     int x, xstr;
     int x_alignment;
@@ -1629,12 +1621,12 @@ static void Paint_meter(int xoff, int y, string_tex_t *tex, int val, int max,
     if (xoff >= 0)
     {
         x = xoff;
-        xstr = x + meterWidth + BORDER;
+        xstr = x + clientOptions.meterWidth + BORDER;
         x_alignment = LEFT;
     }
     else
     {
-        x = draw_width - (meterWidth - xoff);
+        x = draw_width - (clientOptions.meterWidth - xoff);
         xstr = x - BORDER;
         x_alignment = RIGHT;
     }
@@ -1642,9 +1634,9 @@ static void Paint_meter(int xoff, int y, string_tex_t *tex, int val, int max,
     set_alphacolor(meter_color);
     glBegin(GL_POLYGON);
     glVertex2i(x, y);
-    glVertex2i(x, y + 2 + meterHeight - 3);
-    glVertex2i(x + (int)(((meterWidth)*val) / (max ? max : 1)), y + 2 + meterHeight - 3);
-    glVertex2i(x + (int)(((meterWidth)*val) / (max ? max : 1)), y);
+    glVertex2i(x, y + 2 + clientOptions.meterHeight - 3);
+    glVertex2i(x + (int)(((clientOptions.meterWidth)*val) / (max ? max : 1)), y + 2 + clientOptions.meterHeight - 3);
+    glVertex2i(x + (int)(((clientOptions.meterWidth)*val) / (max ? max : 1)), y);
     glEnd();
 
     /* meterBorderColorRGBA = 0 obviously means no meter borders are drawn */
@@ -1655,34 +1647,34 @@ static void Paint_meter(int xoff, int y, string_tex_t *tex, int val, int max,
         set_alphacolor(color);
         glBegin(GL_LINE_LOOP);
         glVertex2i(x, y);
-        glVertex2i(x, y + meterHeight);
-        glVertex2i(x + meterWidth, y + meterHeight);
-        glVertex2i(x + meterWidth, y);
+        glVertex2i(x, y + clientOptions.meterHeight);
+        glVertex2i(x + clientOptions.meterWidth, y + clientOptions.meterHeight);
+        glVertex2i(x + clientOptions.meterWidth, y);
         glEnd();
 
         glBegin(GL_LINES);
         glVertex2i(x, y - 4);
-        glVertex2i(x, y + meterHeight + 4);
+        glVertex2i(x, y + clientOptions.meterHeight + 4);
         glVertex2i(x + mw4_4, y - 4);
-        glVertex2i(x + mw4_4, y + meterHeight + 4);
+        glVertex2i(x + mw4_4, y + clientOptions.meterHeight + 4);
         glVertex2i(x + mw2_4, y - 3);
-        glVertex2i(x + mw2_4, y + meterHeight + 3);
+        glVertex2i(x + mw2_4, y + clientOptions.meterHeight + 3);
         glVertex2i(x + mw1_4, y - 1);
-        glVertex2i(x + mw1_4, y + meterHeight + 1);
+        glVertex2i(x + mw1_4, y + clientOptions.meterHeight + 1);
         glVertex2i(x + mw3_4, y - 1);
-        glVertex2i(x + mw3_4, y + meterHeight + 1);
+        glVertex2i(x + mw3_4, y + clientOptions.meterHeight + 1);
         glEnd();
     }
 
     if (!meterBorderColorRGBA)
         color = meter_color;
 
-    disp_text(tex, color, x_alignment, CENTER, xstr, draw_height - y - meterHeight / 2, true);
+    disp_text(tex, color, x_alignment, CENTER, xstr, draw_height - y - clientOptions.meterHeight / 2, true);
 }
 
 void Paint_meters(void)
 {
-    int spacing = MAX((GLuint)meterHeight, gamefont.h) + 6;
+    int spacing = MAX((GLuint)clientOptions.meterHeight, gamefont.h) + 6;
     int y = spacing, color;
     static bool setup_texs = true;
 
@@ -1878,12 +1870,12 @@ static void Paint_hudradar(double hrscale, double xlimit, double ylimit, int sz)
             if (radarObject.type == RadarEnemy)
             {
                 c = hudRadarEnemyColorRGBA;
-                shape = hudRadarEnemyShape;
+                shape = clientOptions.hudRadarEnemyShape;
             }
             else
             {
                 c = hudRadarOtherColorRGBA;
-                shape = hudRadarOtherShape;
+                shape = clientOptions.hudRadarOtherShape;
             }
             size = sz;
             if (radarObject.size == 0)
@@ -1891,8 +1883,8 @@ static void Paint_hudradar(double hrscale, double xlimit, double ylimit, int sz)
                 size >>= 1;
                 if (hudRadarObjectColorRGBA)
                     c = hudRadarObjectColorRGBA;
-                if (hudRadarObjectShape)
-                    shape = hudRadarObjectShape;
+                if (clientOptions.hudRadarObjectShape)
+                    shape = clientOptions.hudRadarObjectShape;
             }
             Paint_hudradar_dot(x, y, c, shape, size);
         }
@@ -2055,7 +2047,7 @@ void Paint_HUD(void)
             hudRadarScale,
             (int)(hudRadarLimit * (ext_view_width / 2) * hudRadarScale / hudRadarMapScale),
             (int)(hudRadarLimit * (ext_view_height / 2) * hudRadarScale / hudRadarMapScale),
-            hudRadarDotSize);
+            clientOptions.hudRadarDotSize);
 
         Paint_hudradar(hudRadarMapScale * clData.scale,
                        (active_view_width / 2) * clData.scale,
@@ -2354,10 +2346,10 @@ void Paint_messages(void)
         showMessages = instruments.showMessages;
     }
 
-    if (maxMessages < old_maxMessages)
+    if (clientOptions.maxMessages < old_maxMessages)
     {
         for (i = 0; i < 2; ++i)
-            while ((tmp = ListWidget_GetItemByIndex(msg_list[i], maxMessages)) != nullptr)
+            while ((tmp = ListWidget_GetItemByIndex(msg_list[i], clientOptions.maxMessages)) != nullptr)
             {
                 ListWidget_Remove(msg_list[i], tmp);
                 Close_Widget(&tmp);
@@ -2388,7 +2380,7 @@ void Paint_messages(void)
      * For now this will have to do...
      */
     for (i = 0; i < 2; ++i)
-        for (j = 0; j <= maxMessages - 1; ++j)
+        for (j = 0; j <= clientOptions.maxMessages - 1; ++j)
         {
             msg = (msgs[i])[j];
             tmp = tmp2 = nullptr;
@@ -2413,9 +2405,9 @@ void Paint_messages(void)
                     {
                         tmp2 = Init_LabelWidget(msg->txt, &messagesColorRGBA, &nullRGBA, LEFT, CENTER);
                         ListWidget_Insert(msg_list[i], tmp, tmp2);
-                        if (ListWidget_NELEM(msg_list[i]) > maxMessages)
+                        if (ListWidget_NELEM(msg_list[i]) > clientOptions.maxMessages)
                         {
-                            tmp = ListWidget_GetItemByIndex(msg_list[i], maxMessages);
+                            tmp = ListWidget_GetItemByIndex(msg_list[i], clientOptions.maxMessages);
                             ListWidget_Remove(msg_list[i], tmp);
                             Close_Widget(&tmp);
                         }
@@ -2472,7 +2464,7 @@ void Paint_messages(void)
                 LabelWidget_SetColor(tmp2, msg_color, &nullRGBA);
         }
 
-    old_maxMessages = maxMessages;
+    old_maxMessages = clientOptions.maxMessages;
 }
 
 static bool set_rgba_color_option(xp_option_t *opt, const char *val)
@@ -2574,7 +2566,7 @@ static xp_option_t sdlgui_options[] = {
     XP_INT_OPTION(
         "meterWidth",
         60, 0, 600,
-        &meterWidth,
+        &clientOptions.meterWidth,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Set the width of the meters.\n"),
@@ -2582,7 +2574,7 @@ static xp_option_t sdlgui_options[] = {
     XP_INT_OPTION(
         "meterHeight",
         10, 0, 100,
-        &meterHeight,
+        &clientOptions.meterHeight,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Set the height of a meter.\n"),
@@ -2598,7 +2590,7 @@ static xp_option_t sdlgui_options[] = {
     XP_BOOL_OPTION(
         "smoothLines",
         true,
-        &smoothLines,
+        &clientOptions.smoothLines,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Use antialized smooth lines.\n"),
@@ -2606,7 +2598,7 @@ static xp_option_t sdlgui_options[] = {
     XP_BOOL_OPTION(
         "texturedBalls",
         true,
-        &texturedBalls,
+        &clientOptions.texturedBalls,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Draw balls with textures.\n"),
@@ -2614,7 +2606,7 @@ static xp_option_t sdlgui_options[] = {
     XP_BOOL_OPTION(
         "texturedShips",
         true,
-        &texturedShips,
+        &clientOptions.texturedShips,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Draw ships with textures.\n"),
@@ -2622,7 +2614,7 @@ static xp_option_t sdlgui_options[] = {
     XP_INT_OPTION(
         "hudRadarEnemyShape",
         2, 1, 7,
-        &hudRadarEnemyShape,
+        &clientOptions.hudRadarEnemyShape,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "The shape of enemy ships on hud radar.\n"),
@@ -2630,7 +2622,7 @@ static xp_option_t sdlgui_options[] = {
     XP_INT_OPTION(
         "hudRadarOtherShape",
         2, 1, 7,
-        &hudRadarOtherShape,
+        &clientOptions.hudRadarOtherShape,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "The shape of friendly ships on hud radar.\n"),
@@ -2638,7 +2630,7 @@ static xp_option_t sdlgui_options[] = {
     XP_INT_OPTION(
         "hudRadarObjectShape",
         0, 0, 7,
-        &hudRadarObjectShape,
+        &clientOptions.hudRadarObjectShape,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "The shape of small objects on hud radar.\n")};

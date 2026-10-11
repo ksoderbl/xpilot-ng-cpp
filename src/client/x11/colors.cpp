@@ -85,13 +85,6 @@ Visual *visualPtr;
 unsigned dispDepth;
 bool colorSwitch;
 bool multibuffer;
-bool fullColor;       /* Whether to try using colors as close to
-                       * the specified ones as possible, or just
-                       * use a few standard colors for everything. */
-bool texturedObjects; /* Whether to draw bitmaps for some objects.
-                       * Previously this variable determined
-                       * fullColor too. */
-int maxColors;        /* Max. number of colors to use */
 XColor colors[MAX_COLORS];
 Colormap colormap; /* Private colormap */
 
@@ -368,7 +361,7 @@ static int Parse_colors(Colormap cmap)
     /*
      * Get the color definitions.
      */
-    for (i = 0; i < maxColors; i++)
+    for (i = 0; i < clientOptions.maxColors; i++)
     {
         if (strlen(color_names[i]) > 0)
         {
@@ -411,8 +404,8 @@ static void Fill_colormap(void)
     if (colormap == 0 || colorSwitch != true)
         return;
 
-    cells_needed = (maxColors == 16)  ? 256
-                   : (maxColors == 8) ? 64
+    cells_needed = (clientOptions.maxColors == 16)  ? 256
+                   : (clientOptions.maxColors == 8) ? 64
                                       : 16;
     max_fill = MAX(256, visualPtr->map_entries) - cells_needed;
     if (max_fill <= 0)
@@ -472,18 +465,18 @@ int Colors_init(void)
 
     if (colorSwitch)
     {
-        maxColors = (maxColors >= 16 && visualPtr->map_entries >= 256) ? 16
-                    : (maxColors >= 8 && visualPtr->map_entries >= 64) ? 8
+        clientOptions.maxColors = (clientOptions.maxColors >= 16 && visualPtr->map_entries >= 256) ? 16
+                    : (clientOptions.maxColors >= 8 && visualPtr->map_entries >= 64) ? 8
                                                                        : 4;
     }
     else
     {
-        maxColors = (maxColors >= 16 && visualPtr->map_entries >= 16) ? 16
-                    : (maxColors >= 8 && visualPtr->map_entries >= 8) ? 8
+        clientOptions.maxColors = (clientOptions.maxColors >= 16 && visualPtr->map_entries >= 16) ? 16
+                    : (clientOptions.maxColors >= 8 && visualPtr->map_entries >= 8) ? 8
                                                                       : 4;
     }
-    num_planes = (maxColors == 16)  ? 4
-                 : (maxColors == 8) ? 3
+    num_planes = (clientOptions.maxColors == 16)  ? 4
+                 : (clientOptions.maxColors == 8) ? 3
                                     : 2;
 
     if (Parse_colors(DefaultColormap(dpy, DefaultScreen(dpy))) == -1)
@@ -577,8 +570,8 @@ int Colors_init(void)
         fatal("Unknown dbuf state %d.", dbuf_state->type);
     }
 
-    for (i = maxColors; i < MAX_COLORS; i++)
-        colors[i] = colors[i % maxColors];
+    for (i = clientOptions.maxColors; i < MAX_COLORS; i++)
+        colors[i] = colors[i % clientOptions.maxColors];
 
     Colors_init_radar_hack();
 
@@ -647,8 +640,8 @@ static int Colors_init_bitmap_colors(void)
     default:
         warn("fullColor not implemented for visual \"%s\"",
              Visual_class_name(visualPtr->c_class));
-        fullColor = false;
-        texturedObjects = false;
+        clientOptions.fullColor = false;
+        clientOptions.texturedObjects = false;
         break;
     }
 
@@ -663,9 +656,9 @@ void Colors_init_style_colors(void)
 {
     int i;
     for (i = 0; i < num_polygon_styles; i++)
-        polygon_styles[i].color = (fullColor && RGB) ? RGB2COLOR(polygon_styles[i].rgb) : (unsigned long)clientOptions.wallColor;
+        polygon_styles[i].color = (clientOptions.fullColor && RGB) ? RGB2COLOR(polygon_styles[i].rgb) : (unsigned long)clientOptions.wallColor;
     for (i = 0; i < num_edge_styles; i++)
-        edge_styles[i].color = (fullColor && RGB) ? RGB2COLOR(edge_styles[i].rgb) : (unsigned long)clientOptions.wallColor;
+        edge_styles[i].color = (clientOptions.fullColor && RGB) ? RGB2COLOR(edge_styles[i].rgb) : (unsigned long)clientOptions.wallColor;
 }
 
 /*
@@ -684,25 +677,25 @@ int Colors_init_bitmaps(void)
 
     if (dbuf_state->type == COLOR_SWITCH)
     {
-        if (fullColor)
+        if (clientOptions.fullColor)
         {
             warn("Can't do texturedObjects if colorSwitch.");
-            fullColor = false;
-            texturedObjects = false;
+            clientOptions.fullColor = false;
+            clientOptions.texturedObjects = false;
         }
     }
-    if (fullColor)
+    if (clientOptions.fullColor)
     {
         if (Colors_init_bitmap_colors() == -1)
         {
-            fullColor = false;
-            texturedObjects = false;
+            clientOptions.fullColor = false;
+            clientOptions.texturedObjects = false;
         }
     }
 
     Colors_init_style_colors();
 
-    return (fullColor) ? 0 : -1;
+    return (clientOptions.fullColor) ? 0 : -1;
 }
 
 /*
@@ -975,8 +968,8 @@ void Colors_free_bitmaps(void)
     Colors_free_color_cube();
     Colors_free_true_color();
 
-    fullColor = false;
-    texturedObjects = false;
+    clientOptions.fullColor = false;
+    clientOptions.texturedObjects = false;
 }
 
 /*
@@ -1098,17 +1091,17 @@ void Init_spark_colors(void)
             src--;
             if (sscanf(buf, "%u", &col) == 1)
             {
-                if (col < (unsigned)maxColors)
+                if (col < (unsigned)clientOptions.maxColors)
                     spark_color[num_spark_colors++] = col;
             }
         }
     }
     if (num_spark_colors == 0)
     {
-        if (maxColors <= 8)
+        if (clientOptions.maxColors <= 8)
         {
             /* 3 colors ranging from 5 up to 7 */
-            for (i = 5; i < maxColors; i++)
+            for (i = 5; i < clientOptions.maxColors; i++)
                 spark_color[num_spark_colors++] = i;
         }
         else
@@ -1138,10 +1131,10 @@ static bool Set_maxColors(xp_option_t *opt, int val)
     {
         warn("Values 4 or 8 for maxColors are not actively "
              "supported. Use at own risk.");
-        maxColors = val;
+        clientOptions.maxColors = val;
     }
     else
-        maxColors = MAX_COLORS;
+        clientOptions.maxColors = MAX_COLORS;
     return true;
 }
 
@@ -1163,7 +1156,7 @@ static xp_option_t color_options[] = {
         MAX_COLORS,
         4,
         MAX_COLORS,
-        &maxColors,
+        &clientOptions.maxColors,
         Set_maxColors,
         XP_OPTFLAG_DEFAULT,
         "The number of colors to use.\n"

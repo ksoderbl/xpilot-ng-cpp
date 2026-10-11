@@ -128,7 +128,7 @@ void Game_loop(void)
         tv_local.tv_sec = 1;
         tv_local.tv_usec = 0;
 
-        if (maxMouseTurnsPS > 0)
+        if (clientOptions.maxMouseTurnsPS > 0)
         {
             int t = Client_check_pointer_move_interval();
 
@@ -147,7 +147,7 @@ void Game_loop(void)
 
         if (n == 0)
         {
-            if (maxMouseTurnsPS > 0 &&
+            if (clientOptions.maxMouseTurnsPS > 0 &&
                 cumulativeMouseMovement != 0)
                 continue;
 

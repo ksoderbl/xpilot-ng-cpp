@@ -92,7 +92,6 @@ extern Window about_prev_b;       /* About prev page button */
 extern Window talkWindow;         /* Talk window */
 extern XColor colors[MAX_COLORS]; /* Colors */
 extern Colormap colormap;         /* Private colormap */
-extern int maxColors;             /* Max. number of colors to use */
 extern bool gotFocus;             /* Do we have the mouse pointer */
 
 extern int(*radarDrawRectanglePtr) /* Function to draw player on radar */
@@ -109,20 +108,20 @@ static inline void SET_FG(unsigned long fg)
 
 static inline void Check_name_string(Other *other)
 {
-    if (other && other->max_chars_in_names != maxCharsInNames)
+    if (other && other->max_chars_in_names != clientOptions.maxCharsInNames)
     {
         int len;
 
         other->id_string = other->nick_name;
         len = other->id_string.length();
-        if (maxCharsInNames >= 0 && maxCharsInNames < len)
+        if (clientOptions.maxCharsInNames >= 0 && clientOptions.maxCharsInNames < len)
         {
-            std::string s = other->id_string.substr(0, maxCharsInNames);
+            std::string s = other->id_string.substr(0, clientOptions.maxCharsInNames);
             other->id_string = s;
         }
         other->name_len = other->id_string.length();
         other->name_width = 2 + XTextWidth(gameFont, other->id_string.c_str(), other->name_len);
-        other->max_chars_in_names = maxCharsInNames;
+        other->max_chars_in_names = clientOptions.maxCharsInNames;
     }
 }
 

@@ -383,18 +383,18 @@ static bool Set_toggleShield(xp_option_t *opt, bool val)
 
 static bool Set_maxFPS(xp_option_t *opt, int val)
 {
-    maxFPS = val;
+    clientOptions.maxFPS = val;
     Check_client_fps();
     return true;
 }
 
 static bool Set_maxMouseTurnsPS(xp_option_t *opt, int val)
 {
-    maxMouseTurnsPS = val;
-    if (maxMouseTurnsPS > 0)
+    clientOptions.maxMouseTurnsPS = val;
+    if (clientOptions.maxMouseTurnsPS > 0)
     {
-        mouseMovementInterval = 1000000 / maxMouseTurnsPS;
-        if (mouseMovementInterval * maxMouseTurnsPS < 1000000)
+        mouseMovementInterval = 1000000 / clientOptions.maxMouseTurnsPS;
+        if (mouseMovementInterval * clientOptions.maxMouseTurnsPS < 1000000)
             mouseMovementInterval++;
     }
     /*warn("mouseMovementInterval = %d", mouseMovementInterval);*/
@@ -418,7 +418,7 @@ static bool Set_hudScale(xp_option_t *opt, double value)
 
 static bool Set_backgroundPointDist(xp_option_t *opt, int val)
 {
-    backgroundPointDist = val;
+    clientOptions.backgroundPointDist = val;
     if (oldServer)
         Map_dots();
     return true;
@@ -426,7 +426,7 @@ static bool Set_backgroundPointDist(xp_option_t *opt, int val)
 
 static bool Set_backgroundPointSize(xp_option_t *opt, int val)
 {
-    backgroundPointSize = val;
+    clientOptions.backgroundPointSize = val;
     if (oldServer)
         Map_dots();
     return true;
@@ -496,7 +496,7 @@ static bool Set_dirPrediction(xp_option_t *opt, bool val)
 {
     if (val)
     {
-        if (!dirPrediction)
+        if (!clientOptions.dirPrediction)
         {
             /* reset pointer movements */
             int m;
@@ -504,11 +504,11 @@ static bool Set_dirPrediction(xp_option_t *opt, bool val)
                 pointer_moves[m].id = -1;
             pointer_move_next = 0;
             last_keyboard_ack = 0;
-            dirPrediction = true;
+            clientOptions.dirPrediction = true;
         }
     }
     else
-        dirPrediction = false;
+        clientOptions.dirPrediction = false;
 
     return true;
 }
@@ -634,7 +634,7 @@ xp_option_t default_options[] = {
         0,
         0,
         65535,
-        &clientPortStart,
+        &clientOptions.clientPortStart,
         nullptr,
         XP_OPTFLAG_KEEP,
         "Use UDP ports clientPortStart - clientPortEnd (for firewalls).\n"
@@ -645,7 +645,7 @@ xp_option_t default_options[] = {
         0,
         0,
         65535,
-        &clientPortEnd,
+        &clientOptions.clientPortEnd,
         nullptr,
         XP_OPTFLAG_KEEP,
         "Use UDP ports clientPortStart - clientPortEnd (for firewalls).\n"),
@@ -711,7 +711,7 @@ xp_option_t default_options[] = {
         MAX_SUPPORTED_FPS,
         1,
         MAX_SUPPORTED_FPS,
-        &maxFPS,
+        &clientOptions.maxFPS,
         Set_maxFPS,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Set maximum FPS supported by the client. The server will try to\n"
@@ -722,7 +722,7 @@ xp_option_t default_options[] = {
         0,
         0,
         MAX_SUPPORTED_FPS * 2,
-        &maxMouseTurnsPS,
+        &clientOptions.maxMouseTurnsPS,
         Set_maxMouseTurnsPS,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Set maximum number of mouse turns sent per second\n"
@@ -733,7 +733,7 @@ xp_option_t default_options[] = {
         2,
         MIN_SPARK_SIZE,
         MAX_SPARK_SIZE,
-        &sparkSize,
+        &clientOptions.sparkSize,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Size of sparks in pixels.\n"),
@@ -755,7 +755,7 @@ xp_option_t default_options[] = {
         10,
         1,
         SHIP_SZ,
-        &hudRadarDotSize,
+        &clientOptions.hudRadarDotSize,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Which size to use for drawing the hudradar dots.\n"),
@@ -797,7 +797,7 @@ xp_option_t default_options[] = {
         3,
         0,
         3,
-        &baseWarningType,
+        &clientOptions.baseWarningType,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Which type of base warning you prefer.\n"
@@ -811,7 +811,7 @@ xp_option_t default_options[] = {
         MAX_NAME_LEN,
         0,
         MAX_NAME_LEN,
-        &maxCharsInNames,
+        &clientOptions.maxCharsInNames,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Maximum number of characters to paint in names on game area.\n"),
@@ -829,7 +829,7 @@ xp_option_t default_options[] = {
     XP_BOOL_OPTION(
         "dirPrediction",
         true,
-        &dirPrediction,
+        &clientOptions.dirPrediction,
         Set_dirPrediction,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Client paints the wanted direction of your ship instead of what\n"
@@ -984,7 +984,7 @@ xp_option_t default_options[] = {
         6,
         MIN_SHOT_SIZE,
         MAX_SHOT_SIZE,
-        &shotSize,
+        &clientOptions.shotSize,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "The size of shots in pixels.\n"),
@@ -994,7 +994,7 @@ xp_option_t default_options[] = {
         4,
         MIN_TEAMSHOT_SIZE,
         MAX_TEAMSHOT_SIZE,
-        &teamShotSize,
+        &clientOptions.teamShotSize,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "The size of team shots in pixels.\n"
@@ -1005,7 +1005,7 @@ xp_option_t default_options[] = {
         8,
         0,
         10,
-        &backgroundPointDist,
+        &clientOptions.backgroundPointDist,
         Set_backgroundPointDist,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "The distance between points in the background measured in blocks.\n"
@@ -1017,7 +1017,7 @@ xp_option_t default_options[] = {
         2,
         MIN_MAP_POINT_SIZE,
         MAX_MAP_POINT_SIZE,
-        &backgroundPointSize,
+        &clientOptions.backgroundPointSize,
         Set_backgroundPointSize,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Specifies the size of the background points.  0 means no points.\n"),
@@ -1037,7 +1037,7 @@ xp_option_t default_options[] = {
         100,
         10,
         255,
-        &charsPerSecond,
+        &clientOptions.charsPerSecond,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Rate at which messages appear on screen in characters per second.\n"),
@@ -1047,7 +1047,7 @@ xp_option_t default_options[] = {
         8,
         1,
         MAX_MSGS,
-        &maxMessages,
+        &clientOptions.maxMessages,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "The maximum number of messages to display at the same time.\n"),
@@ -1057,7 +1057,7 @@ xp_option_t default_options[] = {
         1,
         0,
         2,
-        &messagesToStdout,
+        &clientOptions.messagesToStdout,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Send messages to standard output.\n"
@@ -1070,7 +1070,7 @@ xp_option_t default_options[] = {
         32,
         1,
         MAX_HIST_MSGS,
-        &maxLinesInHistory,
+        &clientOptions.maxLinesInHistory,
         nullptr,
         XP_OPTFLAG_DEFAULT,
         "Number of your messages saved in the 'history' of the talk window.\n"
@@ -1079,7 +1079,7 @@ xp_option_t default_options[] = {
     XP_BOOL_OPTION(
         "toggleShield",
         false,
-        &toggle_shield,
+        &clientOptions.toggleShield,
         Set_toggleShield,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Are shields toggled by a keypress only?\n"),
@@ -1087,7 +1087,7 @@ xp_option_t default_options[] = {
     XP_BOOL_OPTION(
         "autoShield", /* Don auto-shield hack */
         true,
-        &auto_shield,
+        &clientOptions.autoShield,
         Set_autoShield,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Are shields lowered automatically for weapon fire?\n"),
@@ -1147,7 +1147,7 @@ xp_option_t default_options[] = {
         1,
         0,
         2,
-        &showScoreDecimals,
+        &clientOptions.showScoreDecimals,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "The number of decimals to use when displaying scores.\n"),
@@ -1188,7 +1188,7 @@ xp_option_t default_options[] = {
     XP_BOOL_OPTION(
         "markingLights",
         false,
-        &markingLights,
+        &clientOptions.markingLights,
         nullptr,
         XP_OPTFLAG_CONFIG_DEFAULT,
         "Should the fighters have marking lights, just like airplanes?\n"),

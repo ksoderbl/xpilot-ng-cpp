@@ -45,14 +45,11 @@ extern int ButtonHeight;
 extern char visualName[MAX_VISUAL_NAME];
 extern Visual *visualPtr;
 extern unsigned dispDepth;
-extern bool texturedObjects;
-extern bool fullColor;
 extern bool colorSwitch;
 extern bool multibuffer;
 extern int button_form;
 extern unsigned top_width, top_height;
 extern unsigned players_width, players_height;
-extern bool ignoreWindowManager;
 extern bool quitting;
 
 /* XPilot Mouse settings */

@@ -825,6 +825,7 @@ int Setup_connection(char *user, char *nick, char *dpy, int team,
         debugprint("Have F_BALLSTYLE\n");
     if (FEATURE(connp, F_POLYSTYLE))
         debugprint("Have F_POLYSTYLE\n");
+
     connp->start = main_loops;
     connp->magic = /*randomMT() +*/ my_port + sock.fd + team + main_loops;
     connp->id = NO_ID;

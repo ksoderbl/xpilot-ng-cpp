@@ -65,9 +65,6 @@
 #include "guiobjects.h"
 #include "clientpack.h"
 
-static bool texturedShips = false; /* Turned this off because the images drawn
-                                    * don't match the actual shipshape used
-                                    * for wall collisions by the server. */
 
 static int asteroidRawShapes[NUM_ASTEROID_SHAPES][NUM_ASTEROID_POINTS][2] = {
     {ASTEROID_SHAPE_0},
@@ -114,7 +111,7 @@ int Init_asteroids(void)
 
 void Gui_paint_item_symbol(int type, Drawable d, GC mygc, int x, int y, int c)
 {
-    if (!texturedObjects)
+    if (!clientOptions.texturedObjects)
     {
         gcv.stipple = itemBitmaps[type];
         gcv.fill_style = FillStippled;
@@ -182,7 +179,7 @@ void Gui_paint_ball(int x, int y, int style)
     if (style >= 0 && style < num_polygon_styles)
         rgb = polygon_styles[style].rgb;
 
-    if (!texturedObjects)
+    if (!clientOptions.texturedObjects)
     {
         /* hack */
         if (rgb == 0)
@@ -238,7 +235,7 @@ static void Gui_paint_mine_name(int x, int y, std::string name)
 
 void Gui_paint_mine(int x, int y, int teammine, std::string name)
 {
-    if (!texturedObjects)
+    if (!clientOptions.texturedObjects)
     {
         static double lastScaleFactor;
         static XPoint mine_points[21];
@@ -322,9 +319,9 @@ void Gui_paint_spark(int color, int x, int y)
     color = spark_color[color];
 
     Rectangle_add(color,
-                  x - sparkSize / 2,
-                  y - sparkSize / 2,
-                  sparkSize, sparkSize);
+                  x - clientOptions.sparkSize / 2,
+                  y - clientOptions.sparkSize / 2,
+                  clientOptions.sparkSize, clientOptions.sparkSize);
 }
 
 void Gui_paint_wreck(int x, int y, bool deadly, int wtype, int rot, int size)
@@ -405,33 +402,33 @@ void Gui_paint_fastshot(int color, int x, int y)
     if (color == 0)
         return;
 
-    if (!texturedObjects)
+    if (!clientOptions.texturedObjects)
     {
-        int z = shotSize / 2;
+        int z = clientOptions.shotSize / 2;
 
         if (clientOptions.instruments.showNastyShots)
             Gui_paint_nastyshot(color, x, y, z);
         else
         {
             /* Show round shots - jiman392 */
-            if (shotSize > 2)
+            if (clientOptions.shotSize > 2)
             {
                 SET_FG(colors[color].pixel);
                 rd.fillArc(dpy, drawPixmap, gameGC,
                            WINSCALE(x - z), WINSCALE(y - z),
-                           WINSCALE(shotSize), WINSCALE(shotSize),
+                           WINSCALE(clientOptions.shotSize), WINSCALE(clientOptions.shotSize),
                            0, 64 * 360);
             }
             else
                 Rectangle_add(color,
                               x - z,
                               y - z,
-                              shotSize, shotSize);
+                              clientOptions.shotSize, clientOptions.shotSize);
         }
     }
     else
     {
-        int s_size = MIN(shotSize, 16);
+        int s_size = MIN(clientOptions.shotSize, 16);
         int z = s_size / 2;
 
         Bitmap_paint(drawPixmap, BM_BULLET, WINSCALE(x) - z,
@@ -446,33 +443,33 @@ void Gui_paint_teamshot(int x, int y)
     if (color == 0)
         return;
 
-    if (!texturedObjects)
+    if (!clientOptions.texturedObjects)
     {
-        int z = teamShotSize / 2;
+        int z = clientOptions.teamShotSize / 2;
 
         if (clientOptions.instruments.showNastyShots)
             Gui_paint_nastyshot(color, x, y, z);
         else
         {
             /* Show round shots - jiman392 */
-            if (teamShotSize > 2)
+            if (clientOptions.teamShotSize > 2)
             {
                 SET_FG(colors[color].pixel);
                 rd.fillArc(dpy, drawPixmap, gameGC,
                            WINSCALE(x - z), WINSCALE(y - z),
-                           WINSCALE(teamShotSize), WINSCALE(teamShotSize),
+                           WINSCALE(clientOptions.teamShotSize), WINSCALE(clientOptions.teamShotSize),
                            0, 64 * 360);
             }
             else
                 Rectangle_add(color,
                               x - z,
                               y - z,
-                              teamShotSize, teamShotSize);
+                              clientOptions.teamShotSize, clientOptions.teamShotSize);
         }
     }
     else
     {
-        int s_size = MIN(teamShotSize, 16);
+        int s_size = MIN(clientOptions.teamShotSize, 16);
         int z = s_size / 2;
         Bitmap_paint(drawPixmap, BM_BULLET_OWN, WINSCALE(x) - z,
                      WINSCALE(y) - z, s_size - 1);
@@ -532,7 +529,7 @@ void Gui_paint_laser(int color, int x1, int y1, int len, int dir)
 
 void Gui_paint_paused(int x, int y, int count)
 {
-    if (!texturedObjects)
+    if (!clientOptions.texturedObjects)
     {
         int x0, y0;
         static int pauseCharWidth = -1;
@@ -604,7 +601,7 @@ void Gui_paint_ecm(int x, int y, int size)
 
 void Gui_paint_refuel(int x0, int y0, int x1, int y1)
 {
-    if (!texturedObjects)
+    if (!clientOptions.texturedObjects)
     {
         rd.drawLine(dpy, drawPixmap, gameGC,
                     WINSCALE(X(x0)), WINSCALE(Y(y0)),
@@ -844,7 +841,7 @@ static void Gui_paint_marking_lights(int id, int x, int y,
         // for (lcnt = 0; lcnt < ship->num_r_light; lcnt++)
         for (auto &pos : r_lights)
         {
-            int rightLightColor = maxColors > 4 ? 4 : BLUE;
+            int rightLightColor = clientOptions.maxColors > 4 ? 4 : BLUE;
             // position_t r_light = Ship_get_r_light_position(ship, lcnt, dir);
             position_t r_light = clpos2position(pos);
             Rectangle_add(rightLightColor,
@@ -1029,7 +1026,7 @@ void Gui_paint_ship(int x, int y, int dir, int id, int cloak, int phased,
 
     if (cloak == 0 && phased == 0)
     {
-        if (!texturedObjects || !texturedShips)
+        if (!clientOptions.texturedObjects || !clientOptions.texturedShips)
         {
             Gui_paint_ship_uncloaked(id, points, ship_color, cnt);
             /* shipshapeshack by Mara */
@@ -1064,7 +1061,7 @@ void Gui_paint_ship(int x, int y, int dir, int id, int cloak, int phased,
     else if (cloak)
         Gui_paint_ship_cloaked(ship_color, points, cnt);
 
-    if (markingLights)
+    if (clientOptions.markingLights)
         Gui_paint_marking_lights(id, x, y, ship, dir);
 
     if (shield || deflector)

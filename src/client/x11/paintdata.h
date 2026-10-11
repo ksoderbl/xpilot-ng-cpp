@@ -37,8 +37,8 @@ extern int Arc_add(int color,
                    int x, int y,
                    int width, int height,
                    int angle1, int angle2);
-extern int Arc_add_rgb(unsigned long color, /* Used if fullColor is on. */
-                       int fallback_color,  /* Used if fullColor is off. */
+extern int Arc_add_rgb(unsigned long color, /* Used if clientOptions.fullColor is on. */
+                       int fallback_color,  /* Used if clientOptions.fullColor is off. */
                        int x, int y,
                        int width, int height,
                        int angle1, int angle2);

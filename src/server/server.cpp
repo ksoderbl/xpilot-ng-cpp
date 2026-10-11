@@ -279,7 +279,6 @@ void Main_loop(void)
 
     if (NumPlayers > NumRobots + NumPseudoPlayers || options.RawMode)
     {
-
         if (NoPlayersEnteredYet)
         {
             if (NumPlayers > NumRobots + NumPseudoPlayers)

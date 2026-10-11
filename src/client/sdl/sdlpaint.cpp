@@ -503,7 +503,7 @@ void Paint_score_entry(int entry_num, Other *other, bool is_team)
 
         // if (Using_score_decimals())
         //     sprintf(scoreStr, "%*.*f",
-        //             7 - showScoreDecimals, showScoreDecimals,
+        //             7 - clientOptions.showScoreDecimals, clientOptions.showScoreDecimals,
         //             other->score);
         // else
         {

@@ -185,10 +185,10 @@ void SelectionRequest_event(XEvent *event)
 
 void MapNotify_event(XEvent *event)
 {
-    if (ignoreWindowManager == 1)
+    if (clientOptions.ignoreWindowManager == 1)
     {
         XSetInputFocus(dpy, topWindow, RevertToParent, CurrentTime);
-        ignoreWindowManager = 2;
+        clientOptions.ignoreWindowManager = 2;
     }
 }
 

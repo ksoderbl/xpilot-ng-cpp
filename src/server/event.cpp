@@ -187,8 +187,10 @@ int Player_lock_closest(Player *pl, bool next)
             Players_are_allies(pl, pl_i))
             continue;
 
-        l = World_wrap_length(world, pl_i->pos.cx - pl->pos.cx,
-                              pl_i->pos.cy - pl->pos.cy);
+        l = World_wrap_length(
+            world,
+            pl_i->pos.cx - pl->pos.cx,
+            pl_i->pos.cy - pl->pos.cy);
         if (l >= dist && l < best)
         {
             best = l;

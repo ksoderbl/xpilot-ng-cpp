@@ -368,7 +368,7 @@ void Map_dots(void)
     /*
      * Optimize.
      */
-    if (backgroundPointSize > 0)
+    if (clientOptions.backgroundPointSize > 0)
     {
         if (BIT(Setup->mode, WRAP_PLAY))
         {
@@ -382,16 +382,16 @@ void Map_dots(void)
                 if (dot[Setup->map_data[y]])
                     Map_make_dot(&Setup->map_data[y]);
             }
-            start = backgroundPointDist;
+            start = clientOptions.backgroundPointDist;
         }
         else
             start = 0;
 
-        if (backgroundPointDist > 0)
+        if (clientOptions.backgroundPointDist > 0)
         {
-            for (x = start; x < Setup->x; x += backgroundPointDist)
+            for (x = start; x < Setup->x; x += clientOptions.backgroundPointDist)
             {
-                for (y = start; y < Setup->y; y += backgroundPointDist)
+                for (y = start; y < Setup->y; y += clientOptions.backgroundPointDist)
                 {
                     if (dot[Setup->map_data[x * Setup->y + y]])
                         Map_make_dot(&Setup->map_data[x * Setup->y + y]);
@@ -404,7 +404,7 @@ void Map_dots(void)
             y = cannon.pos % Setup->y;
             if ((x == 0 || y == 0) && BIT(Setup->mode, WRAP_PLAY))
                 cannon.dot = 1;
-            else if (backgroundPointDist > 0 && x % backgroundPointDist == 0 && y % backgroundPointDist == 0)
+            else if (clientOptions.backgroundPointDist > 0 && x % clientOptions.backgroundPointDist == 0 && y % clientOptions.backgroundPointDist == 0)
                 cannon.dot = 1;
             else
                 cannon.dot = 0;
@@ -1197,7 +1197,7 @@ int Handle_score_object(double score, int x, int y, char *msg)
     if (msg[0] != '\0')
     {
         if (Using_score_decimals())
-            sprintf(sobj->hud_msg, "%s %.*f", msg, showScoreDecimals, score);
+            sprintf(sobj->hud_msg, "%s %.*f", msg, clientOptions.showScoreDecimals, score);
         else
         {
             int sc = (int)(score >= 0.0 ? score + 0.5 : score - 0.5);
@@ -1211,7 +1211,7 @@ int Handle_score_object(double score, int x, int y, char *msg)
 
     /* Initialize sobj->msg data (is shown on game area) */
     if (Using_score_decimals())
-        sprintf(sobj->msg, "%.*f", showScoreDecimals, score);
+        sprintf(sobj->msg, "%.*f", clientOptions.showScoreDecimals, score);
     else
     {
         int sc = (int)(score >= 0.0 ? score + 0.5 : score - 0.5);
@@ -1292,7 +1292,7 @@ int Handle_time_left(long sec)
 
 bool Using_score_decimals(void)
 {
-    if (showScoreDecimals > 0 && version >= 0x4500 && (version < 0x4F09 || version >= 0x4F11))
+    if (clientOptions.showScoreDecimals > 0 && version >= 0x4500 && (version < 0x4F09 || version >= 0x4F11))
         return true;
     return false;
 }
@@ -1591,7 +1591,7 @@ int Handle_ship(int x, int y, int id, int dir, int shield, int cloak,
     t.x = x;
     t.y = y;
     t.id = id;
-    if (dirPrediction && self && self->id == id)
+    if (clientOptions.dirPrediction && self && self->id == id)
         t.dir = predict_self_dir(dir);
     else
         t.dir = dir;

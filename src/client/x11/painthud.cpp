@@ -62,8 +62,6 @@
 radar_t *old_radar_ptr;
 int old_num_radar, old_max_radar;
 
-static int meterWidth = 60;
-static int meterHeight = 10;
 
 /*
  * Draw a meter of some kind on screen.
@@ -74,27 +72,27 @@ static int meterHeight = 10;
 static void Paint_meter(int xoff, int y, const char *title, int val, int max,
                         int meter_color)
 {
-    const int mw1_4 = meterWidth / 4,
-              mw2_4 = meterWidth / 2,
-              mw3_4 = 3 * meterWidth / 4,
-              mw4_4 = meterWidth,
+    const int mw1_4 = clientOptions.meterWidth / 4,
+              mw2_4 = clientOptions.meterWidth / 2,
+              mw3_4 = 3 * clientOptions.meterWidth / 4,
+              mw4_4 = clientOptions.meterWidth,
               BORDER = 5;
     int x, xstr;
 
     if (xoff >= 0)
     {
         x = xoff;
-        xstr = WINSCALE(x + (int)meterWidth) + BORDER;
+        xstr = WINSCALE(x + (int)clientOptions.meterWidth) + BORDER;
     }
     else
     {
-        x = ext_view_width - ((int)meterWidth - xoff);
+        x = ext_view_width - ((int)clientOptions.meterWidth - xoff);
         xstr = WINSCALE(x) - (BORDER + XTextWidth(gameFont, title, (int)strlen(title)));
     }
 
     Rectangle_add(meter_color,
                   x + 2, y + 2,
-                  (int)(((meterWidth - 3) * val) / (max ? max : 1)), meterHeight - 3);
+                  (int)(((clientOptions.meterWidth - 3) * val) / (max ? max : 1)), clientOptions.meterHeight - 3);
 
     /* meterBorderColor = 0 obviously means no meter borders are drawn */
     if (clientOptions.meterBorderColor)
@@ -104,30 +102,30 @@ static void Paint_meter(int xoff, int y, const char *title, int val, int max,
         SET_FG(colors[color].pixel);
         rd.drawRectangle(dpy, drawPixmap, gameGC,
                          WINSCALE(x), WINSCALE(y),
-                         WINSCALE(meterWidth), WINSCALE(meterHeight));
+                         WINSCALE(clientOptions.meterWidth), WINSCALE(clientOptions.meterHeight));
 
         /* Paint scale levels(?) */
-        Segment_add(color, x, y - 4, x, y + meterHeight + 4);
-        Segment_add(color, x + mw4_4, y - 4, x + mw4_4, y + meterHeight + 4);
-        Segment_add(color, x + mw2_4, y - 3, x + mw2_4, y + meterHeight + 3);
-        Segment_add(color, x + mw1_4, y - 1, x + mw1_4, y + meterHeight + 1);
-        Segment_add(color, x + mw3_4, y - 1, x + mw3_4, y + meterHeight + 1);
+        Segment_add(color, x, y - 4, x, y + clientOptions.meterHeight + 4);
+        Segment_add(color, x + mw4_4, y - 4, x + mw4_4, y + clientOptions.meterHeight + 4);
+        Segment_add(color, x + mw2_4, y - 3, x + mw2_4, y + clientOptions.meterHeight + 3);
+        Segment_add(color, x + mw1_4, y - 1, x + mw1_4, y + clientOptions.meterHeight + 1);
+        Segment_add(color, x + mw3_4, y - 1, x + mw3_4, y + clientOptions.meterHeight + 1);
     }
 
     if (!clientOptions.meterBorderColor)
         SET_FG(colors[meter_color].pixel);
 
     rd.drawString(dpy, drawPixmap, gameGC,
-                  xstr, WINSCALE(y) + (gameFont->ascent + meterHeight) / 2,
+                  xstr, WINSCALE(y) + (gameFont->ascent + clientOptions.meterHeight) / 2,
                   title, (int)strlen(title));
 
-    /* texturedObjects - TODO */
-    /*int width = WINSCALE((int)(((meterWidth-3)*val)/(max?max:1)));*/
+    /* clientOptions.texturedObjects - TODO */
+    /*int width = WINSCALE((int)(((clientOptions.meterWidth-3)*val)/(max?max:1)));*/
 
     /*printf("TODO: implement paint meter\n");*/
     /*PaintMeter(drawPixmap, BM_METER,
       WINSCALE(x), WINSCALE(y),
-      WINSCALE(meterWidth), WINSCALE(11),
+      WINSCALE(clientOptions.meterWidth), WINSCALE(11),
       width);*/
     /*SET_FG(colors[color].pixel);*/
 }
@@ -597,7 +595,7 @@ void Paint_HUD(void)
             hudRadarScale,
             hudRadarLimit * (active_view_width / 2) * hudRadarScale / hudRadarMapScale,
             hudRadarLimit * (active_view_width / 2) * hudRadarScale / hudRadarMapScale,
-            hudRadarDotSize);
+            clientOptions.hudRadarDotSize);
 
         Paint_hudradar(hudRadarMapScale,
                        (double)active_view_width / 2,
@@ -793,16 +791,16 @@ void Paint_messages(void)
     bot_y = WINSCALE(ext_view_height) - messageFont->descent - BORDER;
 
     /* get number of player messages */
-    while (last_msg_index < maxMessages && TalkMsg[last_msg_index]->len != 0)
+    while (last_msg_index < clientOptions.maxMessages && TalkMsg[last_msg_index]->len != 0)
         last_msg_index++;
     last_msg_index--; /* make it an index */
 
-    for (i = 0; i < 2 * maxMessages; i++)
+    for (i = 0; i < 2 * clientOptions.maxMessages; i++)
     {
-        if (i < maxMessages)
+        if (i < clientOptions.maxMessages)
             msg = TalkMsg[i];
         else
-            msg = GameMsg[i - maxMessages];
+            msg = GameMsg[i - clientOptions.maxMessages];
         if (msg->len == 0)
             continue;
 
@@ -855,7 +853,7 @@ void Paint_messages(void)
         if (msg_color == 0)
             continue;
 
-        if (i < maxMessages)
+        if (i < clientOptions.maxMessages)
         {
             x = BORDER;
             y = top_y;
@@ -869,13 +867,13 @@ void Paint_messages(void)
             y = bot_y;
             bot_y -= SPACING;
         }
-        len = (int)(charsPerSecond * (MSG_LIFE_TIME - msg->lifeTime));
+        len = (int)(clientOptions.charsPerSecond * (MSG_LIFE_TIME - msg->lifeTime));
         len = MIN(msg->len, len);
 
         /*
          * it's an emphasized talk message
          */
-        if (selection.draw.state == SEL_EMPHASIZED && i < maxMessages && i >= selection.draw.y1 && i <= selection.draw.y2)
+        if (selection.draw.state == SEL_EMPHASIZED && i < clientOptions.maxMessages && i >= selection.draw.y1 && i <= selection.draw.y2)
         {
 
             /*

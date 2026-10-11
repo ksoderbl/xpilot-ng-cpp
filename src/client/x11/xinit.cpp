@@ -100,7 +100,6 @@ unsigned top_width, top_height;
 unsigned players_width, players_height;
 bool radar_score_mapped;
 Cursor pointerControlCursor;
-bool ignoreWindowManager;
 
 XFontStruct *gameFont; /* The fonts used in the game */
 XFontStruct *messageFont;
@@ -398,7 +397,7 @@ int Init_top(void)
         sattr.colormap = colormap;
         mask |= CWColormap;
     }
-    if (ignoreWindowManager)
+    if (clientOptions.ignoreWindowManager)
     {
         sattr.override_redirect = True;
         mask |= CWOverrideRedirect;

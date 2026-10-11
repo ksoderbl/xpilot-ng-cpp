@@ -61,9 +61,6 @@ client_data_t clData = {
 char *geometry;
 xp_args_t xpArgs;
 
-int baseWarningType; /* Which type of base warning you prefer */
-int maxCharsInNames;
-int hudRadarDotSize;  /* Size for hudradar dot drawing */
 double hudRadarScale; /* Scale for hudradar drawing */
 double hudRadarLimit; /* Hudradar dots are not drawn if closer to
              your ship than this factor of visible
@@ -91,7 +88,6 @@ double scoreObjectTime;          /* How long to flash score objects */
 
 short autopilotLight;
 
-int showScoreDecimals;
 
 short lock_id;   /* Id of player locked onto */
 short lock_dir;  /* Direction of lock */
@@ -118,11 +114,6 @@ int roundDelay;    /* != 0 means we're in a delay */
 int roundDelayMax; /* (not yet) used for graph of time
               remaining in delay */
 
-int backgroundPointDist; /* spacing of navigation points */
-int backgroundPointSize; /* size of navigation points */
-int sparkSize;           /* size of debris and spark */
-int shotSize;            /* size of shot */
-int teamShotSize;        /* size of team shot */
 double controlTime;      /* Display control for how long? */
 uint8_t spark_rand;      /* Sparkling effect */
 uint8_t old_spark_rand;  /* previous value of spark_rand */
@@ -147,7 +138,6 @@ double displayedPower;          /* What the server is sending us */
 double displayedTurnspeed;      /* What the server is sending us */
 double displayedTurnresistance; /* What the server is sending us */
 double sparkProb;               /* Sparkling effect user configurable */
-int charsPerSecond;             /* Message output speed (configurable) */
 
 double hud_move_fact; /* scale the hud-movement (speed) */
 double ptr_move_fact; /* scale the speed pointer length */
@@ -162,24 +152,18 @@ long packet_loop;     /* start of measurement */
 bool showUserName = false;                /* Show user name instead of nick name */
 char servername[MAX_CHARS];               /* Name of server connecting to */
 unsigned version;                         /* Version of the server */
-bool toggle_shield;                       /* Are shields toggled by a press? */
 bool shields = true;                      /* When shields are considered up */
-bool auto_shield = true;                  /* shield drops for fire */
 char modBankStr[NUM_MODBANKS][MAX_CHARS]; /* modifier banks */
 
-int maxFPS; /* Max FPS player wants from server */
 int oldMaxFPS = 0;
 double clientFPS = 1.0; /* FPS client is drawing at */
 int recordFPS = 0;      /* What FPS to record at */
 time_t currentTime = 0; /* Current value of time() */
 bool newSecond = false; /* Did time() increment this frame? */
 
-int maxMouseTurnsPS = 0;
 int mouseMovementInterval = 0;
 int cumulativeMouseMovement = 0;
 
-int clientPortStart = 0; /* First UDP port for clients */
-int clientPortEnd = 0;   /* Last one (these are for firewalls) */
 
 int lose_item;        /* index for dropping owned item */
 int lose_item_active; /* one of the lose keys is pressed */
@@ -240,14 +224,14 @@ int Client_setup(void)
 
 int Client_fps_request(void)
 {
-    LIMIT(maxFPS, 1, MAX_SUPPORTED_FPS);
-    oldMaxFPS = maxFPS;
-    return Send_fps_request(maxFPS);
+    LIMIT(clientOptions.maxFPS, 1, MAX_SUPPORTED_FPS);
+    oldMaxFPS = clientOptions.maxFPS;
+    return Send_fps_request(clientOptions.maxFPS);
 }
 
 int Check_client_fps(void)
 {
-    if (oldMaxFPS != maxFPS)
+    if (oldMaxFPS != clientOptions.maxFPS)
         return Client_fps_request();
     return 0;
 }
@@ -327,11 +311,11 @@ void Client_cleanup(void)
 
 int Client_pointer_move(int movement)
 {
-    if (maxMouseTurnsPS == 0)
+    if (clientOptions.maxMouseTurnsPS == 0)
         return Send_pointer_move(movement);
 
     /*
-     * maxMouseTurnsPS is not 0: player wants to limit amount
+     * clientOptions.maxMouseTurnsPS is not 0: player wants to limit amount
      * of pointer move packets sent to server.
      */
     cumulativeMouseMovement += movement;
@@ -347,10 +331,10 @@ int Client_check_pointer_move_interval(void)
 {
     struct timeval now;
     static int last_send_interval_num = -1;
-    int interval_num; /* 0 ... maxMouseTurnsPS - 1 */
+    int interval_num; /* 0 ... clientOptions.maxMouseTurnsPS - 1 */
     int next_interval_start;
 
-    assert(maxMouseTurnsPS > 0);
+    assert(clientOptions.maxMouseTurnsPS > 0);
 
     /*
      * Let's see if we've sent any pointer move this interval,

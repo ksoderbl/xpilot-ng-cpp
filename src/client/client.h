@@ -150,10 +150,7 @@ extern message_t *TalkMsg_pending[]; /* store incoming messages */
 extern message_t *GameMsg_pending[]; /* while a cut is pending */
 extern char *HistoryMsg[];           /* talk window history */
 
-extern int maxLinesInHistory; /* lines to save in history */
 extern selection_t selection; /* in talk/draw window */
-extern int maxMessages;
-extern int messagesToStdout;
 
 extern char *talk_fast_msgs[]; /* talk macros */
 
@@ -170,7 +167,6 @@ extern uint8_t lastNumItems[NUM_ITEMS];
 extern int numItemsTime[NUM_ITEMS];
 extern double showItemsTime;
 extern short autopilotLight;
-extern int showScoreDecimals;
 extern double scoreObjectTime; /* How long to show score objects */
 
 extern short lock_id;   /* Id of player locked onto */
@@ -201,11 +197,6 @@ extern bool UpdateRadar;
 constexpr int ServerRadarWidth = 256; /* radar width at the server */
 extern int RadarWidth;
 extern int RadarHeight;
-extern int backgroundPointDist; /* spacing of navigation points */
-extern int backgroundPointSize; /* size of navigation points */
-extern int sparkSize;           /* size of sparks and debris */
-extern int shotSize;            /* size of shot */
-extern int teamShotSize;        /* size of team shot */
 
 extern double controlTime;     /* Display control for how long? */
 extern uint8_t spark_rand;     /* Sparkling effect */
@@ -231,7 +222,6 @@ extern double displayedPower;          /* What the server is sending us */
 extern double displayedTurnspeed;      /* What the server is sending us */
 extern double displayedTurnresistance; /* What the server is sending us */
 extern double sparkProb;               /* Sparkling effect configurable */
-extern int charsPerSecond;             /* Message output speed (config) */
 
 extern double hud_move_fact; /* scale the hud-movement (speed) */
 extern double ptr_move_fact; /* scale the speed pointer length */
@@ -247,26 +237,18 @@ extern bool showUserName;          /* Show username instead of nickname */
 extern char servername[MAX_CHARS]; /* Name of server connecting to */
 extern unsigned version;           /* Version of the server */
 extern bool scoresChanged;
-extern bool toggle_shield; /* Are shields toggled by a press? */
 extern bool shields;       /* When shields are considered up */
-extern bool auto_shield;   /* drops shield for fire */
 
-extern int maxFPS; /* Max FPS player wants from server */
 extern int oldMaxFPS;
 extern double clientFPS;   /* FPS client is drawing at */
 extern int recordFPS;      /* What FPS to record at */
 extern time_t currentTime; /* Current value of time() */
 extern bool newSecond;     /* Did time() increment this frame? */
-extern int maxMouseTurnsPS;
 extern int mouseMovementInterval;
 extern int cumulativeMouseMovement;
 
 extern char modBankStr[][MAX_CHARS]; /* modifier banks strings */
 
-extern int clientPortStart; /* First UDP port for clients */
-extern int clientPortEnd;   /* Last one (these are for firewalls) */
-extern int baseWarningType; /* Which type of base warning you prefer */
-extern int maxCharsInNames;
 extern int lose_item;        /* flag and index to drop item */
 extern int lose_item_active; /* one of the lose keys is pressed */
 

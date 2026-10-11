@@ -50,7 +50,6 @@ extern ipos_t world;
 extern ipos_t realWorld;
 
 extern int hudSize;          /* Size for HUD drawing */
-extern int hudRadarDotSize;  /* Size for hudradar dot drawing */
 extern double hudRadarScale; /* Scale for hudradar drawing */
 extern double hudRadarLimit; /* Limit for hudradar drawing */
 
@@ -63,7 +62,6 @@ extern int active_view_width;  /* Width of active map area displayed. */
 extern int active_view_height; /* Height of active map area displayed. */
 extern int ext_view_x_offset;  /* Offset of ext_view_width */
 extern int ext_view_y_offset;  /* Offset of ext_view_height */
-extern bool markingLights;     /* Marking lights on ships */
 
 extern int num_spark_colors;
 
